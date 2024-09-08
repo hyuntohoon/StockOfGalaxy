@@ -1,7 +1,7 @@
-import LoginTemplate from "@/app/components/templates/LoginTemplate";
+import FindPasswordTemplate from "@/app/components/templates/FindPasswordTemplate";
 
 const FindPasswordPage = () => {
-  return <LoginTemplate />;
+  return <FindPasswordTemplate />;
 };
 
 export default FindPasswordPage;
