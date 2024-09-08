@@ -1,7 +1,7 @@
-import LoginTemplate from "@/app/components/templates/LoginTemplate";
+import ResetPasswordTemplate from "@/app/components/templates/ResetPasswordTemplate";
 
 const ResetPasswordPage = () => {
-  return <LoginTemplate />;
+  return <ResetPasswordTemplate />;
 };
 
 export default ResetPasswordPage;

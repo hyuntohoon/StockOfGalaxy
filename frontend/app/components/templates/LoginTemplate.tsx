@@ -41,7 +41,7 @@ const LoginTemplate = () => {
         <LoginImage width={200} />
         <LoginInputGroup />
         <LinkContainer>
-          <StyledLink href="/">비밀번호 찾기</StyledLink>
+          <StyledLink href="/find-password">비밀번호 찾기</StyledLink>
         </LinkContainer>
         <LoginButtonGroup />
       </LoginContainer>
