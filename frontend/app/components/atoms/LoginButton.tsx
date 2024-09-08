@@ -20,17 +20,13 @@ const StyledLoginButton = styled.input`
     value === "회원가입" ? "1px solid #0E224D" : "none"};
 `;
 
-const LoginButton = ({ value }) => {
+const LoginButton = ({ value, onClick }) => {
   return (
     <StyledLoginButton
       type="button"
       value={value}
       onClick={() => {
-        if (value === "로그인") {
-          alert("로그인 성공");
-        } else {
-          alert("회원가입 성공");
-        }
+        onClick();
       }}
     />
   );

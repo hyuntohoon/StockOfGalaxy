@@ -9,7 +9,7 @@ const Image = styled.img`
 `;
 
 const LoginImage = ({ width }) => {
-  return <Image src="/cat.png" alt="cat" />;
+  return <Image src="/cat.png" alt="cat" width={width} />;
 };
 
 export default LoginImage;

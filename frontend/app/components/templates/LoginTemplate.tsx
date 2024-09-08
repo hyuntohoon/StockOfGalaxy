@@ -1,7 +1,7 @@
 "use client";
 
 import LoginImage from "../atoms/LoginImage";
-import LoginForm from "../organisms/LoginForm";
+import LoginInputGroup from "../molecules/LoginInputGroup";
 import LoginButtonGroup from "../molecules/LoginButtonGroup";
 import styled from "styled-components";
 import Link from "next/link";
@@ -38,8 +38,8 @@ const LoginTemplate = () => {
   return (
     <>
       <LoginContainer>
-        <LoginImage />
-        <LoginForm />
+        <LoginImage width={200} />
+        <LoginInputGroup />
         <LinkContainer>
           <StyledLink href="/">비밀번호 찾기</StyledLink>
         </LinkContainer>
