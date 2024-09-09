@@ -8,9 +8,9 @@ export const setupInterceptors = (
 ) => {
   axiosInstance.interceptors.request.use(async (config) => {
     if (accessToken) {
-      const { exp } = jwtDecode(accessToken);
+      const { exp } = await jwtDecode(accessToken);
 
-      if (Date.now() >= exp * 1000) {
+      if (exp && Date.now() >= exp * 1000) {
         try {
           const newToken = await getNewToken();
           setAccessToken(newToken);
