@@ -6,9 +6,8 @@ import com.sog.user.domain.dto.UserInfoResponseDTO;
 import com.sog.user.domain.dto.UserRegisterRequestDTO;
 import com.sog.user.domain.dto.UserRegisterResponseDTO;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.stereotype.Service;
 
-@Service
+
 public interface UserService {
 
     // 회원가입

@@ -21,7 +21,7 @@ public class LikedStock {
     private LikedStockId likedStockId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false)
+    @JoinColumn(name = "member_id", insertable = false, nullable = false, updatable = false)
     private Member member;
 
     @Column(name = "stock_code", insertable = false, updatable = false)

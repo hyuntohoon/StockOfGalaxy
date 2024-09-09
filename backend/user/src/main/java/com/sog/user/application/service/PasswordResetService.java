@@ -1,9 +1,8 @@
 package com.sog.user.application.service;
 
 import com.sog.user.domain.dto.UserPasswordRequestDTO;
-import org.springframework.stereotype.Service;
 
-@Service
+
 public interface PasswordResetService {
 
     // 사용자 정보 조회

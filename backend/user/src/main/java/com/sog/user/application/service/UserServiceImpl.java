@@ -17,23 +17,32 @@ import jakarta.transaction.Transactional;
 import java.time.Duration;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 
 @Slf4j
-@RequiredArgsConstructor
+@Service
 public class UserServiceImpl implements UserService {
 
     private final AuthenticationProviderService authenticationProviderService;
     private final UserRepository userRepository;
     private final RedisService redisService;
-    @Lazy
     private final JwtTokenProvider jwtTokenProvider;
+    @Autowired
+    public UserServiceImpl(AuthenticationProviderService authenticationProviderService, UserRepository userRepository, @Lazy JwtTokenProvider jwtTokenProvider, RedisService redisService) {
+        this.authenticationProviderService = authenticationProviderService;
+        this.userRepository = userRepository;
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.redisService = redisService;
+    }
 
 
     @Override
+    @Transactional
     public UserRegisterResponseDTO register(UserRegisterRequestDTO userRegisterRequestDTO) {
         Member member = Member.builder()
             .userId(userRegisterRequestDTO.getUserId())
@@ -42,6 +51,7 @@ public class UserServiceImpl implements UserService {
             .nickname(userRegisterRequestDTO.getNickname())
             .email(userRegisterRequestDTO.getEmail())
             .characterType(userRegisterRequestDTO.getCharacterType())
+            .isQuit(false)
             .build();
 
         // Member entity save

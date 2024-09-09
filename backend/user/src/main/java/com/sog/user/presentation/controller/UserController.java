@@ -60,8 +60,19 @@ public class UserController {
     // 로그아웃
     @PostMapping("/public/logout")
     public ResponseEntity<?> logout(@RequestBody LogoutDTO logoutDTO) {
-        redisService.deleteValue(String.valueOf(logoutDTO.getMemberId()));
-        return ResponseEntity.ok("로그아웃이 성공적으로 되었습니다.");
+        try {
+            log.info("로그아웃 요청 수신: memberId={}", logoutDTO.getMemberId());
+
+            // Redis에서 해당 사용자 정보 삭제
+            redisService.deleteValue(String.valueOf(logoutDTO.getMemberId()));
+
+            log.info("로그아웃 성공: memberId={}", logoutDTO.getMemberId());
+            return ResponseEntity.ok("로그아웃이 성공적으로 되었습니다.");
+        } catch (Exception e) {
+            log.error("로그아웃 중 오류 발생: memberId={}, 오류 메시지={}", logoutDTO.getMemberId(),
+                e.getMessage());
+            return ResponseEntity.status(500).body("로그아웃 중 오류가 발생했습니다.");
+        }
     }
 
     // 비밀번호 변경
@@ -72,7 +83,6 @@ public class UserController {
             passwordResetRequestDTO.getNewPassword());
 
         return new ResponseEntity<>(HttpStatus.OK);
-
     }
 
     // 이메일 인증번호 전송

@@ -27,7 +27,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class JwtTokenProvider {
 
-    @Value("${jwt.secret")
+    @Value("${jwt.secret}")
     private String secret;
 
     @Value("${jwt.access-token-expiry}")

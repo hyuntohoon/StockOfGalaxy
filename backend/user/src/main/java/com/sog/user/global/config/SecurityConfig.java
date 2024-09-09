@@ -60,7 +60,7 @@ public class SecurityConfig {
                         CorsConfiguration configuration = new CorsConfiguration();
 
                         configuration.setAllowedOrigins(
-                            Arrays.asList("http://localhost:3000",
+                            Arrays.asList("http://localhost:8080", "http://localhost:3000",
                                 "https://ssafy11s.com", "https://www.ssafy11s.com"));
                         configuration.setAllowedMethods(Collections.singletonList("*"));
                         configuration.setAllowCredentials(true);
@@ -79,7 +79,7 @@ public class SecurityConfig {
                 .requestMatchers("/user/public/login", "/user/public/join",
                     "/user/public/validate/**", "/user/public/request-verification-code",
                     "/user/public/request-verification", "/user/public/change-password",
-                    "/user/public/reissue")
+                    "/user/public/reissue", "/user/public/logout")
                 .permitAll()
 
                 .anyRequest().authenticated())

@@ -52,7 +52,7 @@ public class Member implements UserDetails {
     @Column(name = "is_quit", nullable = false)
     private Boolean isQuit = false;
 
-    @OneToMany(mappedBy = "likedStock", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LikedStock> likedStocks = new ArrayList<>();
 
     /**
