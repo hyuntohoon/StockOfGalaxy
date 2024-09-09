@@ -13,8 +13,16 @@ const InputField = styled.input`
   font-size: 1.1rem;
 `;
 
-const LoginInputField = ({ type, placeholder }) => {
-  return <InputField type={type} placeholder={placeholder} />;
+const LoginInputField = ({ type, placeholder, setInputValue }) => {
+  const handleChange = (e) => {
+    setInputValue((prev) => ({
+      ...prev,
+      [type === "password" ? type : "id"]: e.target.value,
+    }));
+  };
+  return (
+    <InputField type={type} placeholder={placeholder} onChange={handleChange} />
+  );
 };
 
 export default LoginInputField;

@@ -10,12 +10,20 @@ const Container = styled.div`
   justify-content: center;
 `;
 
-const LoginInputGroup = () => {
+const LoginInputGroup = ({ setInputValue }) => {
   return (
     <>
       <Container>
-        <LoginInputField type="text" placeholder="아이디를 입력하세요" />
-        <LoginInputField type="password" placeholder="비밀번호룰 압력하세요" />
+        <LoginInputField
+          type="text"
+          placeholder="아이디를 입력하세요"
+          setInputValue={setInputValue}
+        />
+        <LoginInputField
+          type="password"
+          placeholder="비밀번호룰 압력하세요"
+          setInputValue={setInputValue}
+        />
       </Container>
     </>
   );

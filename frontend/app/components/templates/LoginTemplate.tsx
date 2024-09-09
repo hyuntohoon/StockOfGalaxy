@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+import { useAccessToken } from "@/app/store/userSlice";
 import LoginImage from "../atoms/LoginImage";
 import LoginInputGroup from "../molecules/LoginInputGroup";
 import LoginButtonGroup from "../molecules/LoginButtonGroup";
@@ -35,15 +37,26 @@ const StyledLink = styled(Link)`
 `;
 
 const LoginTemplate = () => {
+  const { accessToken, setAccessToken } = useAccessToken();
+
+  const [inputValue, setInputValue] = useState({
+    id: "",
+    password: "",
+  });
+
   return (
     <>
       <LoginContainer>
         <LoginImage width={200} />
-        <LoginInputGroup />
+        <LoginInputGroup setInputValue={setInputValue} />
         <LinkContainer>
           <StyledLink href="/find-password">비밀번호 찾기</StyledLink>
         </LinkContainer>
-        <LoginButtonGroup />
+        <LoginButtonGroup
+          inputValue={inputValue}
+          accessToken={accessToken}
+          setAccessToken={setAccessToken}
+        />
       </LoginContainer>
     </>
   );
