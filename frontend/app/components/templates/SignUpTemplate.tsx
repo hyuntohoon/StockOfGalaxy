@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import LoginImage from "../atoms/LoginImage";
-import SignUpInputGroup from "../molecules/SignupInputGroup";
+import SignUpInputGroup from "../molecules/SignUpInputGroup";
 import LoginButton from "../atoms/LoginButton";
 import styled from "styled-components";
-import signUp from "../../utils/signUp";
+import { signUp } from "../../utils/userAPI";
 
 const LoginContainer = styled.div`
   position: absolute;

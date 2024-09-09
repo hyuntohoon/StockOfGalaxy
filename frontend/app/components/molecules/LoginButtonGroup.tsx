@@ -1,6 +1,6 @@
 import { useRouter } from "next/navigation";
 import LoginButton from "../atoms/LoginButton";
-import login from "../../utils/login";
+import { login } from "../../utils/userAPI";
 
 const LoginButtonGroup = ({ inputValue }) => {
   const router = useRouter();
