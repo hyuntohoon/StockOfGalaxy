@@ -1,6 +1,6 @@
 "use client";
 
-import LoginInputField from "../atoms/LoginInputField";
+import ResetPasswordInputField from "../atoms/ResetPasswordInputField";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -10,12 +10,20 @@ const Container = styled.div`
   justify-content: center;
 `;
 
-const ResetPasswordInputGroup = () => {
+const ResetPasswordInputGroup = ({ setPassword1, setPassword2 }) => {
   return (
     <>
       <Container>
-        <LoginInputField type="password" placeholder="새 비밀번호" />
-        <LoginInputField type="password" placeholder="새 비밀번호 확인" />
+        <ResetPasswordInputField
+          type="password"
+          placeholder="새 비밀번호"
+          setPassword={setPassword1}
+        />
+        <ResetPasswordInputField
+          type="password"
+          placeholder="새 비밀번호 확인"
+          setPassword={setPassword2}
+        />
       </Container>
     </>
   );
