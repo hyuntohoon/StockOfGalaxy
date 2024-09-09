@@ -17,6 +17,6 @@ public interface UserRepository extends JpaRepository<Member, Long> {
     Optional<Member> findByUserId(String userId);
 
     // 사용자 id 존재 여부 확인 메서드 -> 중복확인
-    boolean existByUserId(String userId);
+    boolean existsByUserId(String userId);
 
 }

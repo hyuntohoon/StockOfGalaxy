@@ -7,10 +7,13 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -20,7 +23,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 @Entity
 @Getter
+@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Table(name = "members")
 public class Member implements UserDetails {
 
     @Id
@@ -37,11 +43,14 @@ public class Member implements UserDetails {
     @Column(name = "nickname", nullable = false)
     private String nickname;
 
-    @Column(name = "character_type", nullable = false, columnDefinition = "INT DEFAULT 0")
+    @Column(name = "character_type", nullable = false)
     private Integer characterType = 0;
 
     @Column(name = "email", nullable = false)
     private String email;
+
+    @Column(name = "is_quit", nullable = false)
+    private Boolean isQuit = false;
 
     @OneToMany(mappedBy = "likedStock", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LikedStock> likedStocks = new ArrayList<>();
@@ -87,6 +96,13 @@ public class Member implements UserDetails {
     // 비밀번호 변경
     public void updatePassword(String encodedPassword) {
         this.password = encodedPassword;
+    }
+
+    // 회원 탈퇴 처리 메서드 (soft delete)
+    public void quit() {
+        if (!this.isQuit) {
+            this.isQuit = true;  // isQuit 값을 true로 변경
+        }
     }
 
 }

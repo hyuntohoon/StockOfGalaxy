@@ -143,12 +143,12 @@ public class JwtTokenProvider {
     }
 
     // JWT에서 memberId를 추출
-    public String extractMemberId(String token) {
+    public Long extractMemberId(String token) {
         Claims claims = parseClaims(token);
         if (claims == null || claims.getSubject() == null) {
             throw new IllegalArgumentException("Invalid token or subject is missing");
         }
-        return claims.getSubject();
+        return Long.parseLong(claims.getSubject());
 
     }
 
