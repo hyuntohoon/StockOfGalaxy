@@ -16,9 +16,6 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: zlxldgus123/frontend:latest  # Docker 이미지
+        image: zlxldgus123/frontend:latest  # Docker Hub의 latest 이미지를 참조
         ports:
         - containerPort: 80
-        env:
-        - name: ENVIRONMENT
-          value: "production"
