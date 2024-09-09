@@ -1,5 +1,5 @@
-const SignUp = (formData) => {
+const signUp = (formData) => {
   console.log(formData);
 };
 
-export default SignUp;
+export default signUp;

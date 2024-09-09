@@ -31,13 +31,27 @@ const CheckButton = styled.button`
   cursor: pointer;
 `;
 
-const SignUpInputField = ({ type, placeholder, name, value, onChange }) => {
+const SignUpInputField = ({
+  type,
+  placeholder,
+  setInfo,
+  setIsAuthenticated,
+}) => {
+  const handleChange = (e) => {
+    setInfo(e.target.value);
+  };
+
   return (
     <InputContainer>
-      <InputField type={type} placeholder={placeholder} />
+      <InputField
+        type={type}
+        placeholder={placeholder}
+        onChange={handleChange}
+      />
       {placeholder === "아이디" && (
         <CheckButton
           onClick={() => {
+            setIsAuthenticated(true);
             alert("중복 확인");
           }}
         >

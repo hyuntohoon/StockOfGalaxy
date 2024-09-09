@@ -1,5 +1,6 @@
 "use client";
 
+import useAccessToken from "@/app/utils/useAccessToken";
 import { useRouter } from "next/navigation";
 import styled from "styled-components";
 
@@ -19,8 +20,10 @@ const StyledLoginButton = styled.input`
   border: 1px solid #0e224d;
 `;
 
-const MyPageButton = ({ value }) => {
+const MyPageButton = ({ value, deleteAccount }) => {
   const router = useRouter();
+
+  const { accessToken, setAccessToken } = useAccessToken();
 
   return (
     <StyledLoginButton
@@ -29,7 +32,7 @@ const MyPageButton = ({ value }) => {
       onClick={() => {
         value === "비밀번호 변경"
           ? router.push("/reset-password")
-          : alert("회원탈퇴");
+          : deleteAccount(accessToken, setAccessToken);
       }}
     />
   );

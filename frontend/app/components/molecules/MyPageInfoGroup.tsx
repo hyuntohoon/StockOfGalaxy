@@ -1,5 +1,8 @@
 "use client";
 
+import { useEffect } from "react";
+import useAccessToken from "@/app/utils/useAccessToken";
+import { getInfo } from "@/app/utils/myPageAPI";
 import MyPageInfo from "../atoms/MyPageInfo";
 import styled from "styled-components";
 
@@ -16,6 +19,14 @@ const Container = styled.div`
 `;
 
 const MyPageInfoGroup = () => {
+  const { accessToken, setAccessToken } = useAccessToken();
+
+  useEffect(() => {
+    const res = getInfo(accessToken, setAccessToken);
+
+    console.log(getInfo);
+  }, []);
+
   return (
     <Container>
       <MyPageInfo type="아이디" content="ssafy" />

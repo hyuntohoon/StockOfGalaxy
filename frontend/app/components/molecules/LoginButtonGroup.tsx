@@ -1,6 +1,6 @@
 import { useRouter } from "next/navigation";
 import LoginButton from "../atoms/LoginButton";
-import Login from "../../utils/Login";
+import login from "../../utils/login";
 
 const LoginButtonGroup = ({ inputValue }) => {
   const router = useRouter();
@@ -10,7 +10,7 @@ const LoginButtonGroup = ({ inputValue }) => {
       <LoginButton
         value="로그인"
         onClick={() => {
-          Login(inputValue);
+          login(inputValue);
         }}
       />
       <LoginButton

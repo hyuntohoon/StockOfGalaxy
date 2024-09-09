@@ -11,7 +11,14 @@ const Container = styled.div`
   justify-content: center;
 `;
 
-const SignUpInputGroup = () => {
+const SignUpInputGroup = ({
+  setUserId,
+  setPassword,
+  setPasswordCheck,
+  setNickname,
+  setEmail,
+  setIsAuthenticated,
+}) => {
   const [formData, setFormData] = useState({
     id: "",
     password: "",
@@ -23,11 +30,32 @@ const SignUpInputGroup = () => {
   return (
     <>
       <Container>
-        <SignUpInputField type="text" placeholder="아이디" />
-        <SignUpInputField type="password" placeholder="비밀번호" />
-        <SignUpInputField type="password" placeholder="비밀번호 확인" />
-        <SignUpInputField type="text" placeholder="닉네임" />
-        <SignUpInputField type="email" placeholder="이메일" />
+        <SignUpInputField
+          type="text"
+          placeholder="아이디"
+          setInfo={setUserId}
+          setIsAuthenticated={setIsAuthenticated}
+        />
+        <SignUpInputField
+          type="password"
+          placeholder="비밀번호"
+          setInfo={setPassword}
+        />
+        <SignUpInputField
+          type="password"
+          placeholder="비밀번호 확인"
+          setInfo={setPasswordCheck}
+        />
+        <SignUpInputField
+          type="text"
+          placeholder="닉네임"
+          setInfo={setNickname}
+        />
+        <SignUpInputField
+          type="email"
+          placeholder="이메일"
+          setInfo={setEmail}
+        />
       </Container>
     </>
   );

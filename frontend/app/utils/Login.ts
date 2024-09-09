@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const Login = async (formData) => {
+const login = async (formData) => {
   try {
     const res = await axios({
       method: "POST",
@@ -17,4 +17,4 @@ const Login = async (formData) => {
   }
 };
 
-export default Login;
+export default login;

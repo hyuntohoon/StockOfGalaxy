@@ -1,6 +1,5 @@
 import axios from "axios";
 import { setupInterceptors } from "./setupInterceptors";
-import useAccessToken from "./useAccessToken";
 
 const createAuthClient = (accessToken, setAccessToken) => {
   const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;
