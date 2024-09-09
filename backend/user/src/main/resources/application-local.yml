@@ -1,0 +1,43 @@
+spring:
+  application:
+    name: sog
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/sog_db
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: ed9658pi
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        jdbc:
+          time_zone: UTC
+    show-sql: true
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+jwt:
+  access-token-expiry: 600000 # 10분
+  refresh-token-expiry: 86400000 # 1일
+  secret: "3c84e62c46e5438e9d12e28a9876591bc34e4e92a3a489b749ab2d9c9e367d89"
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: debug
+    com:
+      scf:
+        user:
+          global:
+            com.sog.user.infrastructure.security.LoginFilter: debug
+
+server:
+  error:
+    include-message: always
+    include-binding-errors: always
