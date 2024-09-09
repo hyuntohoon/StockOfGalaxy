@@ -1,15 +1,10 @@
-import createAuthClient from "./createAuthClient";
+import axios from "axios";
 
-const Login = async (formData, accessToken, setAccessToken) => {
-  const authClient = createAuthClient(accessToken, setAccessToken);
-
+const Login = async (formData) => {
   try {
-    const res = await authClient({
+    const res = await axios({
       method: "POST",
       url: process.env.NEXT_PUBLIC_API_BASE_URL + "/user/public/login",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
       data: {
         userId: formData.id,
         password: formData.password,

@@ -10,12 +10,20 @@ const Container = styled.div`
   justify-content: center;
 `;
 
-const FindPasswordInputGroup = () => {
+const FindPasswordInputGroup = ({ setIsAuthenticated }) => {
   return (
     <>
       <Container>
-        <FindPasswordInputField type="email" placeholder="이메일" />
-        <FindPasswordInputField type="text" placeholder="인증번호" />
+        <FindPasswordInputField
+          type="email"
+          placeholder="이메일"
+          setIsAuthenticated={setIsAuthenticated}
+        />
+        <FindPasswordInputField
+          type="text"
+          placeholder="인증번호"
+          setIsAuthenticated={setIsAuthenticated}
+        />
       </Container>
     </>
   );

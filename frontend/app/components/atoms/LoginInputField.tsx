@@ -13,7 +13,7 @@ const InputField = styled.input`
   font-size: 1.1rem;
 `;
 
-const LoginInputField = ({ type, placeholder, setInputValue }) => {
+const LoginInputField = ({ type, placeholder }) => {
   const handleChange = (e) => {
     setInputValue((prev) => ({
       ...prev,

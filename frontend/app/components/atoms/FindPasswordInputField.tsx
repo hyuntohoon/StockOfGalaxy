@@ -1,6 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import styled from "styled-components";
+import {
+  sendAuthenticationCode,
+  checkAuthenticationCode,
+} from "@/app/utils/authenticationCode";
 
 const InputContainer = styled.div`
   display: flex;
@@ -31,14 +36,29 @@ const CheckButton = styled.button`
   cursor: pointer;
 `;
 
-const FindPasswordInputField = ({ type, placeholder }) => {
+const FindPasswordInputField = ({ type, placeholder, setIsAuthenticated }) => {
+  const [email, setEmail] = useState("");
+  const [authenticationCode, setAuthenticationCode] = useState("");
+
+  const handleChange = (e) => {
+    if (type === "email") {
+      setEmail(e.target.value);
+    } else {
+      setAuthenticationCode(e.target.value);
+    }
+  };
+
   return (
     <InputContainer>
-      <InputField type={type} placeholder={placeholder} />
+      <InputField
+        type={type}
+        placeholder={placeholder}
+        onChange={handleChange}
+      />
       {placeholder === "이메일" && (
         <CheckButton
           onClick={() => {
-            alert("인증번호가 전송되었습니다.");
+            sendAuthenticationCode(email);
           }}
         >
           인증번호 전송
@@ -46,8 +66,12 @@ const FindPasswordInputField = ({ type, placeholder }) => {
       )}
       {placeholder === "인증번호" && (
         <CheckButton
-          onClick={() => {
-            alert("인증번호가 확인되었습니다.");
+          onClick={async () => {
+            const res = await checkAuthenticationCode(authenticationCode);
+
+            if (res === true) {
+              setIsAuthenticated(true);
+            }
           }}
         >
           인증번호 확인

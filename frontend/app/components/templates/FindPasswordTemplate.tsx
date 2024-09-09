@@ -1,12 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 import LoginImage from "../atoms/LoginImage";
 import FindPasswordInputGroup from "../molecules/FindPasswordInputGroup";
 import LoginButton from "../atoms/LoginButton";
 import styled from "styled-components";
-import SignUp from "../../utils/SignUp";
 
 const LoginContainer = styled.div`
   position: absolute;
@@ -27,15 +27,21 @@ const LoginContainer = styled.div`
 const FindPasswordTemplate = () => {
   const router = useRouter();
 
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
   return (
     <>
       <LoginContainer>
         <LoginImage width={100} />
-        <FindPasswordInputGroup />
+        <FindPasswordInputGroup setIsAuthenticated={setIsAuthenticated} />
         <LoginButton
           value="다음"
           onClick={() => {
-            router.push("/reset-password");
+            if (isAuthenticated === true) {
+              router.push("/reset-password");
+            } else {
+              alert("이메일 인증을 먼저 해주세요.");
+            }
           }}
         />
       </LoginContainer>
