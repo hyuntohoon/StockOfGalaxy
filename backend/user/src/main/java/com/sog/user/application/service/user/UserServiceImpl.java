@@ -1,11 +1,11 @@
-package com.sog.user.application.service;
+package com.sog.user.application.service.user;
 
-import com.sog.user.domain.dto.TokenDTO;
-import com.sog.user.domain.dto.UserInfoListResponseDTO;
-import com.sog.user.domain.dto.UserInfoResponseDTO;
-import com.sog.user.domain.dto.UserInfoToSingleResponseDTO;
-import com.sog.user.domain.dto.UserRegisterRequestDTO;
-import com.sog.user.domain.dto.UserRegisterResponseDTO;
+import com.sog.user.domain.dto.user.TokenDTO;
+import com.sog.user.domain.dto.user.UserInfoListResponseDTO;
+import com.sog.user.domain.dto.user.UserInfoResponseDTO;
+import com.sog.user.domain.dto.user.UserInfoToSingleResponseDTO;
+import com.sog.user.domain.dto.user.UserRegisterRequestDTO;
+import com.sog.user.domain.dto.user.UserRegisterResponseDTO;
 import com.sog.user.domain.model.Member;
 import com.sog.user.domain.repository.UserRepository;
 import com.sog.user.infrastructure.security.AuthenticationProviderService;
@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 

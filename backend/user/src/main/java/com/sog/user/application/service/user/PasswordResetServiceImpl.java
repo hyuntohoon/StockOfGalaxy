@@ -1,6 +1,6 @@
-package com.sog.user.application.service;
+package com.sog.user.application.service.user;
 
-import com.sog.user.domain.dto.UserPasswordRequestDTO;
+import com.sog.user.domain.dto.user.UserPasswordRequestDTO;
 import com.sog.user.domain.model.Member;
 import com.sog.user.domain.repository.UserRepository;
 import com.sog.user.infrastructure.security.AuthenticationProviderService;

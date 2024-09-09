@@ -1,4 +1,4 @@
-package com.sog.user.application.service;
+package com.sog.user.application.service.user;
 
 import com.sog.user.domain.model.Member;
 import com.sog.user.domain.repository.UserRepository;

@@ -1,8 +1,8 @@
 package com.sog.user.global.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sog.user.application.service.MemberDetailService;
-import com.sog.user.application.service.RedisService;
+import com.sog.user.application.service.user.MemberDetailService;
+import com.sog.user.application.service.user.RedisService;
 import com.sog.user.infrastructure.security.JwtAuthenticationFilter;
 import com.sog.user.infrastructure.security.JwtCookieUtil;
 import com.sog.user.infrastructure.security.JwtTokenProvider;

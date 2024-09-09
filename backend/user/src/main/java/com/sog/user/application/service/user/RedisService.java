@@ -1,7 +1,6 @@
-package com.sog.user.application.service;
+package com.sog.user.application.service.user;
 
 import java.time.Duration;
-import org.springframework.stereotype.Service;
 
 
 public interface RedisService {

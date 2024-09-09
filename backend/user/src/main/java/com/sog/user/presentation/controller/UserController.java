@@ -1,16 +1,16 @@
 package com.sog.user.presentation.controller;
 
-import com.sog.user.application.service.PasswordResetService;
-import com.sog.user.application.service.RedisService;
-import com.sog.user.application.service.UserService;
-import com.sog.user.domain.dto.LogoutDTO;
-import com.sog.user.domain.dto.PasswordResetRequestDTO;
-import com.sog.user.domain.dto.TokenDTO;
-import com.sog.user.domain.dto.UserInfoResponseDTO;
-import com.sog.user.domain.dto.UserPasswordRequestDTO;
-import com.sog.user.domain.dto.UserRegisterRequestDTO;
-import com.sog.user.domain.dto.UserRegisterResponseDTO;
-import com.sog.user.domain.dto.VerifyCodeRequestDTO;
+import com.sog.user.application.service.user.PasswordResetService;
+import com.sog.user.application.service.user.RedisService;
+import com.sog.user.application.service.user.UserService;
+import com.sog.user.domain.dto.user.LogoutDTO;
+import com.sog.user.domain.dto.user.PasswordResetRequestDTO;
+import com.sog.user.domain.dto.user.TokenDTO;
+import com.sog.user.domain.dto.user.UserInfoResponseDTO;
+import com.sog.user.domain.dto.user.UserPasswordRequestDTO;
+import com.sog.user.domain.dto.user.UserRegisterRequestDTO;
+import com.sog.user.domain.dto.user.UserRegisterResponseDTO;
+import com.sog.user.domain.dto.user.VerifyCodeRequestDTO;
 import com.sog.user.infrastructure.security.JwtCookieUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -155,10 +155,12 @@ public class UserController {
      * */
 
     // 관심 행성 조회
+    // 종목번호 조회 -> 주식 서버로 요청
 
-    // 관심 행성 추가
+    // 관심 행성 추가 -> 종목번호 추가
 
-    // 관심 행성 삭제
+    // 관심 행성 삭제 -> 종목번호 삭제
+
 
 
 }

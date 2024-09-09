@@ -1,4 +1,4 @@
-package com.sog.user.application.service;
+package com.sog.user.application.service.user;
 
 import java.time.Duration;
 import lombok.RequiredArgsConstructor;
