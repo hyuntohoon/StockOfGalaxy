@@ -40,21 +40,25 @@ const SignUpInputGroup = ({
           type="password"
           placeholder="비밀번호"
           setInfo={setPassword}
+          setIsAuthenticated={setIsAuthenticated}
         />
         <SignUpInputField
           type="password"
           placeholder="비밀번호 확인"
           setInfo={setPasswordCheck}
+          setIsAuthenticated={setIsAuthenticated}
         />
         <SignUpInputField
           type="text"
           placeholder="닉네임"
           setInfo={setNickname}
+          setIsAuthenticated={setIsAuthenticated}
         />
         <SignUpInputField
           type="email"
           placeholder="이메일"
           setInfo={setEmail}
+          setIsAuthenticated={setIsAuthenticated}
         />
       </Container>
     </>
