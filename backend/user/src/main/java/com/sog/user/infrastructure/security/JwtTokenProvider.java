@@ -44,7 +44,7 @@ public class JwtTokenProvider {
     }
 
     // accessToken 생성
-    public String generateToken(Long memberId) {
+    public String generateAccessToken(Long memberId) {
         String authority = "USER";
         String nickname = userService.getNickname(memberId);
         long now = new Date().getTime();
@@ -63,7 +63,7 @@ public class JwtTokenProvider {
     }
 
     // refreshToken 생성
-    public String createRefreshToken(Long memberId) {
+    public String generateRefreshToken(Long memberId) {
         long now = new Date().getTime();
 
         String refreshToken = Jwts.builder()
