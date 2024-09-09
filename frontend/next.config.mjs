@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
-import TerserPlugin from 'terser-webpack-plugin';
+import TerserPlugin from "terser-webpack-plugin";
 
-const isProduction = process.env.NODE_ENV === 'production';
+const isProduction = process.env.NODE_ENV === "production";
 
 const nextConfig = {
   webpack: (config) => {
@@ -26,6 +26,10 @@ const nextConfig = {
         : [],
     };
     return config;
+  },
+
+  compiler: {
+    styledComponents: true,
   },
 };
 
