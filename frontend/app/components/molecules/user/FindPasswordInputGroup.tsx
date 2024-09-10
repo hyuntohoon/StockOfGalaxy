@@ -1,6 +1,6 @@
 "use client";
 
-import FindPasswordInputField from "../atoms/FindPasswordInputField";
+import FindPasswordInputField from "../../atoms/user/FindPasswordInputField";
 import styled from "styled-components";
 
 const Container = styled.div`

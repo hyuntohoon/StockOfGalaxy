@@ -1,7 +1,8 @@
 "use client";
 
-import useAccessToken from "@/app/utils/useAccessToken";
+import useAccessToken from "@/app/utils/user/useAccessToken";
 import { useRouter } from "next/navigation";
+import React from "react";
 import styled from "styled-components";
 
 const StyledLoginButton = styled.input`
@@ -20,10 +21,33 @@ const StyledLoginButton = styled.input`
   border: 1px solid #0e224d;
 `;
 
-const MyPageButton = ({ value, deleteAccount }) => {
+interface MyPageButtonProps {
+  value: string;
+  deleteAccount?: (
+    accessToken: string,
+    setAccessToken: (value: string) => void
+  ) => Promise<boolean>;
+}
+
+const MyPageButton: React.FC<MyPageButtonProps> = ({
+  value,
+  deleteAccount,
+}) => {
   const router = useRouter();
 
   const { accessToken, setAccessToken } = useAccessToken();
+
+  const handleDelete = async () => {
+    if (deleteAccount === undefined) {
+      return;
+    }
+
+    const res = await deleteAccount(accessToken, setAccessToken);
+
+    if (res === true) {
+      router.push("/login");
+    }
+  };
 
   return (
     <StyledLoginButton
@@ -32,7 +56,7 @@ const MyPageButton = ({ value, deleteAccount }) => {
       onClick={() => {
         value === "비밀번호 변경"
           ? router.push("/reset-password")
-          : deleteAccount(accessToken, setAccessToken);
+          : handleDelete();
       }}
     />
   );

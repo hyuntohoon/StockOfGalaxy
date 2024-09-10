@@ -3,12 +3,12 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-import LoginImage from "../atoms/LoginImage";
-import ResetPasswordInputGroup from "../molecules/ResetPasswordInputGroup";
-import LoginButton from "../atoms/LoginButton";
+import LoginImage from "../../atoms/user/LoginImage";
+import ResetPasswordInputGroup from "../../molecules/user/ResetPasswordInputGroup";
+import LoginButton from "../../atoms/user/LoginButton";
 import styled from "styled-components";
 
-import { resetPassword } from "@/app/utils/resetPassword";
+import { resetPassword } from "@/app/utils/user/resetPassword";
 
 const LoginContainer = styled.div`
   position: absolute;
@@ -42,19 +42,12 @@ const FindPasswordTemplate = () => {
         />
         <LoginButton
           value="비밀번호 변경"
-          onClick={async () => {
-            if (password1 !== password2) {
-              alert("비밀번호가 일치하지 않습니다.");
-              return;
-            }
-
-            const res = await resetPassword(password1);
+          onClickProps={async () => {
+            const res = await resetPassword(password1, password2);
 
             if (res === true) {
               alert("비밀번호가 변경되었습니다.");
               router.push("/login");
-            } else {
-              alert("비밀번호 변경에 실패했습니다.");
             }
           }}
         />

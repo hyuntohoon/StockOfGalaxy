@@ -1,21 +1,23 @@
 import { useRouter } from "next/navigation";
-import LoginButton from "../atoms/LoginButton";
-import { login } from "../../utils/userAPI";
+import LoginButton from "../../atoms/user/LoginButton";
+import { login } from "../../../utils/user/userAPI";
+import useAccessToken from "@/app/utils/user/useAccessToken";
 
 const LoginButtonGroup = ({ inputValue }) => {
   const router = useRouter();
+  const { setAccessToken } = useAccessToken();
 
   return (
     <>
       <LoginButton
         value="로그인"
-        onClick={() => {
-          login(inputValue);
+        onClickProps={() => {
+          login(inputValue, setAccessToken);
         }}
       />
       <LoginButton
         value="회원가입"
-        onClick={() => {
+        onClickProps={() => {
           router.push("/sign");
         }}
       />

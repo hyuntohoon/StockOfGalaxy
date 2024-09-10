@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import LoginImage from "../atoms/LoginImage";
-import SignUpInputGroup from "../molecules/SignUpInputGroup";
-import LoginButton from "../atoms/LoginButton";
+import LoginImage from "../../atoms/user/LoginImage";
+import SignUpInputGroup from "../../molecules/user/SignUpInputGroup";
+import LoginButton from "../../atoms/user/LoginButton";
 import styled from "styled-components";
-import { signUp } from "../../utils/userAPI";
+import { signUp } from "../../../utils/user/userAPI";
+import { signUpValidation } from "../../../utils/user/signUpAPI";
 
 const LoginContainer = styled.div`
   position: absolute;
@@ -25,7 +26,6 @@ const LoginContainer = styled.div`
 
 const SignUpTemplate = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-
   const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
   const [passwordCheck, setPasswordCheck] = useState("");
@@ -46,18 +46,20 @@ const SignUpTemplate = () => {
         />
         <LoginButton
           value="회원가입"
-          onClick={() => {
-            if (isAuthenticated === false) {
-              alert("아이디 중복 확인을 먼저 해주세요.");
+          onClickProps={() => {
+            const res = signUpValidation(
+              isAuthenticated,
+              userId,
+              password,
+              passwordCheck,
+              nickname,
+              email
+            );
+
+            if (res === false) {
               return;
             }
 
-            if (password !== passwordCheck) {
-              alert("비밀번호가 일치하지 않습니다.");
-              return;
-            }
-
-            // regex
             signUp({
               userId,
               password,

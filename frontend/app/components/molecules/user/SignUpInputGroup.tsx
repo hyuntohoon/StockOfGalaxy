@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import SignUpInputField from "../atoms/SignUpInputField";
+import SignUpInputField from "../../atoms/user/SignUpInputField";
 import styled from "styled-components";
 
 const Container = styled.div`
