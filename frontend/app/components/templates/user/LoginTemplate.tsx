@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import LoginImage from "../atoms/LoginImage";
-import LoginInputGroup from "../molecules/LoginInputGroup";
-import LoginButtonGroup from "../molecules/LoginButtonGroup";
+import LoginImage from "../../atoms/user/LoginImage";
+import LoginInputGroup from "../../molecules/user/LoginInputGroup";
+import LoginButtonGroup from "../../molecules/user/LoginButtonGroup";
 import styled from "styled-components";
 import Link from "next/link";
 

@@ -1,4 +1,4 @@
-import ResetPasswordTemplate from "@/app/components/templates/ResetPasswordTemplate";
+import ResetPasswordTemplate from "@/app/components/templates/user/ResetPasswordTemplate";
 
 const ResetPasswordPage = () => {
   return <ResetPasswordTemplate />;

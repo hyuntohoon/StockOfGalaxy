@@ -1,6 +1,6 @@
 "use client";
 
-import LoginInputField from "../atoms/LoginInputField";
+import LoginInputField from "../../atoms/user/LoginInputField";
 import styled from "styled-components";
 
 const Container = styled.div`

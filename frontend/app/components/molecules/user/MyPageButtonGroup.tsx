@@ -2,7 +2,7 @@
 
 import { deleteAccount } from "@/app/utils/myPageAPI";
 
-import MyPageButton from "../atoms/MyPageButton";
+import MyPageButton from "../../atoms/user/MyPageButton";
 import styled from "styled-components";
 
 const Container = styled.div`

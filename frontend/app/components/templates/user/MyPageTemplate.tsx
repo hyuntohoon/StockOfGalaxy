@@ -1,8 +1,8 @@
 "use client";
 
-import LoginImage from "../atoms/LoginImage";
-import MyPageInfoGroup from "../molecules/MyPageInfoGroup";
-import MyPageButtonGroup from "../molecules/MyPageButtonGroup";
+import LoginImage from "../../atoms/user/LoginImage";
+import MyPageInfoGroup from "../../molecules/user/MyPageInfoGroup";
+import MyPageButtonGroup from "../../molecules/user/MyPageButtonGroup";
 import styled from "styled-components";
 
 const MyPageContainer = styled.div`

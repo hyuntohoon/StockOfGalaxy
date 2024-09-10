@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import LoginImage from "../atoms/LoginImage";
-import SignUpInputGroup from "../molecules/SignUpInputGroup";
-import LoginButton from "../atoms/LoginButton";
+import LoginImage from "../../atoms/user/LoginImage";
+import SignUpInputGroup from "../../molecules/user/SignUpInputGroup";
+import LoginButton from "../../atoms/user/LoginButton";
 import styled from "styled-components";
-import { signUp } from "../../utils/userAPI";
+import { signUp } from "../../../utils/userAPI";
 
 const LoginContainer = styled.div`
   position: absolute;

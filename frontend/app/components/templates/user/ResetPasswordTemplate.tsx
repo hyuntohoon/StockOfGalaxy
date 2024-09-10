@@ -3,9 +3,9 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-import LoginImage from "../atoms/LoginImage";
-import ResetPasswordInputGroup from "../molecules/ResetPasswordInputGroup";
-import LoginButton from "../atoms/LoginButton";
+import LoginImage from "../../atoms/user/LoginImage";
+import ResetPasswordInputGroup from "../../molecules/user/ResetPasswordInputGroup";
+import LoginButton from "../../atoms/user/LoginButton";
 import styled from "styled-components";
 
 import { resetPassword } from "@/app/utils/resetPassword";

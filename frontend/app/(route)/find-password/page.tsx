@@ -1,4 +1,4 @@
-import FindPasswordTemplate from "@/app/components/templates/FindPasswordTemplate";
+import FindPasswordTemplate from "@/app/components/templates/user/FindPasswordTemplate";
 
 const FindPasswordPage = () => {
   return <FindPasswordTemplate />;

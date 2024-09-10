@@ -3,9 +3,9 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-import LoginImage from "../atoms/LoginImage";
-import FindPasswordInputGroup from "../molecules/FindPasswordInputGroup";
-import LoginButton from "../atoms/LoginButton";
+import LoginImage from "../../atoms/user/LoginImage";
+import FindPasswordInputGroup from "../../molecules/user/FindPasswordInputGroup";
+import LoginButton from "../../atoms/user/LoginButton";
 import styled from "styled-components";
 
 const LoginContainer = styled.div`

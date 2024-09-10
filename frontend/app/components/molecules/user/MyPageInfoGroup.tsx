@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import useAccessToken from "@/app/utils/useAccessToken";
 import { getInfo } from "@/app/utils/myPageAPI";
-import MyPageInfo from "../atoms/MyPageInfo";
+import MyPageInfo from "../../atoms/user/MyPageInfo";
 import styled from "styled-components";
 
 const Container = styled.div`

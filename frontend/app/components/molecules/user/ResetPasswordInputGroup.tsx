@@ -1,6 +1,6 @@
 "use client";
 
-import ResetPasswordInputField from "../atoms/ResetPasswordInputField";
+import ResetPasswordInputField from "../../atoms/user/ResetPasswordInputField";
 import styled from "styled-components";
 
 const Container = styled.div`
