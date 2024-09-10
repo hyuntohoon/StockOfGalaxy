@@ -22,8 +22,12 @@ public class LikedStockId {
     // equals()와 hashCode() 메서드 오버라이드
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         LikedStockId that = (LikedStockId) o;
         return Objects.equals(memberId, that.memberId) && Objects.equals(stockCode, that.stockCode);
     }
