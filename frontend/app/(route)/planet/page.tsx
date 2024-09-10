@@ -8,6 +8,7 @@ import TimeMachineButtonGroup from '@/app/components/molecules/ButtonGroup/TimeM
 import RocketButtonGroup from '@/app/components/molecules/ButtonGroup/RocketButtonGroup';
 import DetailTriangleButton from '@/app/components/atoms/Button/DetailTriangleButton';
 import PlanetSimpleInfoCard from '@/app/components/molecules/Card/PlanetSimpleInfoCard';
+import DetailTriangleButtonGuide from '@/app/components/atoms/Text/DetailTriangleButtonGuide';
 
 export default function Home() {
   const mountRef = useRef<HTMLDivElement>(null);
@@ -121,6 +122,7 @@ export default function Home() {
       <PlanetSimpleInfoCard />
       <TimeMachineButtonGroup />
       <RocketButtonGroup />
+      <DetailTriangleButtonGuide />
       <DetailTriangleButton />
     </div>
   );
