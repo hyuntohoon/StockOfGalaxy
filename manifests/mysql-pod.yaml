@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mysql
+spec:
+  containers:
+    - name: mysql
+      image: mysql:8.0
+      volumeMounts:
+        - mountPath: /var/lib/mysql
+          name: mysql-storage
+  volumes:
+    - name: mysql-storage
+      persistentVolumeClaim:
+        claimName: mysql-pv-claim
+  nodeSelector:
+    kubernetes.io/hostname: ip-172-26-0-238
