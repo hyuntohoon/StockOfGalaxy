@@ -166,7 +166,7 @@ export default function Planet() {
       const ambientLight = new THREE.AmbientLight(0x999999);
       scene.add(ambientLight);
 
-      const lights = [];
+      const lights: THREE.DirectionalLight[] = [];
       lights[0] = new THREE.DirectionalLight(0xffffff, 2); // Directional light 강도 증가
       lights[0].position.set(1, 0, 0);
       lights[1] = new THREE.DirectionalLight(0x11E8BB, 2); // Directional light 강도 증가
