@@ -1,36 +1,32 @@
-# Stage 1: Build the app with pnpm
-FROM node:20.15.0-alpine AS build
-
-# Set working directory
+# Stage 1: Build the Next.js app
+FROM node:20.15.0-alpine AS builder
 WORKDIR /app
-
-# Install pnpm globally
 RUN npm install -g pnpm
-
-# Copy the package.json and pnpm-lock.yaml to the container
 COPY package.json pnpm-lock.yaml ./
-
-# Install dependencies
 RUN pnpm install
-
-# Copy the rest of the application code
 COPY . .
-
-# Build the application
 RUN pnpm run build
 
-# Stage 2: Serve the built app with nginx
-FROM nginx:alpine
+# Stage 2: Run the Next.js app and Nginx
+FROM node:20.15.0-alpine
+WORKDIR /app
 
-# Copy the built files from the previous stage
-COPY --from=build /app/.next /usr/share/nginx/html
+# Install Nginx
+RUN apk add --no-cache nginx
 
-# Copy custom nginx configuration
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Copy built Next.js app
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/pnpm-lock.yaml ./pnpm-lock.yaml
 
-# Expose port 80
+# Install production dependencies
+RUN npm install -g pnpm && pnpm install --production
+
+# Copy Nginx configuration
+COPY nginx.conf /etc/nginx/http.d/default.conf
+
+# Start Next.js and Nginx
+CMD ["sh", "-c", "nginx && pnpm start"]
+
 EXPOSE 80
-
-# Run nginx in the foreground
-CMD ["nginx", "-g", "daemon off;"]
-
