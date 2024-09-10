@@ -1,9 +1,7 @@
 package com.sog.user.application.service.likeplanet;
 
-import com.sog.user.domain.dto.likeplanet.LikePlanetDeleteDTO;
 import com.sog.user.domain.dto.likeplanet.LikePlanetListDTO;
 import com.sog.user.domain.dto.likeplanet.LikePlanetNumberDTO;
-import com.sog.user.domain.dto.likeplanet.LikePlanetRequestDTO;
 import com.sog.user.domain.model.LikedStock;
 import com.sog.user.domain.model.LikedStockId;
 import com.sog.user.domain.model.Member;
@@ -43,26 +41,26 @@ public class LikePlanetServiceImpl implements LikePlanetService {
     // 관심행성 추가
     @Override
     @Transactional
-    public void addLikePlanet(LikePlanetRequestDTO likePlanetRequestDTO) {
+    public void addLikePlanet(LikePlanetNumberDTO likePlanetNumberDTO, long memberId) {
         // member 조회
-        Member member = userRepository.findById(likePlanetRequestDTO.getMemberId())
+        Member member = userRepository.findById(memberId)
             .orElseThrow(() -> new IllegalArgumentException("해당 멤버를 찾을 수 없습니다."));
 
         // dto to entity
-        LikedStock likedStock = likePlanetRequestDTO.toEntity(member);
+        LikedStock likedStock = likePlanetNumberDTO.toEntity(member);
         likePlanetRepository.save(likedStock);
     }
 
     // 관심행성 삭제
     @Override
     @Transactional
-    public void deleteLikePlanet(LikePlanetDeleteDTO likePlanetDeleteDTO) {
-        Member member = userRepository.findById(likePlanetDeleteDTO.getMemberId())
+    public void deleteLikePlanet(LikePlanetNumberDTO likePlanetNumberDTO, long memberId) {
+        Member member = userRepository.findById(memberId)
             .orElseThrow(() -> new IllegalArgumentException("해당 멤버를 찾을 수 없습니다."));
 
         // 복합키로 삭제
         LikedStockId likedStockId = new LikedStockId(member.getMemberId(),
-            likePlanetDeleteDTO.getStockCode());
+            likePlanetNumberDTO.getStockCode());
         likePlanetRepository.deleteByLikedStockId(likedStockId);
     }
 }

@@ -1,9 +1,7 @@
 package com.sog.user.application.service.likeplanet;
 
-import com.sog.user.domain.dto.likeplanet.LikePlanetDeleteDTO;
 import com.sog.user.domain.dto.likeplanet.LikePlanetListDTO;
 import com.sog.user.domain.dto.likeplanet.LikePlanetNumberDTO;
-import com.sog.user.domain.dto.likeplanet.LikePlanetRequestDTO;
 
 public interface LikePlanetService {
 
@@ -11,9 +9,9 @@ public interface LikePlanetService {
     public LikePlanetListDTO getLikePlanetList(long memberId);
 
     // 관심행성 추가
-    public void addLikePlanet(LikePlanetRequestDTO likePlanetRequestDTO);
+    public void addLikePlanet(LikePlanetNumberDTO likePlanetNumberDTO, long memberId);
 
     // 관심행성 삭제
-    public void deleteLikePlanet(LikePlanetDeleteDTO likePlanetDeleteDTO);
+    public void deleteLikePlanet(LikePlanetNumberDTO likePlanetNumberDTO, long memberId);
 
 }

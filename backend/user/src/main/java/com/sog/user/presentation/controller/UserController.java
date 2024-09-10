@@ -4,9 +4,8 @@ import com.sog.user.application.service.likeplanet.LikePlanetService;
 import com.sog.user.application.service.user.PasswordResetService;
 import com.sog.user.application.service.user.RedisService;
 import com.sog.user.application.service.user.UserService;
-import com.sog.user.domain.dto.likeplanet.LikePlanetDeleteDTO;
 import com.sog.user.domain.dto.likeplanet.LikePlanetListDTO;
-import com.sog.user.domain.dto.likeplanet.LikePlanetRequestDTO;
+import com.sog.user.domain.dto.likeplanet.LikePlanetNumberDTO;
 import com.sog.user.domain.dto.user.LogoutDTO;
 import com.sog.user.domain.dto.user.PasswordResetRequestDTO;
 import com.sog.user.domain.dto.user.TokenDTO;
@@ -171,16 +170,16 @@ public class UserController {
     // 관심 행성 추가 -> 종목번호 추가
     @PostMapping("/planet")
     public ResponseEntity<?> addPlanet(@RequestHeader("memberId") Long memberId, @RequestBody
-    LikePlanetRequestDTO likePlanetRequestDTO) {
-        likePlanetService.addLikePlanet(likePlanetRequestDTO);
+    LikePlanetNumberDTO likePlanetNumberDTO) {
+        likePlanetService.addLikePlanet(likePlanetNumberDTO, memberId);
         return ResponseEntity.ok().build();
     }
 
     // 관심 행성 삭제 -> 종목번호 삭제
     @DeleteMapping("/planet")
     public ResponseEntity<?> deletePlanet(@RequestHeader("memberId") Long memberId,
-        @RequestBody LikePlanetDeleteDTO likePlanetDeleteDTO) {
-        likePlanetService.deleteLikePlanet(likePlanetDeleteDTO);
+        @RequestBody LikePlanetNumberDTO likePlanetNumberDTO) {
+        likePlanetService.deleteLikePlanet(likePlanetNumberDTO, memberId);
         return ResponseEntity.ok().build();
     }
 
