@@ -87,3 +87,23 @@ spec:
             secretKeyRef:
               name: jwt-secret
               key: secret
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: db-secrets
+  namespace: backcd
+type: Opaque
+stringData:
+  username: root  # 실제 DB 사용자 이름으로 변경하세요
+  password: rootpassword  # 실제 DB 비밀번호로 변경하세요
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: jwt-secret
+  namespace: backcd
+type: Opaque
+stringData:
+  secret: "3c84e62c46e5438e9d12e28a9876591bc34e4e92a3a489b749ab2d9c9e367d89"  # 실제 JWT 시크릿 키로 변경하세요
