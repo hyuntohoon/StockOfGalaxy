@@ -117,7 +117,7 @@ public class UserController {
     }
 
     // 회원 탈퇴
-    @DeleteMapping("/quit")
+    @DeleteMapping
     public ResponseEntity<?> quitUser(@RequestHeader("memberId") Long memberId) {
         boolean isQuit = userService.quitMember(memberId);
 
@@ -147,7 +147,7 @@ public class UserController {
     }
 
     // 유저 정보 조회
-    @GetMapping("/info")
+    @GetMapping
     public ResponseEntity<?> userInfo(@RequestHeader("memberId") Long memberId) {
         UserInfoResponseDTO userInfo = userService.getUserInfo(memberId);
 
