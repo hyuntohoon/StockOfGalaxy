@@ -18,7 +18,7 @@ const textContainer = css`
   font-size: 14px;
   color: #ffffffd0;
   text-align: center;
-  z-index: 1000;
+  z-index: 10;
 `;
 
 const textStyle = css`

@@ -9,9 +9,11 @@ import RocketButtonGroup from '@/app/components/molecules/ButtonGroup/RocketButt
 import DetailTriangleButton from '@/app/components/atoms/Button/DetailTriangleButton';
 import PlanetSimpleInfoCard from '@/app/components/molecules/Card/PlanetSimpleInfoCard';
 import DetailTriangleButtonGuide from '@/app/components/atoms/Text/DetailTriangleButtonGuide';
+import Rocket from '@/app/components/atoms/Button/Rocket';
 
 export default function Home() {
   const mountRef = useRef<HTMLDivElement>(null);
+  const planetRadius = 150; // 행성의 반지름
 
   useEffect(() => {
     let renderer: THREE.WebGLRenderer;
@@ -58,9 +60,8 @@ export default function Home() {
       }
 
       // 행성 생성
-      const planetGeometry = new THREE.SphereGeometry(150, 64, 64);
-      const planetTexture = new THREE.TextureLoader().load('/image/1.jpg'); // 텍스처 경로 설정
-      // const planetMaterial = new THREE.MeshPhongMaterial({ color: 0x11E8BB });
+      const planetGeometry = new THREE.SphereGeometry(planetRadius, 64, 64);
+      const planetTexture = new THREE.TextureLoader().load('/image/3.jpg'); // 텍스처 경로 설정
       const planetMaterial = new THREE.MeshStandardMaterial({
         map: planetTexture, // 텍스처 추가
       });
@@ -72,11 +73,11 @@ export default function Home() {
       scene.add(ambientLight);
 
       const lights = [];
-      lights[0] = new THREE.DirectionalLight(0xffffff, 1);
+      lights[0] = new THREE.DirectionalLight(0xffffff, 0.5);
+      lights[1] = new THREE.DirectionalLight(0xffffff, 0.5);
+      lights[2] = new THREE.DirectionalLight(0x122486, 0.7);
       lights[0].position.set(1, 0, 0);
-      lights[1] = new THREE.DirectionalLight(0xffffff, 1);
       lights[1].position.set(0.75, 1, 0.5);
-      lights[2] = new THREE.DirectionalLight(0x122486, 1);
       lights[2].position.set(-0.75, -1, 0.5);
       scene.add(lights[0]);
       scene.add(lights[1]);
@@ -94,7 +95,7 @@ export default function Home() {
     function animate() {
       requestAnimationFrame(animate);
 
-      stars.rotation.y -= 0.0007; // 별 회전
+      stars.rotation.y -= 0.0007; // 별들이 천천히 회전
       circle.rotation.y -= 0.004; // 행성 회전
 
       renderer.clear();
@@ -115,7 +116,7 @@ export default function Home() {
 
   return (
     <div style={{ position: 'relative' }}>
-      <div ref={mountRef} id="canvas" style={{ width: '100%', height: '100vh' }}></div>
+      <div ref={mountRef} id="canvas" style={{ width: '100%', height: '100vh', position: 'absolute', zIndex: 1 }}></div>
       <RecoilRoot>
         <DateCard />
       </RecoilRoot>
@@ -124,6 +125,7 @@ export default function Home() {
       <RocketButtonGroup />
       <DetailTriangleButtonGuide />
       <DetailTriangleButton />
+      <Rocket planetRadius={planetRadius} /> {/* 로켓에 행성 반지름 전달 */}
     </div>
   );
 }
