@@ -20,6 +20,8 @@ spec:
         env:
         - name: MYSQL_ROOT_PASSWORD
           value: "rootpassword"  # MySQL root 비밀번호
+        - name: MYSQL_DATABASE
+          value: "sog_db"  # 자동으로 생성할 데이터베이스 이름
         ports:
         - containerPort: 3306
         volumeMounts:
@@ -29,14 +31,9 @@ spec:
       - name: mysql-persistent-storage
         persistentVolumeClaim:
           claimName: mysql-pv-claim
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: mysql-pv-claim
-spec:
-  accessModes:
-  - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
+      nodeSelector:
+        kubernetes.io/hostname: ip-172-26-0-238
+      tolerations:
+      - key: "node-role.kubernetes.io/control-plane"
+        operator: "Exists"
+        effect: "NoSchedule"
