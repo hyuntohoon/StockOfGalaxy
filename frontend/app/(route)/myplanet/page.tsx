@@ -1,67 +1,13 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import styled from 'styled-components';
 import {FavoritesList} from '@/app/components/templates/myplanet/FavoritesList';
-
-const PageContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100vw;
-  height: 100vh;
-  position: relative;
-`;
-
-
-const CanvasContainer = styled.div`
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-`;
-
-const FavoritesContainer = styled.div<{ isOpen: boolean }>`
-  width: ${({ isOpen }) => (isOpen ? '350px' : '250px')};
-  height: ${({ isOpen }) => (isOpen ? 'fit' : '27px')};
-  background-color: ${({isOpen}) => (isOpen ? 'rgba(245, 245, 245, 0.45)' : 'rgba(245, 245, 245, 0.15)' )};
-  padding: 20px;
-  color: #000;
-  border-radius: 15px;
-  margin: 20px;
-  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-  overflow: hidden;
-  transition: height 0.3s ease, padding 0.3s ease, width 0.3s ease, background-color 0.4s ease;
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  cursor: ${({ isOpen }) => (isOpen ? 'auto' : 'pointer')};
-`;
-
-const ToggleButton = styled.button`
-  background-color: #333;
-  color: #fff;
-  border: none;
-  padding: 10px;
-  border-radius: 5px;
-  cursor: pointer;
-  position: absolute;
-  top: 10px;
-  right: 20px;
-  z-index: 10;
-`;
-
-
-const FavoriteHeader = styled.h2<{ isOpen: boolean }>`
-  margin-top: 0;
-  margin-bottom: 20px;
-  text-align: center;
-  font-size: 1.3rem;
-  color:${({ isOpen }) => (isOpen ? '#222' : '#CCC')};
-  transition: color 0.3s ease;
-`;
-
+import { MdKeyboardArrowUp } from 'react-icons/md'; // Material Design Icons
+import { FavoriteItemProps,FavoriteItem } from '@/app/types/myplanet';
+import { PageContainer, CanvasContainer, FavoritesContainer, ToggleButton, FavoriteHeader} from "@/app/styles/myplanet"
+import styled from '@emotion/styled';
+import { css, keyframes } from '@emotion/react';
 // interface FavoritesListProps {
 //   items: Array<{
 //     rank: number;
@@ -73,30 +19,68 @@ const FavoriteHeader = styled.h2<{ isOpen: boolean }>`
 //   }>;
 //   onToggleFavorite: (index: number) => void;
 // }
+const ModalContainer = styled.div<{ isOpen: boolean }>`
+  ${({ isOpen }) => css`
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: ${isOpen ? 'flex' : 'none'};
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  `}
+`;
+
+const ModalContent = styled.div`
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 600px;
+  width: 100%;
+`;
+
+
 
 export default function Planet() {
   const mountRef = useRef<HTMLDivElement>(null);
 
   // 즐겨찾기 리스트 데이터
-  const initialItems = [
+  const initialItems : FavoriteItem[]= [
     { rank: 1, name: '삼성전자', price: '159,394원', change: '+ 2,377원 (1.5%)', isFavorite: true, iconSrc: '/images/logo/samsung.png' },
-    { rank: 2, name: 'HLB', price: '77,968원', change: '+ 2,190원 (2.8%)', isFavorite: false, iconSrc: '/images/logo/hlb.png' },
-    { rank: 3, name: '에코프로', price: '51,796원', change: '- 227원 (3.1%)', isFavorite: false, iconSrc: '/images/logo/ecopro.png' },
+    { rank: 2, name: 'HLB', price: '77,968원', change: '+ 2,190원 (2.8%)', isFavorite: true, iconSrc: '/images/logo/hlb.png' },
+    { rank: 3, name: '에코프로', price: '51,796원', change: '- 227원 (3.1%)', isFavorite: true, iconSrc: '/images/logo/ecopro.png' },
     { rank: 4, name: 'SK하이닉스', price: '159,394원', change: '+ 2,377원 (1.5%)', isFavorite: true, iconSrc: '/images/logo/SK.png' },
-    { rank: 5, name: '유한양행', price: '77,968원', change: '+ 2,190원 (2.8%)', isFavorite: false, iconSrc: '/images/logo/uhan.png' },
+    { rank: 5, name: '유한양행', price: '77,968원', change: '+ 2,190원 (2.8%)', isFavorite: true, iconSrc: '/images/logo/uhan.png' },
+    
   ];
 
   const [items, setItems] = useState(initialItems);
   const [isOpen, setIsOpen] = useState(true);
+  const [selectedItem, setSelectedItem] = useState<FavoriteItem | null>(null);
+
 
 
   const handleToggleFavorite = (index: number) => {
-    const updatedItems = items.map((item, i) =>
-      i === index ? { ...item, isFavorite: !item.isFavorite } : item
-    );
-    setItems(updatedItems);
+    // 현재 아이템의 isFavorite 상태를 가져옵니다.
+    const currentItem = items[index];
+  
+    // 아이템이 이미 즐겨찾기 상태일 때만 삭제합니다.
+    if (currentItem.isFavorite) {
+      // 즐겨찾기 상태인 아이템만 필터링하여 새로운 목록을 생성합니다.
+      const updatedItems = items.filter((item, i) => i !== index);
+      setItems(updatedItems);
+    } else {
+      // 아이템이 즐겨찾기 상태가 아닐 때는 상태를 토글합니다.
+      const updatedItems = items.map((item, i) =>
+        i === index ? { ...item, isFavorite: !item.isFavorite } : item
+      );
+      setItems(updatedItems);
+    }
   };
-
+  
   const handleContainerClick = () => {
     if (!isOpen) {
       setIsOpen(true);
@@ -106,6 +90,14 @@ export default function Planet() {
 
   const toggleFavorites = () => {
     setIsOpen(!isOpen);
+  };
+
+  const handleItemClick = (item: FavoriteItemProps) => {
+    setSelectedItem(item);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedItem(null);
   };
 
   // THREE.js 초기화 및 애니메이션 처리
@@ -119,7 +111,7 @@ export default function Planet() {
     function init() {
       renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
       renderer.setPixelRatio(window.devicePixelRatio || 1);
-      renderer.setSize(window.innerWidth * 0.7, window.innerHeight); // 캔버스 크기 수정
+      renderer.setSize(window.innerWidth , window.innerHeight); // 캔버스 크기 수정
       renderer.autoClear = false;
       renderer.setClearColor(0x000000, 0.0);
 
@@ -246,14 +238,32 @@ export default function Planet() {
 
   return (
     <PageContainer>
-      <CanvasContainer ref={mountRef} id="canvas" />
+     <CanvasContainer ref={mountRef} id="canvas" />
       <FavoritesContainer isOpen={isOpen} onClick={handleContainerClick}>
-        {isOpen && (<ToggleButton onClick={(e) => { e.stopPropagation(); toggleFavorites(); }}>
-          접기
-        </ToggleButton>)}
         <FavoriteHeader isOpen={isOpen}>관심 행성</FavoriteHeader>
-        <FavoritesList items={items} onToggleFavorite={handleToggleFavorite} />
+        <FavoritesList
+          items={items}
+          onToggleFavorite={handleToggleFavorite}
+          setSelectedItem={setSelectedItem}
+        />
+        <ToggleButton onClick={toggleFavorites}>
+          <MdKeyboardArrowUp />
+        </ToggleButton>
       </FavoritesContainer>
+
+      {/* 모달 */}
+      {selectedItem && (
+        <ModalContainer isOpen={!!selectedItem}>
+          <ModalContent>
+            <h2>{selectedItem.name}</h2>
+            <p>Price: {selectedItem.price}</p>
+            <p>Change: {selectedItem.change}</p>
+            <p>Icon:</p>
+            <img src={selectedItem.iconSrc} alt={selectedItem.name} style={{ width: '100px', height: 'auto' }} />
+            <button onClick={handleCloseModal}>Close</button>
+          </ModalContent>
+        </ModalContainer>
+      )}
     </PageContainer>
   );
 }
