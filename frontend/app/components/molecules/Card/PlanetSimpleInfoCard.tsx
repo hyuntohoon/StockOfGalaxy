@@ -54,14 +54,15 @@ const cardTitleStyle = css`
 const infoContainer = css`
   display: flex;
   justify-content: space-between;
-  margin-top: 8px;
+  margin-top: 10px;
 `;
 
 const lineStyle = css`
   width: 100%;
   height: 2px;
   background-color: #ffffffd1;
-  margin: 10px 0;
+  margin-top: 12px;
+  margin-bottom: 4px;
 `;
 
 export default PlanetSimpleInfoCard;

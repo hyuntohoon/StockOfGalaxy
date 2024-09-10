@@ -28,7 +28,7 @@ const infoItemStyle = css`
 `;
 
 const labelStyle = css`
-  margin-bottom: 5px
+  margin-top: 5px
 `;
 
 export default PlanetCardInfo;
