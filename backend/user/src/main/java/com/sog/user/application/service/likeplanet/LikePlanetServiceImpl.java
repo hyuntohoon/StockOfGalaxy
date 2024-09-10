@@ -13,8 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-@Service
+
 @RequiredArgsConstructor
+@Service
 public class LikePlanetServiceImpl implements LikePlanetService {
 
     private final UserRepository userRepository;

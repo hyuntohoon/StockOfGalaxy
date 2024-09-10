@@ -8,6 +8,7 @@ import com.sog.user.domain.dto.user.UserRegisterRequestDTO;
 import com.sog.user.domain.dto.user.UserRegisterResponseDTO;
 import com.sog.user.domain.model.Member;
 import com.sog.user.domain.repository.UserRepository;
+import com.sog.user.global.util.UserValidationUtil;
 import com.sog.user.infrastructure.security.AuthenticationProviderService;
 import com.sog.user.infrastructure.security.JwtTokenProvider;
 import jakarta.persistence.EntityNotFoundException;
@@ -46,6 +47,22 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserRegisterResponseDTO register(UserRegisterRequestDTO userRegisterRequestDTO) {
+
+        // Validate userID
+        if (!UserValidationUtil.validateUserID(userRegisterRequestDTO.getUserId())) {
+            throw new IllegalArgumentException("Invalid userID format");
+        }
+
+        // Validate password
+        if (!UserValidationUtil.validatePassword(userRegisterRequestDTO.getPassword())) {
+            throw new IllegalArgumentException("Invalid password format");
+        }
+
+        // Validate nickname
+        if (!UserValidationUtil.validateNickname(userRegisterRequestDTO.getNickname())) {
+            throw new IllegalArgumentException("Invalid nickname format");
+        }
+
         Member member = Member.builder()
             .userId(userRegisterRequestDTO.getUserId())
             .password(authenticationProviderService.passwordEncoder()
