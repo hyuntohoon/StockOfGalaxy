@@ -67,9 +67,7 @@ export const userIdValidate = async (userId) => {
   try {
     const userIdValidateRes = await axios({
       method: "GET",
-      url:
-        process.env.NEXT_PUBLIC_API_BASE_URL +
-        `/user/public/validate/${userId}`,
+      url: `/user/public/validate/${userId}`,
     });
 
     if (userIdValidateRes.status === 200) {
