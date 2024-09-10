@@ -15,3 +15,7 @@ spec:
         claimName: mysql-pv-claim
   nodeSelector:
     kubernetes.io/hostname: ip-172-26-0-238
+  tolerations:
+  - key: "node-role.kubernetes.io/control-plane"
+    operator: "Exists"
+    effect: "NoSchedule"
