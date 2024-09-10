@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import MenuHeader from "./components/organisms/Banner/MenuHeader";
 import "./globals.css";
 import RecoilRootWrapper from "./components/atoms/RecoilRootWrapper";
 
@@ -18,6 +19,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
+        <MenuHeader />
         <RecoilRootWrapper>{children}</RecoilRootWrapper>
       </body>
     </html>
