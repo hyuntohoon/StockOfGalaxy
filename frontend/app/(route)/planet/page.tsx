@@ -7,6 +7,7 @@ import DateCard from '@/app/components/molecules/Card/DateCard';
 import TimeMachineButtonGroup from '@/app/components/molecules/ButtonGroup/TimeMachineButtonGroup';
 import RocketButtonGroup from '@/app/components/molecules/ButtonGroup/RocketButtonGroup';
 import DetailTriangleButton from '@/app/components/atoms/Button/DetailTriangleButton';
+import PlanetSimpleInfoCard from '@/app/components/molecules/Card/PlanetSimpleInfoCard';
 
 export default function Home() {
   const mountRef = useRef<HTMLDivElement>(null);
@@ -44,7 +45,7 @@ export default function Home() {
       const starGeometry = new THREE.SphereGeometry(0.5, 8, 8); // 작은 구체 (별)
       const starMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
 
-      // 1000개의 별 생성
+      // 2000개의 별 생성
       for (let i = 0; i < 2000; i++) {
         const starMesh = new THREE.Mesh(starGeometry, starMaterial);
         starMesh.position.set(
@@ -92,7 +93,7 @@ export default function Home() {
     function animate() {
       requestAnimationFrame(animate);
 
-      stars.rotation.y -= 0.0007; // 별들이 천천히 회전
+      stars.rotation.y -= 0.0007; // 별 회전
       circle.rotation.y -= 0.004; // 행성 회전
 
       renderer.clear();
@@ -117,6 +118,7 @@ export default function Home() {
       <RecoilRoot>
         <DateCard />
       </RecoilRoot>
+      <PlanetSimpleInfoCard />
       <TimeMachineButtonGroup />
       <RocketButtonGroup />
       <DetailTriangleButton />
