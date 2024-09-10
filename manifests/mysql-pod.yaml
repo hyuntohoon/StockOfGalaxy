@@ -2,6 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: mysql-init-script
+  namespace: backcd
 data:
   init.sql: |
     CREATE DATABASE IF NOT EXISTS sog_db;
@@ -11,6 +12,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mysql
+  namespace: backcd
   labels:
     app: mysql
 spec:
@@ -28,9 +30,9 @@ spec:
         image: mysql:8.0
         env:
         - name: MYSQL_ROOT_PASSWORD
-          value: "rootpassword"  # MySQL root 비밀번호
+          value: "rootpassword"
         - name: MYSQL_DATABASE
-          value: "sog_db"  # 자동으로 생성할 데이터베이스 이름
+          value: "sog_db"
         ports:
         - containerPort: 3306
         volumeMounts:
