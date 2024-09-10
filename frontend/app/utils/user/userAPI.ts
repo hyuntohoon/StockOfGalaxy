@@ -9,7 +9,7 @@ export const login = async (formData, setAccessToken) => {
   try {
     const loginRes = await axios({
       method: "POST",
-      url: "/user/public/login",
+      url: `${process.env.NEXT_PUBLIC_API_BASE_URL}/user/public/login`,
       data: {
         userId: formData.id,
         password: formData.password,
@@ -35,7 +35,7 @@ export const signUp = async (formData) => {
   try {
     const signUpRes = await axios({
       method: "POST",
-      url: "/user/public/join",
+      url: `${process.env.NEXT_PUBLIC_API_BASE_URL}/user/public/join`,
       data: {
         userId: formData.userId,
         password: formData.password,
