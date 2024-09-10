@@ -31,8 +31,11 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RedisService redisService;
     private final JwtTokenProvider jwtTokenProvider;
+
     @Autowired
-    public UserServiceImpl(AuthenticationProviderService authenticationProviderService, UserRepository userRepository, @Lazy JwtTokenProvider jwtTokenProvider, RedisService redisService) {
+    public UserServiceImpl(AuthenticationProviderService authenticationProviderService,
+        UserRepository userRepository, @Lazy JwtTokenProvider jwtTokenProvider,
+        RedisService redisService) {
         this.authenticationProviderService = authenticationProviderService;
         this.userRepository = userRepository;
         this.jwtTokenProvider = jwtTokenProvider;

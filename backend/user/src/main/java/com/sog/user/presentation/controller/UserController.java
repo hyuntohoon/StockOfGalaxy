@@ -1,8 +1,12 @@
 package com.sog.user.presentation.controller;
 
+import com.sog.user.application.service.likeplanet.LikePlanetService;
 import com.sog.user.application.service.user.PasswordResetService;
 import com.sog.user.application.service.user.RedisService;
 import com.sog.user.application.service.user.UserService;
+import com.sog.user.domain.dto.likeplanet.LikePlanetDeleteDTO;
+import com.sog.user.domain.dto.likeplanet.LikePlanetListDTO;
+import com.sog.user.domain.dto.likeplanet.LikePlanetRequestDTO;
 import com.sog.user.domain.dto.user.LogoutDTO;
 import com.sog.user.domain.dto.user.PasswordResetRequestDTO;
 import com.sog.user.domain.dto.user.TokenDTO;
@@ -35,6 +39,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final UserService userService;
+    private final LikePlanetService likePlanetService;
     private final RedisService redisService;
     private final JwtCookieUtil jwtCookieUtil;
     private final PasswordResetService passwordResetService;
@@ -152,15 +157,31 @@ public class UserController {
 
     /**
      * 행성 관련 api
-     * */
+     */
 
     // 관심 행성 조회
-    // 종목번호 조회 -> 주식 서버로 요청
+    @GetMapping("/planet")
+    public ResponseEntity<?> getPlanetList(@RequestHeader("memberId") Long memberId) {
+        // 종목번호 조회 -> 주식 서버로 요청 (우선 종목번호만 return하는 형태로 추후에 변경 가능성 있음.)
+        LikePlanetListDTO likePlanetListDTO = likePlanetService.getLikePlanetList(memberId);
+
+        return ResponseEntity.ok(likePlanetListDTO);
+    }
 
     // 관심 행성 추가 -> 종목번호 추가
+    @PostMapping("/planet")
+    public ResponseEntity<?> addPlanet(@RequestHeader("memberId") Long memberId, @RequestBody
+    LikePlanetRequestDTO likePlanetRequestDTO) {
+        likePlanetService.addLikePlanet(likePlanetRequestDTO);
+        return ResponseEntity.ok().build();
+    }
 
     // 관심 행성 삭제 -> 종목번호 삭제
-
-
+    @DeleteMapping("/planet")
+    public ResponseEntity<?> deletePlanet(@RequestHeader("memberId") Long memberId,
+        @RequestBody LikePlanetDeleteDTO likePlanetDeleteDTO) {
+        likePlanetService.deleteLikePlanet(likePlanetDeleteDTO);
+        return ResponseEntity.ok().build();
+    }
 
 }

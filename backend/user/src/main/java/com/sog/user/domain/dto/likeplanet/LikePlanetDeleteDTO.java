@@ -5,8 +5,9 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class LikePlanetNumberDTO {
+public class LikePlanetDeleteDTO {
 
+    private long memberId;
     private String stockCode;
 
 }

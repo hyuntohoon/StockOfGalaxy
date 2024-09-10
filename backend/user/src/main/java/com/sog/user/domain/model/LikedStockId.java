@@ -4,8 +4,10 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import java.util.Objects;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @Embeddable
 @NoArgsConstructor
 @AllArgsConstructor
@@ -14,8 +16,8 @@ public class LikedStockId {
     @Column(name = "member_id")
     private Long memberId;
 
-    @Column(name = "stock_id")
-    private Integer stockCode;
+    @Column(name = "stock_code")
+    private String stockCode;
 
     // equals()와 hashCode() 메서드 오버라이드
     @Override

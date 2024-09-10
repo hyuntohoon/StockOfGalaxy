@@ -8,11 +8,15 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "liked_stock")
 public class LikedStock {
@@ -24,7 +28,5 @@ public class LikedStock {
     @JoinColumn(name = "member_id", insertable = false, nullable = false, updatable = false)
     private Member member;
 
-    @Column(name = "stock_code", insertable = false, updatable = false)
-    private Integer stockCode;
 
 }
