@@ -20,13 +20,13 @@ const StyledLoginButton = styled.input`
     value === "회원가입" ? "1px solid #0E224D" : "none"};
 `;
 
-const LoginButton = ({ value, onClick }) => {
+const LoginButton = ({ value, onClickProps }) => {
   return (
     <StyledLoginButton
       type="button"
       value={value}
       onClick={() => {
-        onClick();
+        onClickProps();
       }}
     />
   );

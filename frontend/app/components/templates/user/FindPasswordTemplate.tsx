@@ -36,7 +36,7 @@ const FindPasswordTemplate = () => {
         <FindPasswordInputGroup setIsAuthenticated={setIsAuthenticated} />
         <LoginButton
           value="다음"
-          onClick={() => {
+          onClickProps={() => {
             if (isAuthenticated === true) {
               router.push("/reset-password");
             } else {

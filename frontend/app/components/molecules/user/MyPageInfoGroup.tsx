@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
-import useAccessToken from "@/app/utils/useAccessToken";
-import { getInfo } from "@/app/utils/myPageAPI";
+import useAccessToken from "@/app/utils/user/useAccessToken";
+import { getInfo } from "@/app/utils/user/myPageAPI";
 import MyPageInfo from "../../atoms/user/MyPageInfo";
 import styled from "styled-components";
 
@@ -23,8 +23,6 @@ const MyPageInfoGroup = () => {
 
   useEffect(() => {
     const res = getInfo(accessToken, setAccessToken);
-
-    console.log(getInfo);
   }, []);
 
   return (

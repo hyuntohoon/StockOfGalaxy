@@ -5,7 +5,7 @@ import styled from "styled-components";
 import {
   sendAuthenticationCode,
   checkAuthenticationCode,
-} from "@/app/utils/resetPassword";
+} from "@/app/utils/user/resetPassword";
 
 const InputContainer = styled.div`
   display: flex;

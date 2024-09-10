@@ -2,7 +2,7 @@ import { atom, useRecoilState } from "recoil";
 
 export const accessTokenState = atom({
   key: "accessTokenState",
-  default: null,
+  default: "",
 });
 
 export const useAccessToken = () => {

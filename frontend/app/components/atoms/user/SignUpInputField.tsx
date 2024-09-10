@@ -1,5 +1,14 @@
 "use client";
 
+interface SignUpInputFieldProps {
+  type: string;
+  placeholder: string;
+  setInfo: (value: string) => void;
+  setIsAuthenticated?: (value: boolean) => void;
+}
+
+import { useState } from "react";
+import { userIdValidate } from "@/app/utils/user/signUpAPI";
 import styled from "styled-components";
 
 const InputContainer = styled.div`
@@ -31,13 +40,16 @@ const CheckButton = styled.button`
   cursor: pointer;
 `;
 
-const SignUpInputField = ({
+const SignUpInputField: React.FC<SignUpInputFieldProps> = ({
   type,
   placeholder,
   setInfo,
   setIsAuthenticated,
 }) => {
+  const [userId, setUserId] = useState("");
+
   const handleChange = (e) => {
+    setUserId(e.target.value);
     setInfo(e.target.value);
   };
 
@@ -50,9 +62,11 @@ const SignUpInputField = ({
       />
       {placeholder === "아이디" && (
         <CheckButton
-          onClick={() => {
-            setIsAuthenticated(true);
-            alert("중복 확인");
+          onClick={async () => {
+            const res = await userIdValidate(userId);
+            if (res === true && setIsAuthenticated) {
+              setIsAuthenticated(true);
+            }
           }}
         >
           중복 확인
