@@ -1,23 +1,20 @@
-/** @jsxImportSource @emotion/react */
-'use client'
+import styled from '@emotion/styled';
 import { useRecoilValue } from 'recoil';
 import { dateState } from '@/app/store/date';
 import { IoCalendarSharp } from "react-icons/io5";
-import { css } from '@emotion/react';
 
 const DateCard = () => {
   const currentDate = useRecoilValue(dateState);
 
   return (
-    <div css={dateCardContainer}>
-      <IoCalendarSharp css={iconStyle} />
+    <DateCardContainer>
+      <StyledCalendarIcon />
       <span>{currentDate}</span>
-    </div>
+    </DateCardContainer>
   );
 };
 
-
-const dateCardContainer = css`
+const DateCardContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -34,7 +31,7 @@ const dateCardContainer = css`
   z-index: 1000;
 `;
 
-const iconStyle = css`
+const StyledCalendarIcon = styled(IoCalendarSharp)`
   margin-right: 12px;
   font-size: 24px;
   color: #ffffff;

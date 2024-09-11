@@ -73,9 +73,9 @@ export default function Home() {
       scene.add(ambientLight);
 
       const lights: THREE.DirectionalLight[] = [];
-      lights[0] = new THREE.DirectionalLight(0xffffff, 0.5);
-      lights[1] = new THREE.DirectionalLight(0xffffff, 0.5);
-      lights[2] = new THREE.DirectionalLight(0x122486, 0.7);
+      lights[0] = new THREE.DirectionalLight(0xffffff, 1);
+      lights[1] = new THREE.DirectionalLight(0xffffff, 1);
+      lights[2] = new THREE.DirectionalLight(0x122486, 1);
       lights[0].position.set(1, 0, 0);
       lights[1].position.set(0.75, 1, 0.5);
       lights[2].position.set(-0.75, -1, 0.5);

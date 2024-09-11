@@ -1,16 +1,15 @@
-/** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import styled from "@emotion/styled";
 
 const DetailTriangleButtonGuide = () => {
   return (
-    <div css={textContainer}>
-      <div css={textStyle}>더 많은 정보를 확인하려면</div>
+    <TextContainer>
+      <TextStyle>더 많은 정보를 확인하려면</TextStyle>
       <div>아래의 버튼을 클릭하세요</div>
-    </div>
+    </TextContainer>
   );
 };
 
-const textContainer = css`
+const TextContainer = styled.div`
   position: absolute;
   bottom: 90px;
   left: 50%;
@@ -21,7 +20,7 @@ const textContainer = css`
   z-index: 10;
 `;
 
-const textStyle = css`
+const TextStyle = styled.div`
   margin-block: 4px;
 `;
 

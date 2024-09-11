@@ -1,16 +1,15 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 import { GoTriangleUp } from "react-icons/go";
 
 const DetailTriangleButton = () => {
   return (
-    <div css={buttonStyle}>
+    <Button>
       <GoTriangleUp />
-    </div>
+    </Button>
   );
 };
 
-const buttonStyle = css`
+const Button = styled.div`
   position: fixed;
   bottom: 30px;
   left: 50%;

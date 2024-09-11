@@ -1,15 +1,14 @@
-/** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import styled from "@emotion/styled";
 
 interface PlanetCardTitleProps {
   title: string;
 }
 
-const PlanetCardTitle = ({title}: PlanetCardTitleProps) => {
-  return <h2 css={titleStyle}>{title}</h2>
-}
+const PlanetCardTitle = ({ title }: PlanetCardTitleProps) => {
+  return <Title>{title}</Title>;
+};
 
-const titleStyle = css`
+const Title = styled.h2`
   font-size: 22px;
   font-weight: bold;
   color: white;
