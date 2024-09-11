@@ -46,7 +46,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: zlxldgus123/frontend:latest  # Docker Hub의 최신 이미지를 사용
+        image: zlxldgus123/frontend:106
         ports:
         - containerPort: 80
 
