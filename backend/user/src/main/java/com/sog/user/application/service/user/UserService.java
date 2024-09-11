@@ -1,13 +1,14 @@
-package com.sog.user.application.service;
+package com.sog.user.application.service.user;
 
-import com.sog.user.domain.dto.TokenDTO;
-import com.sog.user.domain.dto.UserInfoListResponseDTO;
-import com.sog.user.domain.dto.UserInfoResponseDTO;
-import com.sog.user.domain.dto.UserRegisterRequestDTO;
-import com.sog.user.domain.dto.UserRegisterResponseDTO;
+import com.sog.user.domain.dto.user.TokenDTO;
+import com.sog.user.domain.dto.user.UserInfoListResponseDTO;
+import com.sog.user.domain.dto.user.UserInfoResponseDTO;
+import com.sog.user.domain.dto.user.UserRegisterRequestDTO;
+import com.sog.user.domain.dto.user.UserRegisterResponseDTO;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.stereotype.Service;
 
-
+@Service
 public interface UserService {
 
     // 회원가입

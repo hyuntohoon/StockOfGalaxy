@@ -1,9 +1,9 @@
 package com.sog.user.infrastructure.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sog.user.application.service.MemberDetailService;
-import com.sog.user.application.service.RedisService;
-import com.sog.user.domain.dto.LoginDTO;
+import com.sog.user.application.service.user.MemberDetailService;
+import com.sog.user.application.service.user.RedisService;
+import com.sog.user.domain.dto.user.LoginDTO;
 import com.sog.user.domain.model.Member;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

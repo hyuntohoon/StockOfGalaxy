@@ -1,4 +1,4 @@
-package com.sog.user.domain.dto;
+package com.sog.user.domain.dto.user;
 
 import com.sog.user.domain.model.Member;
 import lombok.AllArgsConstructor;

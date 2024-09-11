@@ -1,4 +1,4 @@
-package com.sog.user.domain.dto;
+package com.sog.user.domain.dto.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package com.sog.user.domain.dto;
+package com.sog.user.domain.dto.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,8 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LogoutDTO {
+public class LoginDTO {
 
-    private Long memberId;
+    private String userId;
+    private String password;
 
 }
