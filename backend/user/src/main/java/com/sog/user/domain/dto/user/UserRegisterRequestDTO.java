@@ -1,19 +1,18 @@
-package com.sog.user.domain.dto;
+package com.sog.user.domain.dto.user;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
-@Data
-@NoArgsConstructor
+@Getter
 @AllArgsConstructor
-public class UserInfoResponseDTO {
+@NoArgsConstructor
+public class UserRegisterRequestDTO {
 
     private String userId;
+    private String password;
     private String nickname;
     private String email;
-    private boolean isQuit;
+    private int characterType;
 
 }

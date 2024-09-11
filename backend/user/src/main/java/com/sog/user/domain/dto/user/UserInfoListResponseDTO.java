@@ -1,4 +1,4 @@
-package com.sog.user.domain.dto;
+package com.sog.user.domain.dto.user;
 
 import java.util.List;
 import lombok.AllArgsConstructor;

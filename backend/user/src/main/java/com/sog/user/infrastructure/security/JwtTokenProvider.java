@@ -1,6 +1,6 @@
 package com.sog.user.infrastructure.security;
 
-import com.sog.user.application.service.UserService;
+import com.sog.user.application.service.user.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;

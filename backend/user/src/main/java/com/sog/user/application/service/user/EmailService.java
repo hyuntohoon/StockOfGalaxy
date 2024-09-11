@@ -1,4 +1,4 @@
-package com.sog.user.application.service;
+package com.sog.user.application.service.user;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;

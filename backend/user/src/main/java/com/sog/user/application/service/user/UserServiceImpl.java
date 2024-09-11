@@ -1,13 +1,14 @@
-package com.sog.user.application.service;
+package com.sog.user.application.service.user;
 
-import com.sog.user.domain.dto.TokenDTO;
-import com.sog.user.domain.dto.UserInfoListResponseDTO;
-import com.sog.user.domain.dto.UserInfoResponseDTO;
-import com.sog.user.domain.dto.UserInfoToSingleResponseDTO;
-import com.sog.user.domain.dto.UserRegisterRequestDTO;
-import com.sog.user.domain.dto.UserRegisterResponseDTO;
+import com.sog.user.domain.dto.user.TokenDTO;
+import com.sog.user.domain.dto.user.UserInfoListResponseDTO;
+import com.sog.user.domain.dto.user.UserInfoResponseDTO;
+import com.sog.user.domain.dto.user.UserInfoToSingleResponseDTO;
+import com.sog.user.domain.dto.user.UserRegisterRequestDTO;
+import com.sog.user.domain.dto.user.UserRegisterResponseDTO;
 import com.sog.user.domain.model.Member;
 import com.sog.user.domain.repository.UserRepository;
+import com.sog.user.global.util.UserValidationUtil;
 import com.sog.user.infrastructure.security.AuthenticationProviderService;
 import com.sog.user.infrastructure.security.JwtTokenProvider;
 import jakarta.persistence.EntityNotFoundException;
@@ -19,7 +20,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -32,8 +32,11 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RedisService redisService;
     private final JwtTokenProvider jwtTokenProvider;
+
     @Autowired
-    public UserServiceImpl(AuthenticationProviderService authenticationProviderService, UserRepository userRepository, @Lazy JwtTokenProvider jwtTokenProvider, RedisService redisService) {
+    public UserServiceImpl(AuthenticationProviderService authenticationProviderService,
+        UserRepository userRepository, @Lazy JwtTokenProvider jwtTokenProvider,
+        RedisService redisService) {
         this.authenticationProviderService = authenticationProviderService;
         this.userRepository = userRepository;
         this.jwtTokenProvider = jwtTokenProvider;
@@ -44,6 +47,22 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserRegisterResponseDTO register(UserRegisterRequestDTO userRegisterRequestDTO) {
+
+        // Validate userID
+        if (!UserValidationUtil.validateUserID(userRegisterRequestDTO.getUserId())) {
+            throw new IllegalArgumentException("Invalid userID format");
+        }
+
+        // Validate password
+        if (!UserValidationUtil.validatePassword(userRegisterRequestDTO.getPassword())) {
+            throw new IllegalArgumentException("Invalid password format");
+        }
+
+        // Validate nickname
+        if (!UserValidationUtil.validateNickname(userRegisterRequestDTO.getNickname())) {
+            throw new IllegalArgumentException("Invalid nickname format");
+        }
+
         Member member = Member.builder()
             .userId(userRegisterRequestDTO.getUserId())
             .password(authenticationProviderService.passwordEncoder()

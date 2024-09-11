@@ -92,7 +92,7 @@ public class Member implements UserDetails {
 
     /**
      * 외부 호출 메서드
-     * */
+     */
     // 비밀번호 변경
     public void updatePassword(String encodedPassword) {
         this.password = encodedPassword;
