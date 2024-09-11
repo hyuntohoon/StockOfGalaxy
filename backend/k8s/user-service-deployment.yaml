@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: user-service
-        image: zlxldgus123/user:latest  # 실제 이미지로 교체 필요
+        image: zlxldgus123/user-service:76
         ports:
         - containerPort: 8080
         env:
