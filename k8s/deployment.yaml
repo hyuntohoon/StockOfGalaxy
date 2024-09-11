@@ -46,7 +46,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: zlxldgus123/frontend:298
+        image: zlxldgus123/frontend:299
         ports:
         - containerPort: 80
 
