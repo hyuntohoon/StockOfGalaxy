@@ -2,6 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: mysql-init-script
+  namespace: backcd  # 네임스페이스 추가
 data:
   init.sql: |
     CREATE DATABASE IF NOT EXISTS sog_db;
@@ -11,6 +12,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mysql
+  namespace: backcd  # 네임스페이스 추가
   labels:
     app: mysql
 spec:
