@@ -72,7 +72,7 @@ export default function Home() {
       const ambientLight = new THREE.AmbientLight(0x999999);
       scene.add(ambientLight);
 
-      const lights = [];
+      const lights: THREE.DirectionalLight[] = [];
       lights[0] = new THREE.DirectionalLight(0xffffff, 0.5);
       lights[1] = new THREE.DirectionalLight(0xffffff, 0.5);
       lights[2] = new THREE.DirectionalLight(0x122486, 0.7);
