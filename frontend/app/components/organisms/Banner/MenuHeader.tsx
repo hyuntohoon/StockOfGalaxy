@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 import styled from '@emotion/styled';
 import { useState, useEffect, useRef } from 'react';
@@ -35,6 +35,7 @@ const MenuHeader = () => {
   const handleClickOutside = (event: MouseEvent) => {
     if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
       setIsMenuOpen(false); // 다른 곳을 클릭하면 메뉴 닫힘
+      setIsModalOpen(false);
     }
   };
 

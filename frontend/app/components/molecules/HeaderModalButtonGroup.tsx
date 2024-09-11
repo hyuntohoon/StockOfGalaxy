@@ -1,5 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 import { ReactNode } from 'react';
 
 // Props 타입 정의
@@ -10,24 +9,21 @@ interface HeaderModalButtonGroupProps {
 
 const HeaderModalButtonGroup = ({ icon, label }: HeaderModalButtonGroupProps) => {
   return (
-    <div css={buttonGroupStyle}>
-      <div css={buttonContainerStyle}>
-        {icon}
-      </div>
-      <div css={textStyle}>{label}</div>
-    </div>
+    <ButtonGroup>
+      <ButtonContainer>{icon}</ButtonContainer>
+      <Text>{label}</Text>
+    </ButtonGroup>
   );
 };
 
-// 헤더 모달 내 아이콘들 공통 스타일 정의
-const buttonGroupStyle = css`
+const ButtonGroup = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
   width: 140px;
 `;
 
-const buttonContainerStyle = css`
+const ButtonContainer = styled.div`
   width: 18px;
   height: 18px;
   padding-inline: 8px;
@@ -39,7 +35,7 @@ const buttonContainerStyle = css`
   align-items: center;
 `;
 
-const textStyle = css`
+const Text = styled.div`
   color: #000000;
   font-size: 12px;
   font-weight: bold;
