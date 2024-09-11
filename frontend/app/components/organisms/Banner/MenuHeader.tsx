@@ -1,7 +1,6 @@
-/** @jsxImportSource @emotion/react */
 "use client";
 
-import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 import { useState, useEffect, useRef } from 'react';
 import HomeButtonGroup from '../../molecules/ButtonGroup/Header/HomeButtonGroup';
 import ReturnTodayButtonGroup from '../../molecules/ButtonGroup/Header/ReturnTodayButtonGroup';
@@ -51,27 +50,26 @@ const MenuHeader = () => {
   }, [isMenuOpen]);
 
   return (
-    <div css={containerStyle} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-      <button onClick={toggleLogin} css={toggleButtonStyle}>
+    <Container onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+      <ToggleButton onClick={toggleLogin}>
         {isLoggedIn ? '로그아웃' : '로그인'}
-      </button>
+      </ToggleButton>
 
       {isMenuOpen && (
-        <div css={menuHeaderStyle} ref={menuRef}>
+        <MenuHeaderWrapper ref={menuRef}>
           <ReturnTodayButtonGroup />
           <HomeButtonGroup />
           <SearchIconButtonGroup />
           {isLoggedIn ? <MyIconButtonGroup onClick={toggleModal} /> : <SignInButtonGroup />}
-        </div>
+        </MenuHeaderWrapper>
       )}
 
       {isModalOpen && <MenuHeaderModal onClose={toggleModal} />}
-    </div>
+    </Container>
   );
 };
 
-
-const containerStyle = css`
+const Container = styled.div`
   position: fixed;
   top: 0;
   left: 0;
@@ -80,7 +78,7 @@ const containerStyle = css`
   z-index: 1000;
 `;
 
-const menuHeaderStyle = css`
+const MenuHeaderWrapper = styled.div`
   position: fixed;
   top: 50%;
   left: 14px;
@@ -104,7 +102,7 @@ const menuHeaderStyle = css`
   }
 `;
 
-const toggleButtonStyle = css`
+const ToggleButton = styled.button`
   margin-bottom: 20px;
   padding: 10px;
   background-color: #007bff;
