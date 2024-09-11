@@ -2,6 +2,7 @@
 import { AiFillHome } from 'react-icons/ai';
 import HeaderButtonGroup from '../../HeaderButtonGroup';
 import Link from 'next/link';
+import styled from 'styled-components';
 
 interface HomeButtonGroupProps {
   onClick?: () => void; 
@@ -18,14 +19,18 @@ const HomeButtonGroup = ({ onClick }: HomeButtonGroupProps) => {
         }
       }}
     >
-      <Link href="/">
+      <StyledLink href="/">
         <HeaderButtonGroup
           icon={<AiFillHome />}
           label="홈"
         />
-      </Link>
+      </StyledLink>
     </div>
   );
 };
+
+const StyledLink = styled(Link)`
+  text-decoration: none;
+`
 
 export default HomeButtonGroup;
