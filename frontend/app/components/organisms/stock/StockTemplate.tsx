@@ -11,6 +11,10 @@ const ParentContainer = styled.div`
   overflow-y: auto;
   background-color: #111;
   color: white;
+  width: 300px;
+  height: 80%;
+  background-color: #d9d9d9;
+  border-radius: 20px;
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -24,43 +28,29 @@ const ParentContainer = styled.div`
 `;
 
 const Container = styled.div`
-  color: white;
+  color: black;
   padding: 20px;
-  margin: 10px 0px;
-  background-color: #333;
-  width: 300px;
+  margin: 8px 15px;
+  background-color: #ffffff;
+  width: 270px;
+  height: 30px;
   text-align: center;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-
-  .left-container {
-    display: flex;
-    align-items: center;
-    margin-right: 20px;
-  }
-
-  .right-container {
-    display: flex;
-    flex-direction: column;
-    text-align: right;
-  }
-
-  .real-time-price {
-    font-size: 18px;
-    margin-bottom: 5px;
-  }
-
-  .real-time-change {
-    color: ${(props) => (props.changeRate > 0 ? "red" : "blue")};
-  }
+  border-radius: 20px;
 `;
 
-const Logo = styled.img`
-  width: 30px;
-  height: auto;
-  margin-right: 10px;
+const Header = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  justify-content: center;
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-bottom: 10px;
 `;
 
 interface CoinData {
@@ -82,6 +72,11 @@ const StockTemplate = () => {
     { market: "KRW-NEO", korean_name: "네오", english_name: "NEO" },
     { market: "KRW-MTL", korean_name: "메탈", english_name: "Metal" },
     { market: "KRW-XRP", korean_name: "리플", english_name: "Ripple" },
+    { market: "KRW-BTC", korean_name: "비트코인", english_name: "Bitcoin1" },
+    { market: "KRW-ETH", korean_name: "이더리움", english_name: "Ethereum1" },
+    { market: "KRW-NEO", korean_name: "네오", english_name: "NEO1" },
+    { market: "KRW-MTL", korean_name: "메탈", english_name: "Metal1" },
+    { market: "KRW-XRP", korean_name: "리플", english_name: "Ripple1" },
   ]);
 
   const [coinStates, setCoinStates] = useState<Record<string, CoinState>>(
@@ -165,6 +160,11 @@ const StockTemplate = () => {
 
   return (
     <ParentContainer>
+      <Header>
+        <span>실시간 차트</span>
+        <span>|</span>
+        <span>뉴스</span>
+      </Header>
       {coinData.map((coin, index) => (
         <Container key={coin.market}>
           <StockInfo index={index} koreanName={coin.korean_name}></StockInfo>

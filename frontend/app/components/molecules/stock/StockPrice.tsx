@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components";
+import StockCurrentPrice from "../../atoms/stock/StockCurrentPrice";
+import StockChange from "../../atoms/stock/StockChange";
 
 const Container = styled.div`
   display: flex;
@@ -66,10 +68,11 @@ const StockPrice = ({ market }) => {
   return (
     <>
       <Container>
-        <div>{formatPrice(price)}원</div>
-        <div>
-          {formatPrice(changePrice)}({changeRate.toFixed(1)}%)
-        </div>
+        <StockCurrentPrice currentPrice={formatPrice(price)} />
+        <StockChange
+          changePrice={formatPrice(changePrice)}
+          changeRate={changeRate.toFixed(1)}
+        />
       </Container>
     </>
   );

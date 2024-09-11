@@ -1,9 +1,5 @@
-const StockName = () => {
-  return (
-    <>
-      <p>asdasd</p>
-    </>
-  );
+const StockName = ({ koreanName }) => {
+  return <>{koreanName}</>;
 };
 
 export default StockName;
