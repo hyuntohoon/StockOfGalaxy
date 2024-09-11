@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import formatPrice from "@/app/utils/stock/formatPrice";
 
 interface ChangePriceProps {
   $changePrice: number;
@@ -18,7 +19,7 @@ const StockChange = ({ changePrice, changeRate }: StockChangeProps) => {
   return (
     <>
       <Container $changePrice={changePrice}>
-        {changePrice}원({changeRate}%)
+        {formatPrice(changePrice)}원({changeRate.toFixed(1)}%)
       </Container>
     </>
   );

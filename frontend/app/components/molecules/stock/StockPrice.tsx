@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import styled from "styled-components";
 import StockCurrentPrice from "../../atoms/stock/StockCurrentPrice";
 import StockChange from "../../atoms/stock/StockChange";
+import formatPrice from "@/app/utils/stock/formatPrice";
 
 const Container = styled.div`
   display: flex;
@@ -61,18 +62,11 @@ const StockPrice = ({ market }) => {
   const [changePrice, setChangePrice] = useState(0);
   const [changeRate, setChangeRate] = useState(0);
 
-  const formatPrice = (price: number) => {
-    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  };
-
   return (
     <>
       <Container>
         <StockCurrentPrice currentPrice={formatPrice(price)} />
-        <StockChange
-          changePrice={formatPrice(changePrice)}
-          changeRate={changeRate.toFixed(1)}
-        />
+        <StockChange changePrice={changePrice} changeRate={changeRate} />
       </Container>
     </>
   );
