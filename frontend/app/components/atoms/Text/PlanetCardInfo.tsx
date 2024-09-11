@@ -1,5 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 import { formatMoney } from '@/app/utils/formatMoney';
 
 interface PlanetCardInfoProps {
@@ -9,14 +8,14 @@ interface PlanetCardInfoProps {
 
 const PlanetCardInfo = ({ label, value }: PlanetCardInfoProps) => {
   return (
-    <div css={infoItemStyle}>
-      <span css={labelStyle}>{label}</span>
+    <InfoItem>
+      <Label>{label}</Label>
       <span>{formatMoney(value)}원</span>
-    </div>
+    </InfoItem>
   );
 };
 
-const infoItemStyle = css`
+const InfoItem = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -27,8 +26,8 @@ const infoItemStyle = css`
   font-weight: bold;
 `;
 
-const labelStyle = css`
-  margin-top: 5px
+const Label = styled.span`
+  margin-top: 5px;
 `;
 
 export default PlanetCardInfo;

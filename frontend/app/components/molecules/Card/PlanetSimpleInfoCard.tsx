@@ -1,5 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 import PlanetCardTitle from '../../atoms/Text/PlanetCardTitle';
 import PlanetCardInfo from '../../atoms/Text/PlanetCardInfo';
 
@@ -12,12 +11,12 @@ const tempData = {
 
 const PlanetSimpleInfoCard = () => {
   return (
-    <div css={cardContainer}>
-      <div css={cardTitleStyle}>
+    <CardContainer>
+      <CardTitle>
         <PlanetCardTitle title="삼성전자" />
-      </div>
-      <div css={lineStyle} />
-      <div css={infoContainer}>
+      </CardTitle>
+      <Line />
+      <InfoContainer>
         <div>
           <PlanetCardInfo label="시가총액" value={tempData.marketCap} />
           <PlanetCardInfo label="1년 최저" value={tempData.lowestYear} />
@@ -26,12 +25,12 @@ const PlanetSimpleInfoCard = () => {
           <PlanetCardInfo label="1일 최저" value={tempData.lowestDay} />
           <PlanetCardInfo label="1일 최고" value={tempData.highestDay} />
         </div>
-      </div>
-    </div>
+      </InfoContainer>
+    </CardContainer>
   );
 };
 
-const cardContainer = css`
+const CardContainer = styled.div`
   display: flex;
   flex-direction: column;
   background-color: rgba(255, 255, 255, 0.4);
@@ -48,16 +47,17 @@ const cardContainer = css`
   width: 220px;
 `;
 
-const cardTitleStyle = css`
+const CardTitle = styled.div`
   text-align: center;
-`
-const infoContainer = css`
+`;
+
+const InfoContainer = styled.div`
   display: flex;
   justify-content: space-between;
   margin-top: 10px;
 `;
 
-const lineStyle = css`
+const Line = styled.div`
   width: 100%;
   height: 2px;
   background-color: #ffffffd1;
