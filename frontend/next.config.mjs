@@ -1,9 +1,12 @@
 /** @type {import('next').NextConfig} */
-import TerserPlugin from 'terser-webpack-plugin';
+import TerserPlugin from "terser-webpack-plugin";
 
-const isProduction = process.env.NODE_ENV === 'production';
+const isProduction = process.env.NODE_ENV === "production";
 
 const nextConfig = {
+  experimental: {
+    swcDecorators: true,  // SWC 데코레이터 지원 활성화
+  },
   webpack: (config) => {
     config.optimization = {
       ...config.optimization,
@@ -26,6 +29,10 @@ const nextConfig = {
         : [],
     };
     return config;
+  },
+
+  compiler: {
+    styledComponents: true,
   },
 };
 
