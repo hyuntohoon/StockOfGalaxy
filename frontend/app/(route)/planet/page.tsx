@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { RecoilRoot } from 'recoil';
 import DateCard from '@/app/components/molecules/Card/DateCard';
@@ -15,9 +15,11 @@ export default function Home() {
   const mountRef = useRef<HTMLDivElement>(null);
   const planetRadius = 150; // 행성의 반지름
 
+  // scene을 상태로 관리
+  const [scene, setScene] = useState<THREE.Scene | null>(null);
+
   useEffect(() => {
     let renderer: THREE.WebGLRenderer;
-    let scene: THREE.Scene;
     let camera: THREE.PerspectiveCamera;
     let circle: THREE.Object3D;
     let stars: THREE.Group; // 별 그룹
@@ -33,17 +35,19 @@ export default function Home() {
         mountRef.current.appendChild(renderer.domElement);
       }
 
-      scene = new THREE.Scene();
+      // Scene 생성 및 상태 업데이트
+      const newScene = new THREE.Scene();
+      setScene(newScene);
 
       camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
       camera.position.z = 400;
-      scene.add(camera);
+      newScene.add(camera);
 
       circle = new THREE.Object3D(); // 행성 그룹
       stars = new THREE.Group(); // 별 그룹
 
-      scene.add(circle);
-      scene.add(stars);
+      newScene.add(circle);
+      newScene.add(stars);
 
       const starGeometry = new THREE.SphereGeometry(0.5, 8, 8); // 작은 구체 (별)
       const starMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
@@ -61,7 +65,7 @@ export default function Home() {
 
       // 행성 생성
       const planetGeometry = new THREE.SphereGeometry(planetRadius, 64, 64);
-      const planetTexture = new THREE.TextureLoader().load('/image/3.jpg'); // 텍스처 경로 설정
+      const planetTexture = new THREE.TextureLoader().load('/images/planetMain/texture/3.jpg'); // 텍스처 경로 설정
       const planetMaterial = new THREE.MeshStandardMaterial({
         map: planetTexture, // 텍스처 추가
       });
@@ -70,7 +74,7 @@ export default function Home() {
 
       // 조명 설정
       const ambientLight = new THREE.AmbientLight(0x999999);
-      scene.add(ambientLight);
+      newScene.add(ambientLight);
 
       const lights: THREE.DirectionalLight[] = [];
       lights[0] = new THREE.DirectionalLight(0xffffff, 1);
@@ -79,31 +83,32 @@ export default function Home() {
       lights[0].position.set(1, 0, 0);
       lights[1].position.set(0.75, 1, 0.5);
       lights[2].position.set(-0.75, -1, 0.5);
-      scene.add(lights[0]);
-      scene.add(lights[1]);
-      scene.add(lights[2]);
+      newScene.add(lights[0]);
+      newScene.add(lights[1]);
+      newScene.add(lights[2]);
 
       window.addEventListener('resize', onWindowResize, false);
-    }
 
-    function onWindowResize() {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    }
+      function onWindowResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      }
 
-    function animate() {
-      requestAnimationFrame(animate);
+      function animate() {
+        requestAnimationFrame(animate);
 
-      stars.rotation.y -= 0.0007; // 별들이 천천히 회전
-      circle.rotation.y -= 0.004; // 행성 회전
+        stars.rotation.y -= 0.0007; // 별들이 천천히 회전
+        circle.rotation.y -= 0.004; // 행성 회전
 
-      renderer.clear();
-      renderer.render(scene, camera);
+        renderer.clear();
+        renderer.render(newScene, camera);
+      }
+
+      animate();
     }
 
     init();
-    animate();
 
     return () => {
       window.removeEventListener('resize', onWindowResize);
@@ -125,7 +130,11 @@ export default function Home() {
       <RocketButtonGroup />
       <DetailTriangleButtonGuide />
       <DetailTriangleButton />
-      <Rocket planetRadius={planetRadius} /> {/* 로켓에 행성 반지름 전달 */}
+      {scene && <Rocket planetRadius={planetRadius} scene={scene} rocketCount={5} />} {/* 로켓에 행성 반지름과 scene 전달 */}
     </div>
   );
 }
+function onWindowResize(this: Window, ev: UIEvent) {
+  throw new Error('Function not implemented.');
+}
+
