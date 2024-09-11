@@ -48,7 +48,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         LoginFilter loginFilter = new LoginFilter(authenticationManager(), jwtTokenProvider,
             objectMapper(), redisService, memberDetailService, jwtCookieUtil);
-        loginFilter.setFilterProcessesUrl("/user/public/login"); // 로그인 엔드포인트
+        loginFilter.setFilterProcessesUrl("/api/user/public/login"); // 로그인 엔드포인트
 
         httpSecurity
             .cors((corsCustomizer -> corsCustomizer.configurationSource(
@@ -60,8 +60,9 @@ public class SecurityConfig {
                         CorsConfiguration configuration = new CorsConfiguration();
 
                         configuration.setAllowedOrigins(
-                            Arrays.asList("http://localhost:8080", "http://localhost:3000",
-                                "https://ssafy11s.com", "https://www.ssafy11s.com"));
+                            Arrays.asList("http://localhost:3000",
+                                "https://ssafy11s.com", "https://www.ssafy11s.com",
+                                "http://www.ssafy11s.com"));
                         configuration.setAllowedMethods(Collections.singletonList("*"));
                         configuration.setAllowCredentials(true);
                         configuration.setAllowedHeaders(Collections.singletonList("*"));
@@ -76,10 +77,10 @@ public class SecurityConfig {
             .formLogin(AbstractHttpConfigurer::disable)
             .httpBasic(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(user -> user
-                .requestMatchers("/user/public/login", "/user/public/join",
-                    "/user/public/validate/**", "/user/public/request-verification-code",
-                    "/user/public/request-verification", "/user/public/change-password",
-                    "/user/public/reissue", "/user/public/logout")
+                .requestMatchers("/api/user/public/login", "/api/user/public/join",
+                    "/api/user/public/validate/**", "/api/user/public/request-verification-code",
+                    "/api/user/public/request-verification", "/api/user/public/change-password",
+                    "/api/user/public/reissue", "/api/user/public/logout")
                 .permitAll()
 
                 .anyRequest().authenticated())
