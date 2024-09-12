@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { init } from "klinecharts";
 import styled from "styled-components";
 
@@ -25,15 +25,17 @@ const Option = styled.div`
 `;
 
 const ChartTemplate = () => {
-  const chartContainerRef = useRef(null);
+  // useState로 chartContainerRef를 관리
+  const [chartContainerRef, setChartContainerRef] = useState(null);
   const [chart, setChart] = useState(null);
 
+  // DOM이 설정된 후 chart 초기화
   useEffect(() => {
-    if (chartContainerRef.current) {
-      const newChart = init(chartContainerRef.current);
+    if (chartContainerRef) {
+      const newChart = init(chartContainerRef);
       newChart?.createIndicator("MA", false, { id: "candle_pane" });
       newChart?.createIndicator("VOL");
-      newChart?.applyNewData(genData());
+      newChart?.applyNewData(genData("day"));
 
       newChart?.setStyles({
         grid: {
@@ -50,22 +52,26 @@ const ChartTemplate = () => {
 
       setChart(newChart);
     }
-  }, []);
+  }, [chartContainerRef]); // chartContainerRef가 변경될 때 초기화 실행
 
-  useEffect(() => {
-    if (chart) {
-      setCandleTooltipShowRule("always");
-      setCandleTooltipShowType("standard");
-      setIndicatorTooltipShowRule("always");
-      setIndicatorTooltipShowType("standard");
-    }
-  }, [chart]);
-
-  const genData = (timestamp = new Date().getTime(), length = 700) => {
+  // 데이터 생성 함수
+  const genData = (
+    interval,
+    timestamp = new Date().getTime(),
+    length = 700
+  ) => {
     let basePrice = 5000;
+    const intervalToMs = {
+      minute: 60 * 1000,
+      day: 24 * 60 * 60 * 1000,
+      week: 7 * 24 * 60 * 60 * 1000,
+      month: 30 * 24 * 60 * 60 * 1000,
+      year: 365 * 24 * 60 * 60 * 1000,
+    };
+    const intervalMs = intervalToMs[interval] || intervalToMs["day"];
+
     timestamp =
-      Math.floor(timestamp / 1000 / 60) * 60 * 1000 -
-      length * 24 * 60 * 60 * 1000;
+      Math.floor(timestamp / intervalMs) * intervalMs - length * intervalMs;
     const dataList = [];
     for (let i = 0; i < length; i++) {
       const prices = [];
@@ -82,75 +88,41 @@ const ChartTemplate = () => {
       dataList.push({ timestamp, open, high, low, close, volume, turnover });
 
       basePrice = close;
-      timestamp += 24 * 60 * 60 * 1000;
+      timestamp += intervalMs;
     }
     return dataList;
   };
 
-  const setCandleTooltipShowRule = (showRule) => {
-    chart.setStyles({
-      candle: {
-        tooltip: { showRule },
-      },
-    });
-  };
-
-  const setCandleTooltipShowType = (showType) => {
-    chart.setStyles({
-      candle: {
-        tooltip: { showType },
-      },
-    });
-  };
-
-  const setIndicatorTooltipShowRule = (showRule) => {
-    chart.setStyles({
-      indicator: {
-        tooltip: { showRule },
-      },
-    });
-  };
-
-  const setIndicatorTooltipShowType = (showType) => {
-    chart.setStyles({
-      indicator: {
-        tooltip: { showType },
-      },
-    });
-  };
-
-  const handleTooltipRuleChange = (key, type) => {
-    if (type === "candle") {
-      setCandleTooltipShowRule(key);
-    } else {
-      setIndicatorTooltipShowRule(key);
+  const updateData = () => {
+    if (chart) {
+      const newData = {
+        timestamp: new Date().getTime(),
+        open: 5020 + Math.random() * 20,
+        high: 5040 + Math.random() * 20,
+        low: 5010 + Math.random() * 20,
+        close: 5030 + Math.random() * 20,
+        volume: Math.round(Math.random() * 100) + 10,
+        turnover: Math.round(Math.random() * 1000) + 100,
+      };
+      chart.updateData(newData);
     }
-  };
-
-  const handleTooltipTypeChange = (key, type) => {
-    if (type === "candle") {
-      setCandleTooltipShowType(key);
-    } else {
-      setIndicatorTooltipShowType(key);
-    }
-  };
-
-  const handleClick = (currentTime) => {
-    alert(currentTime);
   };
 
   return (
     <div>
       <OptionContainer>
-        <Option onClick={() => handleClick(1)}>1분</Option>
-        <Option onClick={() => handleClick(1440)}>일</Option>
-        <Option onClick={() => handleClick(10080)}>주</Option>
-        <Option onClick={() => handleClick(43800)}>월</Option>
-        <Option onClick={() => handleClick(525600)}>년</Option>
+        <Option onClick={() => chart?.applyNewData(genData("minute"))}>
+          1분
+        </Option>
+        <Option onClick={() => chart?.applyNewData(genData("day"))}>일</Option>
+        <Option onClick={() => chart?.applyNewData(genData("week"))}>주</Option>
+        <Option onClick={() => chart?.applyNewData(genData("month"))}>
+          월
+        </Option>
+        <Option onClick={() => chart?.applyNewData(genData("year"))}>년</Option>
       </OptionContainer>
       <ChartContainer
-        ref={chartContainerRef}
-        id="k-line-chart"
+        ref={(el) => setChartContainerRef(el)} // ref 콜백을 사용하여 상태 업데이트
       ></ChartContainer>
     </div>
   );
