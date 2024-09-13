@@ -46,7 +46,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: elasticsearch-pvc-node0
+  name: elasticsearch-master-elasticsearch-master-0
   namespace: monitoring
 spec:
   accessModes:
@@ -60,7 +60,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: elasticsearch-pvc-node1
+  name: elasticsearch-master-elasticsearch-master-1
   namespace: monitoring
 spec:
   accessModes:
@@ -74,7 +74,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: elasticsearch-pvc-node2
+  name: elasticsearch-master-elasticsearch-master-2
   namespace: monitoring
 spec:
   accessModes:
@@ -84,4 +84,5 @@ spec:
       storage: 10Gi
   storageClassName: standard
   volumeName: elasticsearch-pv-node2
+
 
