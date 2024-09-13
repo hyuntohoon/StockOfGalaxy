@@ -84,5 +84,3 @@ spec:
       storage: 10Gi
   storageClassName: standard
   volumeName: elasticsearch-pv-node2
-
-
