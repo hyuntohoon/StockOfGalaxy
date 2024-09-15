@@ -1,0 +1,34 @@
+spring:
+  application:
+    name: sog
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/sog_db
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: ed9658pi
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        jdbc:
+          time_zone: UTC
+    show-sql: true
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: debug
+
+koreainvestment:
+  appkey: "PSji3Tn79KSAKz0msD1dldUIXNre9JhlcJ2M"
+  appsecret: "q5OxO241o89X0qoz+6i0Zh7+Xvg4nSHEvFdpU7KYJECpnJ4I4L9Lxp56kZVfU3XsKiuRm5FcmFMB5pPEq+RPlLl6pHo3YIPUdX33OZW+tq7VXE89BYwzqCCrqnL+8Efn/srraX6maHl+nPwJOYkn2tjst628ltU0w82nB7l0iDrXBkNXGJY="
+  api-url: "https://api.koreainvestment.com"
+
+server:
+  error:
+    include-message: always
+    include-binding-errors: always
