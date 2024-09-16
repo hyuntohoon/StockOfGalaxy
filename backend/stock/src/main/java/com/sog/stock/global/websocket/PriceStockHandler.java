@@ -2,48 +2,58 @@ package com.sog.stock.global.websocket;
 
 import com.sog.stock.application.service.KisTokenService;
 import com.sog.stock.application.service.StockService;
+import java.util.logging.Logger;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.socket.CloseStatus;
-import org.springframework.web.socket.WebSocketHandler;
-import org.springframework.web.socket.WebSocketMessage;
-import org.springframework.web.socket.WebSocketSession;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.reactive.socket.WebSocketSession;
+import org.springframework.web.reactive.socket.WebSocketHandler;
+import org.springframework.web.reactive.socket.WebSocketMessage;
+import reactor.core.publisher.Mono;
 
-
+@RequiredArgsConstructor
 public class PriceStockHandler implements WebSocketHandler {
 
     private final StockService stockService;
     private final KisTokenService kisTokenService;
+    private static final Logger logger = Logger.getLogger(PriceStockHandler.class.getName());
 
-    public PriceStockHandler(String appkey, String appsecret) {
-        this.appkey = appkey;
-        this.appsecret = appsecret;
-    }
-
-    @Override
-    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-
-    }
+    @Value("${kis.websocket.approval_key}")
+    private String approvalKey;
 
     @Override
-    public void handleMessage(WebSocketSession session, WebSocketMessage<?> message)
-        throws Exception {
+    public Mono<Void> handle(WebSocketSession session) {
+        logger.info("WebSocket connection established with session: " + session.getId());
 
-    }
+// 데이터 수신 처리 및 전송
+        return kisTokenService.getAccessToken()
+            .flatMap(token -> {
+                // 헤더와 바디를 통합한 메시지 생성
+                String subscribeMessage = "{ " +
+                    "\"header\": { " +
+                    "\"approval_key\": \"" + approvalKey + "\", " +
+                    "\"custtype\": \"P\", " +
+                    "\"tr_type\": \"1\", " +
+                    "\"content-type\": \"utf-8\" }, " +
+                    "\"body\": { " +
+                    "\"input\": { " +
+                    "\"tr_id\": \"H0STCNT0\", " +
+                    "\"tr_key\": \"005930\" } } }"; // 임시로 삼성전자만
 
-    @Override
-    public void handleTransportError(WebSocketSession session, Throwable exception)
-        throws Exception {
+                // 로그로 메시지 확인
+                logger.info("Sending WebSocket message: " + subscribeMessage);
 
-    }
-
-    @Override
-    public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus)
-        throws Exception {
-
-    }
-
-    @Override
-    public boolean supportsPartialMessages() {
-        return false;
+                // WebSocket을 통해 메시지 전송
+                return session.send(
+                        Mono.just(session.textMessage(subscribeMessage))) // Send subscription request
+                    .thenMany(session.receive().map(WebSocketMessage::getPayloadAsText))
+                    .doOnNext(message -> {
+                        // 받은 메시지를 처리하고 로그로 기록
+                        logger.info("Received message: " + message);
+                        stockService.processRealTimeStockData(message, token);
+                    }).then();
+            })
+            .doFinally(signalType -> {
+                logger.info("WebSocket session closed: " + session.getId());
+            });
     }
 }
