@@ -1,5 +1,9 @@
 package com.sog.stock.application.service;
 
-public interface StockService {
+import org.springframework.stereotype.Service;
 
+@Service
+public interface StockService {
+    public void processRealTimeStockData(String message, String token);
+    public void fetchClosingStockData();
 }
