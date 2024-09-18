@@ -5,9 +5,9 @@ import WordCloud from 'react-d3-cloud';
 import { scaleOrdinal } from 'd3-scale';
 import { schemeCategory10 } from 'd3-scale-chromatic';
 const data = [
-    { text: "개발", value: 10 },
+    { text: "개발", value: 6 },
     { text: "자바스크립트", value: 8 },
-    { text: "리액트", value: 7 },
+    { text: "리액트", value: 4 },
     { text: "프로그래밍", value: 5 },
     { text: "코딩", value: 4 },
     { text: "디자인", value: 4 },
