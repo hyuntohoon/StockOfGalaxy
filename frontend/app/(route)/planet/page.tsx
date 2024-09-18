@@ -118,7 +118,7 @@ export default function Home() {
     <div style={{ position: 'relative' }}>
       <div ref={mountRef} id="canvas" style={{ width: '100%', height: '100vh', position: 'absolute', zIndex: 1 }}></div>
       <RecoilRoot>
-        <DateCard />
+        <DateCard right='30px'/>
       </RecoilRoot>
       <PlanetSimpleInfoCard />
       <TimeMachineButtonGroup />

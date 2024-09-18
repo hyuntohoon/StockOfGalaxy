@@ -2,9 +2,9 @@ import styled from '@emotion/styled';
 import Image from 'next/image';
 import timeIcon from '../../atoms/Button/timeIcon.png';
 
-const TimeMachineButtonGroup = () => {
+const TimeMachineButtonGroup = ({ bottom = '30px', right = '100px' }) => {
   return (
-    <ButtonGroup>
+    <ButtonGroup bottom={bottom} right={right}>
       <Icon>
         <Image src={timeIcon} alt="타임머신" width={50} height={50} />
       </Icon>
@@ -13,10 +13,10 @@ const TimeMachineButtonGroup = () => {
   );
 };
 
-const ButtonGroup = styled.div`
+const ButtonGroup = styled.div<{ bottom: string; right: string }>`
   position: fixed;
-  bottom: 30px;
-  right: 100px;
+  bottom: ${({ bottom }) => bottom}; // 동적으로 위치 설정
+  right: ${({ right }) => right}; // 동적으로 위치 설정
   display: flex;
   flex-direction: column;
   align-items: center;
