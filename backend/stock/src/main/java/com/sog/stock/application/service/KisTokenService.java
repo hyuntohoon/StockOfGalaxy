@@ -4,18 +4,18 @@ import com.sog.stock.domain.dto.KisTokenResponseDTO;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import org.springframework.http.HttpStatus;
 
 @Service
+@Slf4j
 public class KisTokenService {
 
     private final WebClient webClient;
@@ -37,6 +37,7 @@ public class KisTokenService {
 
     // get access token from redis
     public Mono<String> getAccessToken() {
+        log.info("getAccessToken method called.");
         String token = redisService.getValue(TOKEN_KEY);
         if (token != null) {
             return Mono.just(token);
@@ -45,6 +46,7 @@ public class KisTokenService {
     }
 
     private Mono<String> requestNewToken() {
+        log.info("Preparing token request with appkey: {}", appKey);
         // 요청에 필요한 데이터
         Map<String, String> requestBody = new HashMap<>();
         requestBody.put("grant_type", "client_credentials");
@@ -72,7 +74,7 @@ public class KisTokenService {
                 if (response.getAccessToken() == null) {
                     return Mono.error(new NullPointerException("AccessToken is null"));
                 }
-                redisService.setValues(TOKEN_KEY, response.getAccessToken(), Duration.ofHours(24));
+                redisService.setValues(TOKEN_KEY, response.getAccessToken(), Duration.ofHours(6));
                 return Mono.just(response.getAccessToken());
             });
 
