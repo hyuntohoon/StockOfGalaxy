@@ -162,7 +162,7 @@ const StockTemplate = () => {
         <span>뉴스</span>
       </Header>
       {coinData.map((coin, index) => (
-        <Container key={coin.market}>
+        <Container key={coin.english_name}>
           <StockInfo index={index} koreanName={coin.korean_name}></StockInfo>
           <StockPrice market={coin.market}></StockPrice>
         </Container>

@@ -3,16 +3,20 @@ import starIcon from "@/public/starIcon.png";
 import Image from "next/image";
 import { subscribeStock } from "@/app/utils/stock/subscribeStock";
 
+interface FontSize {
+  $fontSize: number;
+}
+
 interface StockNameProps {
-  koreanName: string;
+  koreanName?: string;
   fontSize?: number;
 }
 
-const Container = styled.div<StockNameProps>`
+const Container = styled.div<FontSize>`
   display: flex;
   flex-direction: row;
   align-items: center;
-  font-size: ${(props) => `${props.fontSize}px`};
+  font-size: ${(props) => `${props.$fontSize}px`};
 `;
 
 const StyledImage = styled(Image)`
@@ -23,7 +27,7 @@ const StyledImage = styled(Image)`
 const StockName = ({ koreanName, fontSize = 15 }: StockNameProps) => {
   return (
     <>
-      <Container koreanName={koreanName} fontSize={fontSize}>
+      <Container $fontSize={fontSize}>
         {koreanName}
         <>
           {fontSize !== 15 && (

@@ -1,13 +1,17 @@
 import styled from "styled-components";
 import formatPrice from "@/app/utils/stock/formatPrice";
 
+interface FontSize {
+  $fontSize: number;
+}
+
 interface CurrentPriceProps {
   currentPrice: number;
   fontSize?: number;
 }
 
-const CurrentPrice = styled.span<CurrentPriceProps>`
-  font-size: ${(props) => `${props.fontSize}px`};
+const CurrentPrice = styled.span<FontSize>`
+  font-size: ${(props) => `${props.$fontSize}px`};
   font-weight: bold;
 `;
 
@@ -17,7 +21,7 @@ const StockCurrentPrice = ({
 }: CurrentPriceProps) => {
   return (
     <>
-      <CurrentPrice currentPrice={currentPrice} fontSize={fontSize}>
+      <CurrentPrice $fontSize={fontSize}>
         {formatPrice(currentPrice)}원
       </CurrentPrice>
     </>
