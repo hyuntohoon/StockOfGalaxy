@@ -3,12 +3,13 @@ import formatPrice from "@/app/utils/stock/formatPrice";
 
 interface ChangePriceProps {
   $changePrice: number;
+  fontSize?: number;
 }
 
 interface StockChangeProps {
   changePrice: number;
   changeRate: number;
-  fontSize: number;
+  fontSize?: number;
 }
 
 const Container = styled.span<ChangePriceProps>`

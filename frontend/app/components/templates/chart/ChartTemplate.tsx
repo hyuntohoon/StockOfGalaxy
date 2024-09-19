@@ -27,7 +27,7 @@ const Option = styled.div`
 const ChartTemplate = () => {
   // useState로 chartContainerRef를 관리
   const [chartContainerRef, setChartContainerRef] = useState(null);
-  const [chart, setChart] = useState(null);
+  const [chart, setChart] = useState<any>(null);
 
   // DOM이 설정된 후 chart 초기화
   useEffect(() => {
@@ -72,9 +72,9 @@ const ChartTemplate = () => {
 
     timestamp =
       Math.floor(timestamp / intervalMs) * intervalMs - length * intervalMs;
-    const dataList = [];
+    const dataList: any[] = [];
     for (let i = 0; i < length; i++) {
-      const prices = [];
+      const prices: number[] = [];
       for (let j = 0; j < 4; j++) {
         prices.push(basePrice + Math.random() * 60 - 30);
       }
@@ -122,7 +122,7 @@ const ChartTemplate = () => {
         <Option onClick={() => chart?.applyNewData(genData("year"))}>년</Option>
       </OptionContainer>
       <ChartContainer
-        ref={(el) => setChartContainerRef(el)} // ref 콜백을 사용하여 상태 업데이트
+        ref={(el: any) => setChartContainerRef(el)} // ref 콜백을 사용하여 상태 업데이트
       ></ChartContainer>
     </div>
   );
