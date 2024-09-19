@@ -1,0 +1,21 @@
+export const wordData = [
+    { text: "개발", value: 6 },
+    { text: "자바스크립트", value: 8 },
+    { text: "리액트", value: 4 },
+    { text: "프로그래밍", value: 5 },
+    { text: "코딩", value: 4 },
+    { text: "디자인", value: 4 },
+    { text: "배우기", value: 4 },
+    { text: "웹", value: 3 },
+    { text: "앱", value: 3 },
+    { text: "기술", value: 3 },
+    { text: "HTML", value: 3 },
+    { text: "CSS", value: 3 },
+    { text: "알고리즘", value: 3 },
+    { text: "문제해결", value: 2 },
+    { text: "도전", value: 2 },
+    { text: "창의성", value: 2 },
+    { text: "열정", value: 2 },
+    { text: "성장", value: 2 },
+  ];
+  
