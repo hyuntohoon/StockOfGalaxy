@@ -3,6 +3,7 @@ package com.sog.stock.global.config;
 import com.sog.stock.application.service.KisTokenService;
 import com.sog.stock.application.service.StockService;
 import com.sog.stock.global.websocket.PriceStockHandler;
+import com.sog.stock.global.websocket.StockWebSocketHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,11 +23,11 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 @Slf4j
 public class KisWebSocketConfig implements WebSocketConfigurer {
 
-    private final PriceStockHandler priceStockHandler;
+    private final StockWebSocketHandler stockWebSocketHandler;
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        // pricestockhandler를 추가
-        registry.addHandler(priceStockHandler, "/stock").setAllowedOrigins("*"); // endpoint와 CORS 설정
+        // stockWebSocketHandler를 추가
+        registry.addHandler(stockWebSocketHandler, "/stock").setAllowedOrigins("*"); // endpoint와 CORS 설정
     }
 }
