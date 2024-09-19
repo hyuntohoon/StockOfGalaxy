@@ -1,4 +1,4 @@
-package com.sog.news.domain.entity;
+package com.sog.news.domain.model;
 
 import com.sog.news.global.NewsCategory;
 import jakarta.persistence.*;
