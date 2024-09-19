@@ -1,45 +1,45 @@
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: news-service
-  namespace: backcd
-spec:
-  replicas: 2  # 기본 레플리카 수, HPA 사용 시 동적으로 조정 가능
-  selector:
-    matchLabels:
-      app: news-service
-  template:
-    metadata:
-      labels:
-        app: news-service
-    spec:
-      containers:
-        - name: news-service
-          image: zlxldgus123/news-service:76
-          ports:
-            - containerPort: 8080
-          env:
-            - name: SPRING_DATASOURCE_URL
-              value: jdbc:mysql://mysql:3306/sog_db
-            - name: SPRING_DATASOURCE_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: db-secrets
-                  key: username
-            - name: SPRING_DATASOURCE_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: db-secrets
-                  key: password
-            - name: JWT_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: jwt-secret
-                  key: secret
-          resources:  # 리소스 요청 및 제한 설정
-            requests:
-              memory: "512Mi"
-              cpu: "250m"
-            limits:
-              memory: "1Gi"
-              cpu: "500m"
+#apiVersion: apps/v1
+#kind: Deployment
+#metadata:
+#  name: news-service
+#  namespace: backcd
+#spec:
+#  replicas: 2  # 기본 레플리카 수, HPA 사용 시 동적으로 조정 가능
+#  selector:
+#    matchLabels:
+#      app: news-service
+#  template:
+#    metadata:
+#      labels:
+#        app: news-service
+#    spec:
+#      containers:
+#        - name: news-service
+#          image: zlxldgus123/news-service:76
+#          ports:
+#            - containerPort: 8080
+#          env:
+#            - name: SPRING_DATASOURCE_URL
+#              value: jdbc:mysql://mysql:3306/sog_db
+#            - name: SPRING_DATASOURCE_USERNAME
+#              valueFrom:
+#                secretKeyRef:
+#                  name: db-secrets
+#                  key: username
+#            - name: SPRING_DATASOURCE_PASSWORD
+#              valueFrom:
+#                secretKeyRef:
+#                  name: db-secrets
+#                  key: password
+#            - name: JWT_SECRET
+#              valueFrom:
+#                secretKeyRef:
+#                  name: jwt-secret
+#                  key: secret
+#          resources:  # 리소스 요청 및 제한 설정
+#            requests:
+#              memory: "512Mi"
+#              cpu: "250m"
+#            limits:
+#              memory: "1Gi"
+#              cpu: "500m"
