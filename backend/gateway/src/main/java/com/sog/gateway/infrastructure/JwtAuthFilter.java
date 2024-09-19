@@ -1,37 +1,45 @@
 package com.sog.gateway.infrastructure;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.sog.gateway.infrastructure.JwtAuthFilter.Config;
+import org.springframework.cloud.gateway.filter.GatewayFilter;
+import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
-import org.springframework.web.server.WebFilter;
-import org.springframework.web.server.WebFilterChain;
-import reactor.core.publisher.Mono;
+
 
 @Component
-public class JwtAuthFilter implements WebFilter {
+public class JwtAuthFilter extends AbstractGatewayFilterFactory<Config> {
 
-    @Autowired
-    private JwtUtil jwtUtil;
+    private final JwtUtil jwtUtil;
+
+    public JwtAuthFilter(JwtUtil jwtUtil) {
+        super(Config.class);
+        this.jwtUtil = jwtUtil;
+    }
 
     @Override
-    public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        ServerHttpRequest request = exchange.getRequest();
-        String authHeader = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
+    public GatewayFilter apply(Config config) {
+        return (exchange, chain) -> {
+            ServerWebExchange exchangeWithHeaders = exchange;
+            String authHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
 
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            String token = authHeader.substring(7);
-            if (!jwtUtil.isTokenValid(token)) {
-                exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                exchange.getResponse().setStatusCode(org.springframework.http.HttpStatus.UNAUTHORIZED);
                 return exchange.getResponse().setComplete();
             }
-        } else {
-            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-            return exchange.getResponse().setComplete();
-        }
 
-        return chain.filter(exchange);
+            String token = authHeader.substring(7);
+            if (!jwtUtil.isTokenValid(token)) {
+                exchange.getResponse().setStatusCode(org.springframework.http.HttpStatus.UNAUTHORIZED);
+                return exchange.getResponse().setComplete();
+            }
+
+            return chain.filter(exchangeWithHeaders);
+        };
+    }
+
+    public static class Config {
+        // 설정을 추가하고 싶으면 여기에
     }
 }
