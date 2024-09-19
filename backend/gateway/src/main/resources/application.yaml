@@ -1,0 +1,21 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/api/users/**
+        - id: stock-service
+          uri: lb://stock-service
+          predicates:
+            - Path=/api/stocks/**
+        - id: news-service
+          uri: lb://news-service
+          predicates:
+            - Path=/api/news/**
+      default-filters:
+        - JwtAuthFilter  # ?? ??? ?? ??? JWT ?? ??
+
+jwt:
+  secret: ${JWT_SECRET}  # Kubernetes Secret?? ???? JWT ???
