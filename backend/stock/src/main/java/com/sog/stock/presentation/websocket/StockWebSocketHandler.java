@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
@@ -20,6 +21,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 @Component
 @Slf4j
+@EnableScheduling
 @RequiredArgsConstructor
 public class StockWebSocketHandler extends TextWebSocketHandler {
 
@@ -72,9 +74,10 @@ public class StockWebSocketHandler extends TextWebSocketHandler {
         super.afterConnectionClosed(session, status); // 실제로 closed
     }
 
-    // 2초에 한 번씩 주식데이터를 들고옵니다. (임시)
-    @Scheduled(fixedRate = 2000)
+    // 3초에 한 번씩 주식데이터를 들고옵니다. (임시)
+    @Scheduled(fixedRate = 3000)
     public void sendStockCode() throws JSONException, IOException {
+        log.info("Scheduled check--------");
         synchronized (sessionMap) {
             for (WebSocketSession session : sessionMap.values()) {
                 String stockCode = sessionStockCodeMap.get(session);
@@ -93,6 +96,8 @@ public class StockWebSocketHandler extends TextWebSocketHandler {
                             } catch (IllegalStateException e) {
                                 log.warn("Failed to send message, ignoring: {}", e.getMessage());
                             }
+                        } else {
+                            log.info("dto가 null입니다.");
                         }
                     } catch (Exception e) {
                         log.error("stock data를 들고오는 동안 에러가 발생했습니다 : {}", e.getMessage());

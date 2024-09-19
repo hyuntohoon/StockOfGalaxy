@@ -1,8 +1,5 @@
 package com.sog.stock.global.config;
 
-import com.sog.stock.application.service.KisTokenService;
-import com.sog.stock.application.service.StockService;
-import com.sog.stock.global.websocket.PriceStockHandler;
 import com.sog.stock.global.websocket.StockWebSocketHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
