@@ -1,4 +1,4 @@
-package com.sog.stock.global.websocket;
+package com.sog.stock.presentation.websocket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sog.stock.application.service.StockWebSocketService;
