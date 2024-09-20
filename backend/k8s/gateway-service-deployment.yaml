@@ -7,14 +7,14 @@
    replicas: 2
    selector:
      matchLabels:
-       app: gateway
+       app: gateway-service
    template:
      metadata:
        labels:
-         app: gateway
+         app: gateway-service
      spec:
        containers:
-         - name: gateway
+         - name: gateway-service
            image: zlxldgus123/gateway-service:100
            ports:
              - containerPort: 8080
