@@ -1,21 +1,21 @@
  apiVersion: apps/v1
  kind: Deployment
  metadata:
-   name: spring-cloud-gateway
+   name: gateway-service
    namespace: backcd
  spec:
    replicas: 2
    selector:
      matchLabels:
-       app: spring-cloud-gateway
+       app: gateway
    template:
      metadata:
        labels:
-         app: spring-cloud-gateway
+         app: gateway
      spec:
        containers:
-         - name: spring-cloud-gateway
-           image: zlxldgus123/gateway:1
+         - name: gateway
+           image: zlxldgus123/gateway-service:94
            ports:
              - containerPort: 8080
            env:

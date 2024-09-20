@@ -1,7 +1,7 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: gateway-hpa
+  name: gateway-service-hpa
   namespace: backcd
 spec:
   scaleTargetRef:
