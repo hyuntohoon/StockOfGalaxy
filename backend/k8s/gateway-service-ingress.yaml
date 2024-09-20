@@ -14,14 +14,14 @@ spec:
     - host: ssafy11s.com
       http:
         paths:
-          - path: /api/users
+          - path: /api/user
             pathType: Prefix
             backend:
               service:
                 name: user-service  # 올바른 서비스 이름으로 수정
                 port:
                   number: 80
-          - path: /api/stocks
+          - path: /api/stock
             pathType: Prefix
             backend:
               service:
