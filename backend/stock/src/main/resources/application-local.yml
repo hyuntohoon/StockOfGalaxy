@@ -9,7 +9,7 @@ spring:
     password: ed9658pi
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
@@ -28,7 +28,7 @@ kis:
   appsecret: "q5OxO241o89X0qoz+6i0Zh7+Xvg4nSHEvFdpU7KYJECpnJ4I4L9Lxp56kZVfU3XsKiuRm5FcmFMB5pPEq+RPlLl6pHo3YIPUdX33OZW+tq7VXE89BYwzqCCrqnL+8Efn/srraX6maHl+nPwJOYkn2tjst628ltU0w82nB7l0iDrXBkNXGJY="
   websocket:
     domain: "ws://ops.koreainvestment.com:21000"
-    approval_key: "834c198c-b92c-40a3-b5b4-25399ca125aa"
+    approval_key: "25b57418-f962-4287-b815-5e8114506c69"
 
 server:
   error:
