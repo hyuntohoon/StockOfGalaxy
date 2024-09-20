@@ -93,20 +93,81 @@ const ChartTemplate = () => {
     return dataList;
   };
 
-  const updateData = () => {
-    if (chart) {
-      const newData = {
-        timestamp: new Date().getTime(),
-        open: 5020 + Math.random() * 20,
-        high: 5040 + Math.random() * 20,
-        low: 5010 + Math.random() * 20,
-        close: 5030 + Math.random() * 20,
-        volume: Math.round(Math.random() * 100) + 10,
-        turnover: Math.round(Math.random() * 1000) + 100,
+  // -----------------------------------------------
+
+  interface CoinData {
+    market: string;
+    korean_name: string;
+    english_name: string;
+  }
+
+  interface CoinState {
+    currentPrice: number | null;
+    changePrice: number | null;
+    changeRate: number | null;
+  }
+
+  const [coinData, setCoinData] = useState<CoinData[]>([
+    { market: "KRW-BTC", korean_name: "비트코인", english_name: "Bitcoin" },
+  ]);
+
+  useEffect(() => {
+    const sockets: Record<string, WebSocket> = {};
+
+    coinData.forEach((coin) => {
+      const socket = new WebSocket("wss://api.upbit.com/websocket/v1");
+
+      socket.onopen = () => {
+        console.log(`Connected to ${coin.market}`);
+        socket.send(
+          JSON.stringify([
+            { ticket: "UNIQUE_TICKET" },
+            {
+              type: "ticker",
+              codes: [coin.market],
+              isOnlySnapshot: true,
+              isOnlyRealtime: true,
+            },
+            { format: "DEFAULT" },
+          ])
+        );
       };
-      chart.updateData(newData);
-    }
-  };
+
+      socket.onmessage = async (event) => {
+        const data =
+          event.data instanceof Blob ? await event.data.text() : event.data;
+        const jsonData = JSON.parse(data);
+
+        const targetTimestamp = new Date("2024-09-20T09:00:00").getTime();
+
+        chart?.updateData({
+          timestamp: targetTimestamp,
+          // timestamp: jsonData.trade_timestamp,
+
+          open: jsonData.opening_price,
+          high: jsonData.high_price,
+          low: jsonData.low_price,
+          close: jsonData.trade_price,
+          volume: jsonData.acc_trade_volume,
+          turnover: jsonData.acc_trade_price,
+        });
+      };
+
+      socket.onclose = () => {
+        console.log(`Disconnected from ${coin.market}`);
+      };
+
+      sockets[coin.market] = socket;
+    });
+
+    return () => {
+      Object.values(sockets).forEach((socket) => {
+        socket.close();
+      });
+    };
+  }, [chart]);
+
+  // -----------------------------------------------
 
   return (
     <div>
