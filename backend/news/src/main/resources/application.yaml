@@ -16,9 +16,9 @@ spring:
           time_zone: UTC
     show-sql: true
   data:
-    redis:
-      host: redis
-      port: 6379
+#    redis:
+#      host: redis
+#      port: 6379
 
 logging:
   level:
@@ -27,7 +27,7 @@ logging:
         SQL: debug
 
 server:
-  port: 8081  # ?? ??? 8081? ??
+  port: 8080  # ?? ??? 8081? ??
   error:
     include-message: always
     include-binding-errors: always
