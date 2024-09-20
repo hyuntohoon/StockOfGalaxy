@@ -34,7 +34,7 @@ export default function Rocket({ planetRadius }: { planetRadius: number }) {
 
     // 로켓 이미지 로드
     const textureLoader = new THREE.TextureLoader();
-    const rocketTexture = textureLoader.load('/image/rocket2.png');
+    const rocketTexture = textureLoader.load('/images/planet/rocket2.png');
 
     const rocketMaterial = new THREE.SpriteMaterial({ map: rocketTexture });
 
