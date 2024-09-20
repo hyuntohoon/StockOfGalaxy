@@ -27,7 +27,7 @@ logging:
         SQL: debug
 
 server:
-  port: 8081  # 포트 번호를 8081로 변경
+  port: 8080  # 포트 번호를 8081로 변경
   error:
     include-message: always
     include-binding-errors: always

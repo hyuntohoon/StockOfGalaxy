@@ -25,7 +25,7 @@ spring:
 jwt:
   access-token-expiry: 600000    # 10분
   refresh-token-expiry: 86400000 # 1일
-  secret: ${JWT_SECRET}  # 환경 변수로부터 가져옴
+  secret: "3c84e62c46e5438e9d12e28a9876591bc34e4e92a3a489b749ab2d9c9e367d89"  # 환경 변수로부터 가져옴
 
 logging:
   level:
