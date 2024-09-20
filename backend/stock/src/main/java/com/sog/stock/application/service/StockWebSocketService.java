@@ -97,7 +97,6 @@ public class StockWebSocketService {
                 throws Exception {
                 // 메시지 수신 처리
                 String payload = message.getPayload();
-//                System.out.println("Received message: " + payload);
 
                 // 첫번째 응답인지 확인
                 if (!isFirstResponseReceived.get()) {
