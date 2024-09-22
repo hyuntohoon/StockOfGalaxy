@@ -2,6 +2,10 @@ spring:
   cloud:
     gateway:
       routes:
+        - id: gateway-status
+          uri: http://localhost:8080  # Gateway 서비스 자체의 주소
+          predicates:
+              - Path=/status
         - id: user-service
           uri: lb://user-service
           predicates:
