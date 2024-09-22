@@ -1,16 +1,53 @@
-import { useState, useEffect } from "react";
-import styled from "styled-components";
-import StockCurrentPrice from "../../atoms/stock/StockCurrentPrice";
-import StockChange from "../../atoms/stock/StockChange";
+"use client";
 
-const Container = styled.div`
+import { useEffect, useState } from "react";
+import styled from "styled-components";
+import StockHeaderPrice from "../../molecules/stock/StockHeaderPrice";
+import StockHeaderInfo from "../../molecules/stock/StockHeaderInfo";
+
+const ParentContainer = styled.div`
+  width: 50vw;
+  height: 50vh;
+  overflow-y: auto;
+  background-color: #111;
+  color: white;
+  width: 1000px;
+  height: 60px;
+  background-color: #d9d9d9;
+  border-radius: 20px;
+  padding: 15px 20px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
+  margin: 50px;
 `;
 
-const StockPrice = ({ market }) => {
+const Container = styled.div`
+  color: black;
+  width: 1000px;
+  height: 60px;
+  text-align: center;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+interface CoinData {
+  market: string;
+  korean_name: string;
+  english_name: string;
+}
+
+interface CoinState {
+  currentPrice: number | null;
+  changePrice: number | null;
+  changeRate: number | null;
+}
+
+const StockHeaderTemplate = () => {
+  const market = "KRW-BTC";
+
   useEffect(() => {
     const socket = new WebSocket("wss://api.upbit.com/websocket/v1");
 
@@ -61,14 +98,24 @@ const StockPrice = ({ market }) => {
   const [changePrice, setChangePrice] = useState(0);
   const [changeRate, setChangeRate] = useState(0);
 
+  const formatPrice = (price: number) => {
+    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+
   return (
     <>
-      <Container>
-        <StockCurrentPrice currentPrice={price} />
-        <StockChange changePrice={changePrice} changeRate={changeRate} />
-      </Container>
+      <ParentContainer>
+        <Container>
+          <StockHeaderPrice
+            price={price}
+            changePrice={changePrice}
+            changeRate={changeRate}
+          />
+          <StockHeaderInfo />
+        </Container>
+      </ParentContainer>
     </>
   );
 };
 
-export default StockPrice;
+export default StockHeaderTemplate;
