@@ -21,7 +21,6 @@ import lombok.NoArgsConstructor;
 public class Stock {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String stockCode;
 
     @Column(nullable = false)
