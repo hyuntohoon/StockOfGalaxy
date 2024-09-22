@@ -1,28 +1,29 @@
 spring:
   cloud:
     gateway:
+      discovery:
+        locator:
+          enabled: true  # 서비스 디스커버리 활성화
       routes:
         - id: gateway-status
           uri: http://localhost:8080  # Gateway 서비스 자체의 주소
           predicates:
             - Path=/status
         - id: user-service
-          uri: lb://user-service
+          uri: lb://user-service  # Kubernetes의 user-service로 로드 밸런싱
           predicates:
             - Path=/api/user/**
         - id: stock-service
-          uri: lb://stock-service
+          uri: lb://stock-service  # Kubernetes의 stock-service로 로드 밸런싱
           predicates:
             - Path=/api/stock/**
         - id: news-service
-          uri: lb://news-service
+          uri: lb://news-service  # Kubernetes의 news-service로 로드 밸런싱
           predicates:
             - Path=/api/news/**
-#      default-filters:
-#        - JwtAuthFilter  # ?? ??? ?? ??? JWT ?? ??
-#
+
 jwt:
-  secret: "3c84e62c46e5438e9d12e28a9876591bc34e4e92a3a489b749ab2d9c9e367d89"  # Kubernetes Secret?? ???? JWT ???
+  secret: "3c84e62c46e5438e9d12e28a9876591bc34e4e92a3a489b749ab2d9c9e367d89"  # Kubernetes Secret에서 JWT 가져오기
 
 management:
   endpoints:
