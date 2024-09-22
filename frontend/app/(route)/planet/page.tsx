@@ -130,7 +130,7 @@ export default function Home() {
       <RocketButtonGroup />
       <DetailTriangleButtonGuide />
       <DetailTriangleButton />
-      {scene && <Rocket planetRadius={planetRadius} scene={scene} rocketCount={5} />} {/* 로켓에 행성 반지름과 scene 전달 */}
+      {scene && <Rocket planetRadius={planetRadius} scene={scene}/>} {/* 로켓에 행성 반지름과 scene 전달 */}
     </div>
   );
 }
