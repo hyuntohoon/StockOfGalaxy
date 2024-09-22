@@ -18,7 +18,7 @@ spring:
           predicates:
             - Path=/api/stock/**
         - id: news-service
-          uri: lb://news-service  # Kubernetes의 news-service로 로드 밸런싱
+          uri: http://news-service.backcd.svc.cluster.local:80
           predicates:
             - Path=/api/news/**
 
