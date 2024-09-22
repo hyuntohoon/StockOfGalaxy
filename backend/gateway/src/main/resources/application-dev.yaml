@@ -10,11 +10,11 @@ spring:
           predicates:
             - Path=/status
         - id: user-service
-          uri: lb://user-service  # Kubernetes의 user-service로 로드 밸런싱
+          uri: http://user-service.backcd.svc.cluster.local:80
           predicates:
             - Path=/api/user/**
         - id: stock-service
-          uri: lb://stock-service  # Kubernetes의 stock-service로 로드 밸런싱
+          uri: http://stock-service.backcd.svc.cluster.local:80
           predicates:
             - Path=/api/stock/**
         - id: news-service
