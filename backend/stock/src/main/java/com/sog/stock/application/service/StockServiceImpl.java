@@ -1,5 +1,6 @@
 package com.sog.stock.application.service;
 
+import com.sog.stock.domain.dto.StockAddRequestDTO;
 import com.sog.stock.domain.dto.StockDailyPriceListResponseDTO;
 import com.sog.stock.domain.dto.StockDailyPriceResponseDTO;
 import com.sog.stock.domain.model.DailyStockHistory;
@@ -32,5 +33,10 @@ public class StockServiceImpl implements StockService {
 
         // DTO 리스트를 감싸서 반환
         return new StockDailyPriceListResponseDTO(dtoList);
+    }
+
+    @Override
+    public void addStock(StockAddRequestDTO stockAddRequestDTO) {
+
     }
 }
