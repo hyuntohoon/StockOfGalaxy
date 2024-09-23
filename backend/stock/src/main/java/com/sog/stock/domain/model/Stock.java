@@ -7,6 +7,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
@@ -33,7 +34,40 @@ public class Stock {
     private String companyDescription;
 
     @Column(nullable = false)
+    private Integer establishedYear; // YEAR type
+
+    @Column(nullable = false)
+    private String ceo;
+
+    @Column(nullable = false)
+    private String webSite;
+
+    @Column(nullable = false)
+    private Integer fiscalMonth;
+
+    @Column(nullable = false)
     private Boolean isDelisted = false;
+
+    @Column(nullable = false)
+    private Integer dividendYear;
+
+    @Column(nullable = false)
+    private BigDecimal dividendAmount;
+
+    @Column(nullable = false)
+    private Integer dividendFrequency;
+
+    @Column(nullable = false)
+    private BigDecimal totalLiabilities;
+
+    @Column(nullable = false)
+    private BigDecimal totalEquity;
+
+    @Column(nullable = false)
+    private BigDecimal currentAssets;
+
+    @Column(nullable = false)
+    private BigDecimal currentLiabilities;
 
     // 일대다 관계 설정
     @OneToMany(mappedBy = "stock", fetch = FetchType.LAZY)
@@ -45,7 +79,18 @@ public class Stock {
             .stockCode(dto.getStockCode())
             .companyName(dto.getCompanyName())
             .companyDescription(dto.getCompanyDescription())
+            .establishedYear(dto.getEstablishedYear())
+            .ceo(dto.getCeo())
+            .webSite(dto.getWebSite())
+            .fiscalMonth(dto.getFiscalMonth())
             .isDelisted(dto.isDelisted())
+            .dividendYear(dto.getDividendYear())
+            .dividendAmount(dto.getDividendAmount())
+            .dividendFrequency(dto.getDividendFrequency())
+            .totalLiabilities(dto.getTotalLiabilities())
+            .totalEquity(dto.getTotalEquity())
+            .currentAssets(dto.getCurrentAssets())
+            .currentLiabilities(dto.getCurrentLiabilities())
             .build();
     }
 }
