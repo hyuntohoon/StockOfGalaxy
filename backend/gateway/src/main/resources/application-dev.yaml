@@ -36,6 +36,20 @@ spring:
           uri: http://news-service.backcd.svc.cluster.local:80
           predicates:
             - Path=/api/news/**
+        # swagger 설정
+        - id: user-service-swagger
+          uri: http://user-service.backcd.svc.cluster.local:80
+          predicates:
+            - Path=/user-service/v3/api-docs, /user-service/swagger-ui/**
+        - id: stock-service-swagger
+          uri: http://stock-service.backcd.svc.cluster.local:80
+          predicates:
+            - Path=/stock-service/v3/api-docs, /stock-service/swagger-ui/**
+        - id: news-service-swagger
+          uri: http://news-service.backcd.svc.cluster.local:80
+          predicates:
+            - Path=/news-service/v3/api-docs, /news-service/swagger-ui/**
+
 
 jwt:
   secret: "3c84e62c46e5438e9d12e28a9876591bc34e4e92a3a489b749ab2d9c9e367d89"  # Kubernetes Secret에서 JWT 가져오기
