@@ -60,7 +60,7 @@ public class SecurityConfig {
                         CorsConfiguration configuration = new CorsConfiguration();
 
                         configuration.setAllowedOrigins(
-                            Arrays.asList("http://localhost:3000",
+                            Arrays.asList("http://localhost:3000", "http://localhost:3001",
                                 "https://ssafy11s.com", "https://www.ssafy11s.com",
                                 "http://www.ssafy11s.com"));
                         configuration.setAllowedMethods(Collections.singletonList("*"));
