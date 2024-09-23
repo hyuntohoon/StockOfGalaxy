@@ -6,6 +6,6 @@ import lombok.Data;
 @Data
 public class HolidayAddListRequestDTO {
 
-    private List<HolidayAddRequestDTO> holidayList;
+    private List<HolidayAddRequestDTO> holidays;
 
 }

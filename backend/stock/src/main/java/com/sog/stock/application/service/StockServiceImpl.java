@@ -1,10 +1,15 @@
 package com.sog.stock.application.service;
 
+import com.sog.stock.domain.dto.HolidayAddListRequestDTO;
+import com.sog.stock.domain.dto.HolidayAddRequestDTO;
+import com.sog.stock.domain.dto.StockAddListRequestDTO;
 import com.sog.stock.domain.dto.StockAddRequestDTO;
 import com.sog.stock.domain.dto.StockDailyPriceListResponseDTO;
 import com.sog.stock.domain.dto.StockDailyPriceResponseDTO;
 import com.sog.stock.domain.model.DailyStockHistory;
+import com.sog.stock.domain.model.StockHoliday;
 import com.sog.stock.domain.repository.DailyStockHistoryRepository;
+import com.sog.stock.domain.repository.StockHolidayRepository;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,7 +22,7 @@ import org.springframework.stereotype.Service;
 public class StockServiceImpl implements StockService {
 
     private final DailyStockHistoryRepository dailyStockHistoryRepository;
-
+    private final StockHolidayRepository stockHolidayRepository;
 
     @Override
     public StockDailyPriceListResponseDTO getDailyStockHistory(String stockCode) {
@@ -38,5 +43,19 @@ public class StockServiceImpl implements StockService {
     @Override
     public void addStock(StockAddRequestDTO stockAddRequestDTO) {
 
+    }
+
+    @Override
+    public void addStockList(StockAddListRequestDTO stockAddListRequestDTO) {
+
+    }
+
+    @Override
+    public void addHolidayList(HolidayAddListRequestDTO holidayAddListRequestDTO) {
+        // 각 holiday DTO를 StockHoliday 엔티티로 변환 후 저장
+        for (HolidayAddRequestDTO holidayAddRequestDTO : holidayAddListRequestDTO.getHolidays()) {
+            StockHoliday stockHoliday = StockHoliday.fromDTO(holidayAddRequestDTO);
+            stockHolidayRepository.save(stockHoliday);
+        }
     }
 }
