@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface StockHolidayRepository extends JpaRepository<StockHoliday, Integer> {
 
+    // locDate 필드로 공휴일 존재 여부를 확인하는 메서드
+    boolean existsByLocDate(String locDate);
 }

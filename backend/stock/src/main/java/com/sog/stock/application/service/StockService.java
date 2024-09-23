@@ -22,6 +22,8 @@ public interface StockService {
     void addHolidayList(HolidayAddListRequestDTO holidayAddListRequestDTO);
 
     // 공휴일 정보 조회
+    boolean isHoliday(String holidayDate);
+
 
     //
 

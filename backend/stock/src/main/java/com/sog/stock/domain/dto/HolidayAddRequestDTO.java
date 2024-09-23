@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class HolidayAddRequestDTO {
 
-    private String stockDate;
+    private String dateName;
     private String locdate;
 
 }

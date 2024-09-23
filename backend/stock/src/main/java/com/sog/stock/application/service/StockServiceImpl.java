@@ -58,4 +58,9 @@ public class StockServiceImpl implements StockService {
             stockHolidayRepository.save(stockHoliday);
         }
     }
+
+    @Override
+    public boolean isHoliday(String holidayDate) {
+        return stockHolidayRepository.existsByLocDate(holidayDate);
+    }
 }

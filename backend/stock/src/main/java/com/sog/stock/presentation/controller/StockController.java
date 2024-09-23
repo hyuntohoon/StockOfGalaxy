@@ -1,10 +1,15 @@
 package com.sog.stock.presentation.controller;
 
 import com.sog.stock.application.service.StockService;
+import com.sog.stock.domain.dto.HolidayAddListRequestDTO;
 import com.sog.stock.domain.dto.StockDailyPriceListResponseDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,9 +30,21 @@ public class StockController {
 
     // 행성 정보 추가
 
-    // 공휴일 여부 추가
+    // 공휴일 추가
+    @PostMapping("/public/holidays")
+    public ResponseEntity<?> addHolidays(
+        @RequestBody HolidayAddListRequestDTO holidayAddListRequestDTO) {
+        // 서비스 레이어로 전달하여 처리
+        stockService.addHolidayList(holidayAddListRequestDTO);
+        return new ResponseEntity<>("성공적으로 추가 되었습니다.", HttpStatus.OK);
+    }
 
     // 공휴일 확인
+    @GetMapping("/public/holiday/{locDate}")
+    public ResponseEntity<?> isHoliday(@PathVariable String locdate) {
+        boolean isHoliday = stockService.isHoliday(locdate);
+        return new ResponseEntity<>(isHoliday, HttpStatus.OK);
+    }
 
 
 }

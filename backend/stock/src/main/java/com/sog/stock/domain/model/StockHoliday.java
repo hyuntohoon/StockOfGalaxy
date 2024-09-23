@@ -34,7 +34,7 @@ public class StockHoliday {
     // Dto to entity
     public static StockHoliday fromDTO(HolidayAddRequestDTO holidayAddRequestDTO) {
         return StockHoliday.builder()
-            .stockDate(holidayAddRequestDTO.getStockDate())
+            .stockDate(holidayAddRequestDTO.getDateName())
             .locDate(holidayAddRequestDTO.getLocdate())
             .build();
     }
