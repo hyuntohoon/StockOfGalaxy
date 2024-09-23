@@ -13,26 +13,45 @@ spring:
           uri: http://user-service.backcd.svc.cluster.local:80
           predicates:
             - Path=/api/user/**
-        - id: user-service-swagger  # Swagger 경로 수정
+        - id: user-service-swagger
           uri: http://user-service.backcd.svc.cluster.local:80
           predicates:
-            - Path=/api/user/swagger-ui/**
+            - Path=/api/user/swagger-ui/**, /api/user/v3/api-docs/**
+          filters:
+            - RewritePath=/api/user/swagger-ui(?<segment>/?.*), /swagger-ui${segment}
+            - RewritePath=/api/user/v3/api-docs(?<segment>/?.*), /v3/api-docs${segment}
         - id: stock-service
           uri: http://stock-service.backcd.svc.cluster.local:80
           predicates:
             - Path=/api/stock/**
-        - id: stock-service-swagger  # Swagger 경로 수정
+        - id: stock-service-swagger
           uri: http://stock-service.backcd.svc.cluster.local:80
           predicates:
-            - Path=/api/stock/swagger-ui/**
+            - Path=/api/stock/swagger-ui/**, /api/stock/v3/api-docs/**
+          filters:
+            - RewritePath=/api/stock/swagger-ui(?<segment>/?.*), /swagger-ui${segment}
+            - RewritePath=/api/stock/v3/api-docs(?<segment>/?.*), /v3/api-docs${segment}
         - id: news-service
           uri: http://news-service.backcd.svc.cluster.local:80
           predicates:
             - Path=/api/news/**
-        - id: news-service-swagger  # Swagger 경로 수정
+        - id: news-service-swagger
           uri: http://news-service.backcd.svc.cluster.local:80
           predicates:
-            - Path=/api/news/swagger-ui/**
+            - Path=/api/news/swagger-ui/**, /api/news/v3/api-docs/**
+          filters:
+            - RewritePath=/api/news/swagger-ui(?<segment>/?.*), /swagger-ui${segment}
+            - RewritePath=/api/news/v3/api-docs(?<segment>/?.*), /v3/api-docs${segment}
+
+springdoc:
+  swagger-ui:
+    urls:
+      - name: User API
+        url: /api/user/v3/api-docs
+      - name: Stock API
+        url: /api/stock/v3/api-docs
+      - name: News API
+        url: /api/news/v3/api-docs
 
 jwt:
   secret: "3c84e62c46e5438e9d12e28a9876591bc34e4e92a3a489b749ab2d9c9e367d89"  # Kubernetes Secret에서 JWT 가져오기
