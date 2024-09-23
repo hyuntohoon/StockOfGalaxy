@@ -15,6 +15,8 @@ spring:
           uri: http://localhost:8080
           predicates:
             - Path=/swagger-ui/**
+          filters:
+            - RewritePath=/swagger-ui(?<path>.*), /swagger-ui.html
         - id: gateway-status
           uri: http://localhost:8080  # Gateway 서비스 자체의 주소
           predicates:
