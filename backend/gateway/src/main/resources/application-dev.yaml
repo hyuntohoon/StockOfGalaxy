@@ -16,7 +16,7 @@ spring:
           predicates:
             - Path=/swagger-ui/**
           filters:
-            - RewritePath=/swagger-ui(?<path>.*), /swagger-ui.html
+            - RewritePath=/swagger-ui(?<path>.*), /swagger-ui.html  # swagger-ui 경로 재작성
         - id: gateway-status
           uri: http://localhost:8080  # Gateway 서비스 자체의 주소
           predicates:
@@ -26,21 +26,18 @@ spring:
           predicates:
             - Path=/api/user/**,/user/v3/api-docs/**
           filters:
-            - RewritePath=/api/user/(?<segment>.*), /$\{segment}
             - RewritePath=/user/v3/api-docs/(?<path>.*), /v3/api-docs/$\{path}
         - id: stock-service
           uri: http://stock-service.backcd.svc.cluster.local:80
           predicates:
             - Path=/api/stock/**,/stock/v3/api-docs/**
           filters:
-            - RewritePath=/api/stock/(?<segment>.*), /$\{segment}
             - RewritePath=/stock/v3/api-docs/(?<path>.*), /v3/api-docs/$\{path}
         - id: news-service
           uri: http://news-service.backcd.svc.cluster.local:80
           predicates:
             - Path=/api/news/**,/news/v3/api-docs/**
           filters:
-            - RewritePath=/api/news/(?<segment>.*), /$\{segment}
             - RewritePath=/news/v3/api-docs/(?<path>.*), /v3/api-docs/$\{path}
 
 springdoc:
