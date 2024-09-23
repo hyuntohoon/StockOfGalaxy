@@ -3,6 +3,8 @@ package com.sog.stock.application.service;
 import com.sog.stock.domain.dto.HolidayAddListRequestDTO;
 import com.sog.stock.domain.dto.HolidayAddRequestDTO;
 import com.sog.stock.domain.dto.RocketAddRequestDTO;
+import com.sog.stock.domain.dto.RocketResponseDTO;
+import com.sog.stock.domain.dto.RocketResponseListDTO;
 import com.sog.stock.domain.dto.StockAddListRequestDTO;
 import com.sog.stock.domain.dto.StockDTO;
 import com.sog.stock.domain.dto.StockDailyPriceListResponseDTO;
@@ -86,6 +88,42 @@ public class StockServiceImpl implements StockService {
         return stockHolidayRepository.existsByLocDate(holidayDate);
     }
 
+    // 로켓 전체 조회 -> 같은 주식 코드로 연결된 로켓 리스트
+//    @Override
+//    public RocketResponseListDTO getAllRocketsByStockCode(String stockCode) {
+//        Stock stock = stockRepository.findById(stockCode)
+//            .orElseThrow(() -> new RuntimeException("Stock not found"));
+//
+//        // rocket에 memberId로 user서버에 사용자 정보 조회해와서 표시.
+//        List<RocketResponseDTO> rocketList = rocketRepository.findByStock(stock).stream()
+//            .map(rocket -> {
+//                return RocketResponseDTO.builder()
+//                    .nickname(rocket.getNickname())
+//                    .characterType(rocket.getCharacterType())
+//                    .createdAt(rocket.getRocketCreatedAt())
+//                    .message(rocket.getContent())
+//                    .price(rocket.getStockPrice())
+//                    .build();
+//            })
+//            .collect(Collectors.toList());
+//
+//        return new RocketResponseListDTO(rocketList);
+//    }
+//
+//    // 로켓 개별 조회
+//    @Override
+//    public RocketResponseDTO getRocketById(int rocketId) {
+//        return rocketRepository.findById(rocketId)
+//            .map(rocket -> RocketResponseDTO.builder()
+//                .nickname(rocket.getNickname())
+//                .characterType(rocket.getCharacterType())
+//                .createdAt(rocket.getRocketCreatedAt())
+//                .message(rocket.getContent())
+//                .price(rocket.getStockPrice())
+//                .build())
+//            .orElseThrow(() -> new RuntimeException("Rocket not found"));
+//    }
+//
     @Override
     public boolean deleteRocket(int rocketId, Long memberId) {
         // 로켓 조회 후 memberId 확인

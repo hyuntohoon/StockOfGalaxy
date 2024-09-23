@@ -38,6 +38,7 @@ public class RocketController {
     }
 
     // 로켓 작성
+    // memberId, nickname은 user서버 요청해서 받아와야됨(추후 수정)
     @PostMapping
     public ResponseEntity<?> addRocket(@RequestBody RocketAddRequestDTO rocketAddRequestDTO) {
         stockService.addRocket(rocketAddRequestDTO);
