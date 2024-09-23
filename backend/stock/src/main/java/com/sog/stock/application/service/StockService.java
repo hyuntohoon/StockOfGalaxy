@@ -1,6 +1,7 @@
 package com.sog.stock.application.service;
 
 import com.sog.stock.domain.dto.HolidayAddListRequestDTO;
+import com.sog.stock.domain.dto.RocketAddRequestDTO;
 import com.sog.stock.domain.dto.StockAddListRequestDTO;
 import com.sog.stock.domain.dto.StockDTO;
 import com.sog.stock.domain.dto.StockDailyPriceListResponseDTO;
@@ -38,5 +39,6 @@ public interface StockService {
     // 로켓 삭제
 
     // 로켓 작성
+    void addRocket(RocketAddRequestDTO rocketAddRequestDTO);
 
 }

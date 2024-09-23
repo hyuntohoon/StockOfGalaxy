@@ -1,5 +1,6 @@
 package com.sog.stock.domain.model;
 
+import com.sog.stock.domain.dto.RocketAddRequestDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -30,7 +31,7 @@ public class Rocket {
     private Integer rocketId;
 
     @Column(nullable = false)
-    private LocalDate dailyStockHistoryDate = LocalDate.now();
+    private LocalDate dailyStockHistoryDate;
 
     @Column(nullable = false)
     private String content;
@@ -51,5 +52,16 @@ public class Rocket {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "stock_code", nullable = false)
     private Stock stock;
+
+    // dto to entity
+    public static Rocket fromDTO(RocketAddRequestDTO rocketAddRequestDTO) {
+        return Rocket.builder()
+            .memberId(rocketAddRequestDTO.getMemberId())
+            .content(rocketAddRequestDTO.getMessage())
+            .stockPrice(rocketAddRequestDTO.getPrice())
+            .rocketCreatedAt(rocketAddRequestDTO.getCreatedAt())
+            .isDeleted(false)
+            .build();
+    }
 
 }
