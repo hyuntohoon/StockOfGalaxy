@@ -19,8 +19,5 @@ public class StockDTO {
     private int dividendYear;
     private BigDecimal dividendAmount;
     private int dividendFrequency;
-    private BigDecimal totalLiabilities;  // BigDecimal 타입 사용
-    private BigDecimal totalEquity;  // BigDecimal 타입 사용
-    private BigDecimal currentAssets;  // BigDecimal 타입 사용
-    private BigDecimal currentLiabilities;
+
 }

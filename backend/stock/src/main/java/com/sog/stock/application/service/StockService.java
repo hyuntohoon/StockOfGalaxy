@@ -27,5 +27,16 @@ public interface StockService {
     // 공휴일 정보 조회
     boolean isHoliday(String holidayDate);
 
+    /*
+     * 로켓 관련
+     * */
+
+    // 로켓 전체 조회
+
+    // 로켓 상세 조회
+
+    // 로켓 삭제
+
+    // 로켓 작성
 
 }

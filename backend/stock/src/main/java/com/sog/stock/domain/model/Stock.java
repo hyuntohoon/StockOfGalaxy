@@ -76,6 +76,9 @@ public class Stock {
     @OneToMany(mappedBy = "stock", fetch = FetchType.LAZY)
     private List<Rocket> rockets = new ArrayList<>();
 
+    @OneToMany(mappedBy = "stock", fetch = FetchType.LAZY)
+    private List<FinancialStatements> financialStatements = new ArrayList<>();
+
     // Dto to entity
     public static Stock fromDTO(StockDTO dto) {
         return Stock.builder()
@@ -90,10 +93,6 @@ public class Stock {
             .dividendYear(dto.getDividendYear())
             .dividendAmount(dto.getDividendAmount())
             .dividendFrequency(dto.getDividendFrequency())
-            .totalLiabilities(dto.getTotalLiabilities())
-            .totalEquity(dto.getTotalEquity())
-            .currentAssets(dto.getCurrentAssets())
-            .currentLiabilities(dto.getCurrentLiabilities())
             .build();
     }
 
@@ -111,10 +110,6 @@ public class Stock {
             .dividendYear(this.dividendYear)
             .dividendAmount(this.dividendAmount)
             .dividendFrequency(this.dividendFrequency)
-            .totalLiabilities(this.totalLiabilities)
-            .totalEquity(this.totalEquity)
-            .currentAssets(this.currentAssets)
-            .currentLiabilities(this.currentLiabilities)
             .build();
     }
 
