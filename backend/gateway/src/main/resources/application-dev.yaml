@@ -13,26 +13,32 @@ spring:
           uri: http://user-service.backcd.svc.cluster.local:80
           predicates:
             - Path=/api/user/**
-        - id: user-service-swagger  # Swagger 경로 수정
+        - id: user-service-swagger
           uri: http://user-service.backcd.svc.cluster.local:80
           predicates:
             - Path=/api/user/swagger-ui/**
+          filters:
+            - RewritePath=/api/user/swagger-ui(?<segment>/?.*), /swagger-ui${segment}  # Swagger UI 경로 재작성
         - id: stock-service
           uri: http://stock-service.backcd.svc.cluster.local:80
           predicates:
             - Path=/api/stock/**
-        - id: stock-service-swagger  # Swagger 경로 수정
+        - id: stock-service-swagger
           uri: http://stock-service.backcd.svc.cluster.local:80
           predicates:
             - Path=/api/stock/swagger-ui/**
+          filters:
+            - RewritePath=/api/stock/swagger-ui(?<segment>/?.*), /swagger-ui${segment}  # Swagger UI 경로 재작성
         - id: news-service
           uri: http://news-service.backcd.svc.cluster.local:80
           predicates:
             - Path=/api/news/**
-        - id: news-service-swagger  # Swagger 경로 수정
+        - id: news-service-swagger
           uri: http://news-service.backcd.svc.cluster.local:80
           predicates:
             - Path=/api/news/swagger-ui/**
+          filters:
+            - RewritePath=/api/news/swagger-ui(?<segment>/?.*), /swagger-ui${segment}  # Swagger UI 경로 재작성
 
 jwt:
   secret: "3c84e62c46e5438e9d12e28a9876591bc34e4e92a3a489b749ab2d9c9e367d89"  # Kubernetes Secret에서 JWT 가져오기
