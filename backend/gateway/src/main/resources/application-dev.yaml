@@ -24,32 +24,46 @@ spring:
           uri: http://localhost:8080  # Gateway 서비스 자체의 주소
           predicates:
             - Path=/status
+
         - id: user-service
           uri: http://user-service.backcd.svc.cluster.local:80
           predicates:
             - Path=/api/user/**
+
         - id: stock-service
           uri: http://stock-service.backcd.svc.cluster.local:80
           predicates:
             - Path=/api/stock/**
+
         - id: news-service
           uri: http://news-service.backcd.svc.cluster.local:80
           predicates:
             - Path=/api/news/**
-        # swagger 설정
+
+        # Swagger 경로 설정
         - id: user-service-swagger
           uri: http://user-service.backcd.svc.cluster.local:80
           predicates:
-            - Path=/user-service/v3/api-docs, /user-service/swagger-ui/**
+            - Path=/user-service/v3/api-docs
+            - Path=/user-service/swagger-ui/**
+          filters:
+            - RewritePath=/user-service(?<segment>/.*), $\\{segment}
+
         - id: stock-service-swagger
           uri: http://stock-service.backcd.svc.cluster.local:80
           predicates:
-            - Path=/stock-service/v3/api-docs, /stock-service/swagger-ui/**
+            - Path=/stock-service/v3/api-docs
+            - Path=/stock-service/swagger-ui/**
+          filters:
+            - RewritePath=/stock-service(?<segment>/.*), $\\{segment}
+
         - id: news-service-swagger
           uri: http://news-service.backcd.svc.cluster.local:80
           predicates:
-            - Path=/news-service/v3/api-docs, /news-service/swagger-ui/**
-
+            - Path=/news-service/v3/api-docs
+            - Path=/news-service/swagger-ui/**
+          filters:
+            - RewritePath=/news-service(?<segment>/.*), $\\{segment}
 
 jwt:
   secret: "3c84e62c46e5438e9d12e28a9876591bc34e4e92a3a489b749ab2d9c9e367d89"  # Kubernetes Secret에서 JWT 가져오기
