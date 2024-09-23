@@ -1,5 +1,6 @@
 package com.sog.stock.domain.model;
 
+import com.sog.stock.domain.dto.RocketAddRequestDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -9,7 +10,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -30,9 +30,6 @@ public class Rocket {
     private Integer rocketId;
 
     @Column(nullable = false)
-    private LocalDate dailyStockHistoryDate = LocalDate.now();
-
-    @Column(nullable = false)
     private String content;
 
     @Column(nullable = false)
@@ -51,5 +48,10 @@ public class Rocket {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "stock_code", nullable = false)
     private Stock stock;
+
+    // 소프트 삭제 처리 메서드 (필드 상태만 변경)
+    public void markAsDeleted() {
+        this.isDeleted = true;  // 상태만 변경
+    }
 
 }
