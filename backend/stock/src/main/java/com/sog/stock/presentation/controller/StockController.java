@@ -29,7 +29,7 @@ public class StockController {
     }
 
     // 행성 정보 조회
-    @GetMapping("/public/stock/{stockCode}")
+    @GetMapping("/public/{stockCode}")
     public ResponseEntity<?> getStockInfo(@PathVariable String stockCode) {
         StockDTO stockDTO = stockService.searchStock(stockCode);
         if (stockDTO != null) {
@@ -40,9 +40,16 @@ public class StockController {
     }
 
     // 행성 추가 - list
-    @PostMapping("/public/stocks")
+    @PostMapping("/public/planets")
     public ResponseEntity<?> addStocks(@RequestBody StockAddListRequestDTO stockAddListRequestDTO) {
         stockService.addStockList(stockAddListRequestDTO);
+        return new ResponseEntity<>("Stocks added successfully", HttpStatus.OK);
+    }
+
+    // 행성 추가 - 개별
+    @PostMapping("/public/planet")
+    public ResponseEntity<?> addStock(@RequestBody StockDTO addStock) {
+        stockService.addStock(addStock);
         return new ResponseEntity<>("Stocks added successfully", HttpStatus.OK);
     }
 
@@ -62,5 +69,9 @@ public class StockController {
         return new ResponseEntity<>(isHoliday, HttpStatus.OK);
     }
 
+
+    /*
+    * 로켓 관련 api
+    * */
 
 }

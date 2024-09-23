@@ -23,6 +23,4 @@ public class StockDTO {
     private BigDecimal totalEquity;  // BigDecimal 타입 사용
     private BigDecimal currentAssets;  // BigDecimal 타입 사용
     private BigDecimal currentLiabilities;
-
-
 }
