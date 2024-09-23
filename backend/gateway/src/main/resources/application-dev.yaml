@@ -16,7 +16,7 @@ spring:
           predicates:
             - Path=/swagger-ui/**
           filters:
-            - RewritePath=/swagger-ui(?<path>.*), /swagger-ui.html  # swagger-ui 경로 재작성
+            - RewritePath=/swagger-ui(?<path>.*), /swagger-ui/index.html
         - id: gateway-status
           uri: http://localhost:8080  # Gateway 서비스 자체의 주소
           predicates:
@@ -42,7 +42,7 @@ spring:
 
 springdoc:
   swagger-ui:
-    path: /swagger-ui.html
+    path: /swagger-ui/index.html
     urls:
       - url: /v3/api-docs/user
         name: User API
