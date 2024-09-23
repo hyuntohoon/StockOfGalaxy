@@ -193,7 +193,7 @@ const FinancialMetricsChart = () => {
     responsive: true,
     plugins: {
       legend: {
-        position: "top",
+        position: "center",
       },
       title: {
         display: true,
@@ -204,7 +204,7 @@ const FinancialMetricsChart = () => {
 
   return (
     <Container>
-      <Bar data={data} options={options} />
+      <Bar data={data} />
     </Container>
   );
 };

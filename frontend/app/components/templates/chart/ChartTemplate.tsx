@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { init } from "klinecharts";
 import styled from "styled-components";
 
+import useCoinWebSocket from "@/app/hooks/useCoinWebSocket";
+
 const ChartContainer = styled.div`
   width: 500px;
   height: 300px;
@@ -25,11 +27,9 @@ const Option = styled.div`
 `;
 
 const ChartTemplate = () => {
-  // useState로 chartContainerRef를 관리
   const [chartContainerRef, setChartContainerRef] = useState(null);
   const [chart, setChart] = useState<any>(null);
 
-  // DOM이 설정된 후 chart 초기화
   useEffect(() => {
     if (chartContainerRef) {
       const newChart = init(chartContainerRef);
@@ -52,9 +52,8 @@ const ChartTemplate = () => {
 
       setChart(newChart);
     }
-  }, [chartContainerRef]); // chartContainerRef가 변경될 때 초기화 실행
+  }, [chartContainerRef]);
 
-  // 데이터 생성 함수
   const genData = (
     interval,
     timestamp = new Date().getTime(),
@@ -93,8 +92,6 @@ const ChartTemplate = () => {
     return dataList;
   };
 
-  // -----------------------------------------------
-
   interface CoinData {
     market: string;
     korean_name: string;
@@ -107,67 +104,7 @@ const ChartTemplate = () => {
     changeRate: number | null;
   }
 
-  const [coinData, setCoinData] = useState<CoinData[]>([
-    { market: "KRW-BTC", korean_name: "비트코인", english_name: "Bitcoin" },
-  ]);
-
-  useEffect(() => {
-    const sockets: Record<string, WebSocket> = {};
-
-    coinData.forEach((coin) => {
-      const socket = new WebSocket("wss://api.upbit.com/websocket/v1");
-
-      socket.onopen = () => {
-        console.log(`Connected to ${coin.market}`);
-        socket.send(
-          JSON.stringify([
-            { ticket: "UNIQUE_TICKET" },
-            {
-              type: "ticker",
-              codes: [coin.market],
-              isOnlySnapshot: true,
-              isOnlyRealtime: true,
-            },
-            { format: "DEFAULT" },
-          ])
-        );
-      };
-
-      socket.onmessage = async (event) => {
-        const data =
-          event.data instanceof Blob ? await event.data.text() : event.data;
-        const jsonData = JSON.parse(data);
-
-        const targetTimestamp = new Date("2024-09-20T09:00:00").getTime();
-
-        chart?.updateData({
-          timestamp: targetTimestamp,
-          // timestamp: jsonData.trade_timestamp,
-
-          open: jsonData.opening_price,
-          high: jsonData.high_price,
-          low: jsonData.low_price,
-          close: jsonData.trade_price,
-          volume: jsonData.acc_trade_volume,
-          turnover: jsonData.acc_trade_price,
-        });
-      };
-
-      socket.onclose = () => {
-        console.log(`Disconnected from ${coin.market}`);
-      };
-
-      sockets[coin.market] = socket;
-    });
-
-    return () => {
-      Object.values(sockets).forEach((socket) => {
-        socket.close();
-      });
-    };
-  }, [chart]);
-
-  // -----------------------------------------------
+  useCoinWebSocket("KRW-BTC", chart);
 
   return (
     <div>
