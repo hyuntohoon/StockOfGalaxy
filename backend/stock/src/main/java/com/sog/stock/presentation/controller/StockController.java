@@ -2,6 +2,8 @@ package com.sog.stock.presentation.controller;
 
 import com.sog.stock.application.service.StockService;
 import com.sog.stock.domain.dto.HolidayAddListRequestDTO;
+import com.sog.stock.domain.dto.StockAddListRequestDTO;
+import com.sog.stock.domain.dto.StockDTO;
 import com.sog.stock.domain.dto.StockDailyPriceListResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,9 +28,23 @@ public class StockController {
         return stockService.getDailyStockHistory(stockCode);
     }
 
-    // 행성정보조회
+    // 행성 정보 조회
+    @GetMapping("/public/stock/{stockCode}")
+    public ResponseEntity<?> getStockInfo(@PathVariable String stockCode) {
+        StockDTO stockDTO = stockService.searchStock(stockCode);
+        if (stockDTO != null) {
+            return new ResponseEntity<>(stockDTO, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Stock not found", HttpStatus.NOT_FOUND);
+        }
+    }
 
-    // 행성 정보 추가
+    // 행성 추가 - list
+    @PostMapping("/public/stocks")
+    public ResponseEntity<?> addStocks(@RequestBody StockAddListRequestDTO stockAddListRequestDTO) {
+        stockService.addStockList(stockAddListRequestDTO);
+        return new ResponseEntity<>("Stocks added successfully", HttpStatus.OK);
+    }
 
     // 공휴일 추가
     @PostMapping("/public/holidays")

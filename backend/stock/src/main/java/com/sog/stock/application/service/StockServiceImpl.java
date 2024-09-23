@@ -3,13 +3,15 @@ package com.sog.stock.application.service;
 import com.sog.stock.domain.dto.HolidayAddListRequestDTO;
 import com.sog.stock.domain.dto.HolidayAddRequestDTO;
 import com.sog.stock.domain.dto.StockAddListRequestDTO;
-import com.sog.stock.domain.dto.StockAddRequestDTO;
+import com.sog.stock.domain.dto.StockDTO;
 import com.sog.stock.domain.dto.StockDailyPriceListResponseDTO;
 import com.sog.stock.domain.dto.StockDailyPriceResponseDTO;
 import com.sog.stock.domain.model.DailyStockHistory;
+import com.sog.stock.domain.model.Stock;
 import com.sog.stock.domain.model.StockHoliday;
 import com.sog.stock.domain.repository.DailyStockHistoryRepository;
 import com.sog.stock.domain.repository.StockHolidayRepository;
+import com.sog.stock.domain.repository.StockRepository;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,6 +25,7 @@ public class StockServiceImpl implements StockService {
 
     private final DailyStockHistoryRepository dailyStockHistoryRepository;
     private final StockHolidayRepository stockHolidayRepository;
+    private final StockRepository stockRepository;
 
     @Override
     public StockDailyPriceListResponseDTO getDailyStockHistory(String stockCode) {
@@ -41,13 +44,27 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public void addStock(StockAddRequestDTO stockAddRequestDTO) {
-
+    public void addStockList(StockAddListRequestDTO stockAddListRequestDTO
+    ) {
+        // 각 stockDTO를 stock entity로 변환후 저장
+        for (StockDTO addStock : stockAddListRequestDTO.getStocks()) {
+            Stock stock = Stock.fromDTO(addStock);
+            stockRepository.save(stock);
+        }
     }
 
     @Override
-    public void addStockList(StockAddListRequestDTO stockAddListRequestDTO) {
+    public void addStock(StockDTO stockAddRequest) {
+        Stock stock = Stock.fromDTO(stockAddRequest);
+        stockRepository.save(stock);
+    }
 
+    @Override
+    public StockDTO searchStock(String stockCode) {
+        Stock stock = stockRepository.findById(stockCode)
+            .orElseThrow(() -> new RuntimeException("행성을 찾을 수 없습니다."));
+
+        return stock.toDTO();
     }
 
     @Override

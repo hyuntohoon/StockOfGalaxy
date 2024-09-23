@@ -1,6 +1,6 @@
 package com.sog.stock.domain.model;
 
-import com.sog.stock.domain.dto.StockAddRequestDTO;
+import com.sog.stock.domain.dto.StockDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -74,7 +74,7 @@ public class Stock {
     private List<DailyStockHistory> dailyStockHistories = new ArrayList<>();
 
     // Dto to entity
-    public static Stock fromDTO(StockAddRequestDTO dto) {
+    public static Stock fromDTO(StockDTO dto) {
         return Stock.builder()
             .stockCode(dto.getStockCode())
             .companyName(dto.getCompanyName())
@@ -93,4 +93,26 @@ public class Stock {
             .currentLiabilities(dto.getCurrentLiabilities())
             .build();
     }
+
+    // entity to dto
+    public StockDTO toDTO() {
+        return StockDTO.builder()
+            .stockCode(this.stockCode)
+            .companyName(this.companyName)
+            .companyDescription(this.companyDescription)
+            .establishedYear(this.establishedYear)
+            .ceo(this.ceo)
+            .webSite(this.webSite)
+            .fiscalMonth(this.fiscalMonth)
+            .isDelisted(this.isDelisted)
+            .dividendYear(this.dividendYear)
+            .dividendAmount(this.dividendAmount)
+            .dividendFrequency(this.dividendFrequency)
+            .totalLiabilities(this.totalLiabilities)
+            .totalEquity(this.totalEquity)
+            .currentAssets(this.currentAssets)
+            .currentLiabilities(this.currentLiabilities)
+            .build();
+    }
+
 }

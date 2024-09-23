@@ -6,6 +6,6 @@ import lombok.Data;
 @Data
 public class StockAddListRequestDTO {
 
-    List<StockAddRequestDTO> stockAddRequestDTOList;
+    List<StockDTO> stocks;
 
 }

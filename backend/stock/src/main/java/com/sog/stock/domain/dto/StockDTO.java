@@ -1,12 +1,12 @@
 package com.sog.stock.domain.dto;
 
-import com.sog.stock.domain.model.Stock;
 import java.math.BigDecimal;
 import lombok.Builder;
 import lombok.Data;
 
 @Data
-public class StockAddRequestDTO {
+@Builder
+public class StockDTO {
 
     private String stockCode;
     private String companyName;
