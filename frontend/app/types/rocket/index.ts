@@ -8,3 +8,5 @@ export interface RocketData {
   createdAt: string;
   imageUrl: string;
 }
+
+// todo: imageUrl -> characterType(number) 로 변경해야 함

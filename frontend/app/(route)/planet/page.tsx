@@ -11,9 +11,86 @@ import PlanetSimpleInfoCard from '@/app/components/molecules/Card/PlanetSimpleIn
 import DetailTriangleButtonGuide from '@/app/components/atoms/Text/DetailTriangleButtonGuide';
 import Rocket from '@/app/components/atoms/Button/Rocket';
 import RocketModal from '@/app/components/organisms/Modal/RocketModal';
+import { RocketData } from '@/app/types/rocket';
 
-let renderer: THREE.WebGLRenderer; // 전역으로 선언
-let camera: THREE.PerspectiveCamera; // 전역으로 선언
+let renderer: THREE.WebGLRenderer;
+let camera: THREE.PerspectiveCamera;
+
+// 임시 댓글 데이터
+// todo: imageUrl -> characterType(number) 로 변경해야 함
+const tempData: RocketData[] = [
+  {
+    userId: 1,
+    nickname: '참1',
+    price: '715200',
+    priceChangeSign: '-',
+    priceChange: '0.04',
+    message: '응 절대 안 올라 평생 버텨봐~우오오ㅇ아~우오오~우오오~우오오ㅇdddddfasdfasdf아아아아',
+    createdAt: "2024.08.29 11:23",
+    imageUrl: '/images/rocket/profile2.png'
+  },
+  {
+    userId: 2,
+    nickname: '참2',
+    price: '715100',
+    priceChangeSign: '+',
+    priceChange: '0.02',
+    message: '절대 안 올라~ 버텨~ 우오오ㅇ아!',
+    createdAt: "2024.08.29 12:00",
+    imageUrl: '/images/rocket/profile2.png'
+  },
+  {
+    userId: 3,
+    nickname: '참3',
+    price: '714200',
+    priceChangeSign: '+',
+    priceChange: '0.07',
+    message: '아무리 기다려도 오르지 않을걸~',
+    createdAt: "2024.08.29 12:30",
+    imageUrl: '/images/rocket/profile2.png'
+  },
+  {
+    userId: 4,
+    nickname: '참4',
+    price: '716200',
+    priceChangeSign: '-',
+    priceChange: '0.02',
+    message: '이거는 진짜 안 올라!',
+    createdAt: "2024.08.29 13:00",
+    imageUrl: '/images/rocket/profile2.png'
+  },
+  {
+    userId: 5,
+    nickname: '참5',
+    price: '715900',
+    priceChangeSign: '-',
+    priceChange: '0.02',
+    message: '버텨봐도 소용없어~',
+    createdAt: "2024.08.29 13:30",
+    imageUrl: '/images/rocket/profile2.png'
+  },
+  {
+    userId: 6,
+    nickname: '참6',
+    price: '715200',
+    priceChangeSign: '+',
+    priceChange: '0.02',
+    message: '우오오~ 이건 절대 오르지 않아!',
+    createdAt: "2024.08.29 14:00",
+    imageUrl: '/images/rocket/profile2.png'
+  },
+  {
+    userId: 7,
+    nickname: '참7',
+    price: '715200',
+    priceChangeSign: '+',
+    priceChange: '0.02',
+    message: '포기해~ 올라갈 리가 없어!',
+    createdAt: "2024.08.29 14:30",
+    imageUrl: '/images/rocket/profile2.png'
+  }
+];
+
 
 export default function Home() {
   const mountRef = useRef<HTMLDivElement>(null);
@@ -80,9 +157,9 @@ export default function Home() {
       newScene.add(ambientLight);
 
       const lights: THREE.DirectionalLight[] = [];
-      lights[0] = new THREE.DirectionalLight(0xffffff, 1);
-      lights[1] = new THREE.DirectionalLight(0xffffff, 1);
-      lights[2] = new THREE.DirectionalLight(0x122486, 1);
+      lights[0] = new THREE.DirectionalLight(0xffffff, 0.5);
+      lights[1] = new THREE.DirectionalLight(0xffffff, 0.3);
+      lights[2] = new THREE.DirectionalLight(0x122486, 0.5);
       lights[0].position.set(1, 0, 0);
       lights[1].position.set(0.75, 1, 0.5);
       lights[2].position.set(-0.75, -1, 0.5);
@@ -101,8 +178,8 @@ export default function Home() {
       function animate() {
         requestAnimationFrame(animate);
 
-        stars.rotation.y -= 0.0007; // 별들이 천천히 회전
-        circle.rotation.y -= 0.002; // 행성 회전
+        stars.rotation.y -= 0.001; // 별들이 천천히 회전
+        circle.rotation.y -= 0.004; // 행성 회전
 
         renderer.clear();
         renderer.render(newScene, camera);
@@ -130,7 +207,7 @@ export default function Home() {
         <PlanetSimpleInfoCard />
         <TimeMachineButtonGroup />
         <RocketButtonGroup onRocketClick={() => setIsRocketModalOpen(true)} />
-        {scene && <Rocket scene={scene}/>} {/* 로켓에 scene 전달 */}
+        {scene && <Rocket scene={scene} rocketData={tempData}/>}
         {isRocketModalOpen && <RocketModal onClose={() => setIsRocketModalOpen(false)} />}
       </RecoilRoot>
       <DetailTriangleButton />

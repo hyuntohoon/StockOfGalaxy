@@ -3,9 +3,12 @@
 import React, { useEffect, useState, useRef } from 'react';
 import * as THREE from 'three';
 import RocketCardModal from '@/app/components/organisms/Modal/RocketCardModal';
+import { RocketData } from '@/app/types/rocket';
+import { throttle } from 'lodash';
 
 interface RocketProps {
   scene: THREE.Scene;
+  rocketData: RocketData[];
 }
 
 const fixedPositions = [
@@ -18,18 +21,26 @@ const fixedPositions = [
   { x: 10, y: 10, z: 150 },
 ];
 
-export default function Rockets({ scene }: RocketProps) {
+export default function Rockets({ scene, rocketData }: RocketProps) {
+  const [selectedRocket, setSelectedRocket] = useState<RocketData | null>(null);
   const [hoveredRocket, setHoveredRocket] = useState<THREE.Mesh | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const mountRef = useRef<HTMLDivElement>(null); // 렌더링 요소를 ref로 지정
-  const camera = useRef<THREE.PerspectiveCamera | null>(null); // 카메라 ref 추가
+  const mountRef = useRef<HTMLDivElement>(null);
+  const camera = useRef<THREE.PerspectiveCamera | null>(null);
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setHoveredRocket(null);
+  };
 
   useEffect(() => {
-    if (!mountRef.current) return; // mountRef가 존재하는지 확인
+    if (!mountRef.current) return;
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
     renderer.setSize(window.innerWidth, window.innerHeight);
-    mountRef.current.appendChild(renderer.domElement); // 렌더링할 DOM 요소에 추가
+    mountRef.current.appendChild(renderer.domElement);
 
     camera.current = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.current.position.z = 400;
@@ -43,10 +54,14 @@ export default function Rockets({ scene }: RocketProps) {
       side: THREE.DoubleSide,
     });
 
-    const rockets: THREE.Mesh[] = fixedPositions.map((pos, index) => {
-      const planeGeometry = new THREE.PlaneGeometry(90, 50);
+    const rockets = fixedPositions.map((pos, index) => {
+      const data = rocketData[index];
+      const scaleWidth = Math.random() * 30 + 60;
+      const scaleHeight = (scaleWidth / 7) * 4;
+      const planeGeometry = new THREE.PlaneGeometry(scaleWidth, scaleHeight);
       const rocket = new THREE.Mesh(planeGeometry, rocketMaterial);
       rocket.position.set(pos.x, pos.y, pos.z);
+      rocket.userData = data;
       scene.add(rocket);
       return rocket;
     });
@@ -54,25 +69,28 @@ export default function Rockets({ scene }: RocketProps) {
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
 
-    const onMouseMove = (event: MouseEvent) => {
+    const onMouseMove = throttle((event: MouseEvent) => {
       const rect = renderer.domElement.getBoundingClientRect();
       mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
       mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
-      raycaster.setFromCamera(mouse, camera.current!); // camera 사용
+      raycaster.setFromCamera(mouse, camera.current!);
       camera.current!.updateMatrixWorld();
 
       const intersects = raycaster.intersectObjects(rockets);
 
       if (intersects.length > 0) {
         const intersectedRocket = intersects[0].object as THREE.Mesh;
+        setSelectedRocket(intersectedRocket.userData as RocketData);
         setHoveredRocket(intersectedRocket);
         setIsModalOpen(true);
       } else {
         setHoveredRocket(null);
-        setIsModalOpen(false);
+        if (isModalOpen) {
+          handleCloseModal();
+        }
       }
-    };
+    }, 100);
 
     window.addEventListener('mousemove', onMouseMove);
 
@@ -97,16 +115,17 @@ export default function Rockets({ scene }: RocketProps) {
       mountRef.current?.removeChild(renderer.domElement);
       rockets.forEach(rocket => scene.remove(rocket));
     };
-  }, [scene]);
+  }, [scene, rocketData]);
 
   return (
     <div ref={mountRef} style={{ width: '100%', height: '100vh' }}>
-      {hoveredRocket && isModalOpen && (
+      {hoveredRocket && isModalOpen && selectedRocket && (
         <RocketCardModal
-          onClose={() => setIsModalOpen(false)}
+          onClose={handleCloseModal}
           position={hoveredRocket.position}
-          camera={camera.current!} // 카메라 전달
-          rendererDomElement={mountRef.current?.querySelector('canvas')!} // 렌더러 DOM 전달
+          camera={camera.current!}
+          rendererDomElement={mountRef.current?.querySelector('canvas')!}
+          data={selectedRocket}
         />
       )}
     </div>
