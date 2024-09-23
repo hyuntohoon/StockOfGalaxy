@@ -2,10 +2,10 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: gateway-ingress
-  namespace: backcd  # 네임스페이스를 설정합니다
+  namespace: backcd  # 네임스페이스 설정
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"  # HTTP를 HTTPS로 리다이렉트
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"  # SSL 인증서 사용 시
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"  # SSL 인증서 사용
     kubernetes.io/ingress.class: "nginx"  # NGINX Ingress Controller 사용
 spec:
   tls:
@@ -16,13 +16,15 @@ spec:
     - host: ssafy11s.com
       http:
         paths:
+          # 사용자 API 경로
           - path: /api/user
             pathType: Prefix
             backend:
               service:
-                name: gateway-service  # Gateway 서비스 이름
+                name: gateway-service  # Gateway 서비스
                 port:
                   number: 80
+          # 주식 API 경로
           - path: /api/stock
             pathType: Prefix
             backend:
@@ -30,6 +32,7 @@ spec:
                 name: gateway-service
                 port:
                   number: 80
+          # 뉴스 API 경로
           - path: /api/news
             pathType: Prefix
             backend:
@@ -37,13 +40,15 @@ spec:
                 name: gateway-service
                 port:
                   number: 80
+          # Actuator 엔드포인트
           - path: /actuator/*
             pathType: Prefix
             backend:
               service:
-                name: gateway-service  # Actuator도 Gateway를 통해 노출
+                name: gateway-service
                 port:
                   number: 80
+          # 상태 확인 엔드포인트
           - path: /status
             pathType: Prefix
             backend:
@@ -51,7 +56,7 @@ spec:
                 name: gateway-service
                 port: 
                   number: 80
-          # Swagger UI 및 API 문서를 위한 경로 추가
+          # Swagger UI 및 API 문서 경로
           - path: /user-service/swagger-ui/*
             pathType: Prefix
             backend:
