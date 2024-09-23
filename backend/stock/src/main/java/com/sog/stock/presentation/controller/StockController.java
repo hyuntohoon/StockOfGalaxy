@@ -41,8 +41,8 @@ public class StockController {
 
     // 공휴일 확인
     @GetMapping("/public/holiday/{locDate}")
-    public ResponseEntity<?> isHoliday(@PathVariable String locdate) {
-        boolean isHoliday = stockService.isHoliday(locdate);
+    public ResponseEntity<?> isHoliday(@PathVariable String locDate) {
+        boolean isHoliday = stockService.isHoliday(locDate);
         return new ResponseEntity<>(isHoliday, HttpStatus.OK);
     }
 
