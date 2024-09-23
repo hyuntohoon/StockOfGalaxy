@@ -10,7 +10,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -29,9 +28,6 @@ public class Rocket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer rocketId;
-
-    @Column(nullable = false)
-    private LocalDate dailyStockHistoryDate;
 
     @Column(nullable = false)
     private String content;
@@ -53,15 +49,9 @@ public class Rocket {
     @JoinColumn(name = "stock_code", nullable = false)
     private Stock stock;
 
-    // dto to entity
-    public static Rocket fromDTO(RocketAddRequestDTO rocketAddRequestDTO) {
-        return Rocket.builder()
-            .memberId(rocketAddRequestDTO.getMemberId())
-            .content(rocketAddRequestDTO.getMessage())
-            .stockPrice(rocketAddRequestDTO.getPrice())
-            .rocketCreatedAt(rocketAddRequestDTO.getCreatedAt())
-            .isDeleted(false)
-            .build();
+    // 소프트 삭제 처리 메서드 (필드 상태만 변경)
+    public void markAsDeleted() {
+        this.isDeleted = true;  // 상태만 변경
     }
 
 }

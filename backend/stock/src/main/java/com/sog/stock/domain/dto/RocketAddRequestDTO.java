@@ -7,6 +7,7 @@ import lombok.Data;
 public class RocketAddRequestDTO {
 
     private Long memberId;
+    private String stockCode;
     private String nickname;
     private int price;
     private String message;

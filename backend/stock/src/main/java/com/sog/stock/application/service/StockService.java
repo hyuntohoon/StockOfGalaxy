@@ -37,6 +37,7 @@ public interface StockService {
     // 로켓 상세 조회
 
     // 로켓 삭제
+    boolean deleteRocket(int rocketId, Long memberId);
 
     // 로켓 작성
     void addRocket(RocketAddRequestDTO rocketAddRequestDTO);

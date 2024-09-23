@@ -8,6 +8,7 @@ import com.sog.stock.domain.dto.StockDailyPriceListResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -68,18 +69,4 @@ public class StockController {
         boolean isHoliday = stockService.isHoliday(locDate);
         return new ResponseEntity<>(isHoliday, HttpStatus.OK);
     }
-
-
-    /*
-     * 로켓 관련 api
-     * */
-
-    // 로켓 전체 조회
-
-    // 로켓 상세 조회
-
-    // 로켓 삭제
-
-    // 로켓 작성
-
 }
