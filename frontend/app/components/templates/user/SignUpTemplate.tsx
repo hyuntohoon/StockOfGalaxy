@@ -5,9 +5,7 @@ import LoginImage from "../../atoms/user/LoginImage";
 import SignUpInputGroup from "../../molecules/user/SignUpInputGroup";
 import LoginButton from "../../atoms/user/LoginButton";
 import styled from "styled-components";
-import { signUp } from "../../../utils/user/userAPI";
-import { signUpValidation } from "../../../utils/user/signUpAPI";
-
+import { signUpApi, signUpValidation } from "@/app/utils/apis/users/signup";
 const LoginContainer = styled.div`
   position: absolute;
   top: 50%;
@@ -60,7 +58,7 @@ const SignUpTemplate = () => {
               return;
             }
 
-            signUp({
+            signUpApi({
               userId,
               password,
               nickname,

@@ -8,7 +8,7 @@ import ResetPasswordInputGroup from "../../molecules/user/ResetPasswordInputGrou
 import LoginButton from "../../atoms/user/LoginButton";
 import styled from "styled-components";
 
-import { resetPassword } from "@/app/utils/user/resetPassword";
+import { resetPassword } from "@/app/utils/apis/users/password";
 
 const LoginContainer = styled.div`
   position: absolute;

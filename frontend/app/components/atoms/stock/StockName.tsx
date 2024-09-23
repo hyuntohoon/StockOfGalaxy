@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import starIcon from "@/public/starIcon.png";
 import Image from "next/image";
-import { subscribeStock } from "@/app/utils/stock/subscribeStock";
+import { subscribeStock } from "@/app/utils/libs/stock/subscribeStock";
 
 interface FontSize {
   $fontSize: number;

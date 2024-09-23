@@ -1,6 +1,6 @@
 "use client";
 
-import useAccessToken from "@/app/utils/user/useAccessToken";
+import useAccessToken from "@/app/utils/libs/user/useAccessToken";
 import { useRouter } from "next/navigation";
 import React from "react";
 import styled from "styled-components";

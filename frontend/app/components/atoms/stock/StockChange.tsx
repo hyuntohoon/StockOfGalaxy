@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import formatPrice from "@/app/utils/stock/formatPrice";
+import formatPrice from "@/app/utils/libs/stock/formatPrice";
 
 interface ChangePriceProps {
   $changePrice: number;

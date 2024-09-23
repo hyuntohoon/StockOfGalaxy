@@ -8,7 +8,7 @@ interface SignUpInputFieldProps {
 }
 
 import { useState } from "react";
-import { userIdValidate } from "@/app/utils/user/signUpAPI";
+import { userIdValidate } from "@/app/utils/apis/users/signup";
 import styled from "styled-components";
 
 const InputContainer = styled.div`

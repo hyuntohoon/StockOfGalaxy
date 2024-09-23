@@ -1,7 +1,6 @@
 "use client";
 
-import { deleteAccount } from "@/app/utils/user/myPageAPI";
-
+import { deleteAccount } from "@/app/utils/apis/users";
 import MyPageButton from "../../atoms/user/MyPageButton";
 import styled from "styled-components";
 

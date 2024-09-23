@@ -7,7 +7,7 @@ import NewsList from '@/app/components/organisms/planet/NewsList';
 import WordCloudComponent from '@/app/components/molecules/planet/WordCloudComponent';
 import { sampleNews } from '@/app/mocks/sampleNews';
 import { wordData } from '@/app/mocks/wordData';
-import { debounce } from '@/app/utils/debounce';
+import { debounce } from '@/app/utils/libs/debounce';
 import { ContentContainer, Section, SectionContainer } from '@/app/styles/planet'; // 스타일 컴포넌트 분리
 
 const NewsPageHeaderTemplate: React.FC = () => {
