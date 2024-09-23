@@ -1,7 +1,7 @@
 "use client";
 
 import styled from "styled-components";
-import Dividend from "@/app/components/atoms/stock/Dividend";
+import Dividend from "../../atoms/stock/Dividend";
 
 const Container = styled.div`
   width: auto;
@@ -13,9 +13,10 @@ const Container = styled.div`
   border-radius: 20px;
 `;
 
-const DividendInfo = () => {
+const ValuationMetrics = () => {
   const dividends = [
     { title: "PER", content: "18.2배" },
+    { title: "PBR", content: "1.4배" },
     { title: "PSR", content: "1.8배" },
   ];
 
@@ -32,4 +33,4 @@ const DividendInfo = () => {
   );
 };
 
-export default DividendInfo;
+export default ValuationMetrics;
