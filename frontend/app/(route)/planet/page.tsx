@@ -10,17 +10,20 @@ import DetailTriangleButton from '@/app/components/atoms/Button/DetailTriangleBu
 import PlanetSimpleInfoCard from '@/app/components/molecules/Card/PlanetSimpleInfoCard';
 import DetailTriangleButtonGuide from '@/app/components/atoms/Text/DetailTriangleButtonGuide';
 import Rocket from '@/app/components/atoms/Button/Rocket';
+import RocketModal from '@/app/components/organisms/Modal/RocketModal';
+
+let renderer: THREE.WebGLRenderer; // 전역으로 선언
+let camera: THREE.PerspectiveCamera; // 전역으로 선언
 
 export default function Home() {
   const mountRef = useRef<HTMLDivElement>(null);
+  const [isRocketModalOpen, setIsRocketModalOpen] = useState(false);
   const planetRadius = 150; // 행성의 반지름
 
   // scene을 상태로 관리
   const [scene, setScene] = useState<THREE.Scene | null>(null);
 
   useEffect(() => {
-    let renderer: THREE.WebGLRenderer;
-    let camera: THREE.PerspectiveCamera;
     let circle: THREE.Object3D;
     let stars: THREE.Group; // 별 그룹
 
@@ -65,7 +68,7 @@ export default function Home() {
 
       // 행성 생성
       const planetGeometry = new THREE.SphereGeometry(planetRadius, 64, 64);
-      const planetTexture = new THREE.TextureLoader().load('/images/planetMain/texture/3.jpg'); // 텍스처 경로 설정
+      const planetTexture = new THREE.TextureLoader().load('/images/planetTexture/3.jpg'); // 텍스처 경로 설정
       const planetMaterial = new THREE.MeshStandardMaterial({
         map: planetTexture, // 텍스처 추가
       });
@@ -99,7 +102,7 @@ export default function Home() {
         requestAnimationFrame(animate);
 
         stars.rotation.y -= 0.0007; // 별들이 천천히 회전
-        circle.rotation.y -= 0.004; // 행성 회전
+        circle.rotation.y -= 0.002; // 행성 회전
 
         renderer.clear();
         renderer.render(newScene, camera);
@@ -124,17 +127,18 @@ export default function Home() {
       <div ref={mountRef} id="canvas" style={{ width: '100%', height: '100vh', position: 'absolute', zIndex: 1 }}></div>
       <RecoilRoot>
         <DateCard />
+        <PlanetSimpleInfoCard />
+        <TimeMachineButtonGroup />
+        <RocketButtonGroup onRocketClick={() => setIsRocketModalOpen(true)} />
+        {scene && <Rocket scene={scene}/>} {/* 로켓에 scene 전달 */}
+        {isRocketModalOpen && <RocketModal onClose={() => setIsRocketModalOpen(false)} />}
       </RecoilRoot>
-      <PlanetSimpleInfoCard />
-      <TimeMachineButtonGroup />
-      <RocketButtonGroup />
-      <DetailTriangleButtonGuide />
       <DetailTriangleButton />
-      {scene && <Rocket planetRadius={planetRadius} scene={scene}/>} {/* 로켓에 행성 반지름과 scene 전달 */}
+      <DetailTriangleButtonGuide />
     </div>
   );
 }
+
 function onWindowResize(this: Window, ev: UIEvent) {
   throw new Error('Function not implemented.');
 }
-
