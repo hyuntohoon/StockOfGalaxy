@@ -145,8 +145,20 @@ public class RealTimeWebSocketService {
         // 데이터를 | 기준으로 분리
         String[] pipeSplitData = response.split("\\|");
 
+        // 배열 크기 체크
+        if (pipeSplitData.length < 2) {
+            log.warn("Invalid response format: {}", response);
+            return null; // 배열 크기가 예상보다 작으면 null 반환
+        }
+
         // 마지막 요소를 ^로 분리
         String[] caretSplitData = pipeSplitData[pipeSplitData.length - 1].split("\\^");
+
+        // 배열 크기 체크
+        if (caretSplitData.length < 6) {
+            log.warn("Invalid caret-split data: {}", response);
+            return null; // caretSplitData 배열 크기 확인 후 데이터가 없으면 null 반환
+        }
 
         // DTO로 매핑
         StockPriceResponseDTO stockPriceResponseDTO = new StockPriceResponseDTO();
