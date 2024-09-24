@@ -10,9 +10,16 @@ spec:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
   storageClassName: standard
-  nfs:
-    server: nfs-server.default.svc.cluster.local
-    path: "/path/to/zookeeper/data"
+  hostPath:
+    path: "/mnt/data/zookeeper"
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - ip-172-26-0-238
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
