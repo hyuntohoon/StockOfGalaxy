@@ -19,6 +19,7 @@ public class ClientWebSocketConfig implements WebSocketConfigurer {
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         // stockWebSocketHandler를 추가
-        registry.addHandler(stockWebSocketHandler, "/stock").setAllowedOrigins("*"); // endpoint와 CORS 설정
+        registry.addHandler(stockWebSocketHandler, "/ws-stock")
+            .setAllowedOrigins("*"); // endpoint와 CORS 설정
     }
 }

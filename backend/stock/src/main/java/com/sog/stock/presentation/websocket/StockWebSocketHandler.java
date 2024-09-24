@@ -25,7 +25,6 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 @RequiredArgsConstructor
 public class StockWebSocketHandler extends TextWebSocketHandler {
 
-    private final StockWebSocketService stockWebSocketService;
     private final Map<WebSocketSession, String> sessionStockCodeMap = new ConcurrentHashMap<>();
 
     // 웹소켓 세션 담아둘 맵
@@ -59,7 +58,6 @@ public class StockWebSocketHandler extends TextWebSocketHandler {
 
         session.sendMessage(new TextMessage(jsonObject.toString()));
 
-
     }
 
     // 클라이언트가 소켓 종료시 동작
@@ -74,36 +72,36 @@ public class StockWebSocketHandler extends TextWebSocketHandler {
         super.afterConnectionClosed(session, status); // 실제로 closed
     }
 
-    // 3초에 한 번씩 주식데이터를 들고옵니다. (임시)
-    @Scheduled(fixedRate = 3000)
-    public void sendStockCode() throws JSONException, IOException {
-        log.info("Scheduled check--------");
-        synchronized (sessionMap) {
-            for (WebSocketSession session : sessionMap.values()) {
-                String stockCode = sessionStockCodeMap.get(session);
-                if (stockCode != null) {
-                    try {
-                        // 주식데이터를 가져오는 로직 -> service단에 설계합니다.
-                        StockPriceResponseDTO stockPriceResponseDTO = stockWebSocketService.getStock(
-                            stockCode);
-                        if (stockPriceResponseDTO != null) {
-                            String response = new ObjectMapper().writeValueAsString(
-                                stockPriceResponseDTO);
-                            log.info("Sending stock data : {}", response);
-                            try {
-                                session.sendMessage(new TextMessage(response));
-                                //Message로 보내기
-                            } catch (IllegalStateException e) {
-                                log.warn("Failed to send message, ignoring: {}", e.getMessage());
-                            }
-                        } else {
-                            log.info("dto가 null입니다.");
-                        }
-                    } catch (Exception e) {
-                        log.error("stock data를 들고오는 동안 에러가 발생했습니다 : {}", e.getMessage());
-                    }
-                }
-            }
-        }
-    }
+//    // 3초에 한 번씩 주식데이터를 들고옵니다. (임시)
+//    @Scheduled(fixedRate = 3000)
+//    public void sendStockCode() throws JSONException, IOException {
+//        log.info("Scheduled check--------");
+//        synchronized (sessionMap) {
+//            for (WebSocketSession session : sessionMap.values()) {
+//                String stockCode = sessionStockCodeMap.get(session);
+//                if (stockCode != null) {
+//                    try {
+//                        // 주식데이터를 가져오는 로직 -> service단에 설계합니다.
+//                        StockPriceResponseDTO stockPriceResponseDTO = stockWebSocketService.getStock(
+//                            stockCode);
+//                        if (stockPriceResponseDTO != null) {
+//                            String response = new ObjectMapper().writeValueAsString(
+//                                stockPriceResponseDTO);
+//                            log.info("Sending stock data : {}", response);
+//                            try {
+//                                session.sendMessage(new TextMessage(response));
+//                                //Message로 보내기
+//                            } catch (IllegalStateException e) {
+//                                log.warn("Failed to send message, ignoring: {}", e.getMessage());
+//                            }
+//                        } else {
+//                            log.info("dto가 null입니다.");
+//                        }
+//                    } catch (Exception e) {
+//                        log.error("stock data를 들고오는 동안 에러가 발생했습니다 : {}", e.getMessage());
+//                    }
+//                }
+//            }
+//        }
+//    }
 }
