@@ -77,6 +77,13 @@ public class RealTimeWebSocketService {
         // json메시지 (구독 성공) 처리
         if (isJsonMessage(payload)) {
             JSONObject jsonResponse = new JSONObject(payload);
+            // PINGPONG 메시지 처리
+            if (jsonResponse.getJSONObject("header").getString("tr_id").equals("PINGPONG")) {
+                log.info("Received PINGPONG message, keeping connection alive");
+                return; // 연결 상태 유지 메시지이므로 여기서 처리 끝
+            }
+            
+            // 구독 성공 메시지 처리
             if (jsonResponse.getJSONObject("body").getString("msg1").equals("SUBSCRIBE SUCCESS")) {
                 log.info("주식 구독 성공: {}",
                     jsonResponse.getJSONObject("header").getString("tr_key"));
