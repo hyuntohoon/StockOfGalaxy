@@ -21,10 +21,10 @@ public class RocketController {
     private final StockService stockService;
 
     // 로켓 전체 조회
-    @GetMapping()
-
-    // 로켓 상세 조회
-    @GetMapping("/{rocketId}")
+//    @GetMapping()
+//
+//    // 로켓 상세 조회
+//    @GetMapping("/{rocketId}")
 
     // 로켓 삭제
     @DeleteMapping("{rocketId}/members/{memberId}")

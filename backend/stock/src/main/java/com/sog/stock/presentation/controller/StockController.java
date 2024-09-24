@@ -24,13 +24,13 @@ public class StockController {
     private final StockService stockService;
 
     // 주식 일별 시세 조회
-    @GetMapping("/public/{stockCode}/history")
+    @GetMapping("/{stockCode}/history")
     public StockDailyPriceListResponseDTO getStockHistory(@PathVariable String stockCode) {
         return stockService.getDailyStockHistory(stockCode);
     }
 
     // 행성 정보 조회
-    @GetMapping("/public/{stockCode}")
+    @GetMapping("/{stockCode}")
     public ResponseEntity<?> getStockInfo(@PathVariable String stockCode) {
         StockDTO stockDTO = stockService.searchStock(stockCode);
         if (stockDTO != null) {
@@ -41,21 +41,21 @@ public class StockController {
     }
 
     // 행성 추가 - list
-    @PostMapping("/public/planets")
+    @PostMapping("/planets")
     public ResponseEntity<?> addStocks(@RequestBody StockAddListRequestDTO stockAddListRequestDTO) {
         stockService.addStockList(stockAddListRequestDTO);
         return new ResponseEntity<>("Stocks added successfully", HttpStatus.OK);
     }
 
     // 행성 추가 - 개별
-    @PostMapping("/public/planet")
+    @PostMapping("/planet")
     public ResponseEntity<?> addStock(@RequestBody StockDTO addStock) {
         stockService.addStock(addStock);
         return new ResponseEntity<>("Stocks added successfully", HttpStatus.OK);
     }
 
     // 공휴일 추가
-    @PostMapping("/public/holidays")
+    @PostMapping("/holidays")
     public ResponseEntity<?> addHolidays(
         @RequestBody HolidayAddListRequestDTO holidayAddListRequestDTO) {
         // 서비스 레이어로 전달하여 처리
@@ -64,7 +64,7 @@ public class StockController {
     }
 
     // 공휴일 확인
-    @GetMapping("/public/holiday/{locDate}")
+    @GetMapping("/holiday/{locDate}")
     public ResponseEntity<?> isHoliday(@PathVariable String locDate) {
         boolean isHoliday = stockService.isHoliday(locDate);
         return new ResponseEntity<>(isHoliday, HttpStatus.OK);
