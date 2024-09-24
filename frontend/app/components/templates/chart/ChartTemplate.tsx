@@ -104,7 +104,7 @@ const ChartTemplate = () => {
     changeRate: number | null;
   }
 
-  useCoinWebSocket("KRW-BTC", chart);
+  useCoinWebSocket("DSHS600519", chart);
 
   return (
     <div>
