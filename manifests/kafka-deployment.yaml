@@ -24,7 +24,7 @@ spec:
               value: "zookeeper-service:2181"
             # 외부에서 Kafka에 접근할 수 있도록 advertised.listeners 설정
             - name: KAFKA_CFG_ADVERTISED_LISTENERS
-              value: "PLAINTEXT://172.26.0.238:30092"  # INTERNAL IP와 NodePort 사용
+              value: "PLAINTEXT://3.38.183.146:30092"  # INTERNAL IP와 NodePort 사용
             # 인증 없이 접근 허용 (로컬 테스트 환경)
             - name: ALLOW_PLAINTEXT_LISTENER
               value: "yes"
