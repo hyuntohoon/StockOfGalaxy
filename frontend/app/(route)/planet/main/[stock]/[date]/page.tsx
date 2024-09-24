@@ -203,12 +203,13 @@ export default function Home() {
     <div style={{ position: 'relative' }}>
       <div ref={mountRef} id="canvas" style={{ width: '100%', height: '100vh', position: 'absolute', zIndex: 1 }}></div>
       <RecoilRoot>
-        <DateCard />
+        <DateCard  right='30px' />
         <PlanetSimpleInfoCard />
         <TimeMachineButtonGroup />
         <RocketButtonGroup onRocketClick={() => setIsRocketModalOpen(true)} />
         {scene && <Rocket scene={scene} rocketData={tempData}/>}
         {isRocketModalOpen && <RocketModal onClose={() => setIsRocketModalOpen(false)} />}
+        {/* <DateCard right='30px'/> */}
       </RecoilRoot>
       <DetailTriangleButton />
       <DetailTriangleButtonGuide />
