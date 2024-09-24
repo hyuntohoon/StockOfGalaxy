@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import LoginImage from "../../atoms/user/LoginImage";
 import FindPasswordInputGroup from "../../molecules/user/FindPasswordInputGroup";
 import LoginButton from "../../atoms/user/LoginButton";
-import styled from "styled-components";
+import styled from "@emotion/styled";
 
 const LoginContainer = styled.div`
   position: absolute;

@@ -1,6 +1,6 @@
 import StockIcon from "../../atoms/stock/StockIcon";
 import StockName from "../../atoms/stock/StockName";
-import styled from "styled-components";
+import styled from "@emotion/styled";
 
 const Container = styled.div`
   display: flex;

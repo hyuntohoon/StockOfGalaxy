@@ -1,7 +1,8 @@
 "use client";
 
 import styled from "@emotion/styled";
-import Dividend from "@/app/components/atoms/stock/Dividend";
+
+import Dividend from "../../atoms/stock/Dividend";
 
 const Container = styled.div`
   width: auto;
@@ -13,10 +14,10 @@ const Container = styled.div`
   border-radius: 20px;
 `;
 
-const DividendInfo = () => {
+const FinancialMetricsSubContainer = () => {
   const dividends = [
-    { title: "PER", content: "18.2배" },
-    { title: "PSR", content: "1.8배" },
+    { title: "부채비율", content: "26.66%" },
+    { title: "유동비율", content: "258.26%" },
   ];
 
   return (
@@ -32,4 +33,4 @@ const DividendInfo = () => {
   );
 };
 
-export default DividendInfo;
+export default FinancialMetricsSubContainer;

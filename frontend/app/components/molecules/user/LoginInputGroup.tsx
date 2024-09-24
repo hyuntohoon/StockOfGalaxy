@@ -1,7 +1,7 @@
 "use client";
 
 import LoginInputField from "../../atoms/user/LoginInputField";
-import styled from "styled-components";
+import styled from "@emotion/styled";
 
 const Container = styled.div`
   display: flex;

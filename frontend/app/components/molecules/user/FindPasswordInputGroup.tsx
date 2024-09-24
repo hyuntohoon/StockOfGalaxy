@@ -1,7 +1,7 @@
 "use client";
 
 import FindPasswordInputField from "../../atoms/user/FindPasswordInputField";
-import styled from "styled-components";
+import styled from "@emotion/styled";
 
 const Container = styled.div`
   display: flex;

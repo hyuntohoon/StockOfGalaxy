@@ -1,6 +1,6 @@
 "use client";
 
-import styled from "styled-components";
+import styled from "@emotion/styled";
 import StockDailyPriceTitle from "../../atoms/stock/StockDailyPriceTitle";
 import StockDailyPriceList from "../../molecules/stock/StockDailyPriceList";
 

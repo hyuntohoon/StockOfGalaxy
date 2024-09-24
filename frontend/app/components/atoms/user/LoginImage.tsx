@@ -1,6 +1,6 @@
 "use client";
 
-import styled from "styled-components";
+import styled from "@emotion/styled";
 
 const Image = styled.img`
   width: ${({ width }) => (width ? `${width}px` : "200px")};

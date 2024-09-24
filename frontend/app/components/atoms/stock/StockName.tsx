@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from "@emotion/styled";
 import starIcon from "@/public/starIcon.png";
 import Image from "next/image";
 import { subscribeStock } from "@/app/utils/stock/subscribeStock";

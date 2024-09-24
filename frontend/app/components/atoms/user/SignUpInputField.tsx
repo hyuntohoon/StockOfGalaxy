@@ -9,7 +9,7 @@ interface SignUpInputFieldProps {
 
 import { useState } from "react";
 import { userIdValidate } from "@/app/utils/user/signUpAPI";
-import styled from "styled-components";
+import styled from "@emotion/styled";
 
 const InputContainer = styled.div`
   display: flex;

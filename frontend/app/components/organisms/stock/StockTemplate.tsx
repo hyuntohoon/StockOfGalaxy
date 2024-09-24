@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import styled from "styled-components";
+import styled from "@emotion/styled";
 import StockPrice from "../../molecules/stock/StockPrice";
 import StockInfo from "../../molecules/stock/StockInfo";
 

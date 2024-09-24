@@ -3,7 +3,7 @@
 import LoginImage from "../../atoms/user/LoginImage";
 import MyPageInfoGroup from "../../molecules/user/MyPageInfoGroup";
 import MyPageButtonGroup from "../../molecules/user/MyPageButtonGroup";
-import styled from "styled-components";
+import styled from "@emotion/styled";
 
 const MyPageContainer = styled.div`
   position: absolute;
