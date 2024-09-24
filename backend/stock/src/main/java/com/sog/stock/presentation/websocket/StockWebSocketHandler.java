@@ -69,6 +69,11 @@ public class StockWebSocketHandler extends TextWebSocketHandler {
         synchronized (sessionMap) {
             sessionMap.remove(session.getId()); // 여러 클라이언트의 동시 접근하여 Map의 SessionID가 변경되는 것을 막기 위함
         }
+
+        // 남아있는 세션이 없을 경우에는 KIS websocket도 해제
+        if (sessionMap.isEmpty()) {
+            realTimeWebSocketService.disconnectFromKisWebSocket();
+        }
         super.afterConnectionClosed(session, status); // 실제로 closed
     }
 }

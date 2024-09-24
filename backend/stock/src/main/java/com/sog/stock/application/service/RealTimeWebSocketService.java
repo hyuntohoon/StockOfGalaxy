@@ -107,6 +107,13 @@ public class RealTimeWebSocketService {
             connectToKisWebSocket();
         }
 
+        // 중복 구독 방지 로직
+        List<WebSocketSession> subscribers = stockCodeSubscribers.get(stockCode);
+        if (subscribers != null && subscribers.contains(clientSession)) {
+            log.info("이미 해당 주식을 구독하고 있습니다: {}", stockCode);
+            return; // 이미 구독 중인 종목이라면 아무 작업도 하지 않음
+        }
+
         // 종목별로 구독하는 클라이언트를 관리
         stockCodeSubscribers.computeIfAbsent(stockCode, k -> new ArrayList<>()).add(clientSession);
 
