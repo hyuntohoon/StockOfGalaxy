@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import Image from 'next/image';
-import timeIcon from '../../atoms/Button/timeIcon.png';
+import timeIcon from '@/public/images/planet/timeIcon.png'
 
 const TimeMachineButtonGroup = ({ bottom = '30px', right = '100px' }) => {
   return (

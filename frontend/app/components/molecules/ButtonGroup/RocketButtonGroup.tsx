@@ -1,10 +1,10 @@
 import styled from '@emotion/styled';
 import Image from 'next/image';
-import rocketIcon from '../../atoms/Button/rocketIcon.png';
+import rocketIcon from '@/public/images/planet/rocketIcon.png'
 
-const RocketButtonGroup = () => {
+const RocketButtonGroup = ({ onRocketClick }) => {
   return (
-    <ButtonGroup>
+    <ButtonGroup onClick={onRocketClick}>
       <Icon>
         <Image src={rocketIcon} alt="로켓" width={50} height={50} />
       </Icon>
@@ -23,6 +23,7 @@ const ButtonGroup = styled.div`
   justify-content: center;
   width: 100px;
   z-index: 1000;
+  cursor: pointer;
 `;
 
 const Icon = styled.div`
