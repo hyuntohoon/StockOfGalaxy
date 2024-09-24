@@ -12,7 +12,6 @@ const Container = styled.div`
 `;
 
 const StockIndex = styled.span`
-  // color: #3485fa;
   color: #c3c3c6;
 `;
 
