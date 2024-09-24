@@ -2,7 +2,7 @@
 import { AiFillHome } from 'react-icons/ai';
 import HeaderButtonGroup from '../../HeaderButtonGroup';
 import Link from 'next/link';
-import styled from 'styled-components';
+import styled from '@emotion/styled';
 
 interface HomeButtonGroupProps {
   onClick?: () => void; 
