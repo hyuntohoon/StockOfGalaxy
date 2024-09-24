@@ -34,6 +34,7 @@ export const SectionContainer = styled.div`
   .news-list {
     flex: 0 0 65%;
     overflow: auto;
+    scrollbar-width: none; /* 스크롤바 숨기기 */
     scroll-radius: 15px;
     
   }
@@ -119,6 +120,8 @@ export const ModalContent = styled.div`
   box-shadow: 0px 15px 40px rgba(0, 0, 0, 0.2); /* 섬세한 그림자 효과 */
   animation: fadeIn 0.3s ease-in-out;
   overflow-y: auto; /* 필요시 스크롤바 생성 */
+  scrollbar-width: none; /* 스크롤바 숨기기 */
+
   text-align: left;
   display: flex;
   flex-direction: column;
@@ -192,6 +195,7 @@ export const NewsItem = styled.div`
   overflow: hidden;
   transition: transform 0.5s ease, box-shadow 0.3s ease;
   padding: 6px;
+  margin: 5px 10px;
   cursor: pointer; // 클릭할 수 있도록 커서 변경
 
   &:hover {
