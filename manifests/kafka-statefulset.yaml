@@ -14,6 +14,8 @@ spec:
       labels:
         app: kafka
     spec:
+      nodeSelector:
+        kubernetes.io/hostname: ip-172-26-0-238
       containers:
         - name: kafka
           image: confluentinc/cp-kafka:latest
