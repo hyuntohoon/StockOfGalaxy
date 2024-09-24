@@ -12,11 +12,14 @@ spec:
       targetPort: 9092
     - name: external-1
       port: 31090
-      targetPort: 31090
+      targetPort: 9092
+      nodePort: 31090
     - name: external-2
       port: 31091
-      targetPort: 31091
+      targetPort: 9092
+      nodePort: 31091
     - name: external-3
       port: 31092
-      targetPort: 31092
+      targetPort: 9092
+      nodePort: 31092
   type: NodePort
