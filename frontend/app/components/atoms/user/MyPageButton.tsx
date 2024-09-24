@@ -1,12 +1,12 @@
 "use client";
 
+import styled from "@emotion/styled";
 import useAccessToken from "@/app/utils/libs/user/useAccessToken";
 import { useRouter } from "next/navigation";
 import React from "react";
-import styled from "styled-components";
 
 const StyledLoginButton = styled.input`
-  color: #9b9b9b;
+  color: #0e224d;
   border: none;
   border-radius: 25px;
   padding: 10px 20px;
@@ -16,7 +16,6 @@ const StyledLoginButton = styled.input`
   font-size: 1.1rem;
   font-weight: bold;
   background-color: white;
-  color: #0e224d;
   cursor: pointer;
   border: 1px solid #0e224d;
 `;

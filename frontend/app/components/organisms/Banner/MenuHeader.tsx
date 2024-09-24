@@ -19,7 +19,7 @@ const Container = styled.div`
   left: 0;
   height: 80%;
   width: 30px; /* 호버 감지 영역의 너비 */
-  z-index: 1000;
+  z-index: 1000000;
   background-color: transparent; /* 호버 감지 영역은 투명 */
 `;
 
@@ -28,12 +28,12 @@ const MenuHeaderWrapper = styled.div<{ isOpen: boolean }>`
   position: fixed;
   top: 50%;
   left: 0;
-  transform: translate(-100%, -50%) translateX(${props => (props.isOpen ? '100%' : '0')});
+  transform: translate(-85%, -50%) translateX(${props => (props.isOpen ? '90%' : '0')});
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 20px 5px;
-  background-color: rgba(255, 255, 255, 0.45);
+  background-color: rgba(255, 255, 255, 0.35);
   border-radius: 30px;
   justify-content: space-around;
   width: 120px;

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import styled from "styled-components";
+import styled from "@emotion/styled";
 import {
   sendAuthenticationCode,
   checkAuthenticationCode,
@@ -14,14 +14,24 @@ const InputContainer = styled.div`
 `;
 
 const InputField = styled.input`
-  color: #9b9b9b;
+ color: #9b9b9b;
   border: none;
-  border-radius: 10px;
+  border-radius: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   padding: 10px 20px;
   width: 450px;
-  height: 40px;
+  height: 45px;
   margin: 15px 10px;
-  font-size: 1.1rem;
+  font-size: 1rem;
+  background-color: rgba(254, 254, 254, 0.2);
+
+  &:focus {
+    box-shadow: 0 0 10px rgba(81, 203, 238, 0.5);
+  }
+
+  ::placeholder {
+    color: white;
+  }
 `;
 
 const CheckButton = styled.button`
@@ -29,10 +39,10 @@ const CheckButton = styled.button`
   right: 20px;
   padding: 10px 12px;
   border: none;
-  border-radius: 10px;
+  border-radius: 20px;
   background-color: #0e224d;
   color: white;
-  font-size: 0.9rem;
+  font-size: 1rem;
   cursor: pointer;
 `;
 

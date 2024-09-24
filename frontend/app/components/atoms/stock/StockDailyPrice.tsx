@@ -1,4 +1,6 @@
-import styled from "styled-components";
+"use client";
+
+import styled from "@emotion/styled";
 import formatPrice from "@/app/utils/libs/stock/formatPrice";
 
 interface StockDailyPriceProps {
@@ -36,21 +38,19 @@ const StockDailyPrice = ({
   lowPrice = 0,
 }: StockDailyPriceProps) => {
   return (
-    <>
-      <Container>
-        <Column>{date}</Column>
-        <Column>{formatPrice(closePrice)}원</Column>
-        <Column>
-          {changeRate < 0 ? "-" : "+"}
-          {changeRate}%
-        </Column>
-        <Column>{formatPrice(volume)}</Column>
-        <Column>{formatPrice(transactionAmount)}억원</Column>
-        <Column>{formatPrice(openPrice)}원</Column>
-        <Column>{formatPrice(highPrice)}원</Column>
-        <Column>{formatPrice(lowPrice)}원</Column>
-      </Container>
-    </>
+    <Container>
+      <Column>{date}</Column>
+      <Column>{formatPrice(closePrice)}원</Column>
+      <Column>
+        {changeRate < 0 ? "-" : "+"}
+        {changeRate}%
+      </Column>
+      <Column>{formatPrice(volume)}</Column>
+      <Column>{formatPrice(transactionAmount)}억원</Column>
+      <Column>{formatPrice(openPrice)}원</Column>
+      <Column>{formatPrice(highPrice)}원</Column>
+      <Column>{formatPrice(lowPrice)}원</Column>
+    </Container>
   );
 };
 

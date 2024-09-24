@@ -6,6 +6,7 @@ import SignUpInputGroup from "../../molecules/user/SignUpInputGroup";
 import LoginButton from "../../atoms/user/LoginButton";
 import styled from "styled-components";
 import { signUpApi, signUpValidation } from "@/app/utils/apis/users/signup";
+import Title from "../../atoms/common/Title";
 const LoginContainer = styled.div`
   position: absolute;
   top: 50%;
@@ -15,11 +16,9 @@ const LoginContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: auto;
-  width: auto;
-  background: rgba(255, 255, 255, 0.85);
-  border-radius: 10px;
-  padding: 20px;
+  background: rgba(254, 254, 254, 0.2);
+  border-radius: 20px;
+  padding: 40px;
 `;
 
 const SignUpTemplate = () => {
@@ -33,7 +32,7 @@ const SignUpTemplate = () => {
   return (
     <>
       <LoginContainer>
-        <LoginImage width={100} />
+      <Title text="sign up" size={45} color="white" weight={700} />
         <SignUpInputGroup
           setUserId={setUserId}
           setPassword={setPassword}

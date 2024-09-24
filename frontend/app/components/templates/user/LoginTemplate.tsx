@@ -6,6 +6,9 @@ import LoginInputGroup from "../../molecules/user/LoginInputGroup";
 import LoginButtonGroup from "../../molecules/user/LoginButtonGroup";
 import styled from "@emotion/styled"; // 변경된 부분
 import Link from "next/link";
+import Title from "../../atoms/common/Title";
+import { ibm } from '@/public/fonts'
+
 
 // Emotion을 사용하여 스타일링
 const LoginContainer = styled.div`
@@ -19,9 +22,9 @@ const LoginContainer = styled.div`
   justify-content: center;
   height: auto;
   width: auto;
-  background: rgba(255, 255, 255, 0.85);
-  border-radius: 10px;
-  padding: 20px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 30px;
+  padding: 40px;
 `;
 
 const LinkContainer = styled.div`
@@ -31,7 +34,7 @@ const LinkContainer = styled.div`
 `;
 
 const StyledLink = styled(Link)`
-  color: #777777;
+  color: white;
   text-decoration: none;
   font-size: 1.1rem;
 
@@ -47,8 +50,10 @@ const LoginTemplate = () => {
   });
 
   return (
-    <LoginContainer>
-      <LoginImage width={200} />
+    <LoginContainer className={ibm.className}>
+      {/* <LoginImage imgWidth={100} /> */}
+      <Title text="login" size={45} color="white" weight={700} />
+      {/* <div style={{fontSize:'35px', color: 'white',fontWeight:'900' }}>로그인</div> */}
       <LoginInputGroup setInputValue={setInputValue} />
       <LinkContainer>
         <StyledLink href="/find-password">비밀번호 찾기</StyledLink>

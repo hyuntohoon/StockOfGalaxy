@@ -9,7 +9,7 @@ import styled from "@emotion/styled"; // Emotion styled import
 // Emotion을 사용하여 스타일링
 const ButtonContainer = styled.div`
   display: flex;
-  gap: 10px; /* 버튼 간 간격 설정 */
+  gap: 40px; /* 버튼 간 간격 설정 */
   margin-top: 20px; /* 위쪽 여백 추가 */
 `;
 

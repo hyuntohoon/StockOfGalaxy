@@ -12,25 +12,24 @@ interface LoginInputFieldProps {
   >;
 }
 
-// Emotion을 사용하여 스타일링
 const StyledInput = styled.input`
   color: #9b9b9b;
   border: none;
-  border-radius: 10px;
+  border-radius: 25px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* 그림자 크기 및 투명도 조정 */
   padding: 10px 20px;
   width: 450px;
   height: 45px;
   margin: 15px 10px;
   font-size: 1.1rem;
+  background-color: rgba(254, 254, 254, 0.2);
 
   &:focus {
-    outline: none;
-    box-shadow: 0 0 5px rgba(81, 203, 238, 1);
-    border: 1px solid rgba(81, 203, 238, 1);
+    box-shadow: 0 0 10px rgba(81, 203, 238, 0.5);
   }
 
   ::placeholder {
-    color: #cccccc;
+    color: rgba(254, 254, 254, 0.9);
   }
 `;
 

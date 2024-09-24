@@ -1,4 +1,6 @@
-import styled from "styled-components";
+"use client";
+
+import styled from "@emotion/styled";
 import formatPrice from "@/app/utils/libs/stock/formatPrice";
 
 interface StockHeaderInfoDetailProps {
@@ -16,12 +18,10 @@ const StockHeaderInfoDetail = ({
   targetPrice,
 }: StockHeaderInfoDetailProps) => {
   return (
-    <>
-      <Container>
-        <span>{target}</span>
-        <span>{formatPrice(targetPrice)}원</span>
-      </Container>
-    </>
+    <Container>
+      <span>{target}</span>
+      <span>{formatPrice(targetPrice)}원</span>
+    </Container>
   );
 };
 

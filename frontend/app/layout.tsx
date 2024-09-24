@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import MenuHeader from "./components/organisms/Banner/MenuHeader";
 import "./globals.css";
 import RecoilRootWrapper from "./components/atoms/RecoilRootWrapper";
+import { ibm } from '@/public/fonts'
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body className={inter.className}>
+      <body className={ibm.className}>
         <MenuHeader />
         <RecoilRootWrapper>{children}</RecoilRootWrapper>
       </body>
