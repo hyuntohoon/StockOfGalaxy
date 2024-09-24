@@ -1,15 +1,14 @@
 import { defaultRequest } from "../request";
 
-const convertDateFormat = (date: Date): string => {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-};
+const convertToApiDateFormat = (dateString: string): string => {
+    // yyyy.MM.dd 형식을 yyyy-MM-dd 형식으로 변환
+    return dateString.replace(/\./g, '-');
+  };
+  
 
-export const todayNewsApi = async (today: Date) => {
+export const todayNewsApi = async (today: string) => {
     try {
-        const formattedDate = convertDateFormat(today);
+        const formattedDate = convertToApiDateFormat(today);
         const res = await defaultRequest.get(`/news/today`, {
             params: {
                 date: formattedDate,  // 날짜를 쿼리 파라미터로 전송
@@ -23,9 +22,9 @@ export const todayNewsApi = async (today: Date) => {
     }
 };
 
-export const todayPlanetNewsApi = async (today: Date, stock: number) => {
+export const todayPlanetNewsApi = async (today: string, stock: number) => {
     try {
-        const formattedDate = convertDateFormat(today);
+        const formattedDate = convertToApiDateFormat(today);
         const res = await defaultRequest.get(`/news/today/`, {
             params: {
                 date: formattedDate,  
@@ -39,3 +38,15 @@ export const todayPlanetNewsApi = async (today: Date, stock: number) => {
         throw error;
     }
 }
+
+// 뉴스 상세 조회
+export const getNewsDetail = async (id: number) => {
+    try {
+        const res = await defaultRequest.get(`/news/${id}`);
+        console.log(res);
+        return res.data;  // 뉴스 상세 정보 반환
+    } catch (error) {
+        console.error("뉴스 상세 조회 실패", error);
+        throw error;
+    }
+};

@@ -23,8 +23,8 @@ const NewsList: React.FC<{ news: News[] }> = ({ news }) => {
               <NewsSummary>{item.content}</NewsSummary>
             </div>
             <NewsMeta>
-              <span>{item.write_date}</span>
-              <span>{item.신문사}</span>
+              <span>{item.writeDate}</span>
+              <span>{item.newspaper}</span>
             </NewsMeta>
           </NewsContent>
         </NewsItem>
