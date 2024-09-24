@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-deployment
+  namespace: backcd  # 네임스페이스 지정
+spec:
+  replicas: 1  # 필요 시 레플리카 수 조정
+  selector:
+    matchLabels:
+      app: kafka
+  template:
+    metadata:
+      labels:
+        app: kafka
+    spec:
+      containers:
+        - name: kafka
+          image: bitnami/kafka:latest  # Bitnami Kafka 이미지 사용
+          ports:
+            - containerPort: 9092  # Kafka 기본 포트
+          env:
+            - name: KAFKA_CFG_ZOOKEEPER_CONNECT
+              value: "zookeeper-service:2181"  # Zookeeper 연결 설정
+            - name: ALLOW_PLAINTEXT_LISTENER
+              value: "yes"  # 로컬 환경에서 테스트 시 사용
+          volumeMounts:
+            - name: kafka-storage
+              mountPath: /bitnami/kafka  # Kafka 데이터 저장 경로
+      volumes:
+        - name: kafka-storage
+          persistentVolumeClaim:
+            claimName: kafka-pvc  # PVC에 맞게 설정
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-service
+  namespace: backcd  # 네임스페이스 지정
+spec:
+  type: NodePort
+  ports:
+    - port: 9092  # Kafka 기본 포트
+      targetPort: 9092
+      nodePort: 30092  # 외부 노출을 위한 포트
+  selector:
+    app: kafka
