@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { RecoilRoot } from 'recoil';
 import DateCard from '@/app/components/molecules/Card/DateCard';
@@ -10,9 +10,11 @@ import DetailTriangleButton from '@/app/components/atoms/Button/DetailTriangleBu
 import PlanetSimpleInfoCard from '@/app/components/molecules/Card/PlanetSimpleInfoCard';
 import DetailTriangleButtonGuide from '@/app/components/atoms/Text/DetailTriangleButtonGuide';
 import Rocket from '@/app/components/atoms/Button/Rocket';
+import RocketModal from '@/app/components/organisms/Modal/RocketModal';
 
 export default function Home() {
   const mountRef = useRef<HTMLDivElement>(null);
+  const [isRocketModalOpen, setIsRocketModalOpen] = useState(false);
   const planetRadius = 150; // 행성의 반지름
 
   useEffect(() => {
@@ -61,7 +63,7 @@ export default function Home() {
 
       // 행성 생성
       const planetGeometry = new THREE.SphereGeometry(planetRadius, 64, 64);
-      const planetTexture = new THREE.TextureLoader().load('/image/3.jpg'); // 텍스처 경로 설정
+      const planetTexture = new THREE.TextureLoader().load('/images/planetTexture/3.jpg'); // 텍스처 경로 설정
       const planetMaterial = new THREE.MeshStandardMaterial({
         map: planetTexture, // 텍스처 추가
       });
@@ -118,14 +120,16 @@ export default function Home() {
     <div style={{ position: 'relative' }}>
       <div ref={mountRef} id="canvas" style={{ width: '100%', height: '100vh', position: 'absolute', zIndex: 1 }}></div>
       <RecoilRoot>
-        <DateCard />
+        <DateCard  right='30px' />
+        <PlanetSimpleInfoCard />
+        <TimeMachineButtonGroup />
+        <RocketButtonGroup onRocketClick={() => setIsRocketModalOpen(true)} />
+        <DetailTriangleButtonGuide />
+        <DetailTriangleButton />
+        <Rocket planetRadius={150} />
+        {isRocketModalOpen && <RocketModal onClose={() => setIsRocketModalOpen(false)} />}
+        {/* <DateCard right='30px'/> */}
       </RecoilRoot>
-      <PlanetSimpleInfoCard />
-      <TimeMachineButtonGroup />
-      <RocketButtonGroup />
-      <DetailTriangleButtonGuide />
-      <DetailTriangleButton />
-      <Rocket planetRadius={planetRadius} /> {/* 로켓에 행성 반지름 전달 */}
     </div>
   );
 }

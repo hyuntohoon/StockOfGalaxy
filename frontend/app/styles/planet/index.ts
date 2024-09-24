@@ -62,7 +62,6 @@ display: flex;
 justify-content: center;
 align-items: center;
 padding: 10px 60px;
-background: #282c34;
 color: white;
 position: relative;
 height: 60px;

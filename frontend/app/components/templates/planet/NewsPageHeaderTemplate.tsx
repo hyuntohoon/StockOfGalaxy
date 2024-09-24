@@ -2,6 +2,7 @@
 
 import React, { useRef, useState, useEffect } from 'react';
 import Header from '@/app/components/organisms/planet/Header';
+import StockHeaderTemplate from '../../organisms/stock/StockHeaderTemplate';
 import NavBar from '@/app/components/molecules/planet/NavBar';
 import NewsList from '@/app/components/organisms/planet/NewsList';
 import WordCloudComponent from '@/app/components/molecules/planet/WordCloudComponent';
@@ -119,7 +120,7 @@ const NewsPageHeaderTemplate: React.FC<NewsPageHeaderTemplateProps> = ({ newsDat
 
   return (
     <>
-      <Header />
+      <StockHeaderTemplate />
       <NavBar activeSection={activeSection} scrollToSection={scrollToSection} sections={sections} />
       <ContentContainer onWheel={handleWheelScroll} ref={contentRef}>
         <SectionContainer ref={homeRef}>
