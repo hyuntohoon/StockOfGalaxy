@@ -4,7 +4,7 @@ import { useState } from "react";
 import LoginImage from "../../atoms/user/LoginImage";
 import SignUpInputGroup from "../../molecules/user/SignUpInputGroup";
 import LoginButton from "../../atoms/user/LoginButton";
-import styled from "styled-components";
+import styled from "@emotion/styled";
 import { signUp } from "../../../utils/user/userAPI";
 import { signUpValidation } from "../../../utils/user/signUpAPI";
 

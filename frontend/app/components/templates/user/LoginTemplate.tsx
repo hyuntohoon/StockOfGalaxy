@@ -4,7 +4,7 @@ import { useState } from "react";
 import LoginImage from "../../atoms/user/LoginImage";
 import LoginInputGroup from "../../molecules/user/LoginInputGroup";
 import LoginButtonGroup from "../../molecules/user/LoginButtonGroup";
-import styled from "styled-components";
+import styled from "@emotion/styled";
 import Link from "next/link";
 
 const LoginContainer = styled.div`

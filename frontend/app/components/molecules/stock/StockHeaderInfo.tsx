@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from "@emotion/styled";
 import StockHeaderInfoDetail from "../../atoms/stock/StockHeaderInfoDetail";
 
 const Container = styled.div`

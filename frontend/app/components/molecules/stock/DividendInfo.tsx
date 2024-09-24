@@ -1,6 +1,6 @@
 "use client";
 
-import styled from "styled-components";
+import styled from "@emotion/styled";
 import Dividend from "@/app/components/atoms/stock/Dividend";
 
 const Container = styled.div`

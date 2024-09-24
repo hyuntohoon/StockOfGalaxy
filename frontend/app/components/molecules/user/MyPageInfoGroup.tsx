@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import useAccessToken from "@/app/utils/user/useAccessToken";
 import { getInfo } from "@/app/utils/user/myPageAPI";
 import MyPageInfo from "../../atoms/user/MyPageInfo";
-import styled from "styled-components";
+import styled from "@emotion/styled";
 
 const Container = styled.div`
   display: flex;

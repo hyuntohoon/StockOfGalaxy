@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import styled from "styled-components";
+import styled from "@emotion/styled";
 
 const InputField = styled.input`
   color: #9b9b9b;

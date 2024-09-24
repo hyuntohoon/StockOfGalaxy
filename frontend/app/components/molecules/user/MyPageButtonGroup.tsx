@@ -3,7 +3,7 @@
 import { deleteAccount } from "@/app/utils/user/myPageAPI";
 
 import MyPageButton from "../../atoms/user/MyPageButton";
-import styled from "styled-components";
+import styled from "@emotion/styled";
 
 const Container = styled.div`
   display: flex;

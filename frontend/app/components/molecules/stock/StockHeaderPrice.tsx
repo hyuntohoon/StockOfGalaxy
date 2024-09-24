@@ -1,5 +1,5 @@
 import StockIcon from "../../atoms/stock/StockIcon";
-import styled from "styled-components";
+import styled from "@emotion/styled";
 import StockName from "../../atoms/stock/StockName";
 import StockCurrentPrice from "../../atoms/stock/StockCurrentPrice";
 import StockChange from "../../atoms/stock/StockChange";

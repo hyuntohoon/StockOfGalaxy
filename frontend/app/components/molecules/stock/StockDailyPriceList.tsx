@@ -1,7 +1,7 @@
 import StockDailyPrice from "../../atoms/stock/StockDailyPrice";
 import StockDailyPriceSubTitle from "../../atoms/stock/StockDailyPriceSubTitle";
 
-import styled from "styled-components";
+import styled from "@emotion/styled";
 
 const ParentContainer = styled.div`
   overflow-x: auto;

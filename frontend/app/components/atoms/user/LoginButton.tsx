@@ -1,6 +1,6 @@
 "use client";
 
-import styled from "styled-components";
+import styled from "@emotion/styled";
 
 const StyledLoginButton = styled.input`
   color: #9b9b9b;

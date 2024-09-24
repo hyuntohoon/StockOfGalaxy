@@ -1,6 +1,6 @@
 "use client";
 
-import styled from "styled-components";
+import styled from "@emotion/styled";
 
 import FinancialMetricsChart from "../../molecules/stock/FinancialMetricsChart";
 import FinancialMetricsSubContainer from "../../molecules/stock/FinancialMetricsSubContainer";

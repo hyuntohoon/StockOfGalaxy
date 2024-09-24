@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import LoginImage from "../../atoms/user/LoginImage";
 import ResetPasswordInputGroup from "../../molecules/user/ResetPasswordInputGroup";
 import LoginButton from "../../atoms/user/LoginButton";
-import styled from "styled-components";
+import styled from "@emotion/styled";
 
 import { resetPassword } from "@/app/utils/user/resetPassword";
 

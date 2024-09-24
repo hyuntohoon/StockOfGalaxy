@@ -1,8 +1,8 @@
 "use client";
 
+import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
 import { init } from "klinecharts";
-import styled from "styled-components";
 
 import useCoinWebSocket from "@/app/hooks/useCoinWebSocket";
 
