@@ -1,8 +1,13 @@
 "use client";
 
-import styled from "styled-components";
+import styled from "@emotion/styled";
+import React from "react";
 
-const StyledLoginButton = styled.input`
+interface StyledLoginButtonProps {
+  value: string;
+}
+
+const StyledLoginButton = styled.input<StyledLoginButtonProps>`
   color: #9b9b9b;
   border: none;
   border-radius: 25px;
@@ -20,14 +25,17 @@ const StyledLoginButton = styled.input`
     value === "회원가입" ? "1px solid #0E224D" : "none"};
 `;
 
-const LoginButton = ({ value, onClickProps }) => {
+interface LoginButtonProps {
+  value: string;
+  onClickProps: () => void;
+}
+
+const LoginButton: React.FC<LoginButtonProps> = ({ value, onClickProps }) => {
   return (
     <StyledLoginButton
       type="button"
       value={value}
-      onClick={() => {
-        onClickProps();
-      }}
+      onClick={onClickProps}
     />
   );
 };

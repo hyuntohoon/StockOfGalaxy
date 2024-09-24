@@ -4,9 +4,10 @@ import { useState } from "react";
 import LoginImage from "../../atoms/user/LoginImage";
 import LoginInputGroup from "../../molecules/user/LoginInputGroup";
 import LoginButtonGroup from "../../molecules/user/LoginButtonGroup";
-import styled from "styled-components";
+import styled from "@emotion/styled"; // 변경된 부분
 import Link from "next/link";
 
+// Emotion을 사용하여 스타일링
 const LoginContainer = styled.div`
   position: absolute;
   top: 50%;
@@ -33,6 +34,10 @@ const StyledLink = styled(Link)`
   color: #777777;
   text-decoration: none;
   font-size: 1.1rem;
+
+  &:hover {
+    text-decoration: underline;
+  }
 `;
 
 const LoginTemplate = () => {
@@ -42,16 +47,14 @@ const LoginTemplate = () => {
   });
 
   return (
-    <>
-      <LoginContainer>
-        <LoginImage width={200} />
-        <LoginInputGroup setInputValue={setInputValue} />
-        <LinkContainer>
-          <StyledLink href="/find-password">비밀번호 찾기</StyledLink>
-        </LinkContainer>
-        <LoginButtonGroup inputValue={inputValue} />
-      </LoginContainer>
-    </>
+    <LoginContainer>
+      <LoginImage width={200} />
+      <LoginInputGroup setInputValue={setInputValue} />
+      <LinkContainer>
+        <StyledLink href="/find-password">비밀번호 찾기</StyledLink>
+      </LinkContainer>
+      <LoginButtonGroup inputValue={inputValue} />
+    </LoginContainer>
   );
 };
 
