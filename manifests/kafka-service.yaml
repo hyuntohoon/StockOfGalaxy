@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka
+  namespace: backcd
+spec:
+  selector:
+    app: kafka
+  ports:
+    - name: internal
+      port: 9092
+      targetPort: 9092
+    - name: external-1
+      port: 31090
+      targetPort: 31090
+    - name: external-2
+      port: 31091
+      targetPort: 31091
+    - name: external-3
+      port: 31092
+      targetPort: 31092
+  type: NodePort
