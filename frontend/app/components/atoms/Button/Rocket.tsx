@@ -1,91 +1,133 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import * as THREE from 'three';
+import RocketCardModal from '@/app/components/organisms/Modal/RocketCardModal';
+import { RocketData } from '@/app/types/rocket';
+import { throttle } from 'lodash';
 
-export default function Rocket({ planetRadius }: { planetRadius: number }) {
+interface RocketProps {
+  scene: THREE.Scene;
+  rocketData: RocketData[];
+}
+
+const fixedPositions = [
+  { x: 100, y: 50, z: 150 },
+  { x: -110, y: 40, z: 150 },
+  { x: 0, y: 120, z: 150 },
+  { x: -90, y: -90, z: 150 },
+  { x: 110, y: -60, z: 150 },
+  { x: 20, y: -100, z: 150 },
+  { x: 10, y: 10, z: 150 },
+];
+
+export default function Rockets({ scene, rocketData }: RocketProps) {
+  const [selectedRocket, setSelectedRocket] = useState<RocketData | null>(null);
+  const [hoveredRocket, setHoveredRocket] = useState<THREE.Mesh | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const mountRef = useRef<HTMLDivElement>(null);
+  const camera = useRef<THREE.PerspectiveCamera | null>(null);
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setHoveredRocket(null);
+  };
 
   useEffect(() => {
-    let scene: THREE.Scene;
-    let camera: THREE.PerspectiveCamera;
-    let renderer: THREE.WebGLRenderer;
-    let rocket: THREE.Sprite;
-    let angle = 0; // 공전 각도
-    const radius = planetRadius + 50; // 행성으로부터 로켓의 거리(공전 반지름)
+    if (!mountRef.current) return;
 
-    const WIDTH = window.innerWidth;
-    const HEIGHT = window.innerHeight;
-    const fieldOfView = 75; // 시야각 조정
-    const aspectRatio = WIDTH / HEIGHT;
-    const nearPlane = 1;
-    const farPlane = 3000; // 더 멀리 보이도록 설정 (값을 높임)
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    mountRef.current.appendChild(renderer.domElement);
 
-    // Three.js 기본 설정
-    scene = new THREE.Scene();
-    camera = new THREE.PerspectiveCamera(fieldOfView, aspectRatio, nearPlane, farPlane);
-    camera.position.set(0, planetRadius, planetRadius * 3); // 카메라 위치 조정
+    camera.current = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.current.position.z = 400;
 
-    renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-    renderer.setSize(WIDTH, HEIGHT);
-    if (mountRef.current) {
-      mountRef.current.appendChild(renderer.domElement);
-    }
-
-    // 로켓 이미지 로드
     const textureLoader = new THREE.TextureLoader();
     const rocketTexture = textureLoader.load('/images/planet/rocket2.png');
+    const rocketMaterial = new THREE.MeshBasicMaterial({
+      map: rocketTexture,
+      transparent: true,
+      opacity: 0.97,
+      side: THREE.DoubleSide,
+    });
 
-    const rocketMaterial = new THREE.SpriteMaterial({ map: rocketTexture });
+    const rockets = fixedPositions.map((pos, index) => {
+      const data = rocketData[index];
+      const scaleWidth = Math.random() * 30 + 60;
+      const scaleHeight = (scaleWidth / 7) * 4;
+      const planeGeometry = new THREE.PlaneGeometry(scaleWidth, scaleHeight);
+      const rocket = new THREE.Mesh(planeGeometry, rocketMaterial);
+      rocket.position.set(pos.x, pos.y, pos.z);
+      rocket.userData = data;
+      scene.add(rocket);
+      return rocket;
+    });
 
-    // 로켓 생성
-    rocket = new THREE.Sprite(rocketMaterial);
-    rocket.scale.set(140, 80, 3); // 로켓 크기 설정
-    scene.add(rocket); // 로켓을 씬에 추가
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
 
-    // 애니메이션 루프
+    const onMouseMove = throttle((event: MouseEvent) => {
+      const rect = renderer.domElement.getBoundingClientRect();
+      mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+      mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+      raycaster.setFromCamera(mouse, camera.current!);
+      camera.current!.updateMatrixWorld();
+
+      const intersects = raycaster.intersectObjects(rockets);
+
+      if (intersects.length > 0) {
+        const intersectedRocket = intersects[0].object as THREE.Mesh;
+        setSelectedRocket(intersectedRocket.userData as RocketData);
+        setHoveredRocket(intersectedRocket);
+        setIsModalOpen(true);
+      } else {
+        setHoveredRocket(null);
+        if (isModalOpen) {
+          handleCloseModal();
+        }
+      }
+    }, 100);
+
+    window.addEventListener('mousemove', onMouseMove);
+
+    const onWindowResize = () => {
+      camera.current!.aspect = window.innerWidth / window.innerHeight;
+      camera.current!.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    };
+
+    window.addEventListener('resize', onWindowResize, false);
+
     const animate = () => {
       requestAnimationFrame(animate);
-
-      // 각도를 기반으로 로켓의 위치 업데이트 (공전 운동)
-      angle += 0.02; // 각도 증가 (속도 조정)
-
-      // 원형 경로의 x 좌표와 z 좌표
-      const x = radius * Math.cos(angle);
-      const z = radius * Math.sin(angle);
-
-      // y 좌표는 행성의 적도 높이에 고정
-      const y = 0; // 행성의 중앙 (적도)
-
-      // 로켓이 행성 뒤로 들어갔다가 다시 앞으로 나오는 궤도
-      rocket.position.set(x, y, z); // z 축을 이용해 앞뒤로 위치
-
-      // 카메라가 로켓을 볼 수 있게 보이게 설정
-      camera.lookAt(0, 0, 0); // 카메라가 항상 행성 중심을 보도록 설정
-
-      renderer.render(scene, camera);
+      renderer.render(scene, camera.current!);
     };
+
     animate();
 
-    // 창 크기 조정 처리
-    const handleWindowResize = () => {
-      const width = window.innerWidth;
-      const height = window.innerHeight;
-      camera.aspect = width / height;
-      camera.updateProjectionMatrix();
-      renderer.setSize(width, height);
-    };
-
-    window.addEventListener('resize', handleWindowResize);
-
     return () => {
-      window.removeEventListener('resize', handleWindowResize);
-      if (mountRef.current) {
-        mountRef.current.removeChild(renderer.domElement);
-      }
-      renderer.dispose();
+      window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('resize', onWindowResize);
+      mountRef.current?.removeChild(renderer.domElement);
+      rockets.forEach(rocket => scene.remove(rocket));
     };
-  }, [planetRadius]);
+  }, [scene, rocketData]);
 
-  return <div ref={mountRef} style={{ width: '100%', height: '100vh' }} />;
+  return (
+    <div ref={mountRef} style={{ width: '100%', height: '100vh' }}>
+      {hoveredRocket && isModalOpen && selectedRocket && (
+        <RocketCardModal
+          onClose={handleCloseModal}
+          position={hoveredRocket.position}
+          camera={camera.current!}
+          rendererDomElement={mountRef.current?.querySelector('canvas')!}
+          data={selectedRocket}
+        />
+      )}
+    </div>
+  );
 }
