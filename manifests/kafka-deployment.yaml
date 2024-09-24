@@ -19,10 +19,15 @@ spec:
           ports:
             - containerPort: 9092  # Kafka 기본 포트
           env:
+            # Zookeeper 연결 설정
             - name: KAFKA_CFG_ZOOKEEPER_CONNECT
-              value: "zookeeper-service:2181"  # Zookeeper 연결 설정
+              value: "zookeeper-service:2181"
+            # 외부에서 Kafka에 접근할 수 있도록 advertised.listeners 설정
+            - name: KAFKA_CFG_ADVERTISED_LISTENERS
+              value: "PLAINTEXT://172.26.0.238:30092"  # INTERNAL IP와 NodePort 사용
+            # 인증 없이 접근 허용 (로컬 테스트 환경)
             - name: ALLOW_PLAINTEXT_LISTENER
-              value: "yes"  # 로컬 환경에서 테스트 시 사용
+              value: "yes"
           volumeMounts:
             - name: kafka-storage
               mountPath: /bitnami/kafka  # Kafka 데이터 저장 경로
@@ -30,6 +35,7 @@ spec:
         - name: kafka-storage
           persistentVolumeClaim:
             claimName: kafka-pvc  # PVC에 맞게 설정
+
 
 ---
 apiVersion: v1
