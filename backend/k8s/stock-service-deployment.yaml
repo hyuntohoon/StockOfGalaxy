@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: stock-service
-          image: zlxldgus123/stock-service:152
+          image: zlxldgus123/stock-service:153
           ports:
             - containerPort: 8080
           env:
