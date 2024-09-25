@@ -47,7 +47,7 @@ public class KisRealTimeWebSocketKeyService {
     }
 
     // 매일 자정 재요청
-    @Scheduled(cron = "0 0 0 * * *")
+    @Scheduled(cron = "0 40 15 * * *")
     public void requestWebSocketKey() {
         log.info("Requesting new WebSocket key from KIS...");
         Map<String, String> requestBody = new HashMap<>();
