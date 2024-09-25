@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { formatMoney } from '@/app/utils/formatMoney';
+import { formatMoney } from '@/app/utils/libs/formatMoney';
 
 interface PlanetCardInfoProps {
   label: string;
