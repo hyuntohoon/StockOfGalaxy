@@ -35,6 +35,14 @@ spring:
           predicates:
             - Path=/api/stock/**
 
+        # WebSocket 라우팅 설정
+        - id: stock-service-websocket
+          uri: ws://stock-service.backcd.svc.cluster.local:80  # WebSocket을 위한 ws:// 프로토콜 사용
+          predicates:
+            - Path=/ws/stock/**  # WebSocket 엔드포인트 경로
+          filters:
+            - RemoveRequestHeader=Sec-WebSocket-Protocol  # 필요에 따라 WebSocket 프로토콜 헤더 제거
+
         - id: news-service
           uri: http://news-service.backcd.svc.cluster.local:80
           predicates:
@@ -47,7 +55,7 @@ spring:
             - Path=/user-service/v3/api-docs
             - Path=/user-service/swagger-ui/**
           filters:
-            - RewritePath=/user-service(?<segment>/.*), $\\{segment}
+            - RewritePath=/user-service(?<segment>/.*), $\{segment}
 
         - id: stock-service-swagger
           uri: http://stock-service.backcd.svc.cluster.local:80
@@ -55,7 +63,7 @@ spring:
             - Path=/stock-service/v3/api-docs
             - Path=/stock-service/swagger-ui/**
           filters:
-            - RewritePath=/stock-service(?<segment>/.*), $\\{segment}
+            - RewritePath=/stock-service(?<segment>/.*), $\{segment}
 
         - id: news-service-swagger
           uri: http://news-service.backcd.svc.cluster.local:80
@@ -63,7 +71,7 @@ spring:
             - Path=/news-service/v3/api-docs
             - Path=/news-service/swagger-ui/**
           filters:
-            - RewritePath=/news-service(?<segment>/.*), $\\{segment}
+            - RewritePath=/news-service(?<segment>/.*), $\{segment}
 
 jwt:
   secret: "3c84e62c46e5438e9d12e28a9876591bc34e4e92a3a489b749ab2d9c9e367d89"  # Kubernetes Secret에서 JWT 가져오기
