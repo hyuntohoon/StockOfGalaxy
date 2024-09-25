@@ -21,10 +21,10 @@ public class KisTokenService {
     private final WebClient webClient;
     private final RedisService redisService;
 
-    @Value("${kis.appkey}")
+    @Value("${kis.realtime-stock.appkey}")
     private String appKey;
 
-    @Value("${kis.appsecret}")
+    @Value("${kis.realtime-stock.appsecret}")
     private String appSecret;
 
     private final String TOKEN_KEY = "kis_token";
