@@ -36,7 +36,7 @@ export const getInfo = async (accessToken, setAccessToken) => {
     const authClient = authRequest(accessToken, setAccessToken);
 
   try {
-    const getInfoRes = await authClient.get("/user/info");
+    const getInfoRes = await authClient.get("/user");
     console.log(getInfoRes.data);
     return getInfoRes.data;
   } catch (error) {
