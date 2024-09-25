@@ -94,14 +94,31 @@ public class RealTimeWebSocketService {
         // 실시간 데이터 처리
         StockPriceResponseDTO stockPriceResponseDTO = parseStockResponse(payload);
         if (stockPriceResponseDTO != null) {
-
             // 해당 종목을 구독한 모든 클라이언트 세션에 실시간 데이터를 전송
             String stockCode = stockPriceResponseDTO.getStock_code();
             List<WebSocketSession> subscribers = stockCodeSubscribers.get(stockCode);
+
+            // 구독자가 있을 경우
             if (subscribers != null) {
+                List<WebSocketSession> closedSessions = new ArrayList<>(); // 닫힌 세션 저장
+
                 for (WebSocketSession clientSession : subscribers) {
-                    clientSession.sendMessage(new TextMessage(
-                        new ObjectMapper().writeValueAsString(stockPriceResponseDTO)));
+                    // 세션이 열려있는지 확인
+                    if (clientSession.isOpen()) {
+                        log.info("Sending data to client for stock: {}", stockCode);
+                        clientSession.sendMessage(new TextMessage(
+                            new ObjectMapper().writeValueAsString(stockPriceResponseDTO)));
+                    } else {
+                        log.warn("Client session is closed, removing session for stock: {}",
+                            stockCode);
+                        closedSessions.add(clientSession); // 닫힌 세션을 리스트에 추가
+                    }
+                }
+
+                // 닫힌 세션을 구독자 리스트에서 제거
+                subscribers.removeAll(closedSessions);
+                if (subscribers.isEmpty()) {
+                    stockCodeSubscribers.remove(stockCode); // 구독자가 없으면 리스트에서 제거
                 }
             }
         }
