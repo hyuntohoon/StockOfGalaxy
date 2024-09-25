@@ -50,7 +50,7 @@ const Item = styled.div`
   }
 `;
 
-const DividendInfo: React.FC<DividendInfoProps> = ({ length }) => {
+const DividendInfo: React.FC<DividendInfoProps> = () => {
   const dividends: DividendItem[] = [
     { title: "PER", content: "18.2배" },
     { title: "PSR", content: "1.8배" },
@@ -61,7 +61,7 @@ const DividendInfo: React.FC<DividendInfoProps> = ({ length }) => {
 
   return (
     <Container>
-      {dividends.slice(0, length).map((dividend, index) => (
+      {dividends.map((dividend, index) => (
         <Item key={index}>
           <Dividend title={dividend.title} content={dividend.content} />
         </Item>
