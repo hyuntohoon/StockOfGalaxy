@@ -4,7 +4,7 @@ import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
 import { init } from "klinecharts";
 
-import useKRStockWebSocket from "@/app/hooks/useKRStockWebSocket";
+import useKRChartWebSocket from "@/app/hooks/useKRChartWebSocket";
 
 const ChartContainer = styled.div`
   margin-left: 200px;
@@ -68,7 +68,7 @@ const ChartTemplate = () => {
     changeRate: number | null;
   }
 
-  useKRStockWebSocket("005930", chart);
+  useKRChartWebSocket("005930", chart);
 
   const genData = (temp: string) => {
     console.log(temp);

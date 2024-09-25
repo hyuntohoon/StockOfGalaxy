@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import styled from "@emotion/styled";
 import StockCurrentPrice from "../../atoms/stock/StockCurrentPrice";
 import StockChange from "../../atoms/stock/StockChange";
+import useKRStockWebSocket from "@/app/hooks/useKRStockWebSocket";
 
 const Container = styled.div`
   display: flex;
@@ -10,62 +11,36 @@ const Container = styled.div`
   align-items: center;
 `;
 
-const StockPrice = ({ market }) => {
-  useEffect(() => {
-    const socket = new WebSocket("wss://api.upbit.com/websocket/v1");
+interface currentInfoData {
+  stock_code: string;
+  stock_prpr: string;
+  prdy_vrss_sign: string;
+  prdy_vrss: string;
+  prdy_ctrt: string;
+}
 
-    socket.onopen = () => {
-      console.log(`Connected to ${market}`);
-      socket.send(
-        JSON.stringify([
-          { ticket: "UNIQUE_TICKET" },
-          {
-            type: "ticker",
-            codes: [market],
-            isOnlySnapshot: true,
-            isOnlyRealtime: true,
-          },
-          { format: "DEFAULT" },
-        ])
-      );
-    };
-
-    socket.onmessage = async (event) => {
-      const data =
-        event.data instanceof Blob ? await event.data.text() : event.data;
-      const jsonData = JSON.parse(data);
-
-      if (jsonData && jsonData.trade_price) {
-        setPrice(jsonData.trade_price);
-      }
-
-      if (jsonData && jsonData.change_price && jsonData.change) {
-        setChangePrice(
-          jsonData.change === "FALL"
-            ? -jsonData.change_price
-            : jsonData.change_price
-        );
-      }
-
-      if (jsonData && jsonData.change_rate && jsonData.change) {
-        setChangeRate(jsonData.change_rate * 100);
-      }
-    };
-
-    socket.onclose = () => {
-      console.log(`Disconnected from ${market}`);
-    };
-  }, []);
-
+const StockPrice = (market) => {
   const [price, setPrice] = useState(0);
   const [changePrice, setChangePrice] = useState(0);
   const [changeRate, setChangeRate] = useState(0);
+  const [currentInfo, setCurrentInfo] = useState<currentInfoData>({
+    stock_code: market,
+    stock_prpr: "0",
+    prdy_vrss_sign: "2",
+    prdy_vrss: "0",
+    prdy_ctrt: "0",
+  });
+
+  useKRStockWebSocket(market, setCurrentInfo);
 
   return (
     <>
       <Container>
-        <StockCurrentPrice currentPrice={price} />
-        <StockChange changePrice={changePrice} changeRate={changeRate} />
+        <StockCurrentPrice currentPrice={parseInt(currentInfo.stock_prpr)} />
+        <StockChange
+          changePrice={parseInt(currentInfo.prdy_vrss)}
+          changeRate={parseFloat(currentInfo.prdy_ctrt)}
+        />
       </Container>
     </>
   );
