@@ -30,6 +30,6 @@ spec:
   ports:
     - port: 8200
       targetPort: 8200
-      nodePort: 30082
+      nodePort: 30192
   selector:
     app: apm-server
