@@ -82,7 +82,7 @@ public class RealTimeWebSocketService {
                 log.info("Received PINGPONG message, keeping connection alive");
                 return; // 연결 상태 유지 메시지이므로 여기서 처리 끝
             }
-            
+
             // 구독 성공 메시지 처리
             if (jsonResponse.getJSONObject("body").getString("msg1").equals("SUBSCRIBE SUCCESS")) {
                 log.info("주식 구독 성공: {}",
@@ -98,7 +98,7 @@ public class RealTimeWebSocketService {
             // 해당 종목을 구독한 모든 클라이언트 세션에 실시간 데이터를 전송
             String stockCode = stockPriceResponseDTO.getStock_code();
             List<WebSocketSession> subscribers = stockCodeSubscribers.get(stockCode);
-            if (subscribers == null) {
+            if (subscribers != null) {
                 for (WebSocketSession clientSession : subscribers) {
                     clientSession.sendMessage(new TextMessage(
                         new ObjectMapper().writeValueAsString(stockPriceResponseDTO)));
