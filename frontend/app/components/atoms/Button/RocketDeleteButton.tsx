@@ -1,6 +1,5 @@
 import { FaTrashAlt } from "react-icons/fa";
-import styled from "styled-components";
-
+import styled from '@emotion/styled';
 interface RocketDeleteButtonProps {
   authorId: number;
   currentUserId: number;

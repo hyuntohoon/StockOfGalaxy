@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from '@emotion/styled';
 import RocketPrice from "../../atoms/Text/RocketPrice";
 import RocketPriceChange from "../../atoms/Text/RocketPriceChange";
 
