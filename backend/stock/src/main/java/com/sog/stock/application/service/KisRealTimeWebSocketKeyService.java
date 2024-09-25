@@ -41,14 +41,30 @@ public class KisRealTimeWebSocketKeyService {
 
     private final String GRANT_TYPE = "client_credentials";
 
-    // get websocket key
+    // Redis에서 키를 조회하여 반환, 없으면 새로운 키 요청
     public String getRealTimeWebSocketKey() {
-        return redisService.getValue("kisRealTimeKey");
+        String key = redisService.getValue("kisRealTimeKey");
+
+        if (key == null) {
+            requestNewWebSocketKey();
+            key = redisService.getValue("kisRealTimeKey");
+            log.info("Redis key 새로 발급!");
+        } else {
+            log.info("Redis에서 실시간 키가 존재합니다: {}", key);
+        }
+
+        return key;
+    }
+
+    // 매일 자정에 새로 WebSocket 키 요청
+    @Scheduled(cron = "0 55 14 * * *")
+    public void requestWebSocketKeyScheduled() {
+        log.info("자정 12시 입니다!");
+        requestNewWebSocketKey();
     }
 
     // 매일 자정 재요청
-    @Scheduled(cron = "0 0 0 * * *")
-    public void requestWebSocketKey() {
+    public void requestNewWebSocketKey() {
         log.info("Requesting new WebSocket key from KIS...");
         Map<String, String> requestBody = new HashMap<>();
         requestBody.put("grant_type", "client_credentials");
@@ -78,7 +94,6 @@ public class KisRealTimeWebSocketKeyService {
         } catch (JsonProcessingException e) {
             log.error("Error converting request body to JSON: {}", e.getMessage());
         }
-
     }
 
     // 응답에서 approval_key 추출
