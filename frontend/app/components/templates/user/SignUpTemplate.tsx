@@ -1,25 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import LoginImage from "../../atoms/user/LoginImage";
 import SignUpInputGroup from "../../molecules/user/SignUpInputGroup";
 import LoginButton from "../../atoms/user/LoginButton";
 import styled from "styled-components";
 import { signUpApi, signUpValidation } from "@/app/utils/apis/users/signup";
 import Title from "../../atoms/common/Title";
-const LoginContainer = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: rgba(254, 254, 254, 0.2);
-  border-radius: 20px;
-  padding: 40px;
-`;
+import { FormContainer } from "@/app/styles/user";
 
 const SignUpTemplate = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -31,7 +18,7 @@ const SignUpTemplate = () => {
 
   return (
     <>
-      <LoginContainer>
+      <FormContainer>
       <Title text="sign up" size={45} color="white" weight={700} />
         <SignUpInputGroup
           setUserId={setUserId}
@@ -65,7 +52,7 @@ const SignUpTemplate = () => {
             });
           }}
         />
-      </LoginContainer>
+      </FormContainer>
     </>
   );
 };

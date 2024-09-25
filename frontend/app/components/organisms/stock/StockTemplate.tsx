@@ -40,6 +40,11 @@ const Container = styled.div`
   align-items: center;
   justify-content: space-between;
   border-radius: 20px;
+transition: background-color 0.3s ease, transform 0.3s ease;
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
 `;
 
 const Header = styled.div`

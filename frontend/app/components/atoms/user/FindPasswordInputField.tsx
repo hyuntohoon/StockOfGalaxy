@@ -6,44 +6,11 @@ import {
   sendAuthenticationCode,
   checkAuthenticationCode,
 } from "@/app/utils/apis/users/password";
-
+import { FormInput, CheckButton } from "@/app/styles/user";
 const InputContainer = styled.div`
   display: flex;
   align-items: center;
   position: relative;
-`;
-
-const InputField = styled.input`
- color: #9b9b9b;
-  border: none;
-  border-radius: 20px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  padding: 10px 20px;
-  width: 450px;
-  height: 45px;
-  margin: 15px 10px;
-  font-size: 1rem;
-  background-color: rgba(254, 254, 254, 0.2);
-
-  &:focus {
-    box-shadow: 0 0 10px rgba(81, 203, 238, 0.5);
-  }
-
-  ::placeholder {
-    color: white;
-  }
-`;
-
-const CheckButton = styled.button`
-  position: absolute;
-  right: 20px;
-  padding: 10px 12px;
-  border: none;
-  border-radius: 20px;
-  background-color: #0e224d;
-  color: white;
-  font-size: 1rem;
-  cursor: pointer;
 `;
 
 const FindPasswordInputField = ({ type, placeholder, setIsAuthenticated }) => {
@@ -60,7 +27,7 @@ const FindPasswordInputField = ({ type, placeholder, setIsAuthenticated }) => {
 
   return (
     <InputContainer>
-      <InputField
+      <FormInput
         type={type}
         placeholder={placeholder}
         onChange={handleChange}

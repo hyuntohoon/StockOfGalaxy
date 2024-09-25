@@ -24,11 +24,7 @@ const Container = styled.div`
   transition: background-color 0.3s ease, transform 0.3s ease;
   cursor: pointer;
 
-  &:hover {
-    background-color: #f0f0f0;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
+  
 
   @media (max-width: 600px) {
     flex-direction: column;

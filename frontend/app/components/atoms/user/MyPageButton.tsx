@@ -4,6 +4,7 @@ import styled from "@emotion/styled";
 import useAccessToken from "@/app/utils/libs/user/useAccessToken";
 import { useRouter } from "next/navigation";
 import React from "react";
+import { FormButton } from "@/app/styles/user";
 
 const StyledLoginButton = styled.input`
   color: #0e224d;
@@ -49,7 +50,7 @@ const MyPageButton: React.FC<MyPageButtonProps> = ({
   };
 
   return (
-    <StyledLoginButton
+    <FormButton
       type="button"
       value={value}
       onClick={() => {

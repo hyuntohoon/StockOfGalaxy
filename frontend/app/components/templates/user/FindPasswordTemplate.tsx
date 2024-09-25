@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Title from "../../atoms/common/Title";
-import LoginImage from "../../atoms/user/LoginImage";
 import FindPasswordInputGroup from "../../molecules/user/FindPasswordInputGroup";
 import LoginButton from "../../atoms/user/LoginButton";
 import styled from "styled-components";
@@ -30,8 +29,8 @@ const FindPasswordTemplate = () => {
   return (
     <>
       <LoginContainer>
-        {/* <LoginImage imgWidth={100} /> */}
-        <div style={{fontSize:'30px', color: 'white',fontWeight:'900', marginBottom: '20px' }}>비밀번호 찾기</div>
+        <Title text="find password" size={45} color="white" weight={700} />
+
         <FindPasswordInputGroup setIsAuthenticated={setIsAuthenticated} />
         <LoginButton
           value="다음"
