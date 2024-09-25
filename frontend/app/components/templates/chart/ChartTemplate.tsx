@@ -4,16 +4,18 @@ import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
 import { init } from "klinecharts";
 
-import useCoinWebSocket from "@/app/hooks/useCoinWebSocket";
+import useKRStockWebSocket from "@/app/hooks/useKRStockWebSocket";
 
 const ChartContainer = styled.div`
-  width: 500px;
+  margin-left: 200px;
+  width: 600px;
   height: 300px;
   overflow: hidden;
   background-color: #111;
 `;
 
 const OptionContainer = styled.div`
+  margin-left: 200px;
   display: flex;
   flex-direction: row;
   gap: 10px;
@@ -35,7 +37,7 @@ const ChartTemplate = () => {
       const newChart = init(chartContainerRef);
       newChart?.createIndicator("MA", false, { id: "candle_pane" });
       newChart?.createIndicator("VOL");
-      newChart?.applyNewData(genData("day"));
+      // newChart?.applyNewData(genData("minuate"));
 
       newChart?.setStyles({
         grid: {
@@ -54,44 +56,6 @@ const ChartTemplate = () => {
     }
   }, [chartContainerRef]);
 
-  const genData = (
-    interval,
-    timestamp = new Date().getTime(),
-    length = 700
-  ) => {
-    let basePrice = 5000;
-    const intervalToMs = {
-      minute: 60 * 1000,
-      day: 24 * 60 * 60 * 1000,
-      week: 7 * 24 * 60 * 60 * 1000,
-      month: 30 * 24 * 60 * 60 * 1000,
-      year: 365 * 24 * 60 * 60 * 1000,
-    };
-    const intervalMs = intervalToMs[interval] || intervalToMs["day"];
-
-    timestamp =
-      Math.floor(timestamp / intervalMs) * intervalMs - length * intervalMs;
-    const dataList: any[] = [];
-    for (let i = 0; i < length; i++) {
-      const prices: number[] = [];
-      for (let j = 0; j < 4; j++) {
-        prices.push(basePrice + Math.random() * 60 - 30);
-      }
-      prices.sort();
-      const open = +prices[Math.round(Math.random() * 3)].toFixed(2);
-      const high = +prices[3].toFixed(2);
-      const low = +prices[0].toFixed(2);
-      const close = +prices[Math.round(Math.random() * 3)].toFixed(2);
-      const volume = Math.round(Math.random() * 100) + 10;
-      const turnover = ((open + high + low + close) / 4) * volume;
-      dataList.push({ timestamp, open, high, low, close, volume, turnover });
-
-      basePrice = close;
-      timestamp += intervalMs;
-    }
-    return dataList;
-  };
-
   interface CoinData {
     market: string;
     korean_name: string;
@@ -104,7 +68,11 @@ const ChartTemplate = () => {
     changeRate: number | null;
   }
 
-  useCoinWebSocket("DSHS600519", chart);
+  useKRStockWebSocket("005930", chart);
+
+  const genData = (temp: string) => {
+    console.log(temp);
+  };
 
   return (
     <div>
