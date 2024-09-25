@@ -46,7 +46,7 @@ export const FormInput = styled.input`
   width: 450px;
   height: 40px;
   margin: 15px 10px;
-  font-size: 1.1rem;
+  font-size: 0.9rem;
   background-color: rgba(254, 254, 254, 0.2);
   transition: all 0.3s;
 

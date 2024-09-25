@@ -3,7 +3,6 @@
 import { useState } from "react";
 import SignUpInputGroup from "../../molecules/user/SignUpInputGroup";
 import LoginButton from "../../atoms/user/LoginButton";
-import styled from "styled-components";
 import { signUpApi, signUpValidation } from "@/app/utils/apis/users/signup";
 import Title from "../../atoms/common/Title";
 import { FormContainer } from "@/app/styles/user";
