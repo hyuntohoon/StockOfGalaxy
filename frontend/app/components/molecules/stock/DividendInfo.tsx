@@ -3,10 +3,6 @@
 import styled from "@emotion/styled";
 import Dividend from "@/app/components/atoms/stock/Dividend";
 
-interface DividendInfoProps {
-  length: number;
-}
-
 interface DividendItem {
   title: string;
   content: string;
@@ -50,7 +46,7 @@ const Item = styled.div`
   }
 `;
 
-const DividendInfo: React.FC<DividendInfoProps> = () => {
+const DividendInfo: React.FC = () => {
   const dividends: DividendItem[] = [
     { title: "PER", content: "18.2배" },
     { title: "PSR", content: "1.8배" },
