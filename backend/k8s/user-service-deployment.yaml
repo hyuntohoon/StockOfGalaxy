@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: user-service
-          image: zlxldgus123/user-service:182
+          image: zlxldgus123/user-service:183
           ports:
             - containerPort: 8080
           env:
