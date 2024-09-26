@@ -60,7 +60,7 @@ spec:
                 port:
                   number: 80
           # WebSocket 연결을 위한 주식 경로
-          - path: /ws/stock/*
+          - path: /api/ws-stock
             pathType: Prefix
             backend:
               service:
