@@ -12,11 +12,11 @@ spring:
             - Transfer-Encoding
       globalcors:
         corsConfigurations:
-          '[/**]': # 모든 경로에 대해 CORS 허용
+          '[/**]':  # 모든 경로에 대해 CORS 허용
             allowedOrigins:
               - "https://ssafy11s.com"  # 허용할 도메인
               - "http://localhost:3000"  # 개발 환경에서 허용할 로컬 도메인
-            allowedMethods: # 허용할 HTTP 메서드
+            allowedMethods:  # 허용할 HTTP 메서드
               - GET
               - POST
               - PUT
@@ -50,13 +50,12 @@ spring:
 
         # WebSocket 라우팅 설정
         - id: stock-service-websocket
-          uri: ws://stock-service.backcd.svc.cluster.local:80  # WebSocket을 위한 ws:// 프로토콜 사용
+          uri: wss://stock-service.backcd.svc.cluster.local:80  # WebSocket을 위한 wss:// 프로토콜 사용
           predicates:
             - Path=/api/ws-stock/**  # WebSocket 엔드포인트 경로
           filters:
             - SetRequestHeader=Connection,Upgrade  # 요청에서 Connection 헤더를 업그레이드
             - SetRequestHeader=Upgrade,websocket  # 요청에서 Upgrade 헤더 설정
-            #- SetResponseHeader=Upgrade,websocket  # 응답에서 Upgrade 헤더 설정
 
         - id: news-service
           uri: http://news-service.backcd.svc.cluster.local:80
