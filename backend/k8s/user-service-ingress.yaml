@@ -11,6 +11,8 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"  # 웹소켓 연결 타임아웃
     nginx.ingress.kubernetes.io/websocket-services: "gateway-service"  # 웹소켓 서비스
     nginx.ingress.kubernetes.io/enable-websocket: "true"  # WebSocket 연결 활성화
+    nginx.ingress.kubernetes.io/proxy-set-header-1: "Upgrade $http_upgrade"  # 헤더 1
+    nginx.ingress.kubernetes.io/proxy-set-header-2: "Connection upgrade"  # 헤더 2
 spec:
   tls:
     - hosts:
@@ -68,9 +70,6 @@ spec:
                 name: gateway-service  # WebSocket 연결을 위한 서비스
                 port:
                   number: 80
-            annotations:
-              nginx.ingress.kubernetes.io/proxy-set-header-1: "Upgrade $http_upgrade"
-              nginx.ingress.kubernetes.io/proxy-set-header-2: "Connection upgrade"
           # Swagger UI 및 API 문서 경로
           - path: /user-service/swagger-ui/*
             pathType: Prefix
