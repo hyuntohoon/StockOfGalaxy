@@ -97,10 +97,6 @@ const MenuHeaderWrapper = styled.div`
   & > div {
     margin-bottom: 16px;
   }
-
-  & > div:last-of-type {
-    margin-bottom: 0;
-  }
 `;
 
 const ToggleButton = styled.button`
