@@ -13,6 +13,7 @@ metadata:
     nginx.ingress.kubernetes.io/websocket-services: "gateway-service"
     nginx.ingress.kubernetes.io/enable-websocket: "true"
     nginx.ingress.kubernetes.io/backend-protocol: "WSS"  # 이 부분을 annotation으로 이동
+    nginx.ingress.kubernetes.io/proxy-http-version: "1.1"  # HTTP/1.1 강제 설정
 spec:
   tls:
     - hosts:
