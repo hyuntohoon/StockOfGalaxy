@@ -2,14 +2,13 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-
-import LoginImage from "../../atoms/user/LoginImage";
+import Title from "../../atoms/common/Title";
 import FindPasswordInputGroup from "../../molecules/user/FindPasswordInputGroup";
 import LoginButton from "../../atoms/user/LoginButton";
 import styled from "@emotion/styled";
 
 const LoginContainer = styled.div`
-  position: absolute;
+ position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -17,12 +16,10 @@ const LoginContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: auto;
-  width: auto;
-  background: rgba(255, 255, 255, 0.85);
-  border-radius: 10px;
-  padding: 20px;
-`;
+  background: rgba(254, 254, 254, 0.2);
+  border-radius: 20px;
+  padding: 40px;
+  `
 
 const FindPasswordTemplate = () => {
   const router = useRouter();
@@ -32,7 +29,8 @@ const FindPasswordTemplate = () => {
   return (
     <>
       <LoginContainer>
-        <LoginImage width={100} />
+        <Title text="find password" size={45} color="white" weight={700} />
+
         <FindPasswordInputGroup setIsAuthenticated={setIsAuthenticated} />
         <LoginButton
           value="다음"

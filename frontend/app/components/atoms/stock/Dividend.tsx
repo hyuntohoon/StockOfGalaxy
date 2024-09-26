@@ -1,4 +1,11 @@
+"use client";
+
 import styled from "@emotion/styled";
+
+interface DividendProps {
+  title: string;
+  content: string;
+}
 
 const Container = styled.div`
   background-color: #f5f5f5;
@@ -18,19 +25,12 @@ const StyledContent = styled.div`
   font-weight: bold;
 `;
 
-interface DividendProps {
-  title: string;
-  content: string;
-}
-
 const Dividend = ({ title, content }: DividendProps) => {
   return (
-    <>
-      <Container>
-        <StyledTitle>{title}</StyledTitle>
-        <StyledContent>{content}</StyledContent>
-      </Container>
-    </>
+    <Container>
+      <StyledTitle>{title}</StyledTitle>
+      <StyledContent>{content}</StyledContent>
+    </Container>
   );
 };
 

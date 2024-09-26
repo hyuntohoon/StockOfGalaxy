@@ -18,20 +18,35 @@ export const FavoriteItem: React.FC<FavoriteItemProps> = ({
   onClick,
 }) => {
   return (
-    <FavoriteItemContainer isRemoving={isRemoving} onClick={onClick}>
+    <FavoriteItemContainer  isRemoving={isRemoving} onClick={onClick}>
     <LeftSection>
-      <Icon src={iconSrc} size="40px" />
+      <Icon src={iconSrc} size="40px" width={10} />
       <Info>
         <Text size="15px" weight="bold">{name}</Text>
         <FavoriteButton onClick={e => { e.stopPropagation(); onToggleFavorite(); }}>
           <FavoriteIconWrapper isFavorite={isFavorite}>
-            <Image 
-              src={isFavorite ? like : unlike} 
-              alt="Favorite Toggle" 
-              layout="fixed" // layout 설정 (fixed, responsive, fill, intrinsic)
-              width={24} 
-              height={24} 
-            />
+            <div className='card-container'>
+            <div className={`card-${rank}`}>
+              <div className='front'>
+                <Image 
+                  src={like} 
+                  alt="Favorite Toggle" 
+                  layout="fixed"
+                  width={24} 
+                  height={24} 
+                />
+              </div>
+            <div className='back'>
+              <Image 
+                src={unlike} 
+                alt="Favorite Toggle" 
+                layout="fixed"
+                width={24} 
+                height={24} 
+              />
+            </div>
+            </div>
+            </div>
           </FavoriteIconWrapper>
         </FavoriteButton>
       </Info>

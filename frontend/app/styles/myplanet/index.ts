@@ -99,7 +99,59 @@ position: absolute;
 width: 24px;
 height: 24px;
 transition: opacity 0.4s ease;
-opacity: ${({ isFavorite }) => (isFavorite ? 1 : 0.5)};
+opacity: ${({ isFavorite }) => (isFavorite ? 1 : 0.2)};
+
+.card-container
+{
+    font-family: 'Open Sans', sans serif;
+    border-radius: 10px;
+    perspective: 1400px;
+}
+
+.card
+{
+    position: relative;
+
+    height: 100%;
+
+    border-radius: 10px;
+
+    widht: 100%;
+    transform-style: preserve-3d;
+}
+
+.front,
+.back
+{
+    display: flex;
+
+    width: 100%;
+    height: 100%;
+
+    border-radius: 10px;
+
+    justify-content: center;
+    align-items: center;
+    backface-visibility: hidden;
+}
+.front
+{
+    color: #fff;
+    background: #2196f3;
+}
+
+.back
+{
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    transform: rotateY(180deg);
+
+    color: #2196f3;
+    background: #fff;
+}
+
 `;
 
 export const IconWrapper = styled.div<{ size: string }>`
