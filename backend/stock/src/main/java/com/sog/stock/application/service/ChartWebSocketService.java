@@ -2,7 +2,7 @@ package com.sog.stock.application.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sog.stock.domain.dto.ChartResponseDTO;
+import com.sog.stock.domain.dto.ChartRealtimeResponseDTO;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -97,10 +97,10 @@ public class ChartWebSocketService {
         }
 
         // 실시간 데이터 처리
-        ChartResponseDTO chartResponseDTO = parseStockResponse(payload);
-        if (chartResponseDTO != null) {
+        ChartRealtimeResponseDTO chartRealtimeResponseDTO = parseStockResponse(payload);
+        if (chartRealtimeResponseDTO != null) {
             // 해당 종목을 구독한 모든 클라이언트 세션에 실시간 데이터를 전송
-            String stockCode = chartResponseDTO.getStockCode();
+            String stockCode = chartRealtimeResponseDTO.getStockCode();
             List<WebSocketSession> subscribers = stockCodeSubscribers.get(stockCode);
 
             // 구독자가 있을 경우
@@ -112,7 +112,7 @@ public class ChartWebSocketService {
                     if (clientSession.isOpen()) {
                         log.info("클라이언트에 데이터 전송: {}", stockCode);
                         clientSession.sendMessage(new TextMessage(
-                            new ObjectMapper().writeValueAsString(chartResponseDTO)));
+                            new ObjectMapper().writeValueAsString(chartRealtimeResponseDTO)));
                     } else {
                         log.warn("클라이언트 세션이 닫혀있습니다. 세션을 제거합니다: {}",
                             stockCode);
@@ -163,7 +163,7 @@ public class ChartWebSocketService {
     }
 
     // KIS 응답을 DTO로 변환하는 로직
-    private ChartResponseDTO parseStockResponse(String response) {
+    private ChartRealtimeResponseDTO parseStockResponse(String response) {
         // 데이터를 | 기준으로 분리
         String[] pipeSplitData = response.split("\\|");
 
@@ -183,20 +183,19 @@ public class ChartWebSocketService {
         }
 
         // DTO로 매핑
-        ChartResponseDTO chartResponseDTO = new ChartResponseDTO();
-        chartResponseDTO.setStockCode(caretSplitData[0]);
-        chartResponseDTO.setClosePrice(caretSplitData[2]);
-        chartResponseDTO.setOpenPrice(caretSplitData[7]);
-        chartResponseDTO.setHighPrice(caretSplitData[8]);
-        chartResponseDTO.setLowPrice(caretSplitData[9]);
-        chartResponseDTO.setStockAcmlVol(caretSplitData[13]);
-        chartResponseDTO.setStockAcmlTrPbmn(caretSplitData[14]);
-        chartResponseDTO.setPrdyVrss(caretSplitData[4]);
-        chartResponseDTO.setPrdyVrssSign(caretSplitData[3]);
-        chartResponseDTO.setPrdyCtrt(caretSplitData[5]);
-        chartResponseDTO.setDailyStockHistoryDate(LocalDateTime.now());
+        ChartRealtimeResponseDTO chartRealtimeResponseDTO = new ChartRealtimeResponseDTO();
+        chartRealtimeResponseDTO.setStockCode(caretSplitData[0]);
+        chartRealtimeResponseDTO.setClosePrice(caretSplitData[2]);
+        chartRealtimeResponseDTO.setOpenPrice(caretSplitData[7]);
+        chartRealtimeResponseDTO.setHighPrice(caretSplitData[8]);
+        chartRealtimeResponseDTO.setLowPrice(caretSplitData[9]);
+        chartRealtimeResponseDTO.setStockAcmlVol(caretSplitData[13]);
+        chartRealtimeResponseDTO.setStockAcmlTrPbmn(caretSplitData[14]);
+        chartRealtimeResponseDTO.setPrdyVrss(caretSplitData[4]);
+        chartRealtimeResponseDTO.setPrdyVrssSign(caretSplitData[3]);
+        chartRealtimeResponseDTO.setPrdyCtrt(caretSplitData[5]);
 
-        return chartResponseDTO;
+        return chartRealtimeResponseDTO;
     }
 
     // KIS WebSocket으로 주식 구독 메시지를 전송하기 위한 JSON 메시지 생성
