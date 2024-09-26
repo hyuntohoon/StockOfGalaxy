@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { useRecoilValue } from 'recoil';
 import { dateState } from '@/app/store/date';
 import { IoCalendarSharp } from "react-icons/io5";
+import { formatDate } from '@/app/utils/formatDate';
 
 interface DateCardProps {
   right?: string; // 선택적 속성
@@ -9,7 +10,7 @@ interface DateCardProps {
 }
 
 const DateCard = ({ right, left }: DateCardProps) => {
-  const currentDate = useRecoilValue(dateState);
+  const currentDate = formatDate(useRecoilValue(dateState));
 
   return (
     <DateCardContainer right={right} left={left}>
