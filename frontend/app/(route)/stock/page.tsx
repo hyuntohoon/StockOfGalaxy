@@ -5,9 +5,9 @@ import StockDailyPriceTemplate from "@/app/components/organisms/stock/StockDaily
 const StockPage = () => {
   return (
     <>
-      {/* <StockDailyPriceTemplate /> */}
-      {/* <StockHeaderTemplate /> */}
-      <StockTemplate />
+      <StockDailyPriceTemplate />
+      {/* <StockHeaderTemplate />
+      <StockTemplate /> */}
     </>
   );
 };

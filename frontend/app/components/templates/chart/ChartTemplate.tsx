@@ -42,14 +42,26 @@ const ChartTemplate = () => {
       newChart?.setStyles({
         grid: {
           horizontal: {
-            color: "rgba(255, 255, 255, 0.2)",
+            color: "rgba(255, 255, 255, 0.1)",
             size: 1,
           },
           vertical: {
-            color: "rgba(255, 255, 255, 0.2)",
+            color: "rgba(255, 255, 255, 0.1)",
             size: 1,
           },
         },
+        // candle: {
+        //   tooltip: {
+        //     custom: [
+        //       { title: "time", value: "{time}" },
+        //       { title: "open", value: "{open}" },
+        //       { title: "high", value: "{high}" },
+        //       { title: "low", value: "{low}" },
+        //       { title: "close", value: "{close}" },
+        //       { title: "volume", value: "{volume}" },
+        //     ],
+        //   },
+        // },
       });
 
       setChart(newChart);

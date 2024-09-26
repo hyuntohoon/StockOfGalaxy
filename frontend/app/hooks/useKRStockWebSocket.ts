@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 
 const useKRStockWebSocket = (tr_key: string, setCurrentInfo: any) => {
-  const [data, setData] = useState<any>(null);
+  const [count, setCount] = useState<number>(0);
 
   useEffect(() => {
-    const socket = new WebSocket("ws://ssafy11s.com/ws-stock");
+    const socket = new WebSocket(
+      `${process.env.NEXT_PUBLIC_WS_BASE_URL}/api/ws-stock`
+    );
 
     socket.onopen = () => {
       console.log(`Connected to ${tr_key}`);
@@ -24,8 +26,6 @@ const useKRStockWebSocket = (tr_key: string, setCurrentInfo: any) => {
       socket.close();
     };
   }, [tr_key]);
-
-  return data;
 };
 
 export default useKRStockWebSocket;

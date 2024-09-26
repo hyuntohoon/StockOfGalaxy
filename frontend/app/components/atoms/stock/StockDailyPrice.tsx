@@ -2,14 +2,14 @@ import styled from "@emotion/styled";
 import formatPrice from "@/app/utils/stock/formatPrice";
 
 interface StockDailyPriceProps {
-  date: string;
-  closePrice: number;
-  changeRate: number;
-  volume: number;
-  transactionAmount: number;
-  openPrice: number;
-  highPrice: number;
+  stockDate: string;
   lowPrice: number;
+  highPrice: number;
+  startPrice: number;
+  endPrice: number;
+  prdyVrss: string;
+  prdyVrssSign: string;
+  prdyCtrt: string;
 }
 
 const Container = styled.div`
@@ -26,27 +26,25 @@ const Column = styled.span`
 `;
 
 const StockDailyPrice = ({
-  date,
-  closePrice = 0,
-  changeRate = 0,
-  volume = 0,
-  transactionAmount = 0,
-  openPrice = 0,
-  highPrice = 0,
-  lowPrice = 0,
+  stockDate,
+  lowPrice,
+  highPrice,
+  startPrice,
+  endPrice,
+  prdyVrss,
+  prdyVrssSign,
+  prdyCtrt,
 }: StockDailyPriceProps) => {
   return (
     <>
       <Container>
-        <Column>{date}</Column>
-        <Column>{formatPrice(closePrice)}원</Column>
+        <Column>{stockDate}</Column>
+        <Column>{formatPrice(endPrice)}원</Column>
         <Column>
-          {changeRate < 0 ? "-" : "+"}
-          {changeRate}%
+          {prdyVrssSign == "-" ? "-" : "+"}
+          {prdyVrss}({prdyCtrt})%
         </Column>
-        <Column>{formatPrice(volume)}</Column>
-        <Column>{formatPrice(transactionAmount)}억원</Column>
-        <Column>{formatPrice(openPrice)}원</Column>
+        <Column>{formatPrice(startPrice)}원</Column>
         <Column>{formatPrice(highPrice)}원</Column>
         <Column>{formatPrice(lowPrice)}원</Column>
       </Container>
