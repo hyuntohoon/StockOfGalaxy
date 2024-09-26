@@ -12,6 +12,7 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-connect-timeout: "3600"
     nginx.ingress.kubernetes.io/websocket-services: "gateway-service"
     nginx.ingress.kubernetes.io/enable-websocket: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: "WSS"  # 이 부분을 annotation으로 이동
 spec:
   tls:
     - hosts:
@@ -28,9 +29,6 @@ spec:
                 name: gateway-service
                 port:
                   number: 80
-            # 반드시 필요한 설정: WebSocket 프로토콜 설정
-            nginx.ingress.kubernetes.io/backend-protocol: "WSS"
-          
           - path: /api/user
             pathType: Prefix
             backend:
@@ -38,7 +36,6 @@ spec:
                 name: gateway-service
                 port:
                   number: 80
-          
           - path: /api/stock
             pathType: Prefix
             backend:
@@ -46,7 +43,6 @@ spec:
                 name: gateway-service
                 port:
                   number: 80
-
           - path: /api/news
             pathType: Prefix
             backend:
@@ -54,7 +50,6 @@ spec:
                 name: gateway-service
                 port:
                   number: 80
-
           - path: /user-service/swagger-ui
             pathType: Prefix
             backend:
@@ -62,7 +57,6 @@ spec:
                 name: gateway-service
                 port:
                   number: 80
-
           - path: /stock-service/swagger-ui
             pathType: Prefix
             backend:
@@ -70,7 +64,6 @@ spec:
                 name: gateway-service
                 port:
                   number: 80
-
           - path: /news-service/swagger-ui
             pathType: Prefix
             backend:
