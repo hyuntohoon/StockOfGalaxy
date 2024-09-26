@@ -70,6 +70,9 @@ spec:
                 name: gateway-service  # WebSocket 연결을 위한 서비스
                 port:
                   number: 80
+            # TLS 사용 안 함 (ws:// 연결)
+            annotations:
+              nginx.ingress.kubernetes.io/backend-protocol: "HTTP"  # WebSocket은 HTTP로 처리
           # Swagger UI 및 API 문서 경로
           - path: /user-service/swagger-ui/*
             pathType: Prefix
