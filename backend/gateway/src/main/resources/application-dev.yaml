@@ -13,7 +13,11 @@ spring:
               - PUT
               - DELETE
               - OPTIONS
-            allowedHeaders: "*"  # 모든 헤더 허용
+            allowedHeaders:
+              - "Content-Type"
+              - "Authorization"
+              - "X-Requested-With"
+              - "Accept"
             allowCredentials: true  # 인증 정보(Cookie 등) 허용
             maxAge: 3600  # OPTIONS 요청을 1시간 동안 캐시
       discovery:
@@ -36,12 +40,13 @@ spring:
             - Path=/api/stock/**
 
         # WebSocket 라우팅 설정
-        - id: stock-service
+        - id: stock-service-websocket
           uri: ws://stock-service.backcd.svc.cluster.local:80  # WebSocket을 위한 ws:// 프로토콜 사용
           predicates:
             - Path=/api/ws-stock/**  # WebSocket 엔드포인트 경로
           filters:
-            - AddResponseHeader=Upgrade=websocket  # Upgrade 헤더 추가
+            - SetRequestHeader=Connection=Upgrade  # 요청 헤더에 Connection: Upgrade 추가
+            - SetResponseHeader=Upgrade=websocket  # 응답 헤더에 Upgrade: websocket 추가
 
         - id: news-service
           uri: http://news-service.backcd.svc.cluster.local:80
@@ -55,7 +60,7 @@ spring:
             - Path=/user-service/v3/api-docs
             - Path=/user-service/swagger-ui/**
           filters:
-            - RewritePath=/user-service(?<segment>/.*), $\{segment}
+            - RewritePath=/user-service(?<segment>/.*), \${segment}
 
         - id: stock-service-swagger
           uri: http://stock-service.backcd.svc.cluster.local:80
@@ -63,7 +68,7 @@ spring:
             - Path=/stock-service/v3/api-docs
             - Path=/stock-service/swagger-ui/**
           filters:
-            - RewritePath=/stock-service(?<segment>/.*), $\{segment}
+            - RewritePath=/stock-service(?<segment>/.*), \${segment}
 
         - id: news-service-swagger
           uri: http://news-service.backcd.svc.cluster.local:80
@@ -71,10 +76,10 @@ spring:
             - Path=/news-service/v3/api-docs
             - Path=/news-service/swagger-ui/**
           filters:
-            - RewritePath=/news-service(?<segment>/.*), $\{segment}
+            - RewritePath=/news-service(?<segment>/.*), \${segment}
 
 jwt:
-  secret: "3c84e62c46e5438e9d12e28a9876591bc34e4e92a3a489b749ab2d9c9e367d89"  # Kubernetes Secret에서 JWT 가져오기
+  secret: ${JWT_SECRET:default-secret}  # Kubernetes Secret에서 JWT 가져오기
 
 springdoc:
   swagger-ui:
@@ -90,12 +95,4 @@ management:
   endpoints:
     web:
       exposure:
-        include: gateway, health  # 유효한 엔드포인트 이름
-  endpoint:
-    health:
-      show-details: always  # 헬스체크에서 자세한 정보 제공
-
-logging:
-  level:
-    com.example.gateway.config.LoggingFilterConfig: DEBUG  # 필터 로그를 디버그 레벨로 설정
-    org.springframework.cloud.gateway: DEBUG  # Spring Cloud Gateway 전체 디버그 로그
+        include: gateway, health  # 유효
