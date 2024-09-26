@@ -1,61 +1,99 @@
+/** @jsxImportSource @emotion/react */
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { FontLoader } from 'three/examples/jsm/loaders/FontLoader';
+import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry';
 
-const LogoPage: React.FC = () => {
-  
-  
-      const vertexShader = `
-        attribute float size;
-        attribute vec3 customColor;
-        varying vec3 vColor;
 
-        void main() {
-          vColor = customColor;
-          vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
-          gl_PointSize = size * ( 300.0 / -mvPosition.z );
-          gl_Position = projectionMatrix * mvPosition;
-        }
-      `;
-
-      const fragmentShader = `
-        uniform vec3 color;
-        uniform sampler2D pointTexture;
-        varying vec3 vColor;
-
-        void main() {
-          gl_FragColor = vec4( color * vColor, 1.0 );
-          gl_FragColor = gl_FragColor * texture2D( pointTexture, gl_PointCoord );
-        }
-      `;
-
-      const preload = () => {
-
-        let manager = new THREE.LoadingManager();
-        manager.onLoad = function() { 
-          const environment = new Environment( typo, particle );
-        }
-      
-        var typo = null;
-        const loader = new THREE.FontLoader( manager );
-        const font = loader.load('https://res.cloudinary.com/dydre7amr/raw/upload/v1612950355/font_zsd4dr.json', function ( font ) { typo = font; });
-        const particle = new THREE.TextureLoader( manager ).load( 'https://res.cloudinary.com/dfvtkoboz/image/upload/v1605013866/particle_a64uzf.png');
-      
+const LogoPage = () => {
+  useEffect(() => {
+    init();
+    
+    return () => {
+      // Clean up Three.js renderer on unmount
+      const canvas = document.querySelector('canvas');
+      if (canvas) {
+        document.body.removeChild(canvas);
       }
+    };
+  }, []);
 
+  const init = () => {
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 10, 100000);
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
 
+    // Background color
+    renderer.setClearColor(0x000000);
+    
+    // Camera position
+    camera.position.set(0, 0, 600);
 
+    const textAnimation = createTextAnimation();
+    scene.add(textAnimation);
 
-  return (<>
-    <div id="magic"></div>
-    <div className="playground">
-    <div className="bottomPosition">
-        
-        
-      </div>
-    </div>
-    </>);
+    const light = new THREE.DirectionalLight(0xffffff);
+    light.position.set(0, 0, 1);
+    scene.add(light);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    
+    const animate = () => {
+      requestAnimationFrame(animate);
+      controls.update();
+      renderer.render(scene, camera);
+    };
+
+    animate();
+  };
+
+  const createTextAnimation = () => {
+    const geometry = generateTextGeometry('Stock of Galaxy', {
+      size: 40,
+      height: 12,
+      font: 'droid sans',
+      weight: 'bold',
+      style: 'normal',
+      curveSegments: 24,
+      bevelSize: 2,
+      bevelThickness: 2,
+      bevelEnabled: true,
+      anchor: { x: 0.5, y: 0.5, z: 0.0 }
+    });
+
+    const material = new THREE.MeshBasicMaterial({ color: 0xffffff });
+    const textMesh = new THREE.Mesh(geometry, material);
+    
+    return textMesh;
+  };
+
+  const generateTextGeometry = (text, params) => {
+    const fontLoader = new FontLoader();
+    let geometry;
+
+    fontLoader.load('https://threejs.org/fonts/droid_sans_regular.typeface.json', (font) => {
+      geometry = new TextGeometry(text, { font: font, size: params.size, height: params.height });
+      geometry.computeBoundingBox();
+
+      const size = geometry.boundingBox.size();
+      const anchorX = size.x * -params.anchor.x;
+      const anchorY = size.y * -params.anchor.y;
+      const anchorZ = size.z * -params.anchor.z;
+
+      const matrix = new THREE.Matrix4().makeTranslation(anchorX, anchorY, anchorZ);
+      geometry.applyMatrix4(matrix);
+    });
+
+    return geometry;
+  };
+
+  return <div id="three-container" style={{ height: '100vh', margin: 0 }}></div>;
 };
 
 export default LogoPage;
