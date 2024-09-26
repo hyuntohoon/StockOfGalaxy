@@ -40,6 +40,8 @@ spring:
           uri: ws://stock-service.backcd.svc.cluster.local:80  # WebSocket을 위한 ws:// 프로토콜 사용
           predicates:
             - Path=/api/ws-stock/**  # WebSocket 엔드포인트 경로
+          filters:
+            - AddResponseHeader=Upgrade=websocket  # Upgrade 헤더 추가
 
         - id: news-service
           uri: http://news-service.backcd.svc.cluster.local:80
