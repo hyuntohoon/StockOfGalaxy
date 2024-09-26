@@ -15,7 +15,7 @@
      spec:
        containers:
          - name: gateway-service
-           image: zlxldgus123/gateway-service:177
+           image: zlxldgus123/gateway-service:178
            ports:
              - containerPort: 8080
            env:
