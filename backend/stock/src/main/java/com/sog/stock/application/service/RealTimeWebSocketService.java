@@ -29,6 +29,7 @@ public class RealTimeWebSocketService {
     private final WebSocketClient webSocketClient;
     private WebSocketSession kisWebSocketSession;
     private final RedisService redisService;
+    private final KisRealTimeWebSocketKeyService kisRealTimeWebSocketKeyService;
     private String kisWebSocketApprovalKey;
 
 
@@ -40,14 +41,22 @@ public class RealTimeWebSocketService {
     private final Map<String, List<WebSocketSession>> stockCodeSubscribers = new ConcurrentHashMap<>();
 
     @Autowired
-    public RealTimeWebSocketService(WebSocketClient webSocketClient, RedisService redisService) {
+    public RealTimeWebSocketService(WebSocketClient webSocketClient, RedisService redisService,
+        KisRealTimeWebSocketKeyService kisRealTimeWebSocketKeyService) {
         this.webSocketClient = webSocketClient;
         this.redisService = redisService;
-        this.kisWebSocketApprovalKey = redisService.getValue("kisRealTimeKey");
+        this.kisRealTimeWebSocketKeyService = kisRealTimeWebSocketKeyService;
+        this.kisWebSocketApprovalKey = kisRealTimeWebSocketKeyService.getRealTimeWebSocketKey();
     }
 
     // KIS WebSocket 연결
     public void connectToKisWebSocket() throws InterruptedException, ExecutionException {
+        String kisWebSocketApprovalKey = kisRealTimeWebSocketKeyService.getRealTimeWebSocketKey();
+        if (kisWebSocketApprovalKey == null || kisWebSocketApprovalKey.isEmpty()) {
+            log.error("KIS WebSocket Approval Key가 없습니다. 연결할 수 없습니다.");
+            return;
+        }
+
         if (kisWebSocketSession == null || !kisWebSocketSession.isOpen()) {
             String fullWebSocketUrl = kisWebSocketDomain + kisWebSocketEndPoint;
 
@@ -56,14 +65,14 @@ public class RealTimeWebSocketService {
                 @Override
                 public void afterConnectionEstablished(WebSocketSession session) throws Exception {
                     kisWebSocketSession = session;
-                    log.info("Connected to KIS WebSocket");
+                    log.info("KIS WebSocket에 연결되었습니다.");
                 }
 
                 @Override
                 protected void handleTextMessage(WebSocketSession session, TextMessage message)
                     throws Exception {
                     String payload = message.getPayload();
-                    log.info("Received message from KIS WebSocket: {}", payload);
+                    log.info("KIS WebSocket으로부터 메시지 수신: {}", payload);
                     handleRealTimeData(payload);
 
                 }
@@ -79,7 +88,7 @@ public class RealTimeWebSocketService {
             JSONObject jsonResponse = new JSONObject(payload);
             // PINGPONG 메시지 처리
             if (jsonResponse.getJSONObject("header").getString("tr_id").equals("PINGPONG")) {
-                log.info("Received PINGPONG message, keeping connection alive");
+                log.info("PINGPONG 메시지 수신, 연결 유지 중...");
                 return; // 연결 상태 유지 메시지이므로 여기서 처리 끝
             }
 
@@ -105,11 +114,11 @@ public class RealTimeWebSocketService {
                 for (WebSocketSession clientSession : subscribers) {
                     // 세션이 열려있는지 확인
                     if (clientSession.isOpen()) {
-                        log.info("Sending data to client for stock: {}", stockCode);
+                        log.info("클라이언트에 데이터 전송: {}", stockCode);
                         clientSession.sendMessage(new TextMessage(
                             new ObjectMapper().writeValueAsString(stockPriceResponseDTO)));
                     } else {
-                        log.warn("Client session is closed, removing session for stock: {}",
+                        log.warn("클라이언트 세션이 닫혀있습니다. 세션을 제거합니다: {}",
                             stockCode);
                         closedSessions.add(clientSession); // 닫힌 세션을 리스트에 추가
                     }
@@ -209,8 +218,14 @@ public class RealTimeWebSocketService {
         // json 변환
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            return objectMapper.writeValueAsString(request);
+            String jsonMessage = objectMapper.writeValueAsString(request);
+
+            // 메시지 로그 찍기
+            log.info("Generated subscription message: {}", jsonMessage);
+
+            return jsonMessage;
         } catch (JsonProcessingException e) {
+            log.error("JSON 변환 에러: {}", e.getMessage());
             throw new RuntimeException("JSON 변환 에러", e);
         }
     }
