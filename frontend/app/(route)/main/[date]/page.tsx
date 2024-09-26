@@ -10,7 +10,6 @@ import TimeMachineButtonGroup from '@/app/components/molecules/ButtonGroup/TimeM
 import PlanetTrendModal from '@/app/components/organisms/Modal/PlanetTrendModal';
 import { throttle } from 'lodash';
 import { useRouter } from 'next/navigation';
-import { formatDate } from '@/app/utils/formatDate';
 
 const tempData = [
   { stockCode: '100001', corpName: '삼성전자', value: 180 },
@@ -24,7 +23,7 @@ const tempData = [
 ];
 
 export default function Page() {
-  const currentDate = formatDate(useRecoilValue(dateState));
+  const currentDate = useRecoilValue(dateState);
   const mountRef = useRef<HTMLDivElement>(null);
   const [hoveredPlanet, setHoveredPlanet] = useState<HoveredPlanetData | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);

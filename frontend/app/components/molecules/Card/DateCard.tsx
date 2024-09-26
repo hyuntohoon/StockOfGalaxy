@@ -2,12 +2,18 @@ import styled from '@emotion/styled';
 import { useRecoilValue } from 'recoil';
 import { dateState } from '@/app/store/date';
 import { IoCalendarSharp } from "react-icons/io5";
-import { formatDate } from '@/app/utils/formatDate';
 
 interface DateCardProps {
   right?: string; // 선택적 속성
   left?: string;  // 선택적 속성
 }
+
+const formatDate = (dateString: string): string => {
+  const year = dateString.slice(0, 4); // 연도
+  const month = dateString.slice(4, 6); // 월
+  const day = dateString.slice(6, 8); // 일
+  return `${year}.${month}.${day}`;
+};
 
 const DateCard = ({ right, left }: DateCardProps) => {
   const currentDate = formatDate(useRecoilValue(dateState));
