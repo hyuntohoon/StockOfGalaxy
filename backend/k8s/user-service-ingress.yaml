@@ -12,7 +12,6 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-connect-timeout: "3600"
     nginx.ingress.kubernetes.io/websocket-services: "gateway-service"
     nginx.ingress.kubernetes.io/enable-websocket: "true"
-    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
 spec:
   tls:
     - hosts:
@@ -22,41 +21,6 @@ spec:
     - host: ssafy11s.com
       http:
         paths:
-          - path: /api/user
-            pathType: Prefix
-            backend:
-              service:
-                name: gateway-service
-                port:
-                  number: 80
-          - path: /api/stock
-            pathType: Prefix
-            backend:
-              service:
-                name: gateway-service
-                port:
-                  number: 80
-          - path: /api/news
-            pathType: Prefix
-            backend:
-              service:
-                name: gateway-service
-                port:
-                  number: 80
-          - path: /actuator
-            pathType: Prefix
-            backend:
-              service:
-                name: gateway-service
-                port:
-                  number: 80
-          - path: /status
-            pathType: Prefix
-            backend:
-              service:
-                name: gateway-service
-                port:
-                  number: 80
           - path: /api/ws-stock
             pathType: Prefix
             backend:
@@ -64,6 +28,33 @@ spec:
                 name: gateway-service
                 port:
                   number: 80
+            # 반드시 필요한 설정: WebSocket 프로토콜 설정
+            nginx.ingress.kubernetes.io/backend-protocol: "WSS"
+          
+          - path: /api/user
+            pathType: Prefix
+            backend:
+              service:
+                name: gateway-service
+                port:
+                  number: 80
+          
+          - path: /api/stock
+            pathType: Prefix
+            backend:
+              service:
+                name: gateway-service
+                port:
+                  number: 80
+
+          - path: /api/news
+            pathType: Prefix
+            backend:
+              service:
+                name: gateway-service
+                port:
+                  number: 80
+
           - path: /user-service/swagger-ui
             pathType: Prefix
             backend:
@@ -71,13 +62,7 @@ spec:
                 name: gateway-service
                 port:
                   number: 80
-          - path: /user-service/v3/api-docs
-            pathType: Prefix
-            backend:
-              service:
-                name: gateway-service
-                port:
-                  number: 80
+
           - path: /stock-service/swagger-ui
             pathType: Prefix
             backend:
@@ -85,21 +70,8 @@ spec:
                 name: gateway-service
                 port:
                   number: 80
-          - path: /stock-service/v3/api-docs
-            pathType: Prefix
-            backend:
-              service:
-                name: gateway-service
-                port:
-                  number: 80
+
           - path: /news-service/swagger-ui
-            pathType: Prefix
-            backend:
-              service:
-                name: gateway-service
-                port:
-                  number: 80
-          - path: /news-service/v3/api-docs
             pathType: Prefix
             backend:
               service:
