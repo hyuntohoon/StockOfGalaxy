@@ -11,7 +11,7 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"  # 웹소켓 연결 타임아웃
     nginx.ingress.kubernetes.io/websocket-services: "gateway-service"  # 웹소켓 서비스
     nginx.ingress.kubernetes.io/enable-websocket: "true"  # WebSocket 연결 활성화
-    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"  # HTTPS를 사용하여 WebSocket 지원
+    nginx.ingress.kubernetes.io/backend-protocol: "WS"  # HTTPS를 사용하여 WebSocket 지원
     nginx.ingress.kubernetes.io/proxy-set-header: "Upgrade $http_upgrade"  # Upgrade 헤더 설정
     nginx.ingress.kubernetes.io/proxy-set-header-2: "Connection 'Upgrade'"  # Connection 헤더 설정
 spec:
