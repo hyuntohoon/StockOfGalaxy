@@ -56,7 +56,7 @@ spring:
           filters:
             - SetRequestHeader=Connection,Upgrade  # 요청에서 Connection 헤더를 업그레이드
             - SetRequestHeader=Upgrade,websocket  # 요청에서 Upgrade 헤더 설정
-            - SetResponseHeader=Upgrade,websocket  # 응답에서 Upgrade 헤더 설정
+            #- SetResponseHeader=Upgrade,websocket  # 응답에서 Upgrade 헤더 설정
 
         - id: news-service
           uri: http://news-service.backcd.svc.cluster.local:80
