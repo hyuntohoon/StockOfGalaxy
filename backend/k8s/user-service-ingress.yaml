@@ -69,7 +69,7 @@ spec:
               service:
                 name: gateway-service  # WebSocket 연결을 위한 서비스
                 port:
-                  number: 80
+                  number: 443
           # Swagger UI 및 API 문서 경로
           - path: /user-service/swagger-ui/*
             pathType: Prefix
