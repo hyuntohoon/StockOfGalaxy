@@ -12,11 +12,10 @@ spring:
             - Transfer-Encoding
       globalcors:
         corsConfigurations:
-          '[/**]': # 모든 경로에 대해 CORS 허용
+          '[/**]':
             allowedOrigins:
-              - "https://ssafy11s.com"  # 허용할 도메인
-              - "http://localhost:3000"  # 개발 환경에서 허용할 로컬 도메인
-            allowedMethods: # 허용할 HTTP 메서드
+              - "https://ssafy11s.com"
+            allowedMethods:
               - GET
               - POST
               - PUT
@@ -27,14 +26,14 @@ spring:
               - "Authorization"
               - "X-Requested-With"
               - "Accept"
-            allowCredentials: true  # 인증 정보(Cookie 등) 허용
-            maxAge: 3600  # OPTIONS 요청을 1시간 동안 캐시
+            allowCredentials: true
+            maxAge: 3600
       discovery:
         locator:
-          enabled: true  # 서비스 디스커버리 활성화
+          enabled: true
       routes:
         - id: gateway-status
-          uri: http://localhost:8080  # Gateway 서비스 자체의 주소
+          uri: http://localhost:8080
           predicates:
             - Path=/status
 
@@ -48,29 +47,29 @@ spring:
           predicates:
             - Path=/api/stock/**
 
-        # WebSocket 라우팅 설정
         - id: stock-service-websocket
-          uri: ws://stock-service.backcd.svc.cluster.local:80  # WebSocket을 위한 ws:// 프로토콜 사용
+          uri: ws://stock-service.backcd.svc.cluster.local:80
           predicates:
-            - Path=/api/ws-stock/**  # WebSocket 엔드포인트 경로
+            - Path=/api/ws-stock/**
           filters:
-            - SetRequestHeader=Connection,Upgrade  # 요청에서 Connection 헤더를 업그레이드
-            - SetRequestHeader=Upgrade,websocket  # 요청에서 Upgrade 헤더 설정
-            #- SetResponseHeader=Upgrade,websocket  # 응답에서 Upgrade 헤더 설정
+            - SetRequestHeader=Connection,Upgrade
+            - SetRequestHeader=Upgrade,websocket
+            - SetRequestHeader=Sec-WebSocket-Version,13
+            - SetRequestHeader=Sec-WebSocket-Key,{Sec-WebSocket-Key}
+            - SetResponseHeader=Sec-WebSocket-Accept,{Sec-WebSocket-Accept}
 
         - id: news-service
           uri: http://news-service.backcd.svc.cluster.local:80
           predicates:
             - Path=/api/news/**
 
-        # Swagger 경로 설정
         - id: user-service-swagger
           uri: http://user-service.backcd.svc.cluster.local:80
           predicates:
             - Path=/user-service/v3/api-docs
             - Path=/user-service/swagger-ui/**
           filters:
-            - RewritePath=/user-service(?<segment>/.*), \${segment}
+            - RewritePath=/user-service(?<segment>/.*), ${segment}
 
         - id: stock-service-swagger
           uri: http://stock-service.backcd.svc.cluster.local:80
@@ -78,7 +77,7 @@ spring:
             - Path=/stock-service/v3/api-docs
             - Path=/stock-service/swagger-ui/**
           filters:
-            - RewritePath=/stock-service(?<segment>/.*), \${segment}
+            - RewritePath=/stock-service(?<segment>/.*), ${segment}
 
         - id: news-service-swagger
           uri: http://news-service.backcd.svc.cluster.local:80
@@ -86,10 +85,10 @@ spring:
             - Path=/news-service/v3/api-docs
             - Path=/news-service/swagger-ui/**
           filters:
-            - RewritePath=/news-service(?<segment>/.*), \${segment}
+            - RewritePath=/news-service(?<segment>/.*), ${segment}
 
 jwt:
-  secret: ${JWT_SECRET:default-secret}  # Kubernetes Secret에서 JWT 가져오기
+  secret: ${JWT_SECRET:default-secret}
 
 springdoc:
   swagger-ui:
@@ -105,12 +104,11 @@ management:
   endpoints:
     web:
       exposure:
-        include: gateway, health  # 유효한 엔드포인트 이름
-
+        include: gateway, health
   endpoint:
     health:
-      show-details: always  # 헬스체크에서 자세한 정보 제공
+      show-details: always
 
 logging:
   level:
-    org.springframework.cloud.gateway: DEBUG  # Spring Cloud Gateway 전체 디버그 로그
+    org.springframework.cloud.gateway: DEBUG
