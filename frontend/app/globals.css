@@ -10,4 +10,5 @@ html, body {
   background: -webkit-linear-gradient(top,  #0c1f1b 0%,#490070 100%); /* For older Chrome and Safari versions */
   background: linear-gradient(to bottom,  #0c1f1b 0%,#490070 100%); /* Standard syntax */
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#11e8bb', endColorstr='#8200c9',GradientType=0 ); /* For IE6-9 */
+  
 }

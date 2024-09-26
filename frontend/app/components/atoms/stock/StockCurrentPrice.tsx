@@ -1,5 +1,7 @@
+"use client";
+
 import styled from "@emotion/styled";
-import formatPrice from "@/app/utils/stock/formatPrice";
+import formatPrice from "@/app/utils/libs/stock/formatPrice";
 
 interface FontSize {
   $fontSize: number;
@@ -20,11 +22,9 @@ const StockCurrentPrice = ({
   fontSize = 13,
 }: CurrentPriceProps) => {
   return (
-    <>
-      <CurrentPrice $fontSize={fontSize}>
-        {formatPrice(currentPrice)}원
-      </CurrentPrice>
-    </>
+    <CurrentPrice $fontSize={fontSize}>
+      {formatPrice(currentPrice)}원
+    </CurrentPrice>
   );
 };
 

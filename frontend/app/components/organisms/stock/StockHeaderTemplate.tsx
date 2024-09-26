@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import StockHeaderPrice from "../../molecules/stock/StockHeaderPrice";
 import StockHeaderInfo from "../../molecules/stock/StockHeaderInfo";
+import { HeaderWrapper } from "@/app/styles/planet";
 
 const ParentContainer = styled.div`
   width: 50vw;
@@ -104,16 +105,18 @@ const StockHeaderTemplate = () => {
 
   return (
     <>
-      <ParentContainer>
-        <Container>
-          <StockHeaderPrice
-            price={price}
-            changePrice={changePrice}
-            changeRate={changeRate}
-          />
-          <StockHeaderInfo />
-        </Container>
-      </ParentContainer>
+    <HeaderWrapper>
+        <ParentContainer>
+          <Container>
+            <StockHeaderPrice
+              price={price}
+              changePrice={changePrice}
+              changeRate={changeRate}
+            />
+            <StockHeaderInfo />
+          </Container>
+        </ParentContainer>
+      </HeaderWrapper>
     </>
   );
 };

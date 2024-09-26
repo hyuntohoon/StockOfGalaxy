@@ -1,3 +1,5 @@
+"use client";
+
 import styled from "@emotion/styled";
 
 const Container = styled.div`
@@ -14,18 +16,16 @@ const Column = styled.span`
 
 const StockDailyPriceSubTitle = () => {
   return (
-    <>
-      <Container>
-        <Column>일자</Column>
-        <Column>종가</Column>
-        <Column>등락률</Column>
-        <Column>거래량 (주)</Column>
-        <Column>거래대금</Column>
-        <Column>시가</Column>
-        <Column>고가</Column>
-        <Column>저가</Column>
-      </Container>
-    </>
+    <Container>
+      <Column>일자</Column>
+      <Column>종가</Column>
+      <Column>등락률</Column>
+      <Column>거래량 (주)</Column>
+      <Column>거래대금</Column>
+      <Column>시가</Column>
+      <Column>고가</Column>
+      <Column>저가</Column>
+    </Container>
   );
 };
 
