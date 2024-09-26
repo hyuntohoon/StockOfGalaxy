@@ -36,6 +36,9 @@ dependencies {
 //	implementation 'org.springdoc:springdoc-openapi-webflux-ui:1.7.0'
 //	implementation 'org.springdoc:springdoc-openapi-gateway:1.8.0'
 
+	//프로메테우스
+	implementation 'io.micrometer:micrometer-registry-prometheus'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'io.projectreactor:reactor-test'
 	testImplementation 'org.springframework.cloud:spring-cloud-starter-contract-stub-runner'
