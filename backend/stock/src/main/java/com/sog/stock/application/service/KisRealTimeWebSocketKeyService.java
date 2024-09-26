@@ -92,7 +92,6 @@ public class KisRealTimeWebSocketKeyService {
             } else {
                 log.error("Failed to extract approval_key from KIS response: {}", response);
             }
-
         } catch (JsonProcessingException e) {
             log.error("Error converting request body to JSON: {}", e.getMessage());
         }
