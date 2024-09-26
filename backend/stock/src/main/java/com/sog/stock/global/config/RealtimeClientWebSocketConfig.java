@@ -18,6 +18,7 @@ public class RealtimeClientWebSocketConfig implements WebSocketConfigurer {
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
+        log.info("Registering WebSocket handler for /api/ws-stock");
         // stockWebSocketHandler를 추가
         registry.addHandler(realtimeStockWebSocketHandler, "api/ws-stock")
             .setAllowedOrigins("*"); // endpoint와 CORS 설정
