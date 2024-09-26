@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import styled from '@emotion/styled';
 import { useState, useEffect, useRef } from 'react';
@@ -9,7 +9,61 @@ import MyIconButtonGroup from '../../molecules/ButtonGroup/Header/MyIconButtonGr
 import SignInButtonGroup from '../../molecules/ButtonGroup/Header/SignInButtonGroup';
 import MenuHeaderModal from '../Modal/MenuHeaderModal';
 
-const MenuHeader = () => {
+// 슬라이딩 애니메이션을 위한 트랜지션 시간
+const TRANSITION_DURATION = '0.3s';
+
+// 메뉴를 감싸는 컨테이너
+const Container = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 80%;
+  width: 30px; /* 호버 감지 영역의 너비 */
+  z-index: 1000000;
+  background-color: transparent; /* 호버 감지 영역은 투명 */
+`;
+
+// 실제 메뉴 헤더
+const MenuHeaderWrapper = styled.div<{ isOpen: boolean }>`
+  position: fixed;
+  top: 50%;
+  left: 0;
+  transform: translate(-85%, -50%) translateX(${props => (props.isOpen ? '90%' : '0')});
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 5px;
+  background-color: rgba(255, 255, 255, 0.35);
+  border-radius: 30px;
+  justify-content: space-around;
+  width: 120px;
+  transition: transform ${TRANSITION_DURATION} ease-in-out;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+
+  & > div {
+    margin-bottom: 16px;
+  }
+
+  /* 포인터 이벤트 관리 */
+  pointer-events: ${props => (props.isOpen ? 'auto' : 'none')};
+`;
+
+const ToggleButton = styled.button`
+  margin-bottom: 20px;
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+
+  &:hover {
+    background-color: #0056b3;
+  }
+`;
+
+const MenuHeader: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);  
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -17,11 +71,11 @@ const MenuHeader = () => {
   const menuRef = useRef<HTMLDivElement>(null);
 
   const toggleLogin = () => {
-    setIsLoggedIn(!isLoggedIn);
+    setIsLoggedIn(prev => !prev);
   };
 
   const toggleModal = () => {
-    setIsModalOpen((prev) => !prev);
+    setIsModalOpen(prev => !prev);
   };
 
   const handleMouseEnter = () => {
@@ -29,7 +83,7 @@ const MenuHeader = () => {
   };
 
   const handleMouseLeave = () => {
-    // 호버 후에는 메뉴가 계속 열려있게 하므로 아무것도 하지 않음
+    setIsMenuOpen(false); // 마우스가 벗어나면 메뉴 닫힘
   };
 
   const handleClickOutside = (event: MouseEvent) => {
@@ -51,62 +105,26 @@ const MenuHeader = () => {
   }, [isMenuOpen]);
 
   return (
-    <Container onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-      <ToggleButton onClick={toggleLogin}>
-        {isLoggedIn ? '로그아웃' : '로그인'}
-      </ToggleButton>
+    <>
+      <Container onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+        <MenuHeaderWrapper 
+          isOpen={isMenuOpen}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          ref={menuRef}
+        >
+          
 
-      {isMenuOpen && (
-        <MenuHeaderWrapper ref={menuRef}>
           <ReturnTodayButtonGroup />
           <HomeButtonGroup />
           <SearchIconButtonGroup />
           {isLoggedIn ? <MyIconButtonGroup onClick={toggleModal} /> : <SignInButtonGroup />}
         </MenuHeaderWrapper>
-      )}
+      </Container>
 
       {isModalOpen && <MenuHeaderModal onClose={toggleModal} />}
-    </Container>
+    </>
   );
 };
-
-const Container = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 150px; /* 호버 영역 크기 */
-  z-index: 1000;
-`;
-
-const MenuHeaderWrapper = styled.div`
-  position: fixed;
-  top: 50%;
-  left: 14px;
-  transform: translateY(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-block: 20px;
-  padding-inline: 10px;
-  background-color: #ffffff6a;
-  border-radius: 30px;
-  justify-content: space-around;
-  width: 100px;
-
-  & > div {
-    margin-bottom: 16px;
-  }
-`;
-
-const ToggleButton = styled.button`
-  margin-bottom: 20px;
-  padding: 10px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-`;
 
 export default MenuHeader;

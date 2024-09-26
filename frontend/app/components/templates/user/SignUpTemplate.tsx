@@ -1,28 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import LoginImage from "../../atoms/user/LoginImage";
 import SignUpInputGroup from "../../molecules/user/SignUpInputGroup";
 import LoginButton from "../../atoms/user/LoginButton";
-import styled from "@emotion/styled";
-import { signUp } from "../../../utils/user/userAPI";
-import { signUpValidation } from "../../../utils/user/signUpAPI";
-
-const LoginContainer = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: auto;
-  width: auto;
-  background: rgba(255, 255, 255, 0.85);
-  border-radius: 10px;
-  padding: 20px;
-`;
+import styled from "styled-components";
+import { signUpApi, signUpValidation } from "@/app/utils/apis/users/signup";
+import Title from "../../atoms/common/Title";
+import { FormContainer } from "@/app/styles/user";
 
 const SignUpTemplate = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -34,8 +18,8 @@ const SignUpTemplate = () => {
 
   return (
     <>
-      <LoginContainer>
-        <LoginImage width={100} />
+      <FormContainer>
+      <Title text="sign up" size={45} color="white" weight={700} />
         <SignUpInputGroup
           setUserId={setUserId}
           setPassword={setPassword}
@@ -60,7 +44,7 @@ const SignUpTemplate = () => {
               return;
             }
 
-            signUp({
+            signUpApi({
               userId,
               password,
               nickname,
@@ -68,7 +52,7 @@ const SignUpTemplate = () => {
             });
           }}
         />
-      </LoginContainer>
+      </FormContainer>
     </>
   );
 };

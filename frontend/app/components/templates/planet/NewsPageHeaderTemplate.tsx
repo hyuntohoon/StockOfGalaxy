@@ -2,15 +2,20 @@
 
 import React, { useRef, useState, useEffect } from 'react';
 import Header from '@/app/components/organisms/planet/Header';
+import StockHeaderTemplate from '../../organisms/stock/StockHeaderTemplate';
 import NavBar from '@/app/components/molecules/planet/NavBar';
 import NewsList from '@/app/components/organisms/planet/NewsList';
 import WordCloudComponent from '@/app/components/molecules/planet/WordCloudComponent';
-import { sampleNews } from '@/app/mocks/sampleNews';
-import { wordData } from '@/app/mocks/wordData';
-import { debounce } from '@/app/utils/debounce';
-import { ContentContainer, Section, SectionContainer } from '@/app/styles/planet'; // 스타일 컴포넌트 분리
+import { debounce } from '@/app/utils/libs/debounce';
+import { ContentContainer, SectionContainer } from '@/app/styles/planet';
 
-const NewsPageHeaderTemplate: React.FC = () => {
+interface NewsPageHeaderTemplateProps {
+  newsData: any[]; // NewsPage에서 전달받은 뉴스 데이터 타입을 지정
+  wordData1: any[]; // 첫 번째 워드 클라우드 데이터
+  wordData2: any[]; // 두 번째 워드 클라우드 데이터
+}
+
+const NewsPageHeaderTemplate: React.FC<NewsPageHeaderTemplateProps> = ({ newsData, wordData1, wordData2 }) => {
   const homeRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<HTMLDivElement>(null);
   const stocksRef = useRef<HTMLDivElement>(null);
@@ -115,37 +120,37 @@ const NewsPageHeaderTemplate: React.FC = () => {
 
   return (
     <>
-      <Header />
+      <StockHeaderTemplate />
       <NavBar activeSection={activeSection} scrollToSection={scrollToSection} sections={sections} />
       <ContentContainer onWheel={handleWheelScroll} ref={contentRef}>
-      <SectionContainer ref={homeRef}>
-        <p style={{ color: 'white' }}>홈 페이지 내용</p> 
-        {/* 여기에 홈 요소 넣으면 됩니다 */}
-      </SectionContainer>
+        <SectionContainer ref={homeRef}>
+          <p style={{ color: 'white' }}>홈 페이지 내용</p>
+        </SectionContainer>
 
         <SectionContainer ref={chartRef}>
           <p style={{ color: 'white' }}>차트 페이지 내용</p>
-          {/* 여기에 차트 레이아웃 넣으면 됩니다 */}
         </SectionContainer>
+
         <SectionContainer ref={stocksRef}>
           <p style={{ color: 'white' }}>종목 페이지 내용</p>
-          {/* 여기에 종목 레이아웃 넣으면 됩니다 */}
         </SectionContainer>
-        
+
         <SectionContainer ref={planetNewsRef}>
           <div className="news-list">
-            <NewsList news={sampleNews} />
+            {/* API에서 받은 데이터를 렌더링 */}
+            <NewsList news={newsData} />
           </div>
           <div className="word-cloud">
-          <WordCloudComponent data={wordData} width={500} height={440} />
+            <WordCloudComponent data={wordData1} width={500} height={440} />
           </div>
         </SectionContainer>
+
         <SectionContainer ref={spaceNewsRef}>
           <div className="news-list">
-            <NewsList news={sampleNews} />
+            <NewsList news={newsData} />
           </div>
           <div className="word-cloud">
-          <WordCloudComponent data={wordData} width={500} height={440} />
+            <WordCloudComponent data={wordData2} width={500} height={440} />
           </div>
         </SectionContainer>
       </ContentContainer>

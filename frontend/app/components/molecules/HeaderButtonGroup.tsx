@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { ReactNode } from 'react';
+import Title from '../atoms/common/Title';
 
 // Props 타입 정의
 interface HeaderButtonGroupProps {
