@@ -41,14 +41,30 @@ public class KisChartWebSocketKeyService {
 
     private final String GRANT_TYPE = "client_credentials";
 
-    // get websocket key
+    // Redis에서 키를 조회하여 반환
     public String getRealTimeWebSocketKey() {
-        return redisService.getValue("kisChartKey");
+        String key = redisService.getValue("kisChartKey");
+
+        if (key == null) {
+            log.info("redis에 웹소켓 키가 없습니다. 발급요청을 시도합니다.");
+            requestNewWebSocketKey();
+            key = redisService.getValue("kisChartKey");
+            log.info("chart - 새로운 웹소켓 키가 발급되었습니다: {}", key);
+        } else {
+            log.info("이미 chart 키가 존재합니다: {}", key);
+        }
+
+        return key;
     }
 
-    // 매일 자정 재요청
+    // 매일 자정에 새로 WebSocket 키 요청
     @Scheduled(cron = "0 0 0 * * *")
-    public void requestWebSocketKey() {
+    public void requestWebSocketKeyScheduled() {
+        log.info("자정 12시 입니다! - chart");
+        requestNewWebSocketKey();
+    }
+
+    public void requestNewWebSocketKey() {
         log.info("Requesting new WebSocket key from KIS...");
         Map<String, String> requestBody = new HashMap<>();
         requestBody.put("grant_type", "client_credentials");
@@ -58,27 +74,25 @@ public class KisChartWebSocketKeyService {
         try {
             String requestBodyJson = objectMapper.writeValueAsString(requestBody);
 
-            webClient.post()
+            String response = webClient.post()
                 .uri("/oauth2/Approval")
                 .header(HttpHeaders.CONTENT_TYPE, "application/json; charset=utf-8")
                 .bodyValue(requestBodyJson)
                 .retrieve()
                 .bodyToMono(String.class)
-                .doOnError(throwable -> log.error("Failed to request WebSocket key from KIS: {}",
-                    throwable.getMessage()))
-                .subscribe(response -> {
-                    String approvalKey = extractApprovalKeyFromResponse(response);
-                    if (approvalKey != null) {
-                        redisService.setValues("kisChartKey", approvalKey, Duration.ofHours(24));
-                    } else {
-                        log.error("Failed to request WebSocket key from KIS: {}",
-                            response.toString());
-                    }
-                });
+                .block(); // 동기적 실행
+
+            String approvalKey = extractApprovalKeyFromResponse(response);
+            if (approvalKey != null) {
+                redisService.setValues("kisChartKey", approvalKey, Duration.ofHours(24));
+                log.info("New Chart WebSocket approval_key successfully saved to Redis: {}",
+                    approvalKey);
+            } else {
+                log.error("Failed to extract approval_key from KIS response(chart): {}", response);
+            }
         } catch (JsonProcessingException e) {
             log.error("Error converting request body to JSON: {}", e.getMessage());
         }
-
     }
 
     // 응답에서 approval_key 추출
@@ -92,6 +106,4 @@ public class KisChartWebSocketKeyService {
             return null;
         }
     }
-
-
 }
