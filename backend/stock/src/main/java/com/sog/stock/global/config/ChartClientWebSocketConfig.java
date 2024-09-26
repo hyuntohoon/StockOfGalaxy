@@ -19,6 +19,7 @@ public class ChartClientWebSocketConfig implements WebSocketConfigurer {
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         // chartwebSocketHandler를 추가
+        log.info("Registering WebSocket handler for /api/ws-chart");
         registry.addHandler(chartWebSocketHandler, "api/ws-chart")
             .setAllowedOrigins("*"); // endpoint와 CORS 설정
     }
