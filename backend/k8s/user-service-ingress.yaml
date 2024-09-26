@@ -11,6 +11,7 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"  # 웹소켓 연결 타임아웃
     nginx.ingress.kubernetes.io/websocket-services: "gateway-service"  # 웹소켓 서비스
     nginx.ingress.kubernetes.io/enable-websocket: "true"  # WebSocket 연결 활성화
+    nginx.ingress.kubernetes.io/backend-protocol: "WS"  # WebSocket 프로토콜을 전역적으로 설정
     nginx.ingress.kubernetes.io/proxy-set-header: "Upgrade $http_upgrade"  # Upgrade 헤더 설정
     nginx.ingress.kubernetes.io/proxy-set-header-2: "Connection 'Upgrade'"  # Connection 헤더 설정
 spec:
@@ -46,16 +47,30 @@ spec:
                 name: gateway-service
                 port:
                   number: 80
+          # Actuator 엔드포인트
+          - path: /actuator/*
+            pathType: Prefix
+            backend:
+              service:
+                name: gateway-service
+                port:
+                  number: 80
+          # 상태 확인 엔드포인트
+          - path: /status
+            pathType: Prefix
+            backend:
+              service:
+                name: gateway-service
+                port:
+                  number: 80
           # WebSocket 연결을 위한 주식 경로 (WebSocket)
           - path: /api/ws-stock
             pathType: Prefix
             backend:
               service:
-                name: gateway-service  # WebSocket 연결을 위한 서비스
+                name: gateway-service
                 port:
                   number: 80
-            annotations:
-              nginx.ingress.kubernetes.io/backend-protocol: "WS"  # WebSocket 프로토콜 사용
           # Swagger UI 및 API 문서 경로 (HTTP)
           - path: /user-service/swagger-ui/*
             pathType: Prefix
