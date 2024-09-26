@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: news-service
-          image: zlxldgus123/news-service:164
+          image: zlxldgus123/news-service:165
           ports:
             - containerPort: 8080
           env:
