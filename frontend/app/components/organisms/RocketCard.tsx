@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled from '@emotion/styled';
 import ProfileImage from '../atoms/ProfileImage';
 import RocketContent from '../atoms/Text/RocketContent';
 import RocketTimeStamp from '../atoms/Text/RocketTimeStamp';

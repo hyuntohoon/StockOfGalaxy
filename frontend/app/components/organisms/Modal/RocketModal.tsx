@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import styled from 'styled-components';
+import styled from '@emotion/styled';
 import { IoClose } from "react-icons/io5";
 import RocketInputField from '../../atoms/InputField/RocketInputField';
 import RocketCard from '../RocketCard';
