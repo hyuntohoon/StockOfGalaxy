@@ -1,6 +1,15 @@
 spring:
   cloud:
     gateway:
+      filter:
+        remove-non-proxy-headers:
+          headers:
+            - Proxy-Authenticate
+            - Proxy-Authorization
+            - Keep-Alive
+            - TE
+            - Trailer
+            - Transfer-Encoding
       globalcors:
         corsConfigurations:
           '[/**]': # 모든 경로에 대해 CORS 허용
@@ -45,8 +54,8 @@ spring:
           predicates:
             - Path=/api/ws-stock/**  # WebSocket 엔드포인트 경로
           filters:
-            - SetRequestHeader=Connection=Upgrade  # 요청 헤더에 Connection: Upgrade 추가
-            - SetResponseHeader=Upgrade=websocket  # 응답 헤더에 Upgrade: websocket 추가
+            - SetRequestHeader=Connection,Upgrade
+            - SetResponseHeader=Upgrade,websocket
 
         - id: news-service
           uri: http://news-service.backcd.svc.cluster.local:80
