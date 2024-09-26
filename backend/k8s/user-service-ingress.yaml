@@ -22,15 +22,15 @@ spec:
     - host: ssafy11s.com
       http:
         paths:
-          # 사용자 API 경로
+          # 사용자 API 경로 (HTTP)
           - path: /api/user
             pathType: Prefix
             backend:
               service:
-                name: gateway-service  # Gateway 서비스
+                name: gateway-service
                 port:
                   number: 80
-          # 주식 API 경로
+          # 주식 API 경로 (HTTP)
           - path: /api/stock
             pathType: Prefix
             backend:
@@ -38,7 +38,7 @@ spec:
                 name: gateway-service
                 port:
                   number: 80
-          # 뉴스 API 경로
+          # 뉴스 API 경로 (HTTP)
           - path: /api/news
             pathType: Prefix
             backend:
@@ -46,23 +46,7 @@ spec:
                 name: gateway-service
                 port:
                   number: 80
-          # Actuator 엔드포인트
-          - path: /actuator/*
-            pathType: Prefix
-            backend:
-              service:
-                name: gateway-service
-                port:
-                  number: 80
-          # 상태 확인 엔드포인트
-          - path: /status
-            pathType: Prefix
-            backend:
-              service:
-                name: gateway-service
-                port:
-                  number: 80
-          # WebSocket 연결을 위한 주식 경로
+          # WebSocket 연결을 위한 주식 경로 (WebSocket)
           - path: /api/ws-stock
             pathType: Prefix
             backend:
@@ -70,10 +54,9 @@ spec:
                 name: gateway-service  # WebSocket 연결을 위한 서비스
                 port:
                   number: 80
-            # TLS 사용 안 함 (ws:// 연결)
             annotations:
-              nginx.ingress.kubernetes.io/backend-protocol: "HTTP"  # WebSocket은 HTTP로 처리
-          # Swagger UI 및 API 문서 경로
+              nginx.ingress.kubernetes.io/backend-protocol: "WS"  # WebSocket 프로토콜 사용
+          # Swagger UI 및 API 문서 경로 (HTTP)
           - path: /user-service/swagger-ui/*
             pathType: Prefix
             backend:
