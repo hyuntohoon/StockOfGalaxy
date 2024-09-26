@@ -46,9 +46,10 @@ public class KisRealTimeWebSocketKeyService {
         String key = redisService.getValue("kisRealTimeKey");
 
         if (key == null) {
+            log.info("WebSocket key not found in Redis, requesting a new one...");
             requestNewWebSocketKey();
-            key = redisService.getValue("kisRealTimeKey");
-            log.info("Redis key 새로 발급!");
+            key = redisService.getValue("kisRealTimeKey");  // 동기적 요청 후 다시 Redis에서 가져옴
+            log.info("New WebSocket key retrieved from Redis after request: {}", key);
         } else {
             log.info("Redis에서 실시간 키가 존재합니다: {}", key);
         }
@@ -56,8 +57,9 @@ public class KisRealTimeWebSocketKeyService {
         return key;
     }
 
+
     // 매일 자정에 새로 WebSocket 키 요청
-    @Scheduled(cron = "0 55 14 * * *")
+    @Scheduled(cron = "0 0 0 * * *")
     public void requestWebSocketKeyScheduled() {
         log.info("자정 12시 입니다!");
         requestNewWebSocketKey();
@@ -74,23 +76,23 @@ public class KisRealTimeWebSocketKeyService {
         try {
             String requestBodyJson = objectMapper.writeValueAsString(requestBody);
 
-            webClient.post()
+            // 동기적으로 WebSocket key 요청
+            String response = webClient.post()
                 .uri("/oauth2/Approval")
                 .header(HttpHeaders.CONTENT_TYPE, "application/json; charset=utf-8")
                 .bodyValue(requestBodyJson)
                 .retrieve()
                 .bodyToMono(String.class)
-                .doOnError(throwable -> log.error("Failed to request WebSocket key from KIS: {}",
-                    throwable.getMessage()))
-                .subscribe(response -> {
-                    String approvalKey = extractApprovalKeyFromResponse(response);
-                    if (approvalKey != null) {
-                        redisService.setValues("kisRealTimeKey", approvalKey, Duration.ofHours(24));
-                    } else {
-                        log.error("Failed to request WebSocket key from KIS: {}",
-                            response.toString());
-                    }
-                });
+                .block();  // 동기적으로 실행
+
+            String approvalKey = extractApprovalKeyFromResponse(response);
+            if (approvalKey != null) {
+                redisService.setValues("kisRealTimeKey", approvalKey, Duration.ofHours(24));
+                log.info("New WebSocket approval_key successfully saved to Redis: {}", approvalKey);
+            } else {
+                log.error("Failed to extract approval_key from KIS response: {}", response);
+            }
+
         } catch (JsonProcessingException e) {
             log.error("Error converting request body to JSON: {}", e.getMessage());
         }
