@@ -7,12 +7,14 @@ import { getDailyStockKeywordFrequency, getDailyKeywordFrequency } from '@/app/u
 import { useRecoilValue } from 'recoil';
 import { dateState } from '@/app/store/date';
 
+
 const NewsPage: React.FC = (props: any) => {
   const {stock, date} = props.params;
   const todayDate = useRecoilValue(dateState);
   const [newsData, setNewsData] = useState<any[]>([]); // API에서 받은 뉴스를 저장할 상태
   const [wordData1, setWordData1] = useState<any[]>([]); // res1 저장
   const [wordData2, setWordData2] = useState<any[]>([]); // res2 저장
+
 
   useEffect(() => {
     const fetchNewsData = async () => {
@@ -38,6 +40,7 @@ const NewsPage: React.FC = (props: any) => {
 
   return (
     <>
+ 
       <NewsPageHeaderTemplate newsData={newsData} wordData1={wordData1} wordData2={wordData2} />
     </>
   );
