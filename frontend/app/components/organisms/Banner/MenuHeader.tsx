@@ -20,7 +20,7 @@ const Container = styled.div`
   left: 0;
   height: 80%;
   width: 30px; /* 호버 감지 영역의 너비 */
-  z-index: 1000000;
+  z-index: 10000;
   background-color: transparent; /* 호버 감지 영역은 투명 */
 `;
 
@@ -79,6 +79,7 @@ const MenuHeader: React.FC = () => {
   const handleMouseLeave = () => {
     if (!isModalOpen) {
       setIsMenuOpen(false);
+      setIsModalOpen(false);
     }
   };
 

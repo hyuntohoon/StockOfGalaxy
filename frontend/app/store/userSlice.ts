@@ -16,7 +16,7 @@ export const userState = atom({
 // 로그인 상태
 export const isLoggedInState = atom({
   key: "isLoggedInState",
-  default: false, // 초기값은 false
+  default: true, // 초기값은 false
 });
 
 // accessToken 훅

@@ -2,7 +2,11 @@ import { defaultRequest } from "../request";
 
 const convertToApiDateFormat = (dateString: string): string => {
     // yyyy.MM.dd 형식을 yyyy-MM-dd 형식으로 변환
-    return dateString.replace(/\./g, '-');
+    const year = dateString.slice(0, 4);   // 첫 4자리: 년도
+  const month = dateString.slice(4, 6);  // 5~6자리: 월
+  const day = dateString.slice(6, 8);    // 7~8자리: 일
+
+  return `${year}-${month}-${day}`; // yyyy-MM-dd 형식으로 반환
   };
   
 

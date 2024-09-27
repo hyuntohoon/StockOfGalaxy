@@ -23,7 +23,6 @@ const MenuHeaderModal: React.FC<MenuHeaderModalProps> = ({
       style={{ top: position.top, left: position.left }}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
-      onClick={onClose}
     >
       <ModalContent onClick={(e) => e.stopPropagation()}>
         <ProfileSection>
@@ -42,7 +41,7 @@ const MenuHeaderModal: React.FC<MenuHeaderModalProps> = ({
 
 const ModalContainer = styled.div`
   position: absolute;
-  z-index: 1000;
+  z-index: 100000;
 `;
 
 const ModalContent = styled.div`
