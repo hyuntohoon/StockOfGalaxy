@@ -48,7 +48,7 @@ interface WordCloudProps {
 
 const WordCloudComponent: React.FC<WordCloudProps> = ({ data, width, height }) => {
   const svgRef = useRef<SVGSVGElement>(null);
-  const [words, setWords] = useState<{ text: string; x: number; y: number; size: number; rotate: number }[]>([]);
+  const [words, setWords] = useState<Word[]>([]);
   const [tooltip, setTooltip] = useState<{ x: number; y: number; text: string } | null>(null);
 
   useEffect(() => {
