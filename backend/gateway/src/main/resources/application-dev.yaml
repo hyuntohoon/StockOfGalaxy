@@ -58,7 +58,7 @@ spring:
         - id: stock-service-websocket
           uri: ws://stock-service.backcd.svc.cluster.local:80
           predicates:
-            - Path=/api/ws-stock
+            - Path=/api/ws/**
           filters:
             - RemoveRequestHeader=Sec-WebSocket-Protocol
             - AddRequestHeader=Connection, Upgrade
