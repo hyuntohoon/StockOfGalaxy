@@ -35,7 +35,6 @@ kis:
     appkey: "PSTVy2mFMMrHQ97LAnfgRVcI5zRr7p3JGOxo"
     appsecret: "JmbcXXasdhSxCWqzQDV3/2BG5plUGGL+udWU+uL+coAQ08pUxnliNdQU+8XrFsmjBqIqXsju7g4s/sQ+dkanRVTfZwmF16aQ2GT4RNZdXHR5+2j9EFv3JymNiTcGbpdcXuX2LJOa8/vSAdgBV3XvYLBbLfhlB+TW+nZbR+6sz2b5hANZ7Jw="
 
-
 server:
   error:
     include-message: always

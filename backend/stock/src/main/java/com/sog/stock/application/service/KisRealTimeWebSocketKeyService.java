@@ -65,7 +65,7 @@ public class KisRealTimeWebSocketKeyService {
         requestNewWebSocketKey();
     }
 
-    // 매일 자정 재요청
+    // websocket key 재요청
     public void requestNewWebSocketKey() {
         log.info("Requesting new WebSocket key from KIS...");
         Map<String, String> requestBody = new HashMap<>();
@@ -87,7 +87,7 @@ public class KisRealTimeWebSocketKeyService {
 
             String approvalKey = extractApprovalKeyFromResponse(response);
             if (approvalKey != null) {
-                redisService.setValues("kisRealTimeKey", approvalKey, Duration.ofHours(24));
+                redisService.setValues("kisRealTimeKey", approvalKey, Duration.ofHours(6));
                 log.info("New WebSocket approval_key successfully saved to Redis: {}", approvalKey);
             } else {
                 log.error("Failed to extract approval_key from KIS response: {}", response);
