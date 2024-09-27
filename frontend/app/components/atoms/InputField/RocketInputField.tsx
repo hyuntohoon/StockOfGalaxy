@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import CreateRocketButton from '../Button/CreateRocketButton';
-import useAccessToken from '@/app/utils/libs/user/useAccessToken'; // useAccessToken 가져오기
+import {useAccessToken} from '@/app/utils/libs/user/useAccessToken'; // useAccessToken 가져오기
 
 const RocketInputField = () => {
   const [inputValue, setInputValue] = useState('');
