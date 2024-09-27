@@ -7,11 +7,24 @@ import SignOutButtonGroup from '../../molecules/ButtonGroup/SignOutButtonGroup';
 
 interface MenuHeaderModalProps {
   onClose: () => void;
+  position: { top: number; left: number }; 
+  onMouseEnter: () => void; // 모달에 마우스가 올라갈 때
+  onMouseLeave: () => void; // 모달에서 마우스가 벗어날 때
 }
 
-const MenuHeaderModal: React.FC<MenuHeaderModalProps> = ({ onClose }) => {
+const MenuHeaderModal: React.FC<MenuHeaderModalProps> = ({
+  onClose,
+  position,
+  onMouseEnter,
+  onMouseLeave,
+}) => {
   return (
-    <ModalContainer onClick={onClose}>
+    <ModalContainer
+      style={{ top: position.top, left: position.left }}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      onClick={onClose}
+    >
       <ModalContent onClick={(e) => e.stopPropagation()}>
         <ProfileSection>
           <Image src={profile} alt="프로필 사진" width={40} height={40} />
@@ -29,8 +42,6 @@ const MenuHeaderModal: React.FC<MenuHeaderModalProps> = ({ onClose }) => {
 
 const ModalContainer = styled.div`
   position: absolute;
-  top: 540px;
-  left: 105px;
   z-index: 1000;
 `;
 
