@@ -84,7 +84,7 @@ public class KisChartWebSocketKeyService {
 
             String approvalKey = extractApprovalKeyFromResponse(response);
             if (approvalKey != null) {
-                redisService.setValues("kisChartKey", approvalKey, Duration.ofHours(24));
+                redisService.setValues("kisChartKey", approvalKey, Duration.ofHours(6));
                 log.info("New Chart WebSocket approval_key successfully saved to Redis: {}",
                     approvalKey);
             } else {
