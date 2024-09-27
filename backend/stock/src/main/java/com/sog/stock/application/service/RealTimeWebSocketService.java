@@ -6,6 +6,7 @@ import com.sog.stock.domain.dto.StockPriceResponseDTO;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -39,6 +40,8 @@ public class RealTimeWebSocketService {
 
     // 종목 코드별로 구독한 클라이언트 세션을 관리
     private final Map<String, List<WebSocketSession>> stockCodeSubscribers = new ConcurrentHashMap<>();
+    // 세션별 구독 중인 종목을 관리
+    private final Map<WebSocketSession, String> sessionStockMap = new ConcurrentHashMap<>();
 
     @Autowired
     public RealTimeWebSocketService(WebSocketClient webSocketClient, RedisService redisService,
@@ -94,6 +97,11 @@ public class RealTimeWebSocketService {
             }
 
             String msgCd = jsonResponse.getJSONObject("body").getString("msg_cd");
+            if (msgCd.equals("OPSP0002")) {
+                log.warn("이미 해당 주식에 대해 구독 중입니다. 메시지 코드: {}", msgCd);
+                return; // 추가 작업 없이 종료
+            }
+
             // "OPSP000"이 아닌 경우, 키 재발급 요청 및 재연결
             if (!msgCd.equals("OPSP0000")) {
                 log.warn("유효하지 않은 승인 키. 새로운 키를 요청합니다. 메시지 코드: {}", msgCd);
@@ -108,9 +116,12 @@ public class RealTimeWebSocketService {
                     // 재연결 후 기존 구독자들에 대해 다시 구독 요청 보내기
                     for (String stockCode : stockCodeSubscribers.keySet()) {
                         List<WebSocketSession> subscribers = stockCodeSubscribers.get(stockCode);
-                        for (WebSocketSession session : subscribers) {
+                        // Iterator 사용하여 안전하게 반복
+                        Iterator<WebSocketSession> iterator = subscribers.iterator();
+                        while (iterator.hasNext()) {
+                            WebSocketSession session = iterator.next();
                             log.info("재발급 후 주식 코드 {}에 대한 구독 요청을 다시 시도합니다.", stockCode);
-                            subscribeToStock(stockCode, session); // 다시 구독 요청
+                            subscribeToStock(stockCode, session, true); // 다시 구독 요청
                         }
                     }
                 } else {
@@ -139,15 +150,16 @@ public class RealTimeWebSocketService {
             if (subscribers != null) {
                 List<WebSocketSession> closedSessions = new ArrayList<>(); // 닫힌 세션 저장
 
-                for (WebSocketSession clientSession : subscribers) {
-                    // 세션이 열려있는지 확인
+                // Iterator 사용하여 세션 안전하게 반복
+                Iterator<WebSocketSession> iterator = subscribers.iterator();
+                while (iterator.hasNext()) {
+                    WebSocketSession clientSession = iterator.next();
                     if (clientSession.isOpen()) {
-                        log.info("클라이언트에 데이터 전송: {}", stockCode);
+//                        log.info("클라이언트에 데이터 전송: {}", stockCode);
                         clientSession.sendMessage(new TextMessage(
                             new ObjectMapper().writeValueAsString(stockPriceResponseDTO)));
                     } else {
-                        log.warn("클라이언트 세션이 닫혀있습니다. 세션을 제거합니다: {}",
-                            stockCode);
+                        log.warn("클라이언트 세션이 닫혀있습니다. 세션을 제거합니다: {}", stockCode);
                         closedSessions.add(clientSession); // 닫힌 세션을 리스트에 추가
                     }
                 }
@@ -162,21 +174,31 @@ public class RealTimeWebSocketService {
     }
 
     // 클라이언트가 새로운 종목을 구독할 때 호출되는 메서드
-    public void subscribeToStock(String stockCode, WebSocketSession clientSession)
+    public void subscribeToStock(String stockCode, WebSocketSession clientSession,
+        boolean forceReSubscribe)
         throws InterruptedException, ExecutionException, IOException {
         if (kisWebSocketSession == null || !kisWebSocketSession.isOpen()) {
             connectToKisWebSocket();
         }
 
-        // 중복 구독 방지 로직
-        List<WebSocketSession> subscribers = stockCodeSubscribers.get(stockCode);
-        if (subscribers != null && subscribers.contains(clientSession)) {
+        // 구독 세션 관리
+        List<WebSocketSession> subscribers = stockCodeSubscribers.computeIfAbsent(stockCode,
+            k -> new ArrayList<>());
+
+        if (!forceReSubscribe && subscribers != null && subscribers.contains(clientSession)) {
             log.info("이미 해당 주식을 구독하고 있습니다: {}", stockCode);
             return; // 이미 구독 중인 종목이라면 아무 작업도 하지 않음
         }
 
-        // 종목별로 구독하는 클라이언트를 관리
-        stockCodeSubscribers.computeIfAbsent(stockCode, k -> new ArrayList<>()).add(clientSession);
+        // 종목별로 구독하는 세션을 추가
+        subscribers.add(clientSession);
+        sessionStockMap.put(clientSession, stockCode);
+
+        // 중복 구독 방지 로직
+//        List<WebSocketSession> subscribers = stockCodeSubscribers.get(stockCode);
+
+//        // 종목별로 구독하는 클라이언트를 관리
+//        stockCodeSubscribers.computeIfAbsent(stockCode, k -> new ArrayList<>()).add(clientSession);
 
         // KIS WebSocket으로 구독 요청 전송
         String requestMessage = createSubscribeMessage(stockCode);
@@ -259,11 +281,28 @@ public class RealTimeWebSocketService {
     }
 
     // 클라이언트 세션 모두 종료 시 KIS WebSocket도 연결 해제 합니다.
-    public void disconnectFromKisWebSocket() throws IOException {
-        if (kisWebSocketSession != null && kisWebSocketSession.isOpen()) {
-            kisWebSocketSession.close();
-            kisWebSocketSession = null;
-            log.info("Disconnected from KIS WebSocket");
+    public void disconnectFromKisWebSocket(WebSocketSession session) {
+        if (session != null) {
+            String stockCode = sessionStockMap.remove(session); // 해당 세션이 구독 중인 주식 코드 제거
+            if (stockCode != null) {
+                List<WebSocketSession> subscribers = stockCodeSubscribers.get(stockCode);
+                subscribers.remove(session);
+                if (subscribers.isEmpty()) {
+                    stockCodeSubscribers.remove(stockCode); // 구독자가 없으면 리스트에서 제거
+                }
+            }
+        }
+
+        // 모든 세션이 해제된 경우 KIS WebSocket 연결 해제
+        if (sessionStockMap.isEmpty() && kisWebSocketSession != null
+            && kisWebSocketSession.isOpen()) {
+            try {
+                kisWebSocketSession.close(); // 한국투자증권 WebSocket 연결 해제
+                kisWebSocketSession = null;
+                log.info("Disconnected from KIS WebSocket");
+            } catch (IOException e) {
+                log.error("KIS WebSocket 연결 해제 중 에러 발생: {}", e.getMessage());
+            }
         }
     }
 }
