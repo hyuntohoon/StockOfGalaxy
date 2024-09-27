@@ -4,7 +4,6 @@ import { IoClose } from "react-icons/io5";
 import RocketInputField from '../../atoms/InputField/RocketInputField';
 import RocketCard from '../RocketCard';
 import LoadingSpinner from '../../atoms/LoadingSpinner';
-import RocketAuthorProfile from '../../molecules/ButtonGroup/RocketAuthorProfile';
 
 // 임시 댓글 데이터
 const tempData = [
@@ -147,7 +146,6 @@ const RocketModal = ({ onClose }) => {
         <ModalContent onScroll={handleScroll}>
           <StyledCloseIcon onClick={onClose}/>
           <Header>
-            <RocketAuthorProfile src={tempUser.imageUrl} alt='profile' nickname={tempUser.nickname} />
             <RocketInputField />  
           </Header>
           <CardsContainer>
@@ -179,12 +177,16 @@ const ModalWrapper = styled.div`
   width: 80%;
   display: flex;
   flex-direction: column;
+  align-items: center;
   justify-content: center;
+  justify-items: center;
   z-index: 2100;
 `
 
 const ModalTitle = styled.div`
-  margin-left: 5px;
+  position: absolute;
+  top: 75px;
+  left: 264px;
   font-size: 24px;
   font-weight: bold;
   color: white;
