@@ -44,10 +44,6 @@ const MenuHeaderWrapper = styled.div<{ isOpen: boolean }>`
     margin-bottom: 16px;
   }
 
-  & > div:last-of-type {
-    margin-bottom: 0;
-  }
-
   /* 포인터 이벤트 관리 */
   pointer-events: ${props => (props.isOpen ? 'auto' : 'none')};
 `;
