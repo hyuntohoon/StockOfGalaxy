@@ -1,6 +1,7 @@
 export interface FavoriteItemProps {
     rank: number;
     name: string;
+    stockCode: string;
     price: string;
     change: string;
     isFavorite: boolean;
@@ -13,6 +14,7 @@ export interface FavoriteItemProps {
  export interface FavoriteItem {
     rank: number;
     name: string;
+    stockCode: string;
     price: string;
     change: string;
     isFavorite: boolean;
