@@ -20,8 +20,11 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className={ibm.className}>
-        <MenuHeader />
-        <RecoilRootWrapper>{children}</RecoilRootWrapper>
+        
+        <RecoilRootWrapper>
+          <MenuHeader />
+          {children}
+        </RecoilRootWrapper>
       </body>
     </html>
   );

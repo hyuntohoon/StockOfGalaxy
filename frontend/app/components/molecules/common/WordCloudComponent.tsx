@@ -57,24 +57,16 @@ const WordCloudComponent: React.FC<WordCloudProps> = ({
   height,
 }) => {
   const svgRef = useRef<SVGSVGElement>(null);
-  const [words, setWords] = useState<
-    { text: string; x: number; y: number; size: number; rotate: number }[]
-  >([]);
-  const [tooltip, setTooltip] = useState<{
-    x: number;
-    y: number;
-    text: string;
-  } | null>(null);
+  const [words, setWords] = useState<{ text: string; x: number; y: number; size: number; rotate: number }[]>([]);
+  const [tooltip, setTooltip] = useState<{ x: number; y: number; text: string } | null>(null);
 
   useEffect(() => {
     const layout = cloud<Word>()
       .size([width, height]) // props로 전달된 가로 및 세로 사이즈 설정
-      .words(
-        data.map((d) => ({
-          text: d.text,
-          size: d.value * 10, // value에 기반하여 size 계산
-        }))
-      )
+      .words(data.map((d) => ({
+        text: d.text,
+        size: d.value * 10, // value에 기반하여 size 계산
+      })))
       .padding(5)
       .rotate(() => (Math.random() > 0.5 ? 90 : 0))
       .font("Impact")
