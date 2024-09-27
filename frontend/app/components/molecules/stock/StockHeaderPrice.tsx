@@ -5,6 +5,7 @@ import StockIcon from "../../atoms/stock/StockIcon";
 import StockName from "../../atoms/stock/StockName";
 import StockCurrentPrice from "../../atoms/stock/StockCurrentPrice";
 import StockChange from "../../atoms/stock/StockChange";
+import { useParams } from "next/navigation";
 
 const Container = styled.div`
   display: flex;
@@ -30,6 +31,9 @@ const ChangeContainer = styled.div`
 `;
 
 const StockHeaderPrice = ({ price, changePrice, changeRate }) => {
+  const params = useParams();
+  const { stock } = params;
+
   return (
     <Container>
       <StockIcon width={55} height={55} />

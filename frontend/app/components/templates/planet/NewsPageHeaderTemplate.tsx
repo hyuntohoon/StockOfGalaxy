@@ -1,13 +1,21 @@
-'use client';
+"use client";
 
-import React, { useRef, useState, useEffect } from 'react';
-import Header from '@/app/components/organisms/planet/Header';
-import StockHeaderTemplate from '../../organisms/stock/StockHeaderTemplate';
-import NavBar from '@/app/components/molecules/planet/NavBar';
-import NewsList from '@/app/components/organisms/planet/NewsList';
-import WordCloudComponent from '@/app/components/molecules/planet/WordCloudComponent';
-import { debounce } from '@/app/utils/libs/debounce';
-import { ContentContainer, SectionContainer } from '@/app/styles/planet';
+import React, { useRef, useState, useEffect } from "react";
+import Header from "@/app/components/organisms/planet/Header";
+import StockHeaderTemplate from "../../organisms/stock/StockHeaderTemplate";
+import NavBar from "@/app/components/molecules/planet/NavBar";
+import NewsList from "@/app/components/organisms/planet/NewsList";
+import WordCloudComponent from "@/app/components/molecules/planet/WordCloudComponent";
+import { debounce } from "@/app/utils/libs/debounce";
+import { ContentContainer, SectionContainer } from "@/app/styles/planet";
+import ChartTemplate from "@/app/components/templates/chart/ChartTemplate";
+import StockInfoTemplate from "@/app/components/templates/stock/StockInfoTemplate";
+import styled from "@emotion/styled";
+
+const ChartContainer = styled.div`
+  width: 800px;
+  height: auto;
+`;
 
 interface NewsPageHeaderTemplateProps {
   newsData: any[]; // NewsPage에서 전달받은 뉴스 데이터 타입을 지정
@@ -15,7 +23,11 @@ interface NewsPageHeaderTemplateProps {
   wordData2: any[]; // 두 번째 워드 클라우드 데이터
 }
 
-const NewsPageHeaderTemplate: React.FC<NewsPageHeaderTemplateProps> = ({ newsData, wordData1, wordData2 }) => {
+const NewsPageHeaderTemplate: React.FC<NewsPageHeaderTemplateProps> = ({
+  newsData,
+  wordData1,
+  wordData2,
+}) => {
   const homeRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<HTMLDivElement>(null);
   const stocksRef = useRef<HTMLDivElement>(null);
@@ -24,21 +36,22 @@ const NewsPageHeaderTemplate: React.FC<NewsPageHeaderTemplateProps> = ({ newsDat
 
   const contentRef = useRef<HTMLDivElement>(null);
   const [scrollProgress, setScrollProgress] = useState<number>(0);
-  const [activeSection, setActiveSection] = useState<string>('홈');
+  const [activeSection, setActiveSection] = useState<string>("홈");
 
   const sections = [
-    { name: '홈', ref: homeRef },
-    { name: '차트', ref: chartRef },
-    { name: '종목', ref: stocksRef },
-    { name: '행성소식', ref: planetNewsRef },
-    { name: '우주소식', ref: spaceNewsRef },
+    { name: "홈", ref: homeRef },
+    { name: "차트", ref: chartRef },
+    { name: "종목", ref: stocksRef },
+    { name: "행성소식", ref: planetNewsRef },
+    { name: "우주소식", ref: spaceNewsRef },
   ];
 
   useEffect(() => {
     const handleScroll = debounce(() => {
       if (contentRef.current) {
         const { scrollLeft, clientWidth } = contentRef.current;
-        const progress = (scrollLeft / (contentRef.current.scrollWidth - clientWidth)) * 100;
+        const progress =
+          (scrollLeft / (contentRef.current.scrollWidth - clientWidth)) * 100;
         setScrollProgress(progress);
 
         const scrollPosition = scrollLeft + clientWidth / 2;
@@ -46,7 +59,10 @@ const NewsPageHeaderTemplate: React.FC<NewsPageHeaderTemplateProps> = ({ newsDat
           if (ref.current) {
             const sectionLeft = ref.current.offsetLeft;
             const sectionWidth = ref.current.offsetWidth;
-            if (scrollPosition >= sectionLeft && scrollPosition < sectionLeft + sectionWidth) {
+            if (
+              scrollPosition >= sectionLeft &&
+              scrollPosition < sectionLeft + sectionWidth
+            ) {
               setActiveSection(name);
             }
           }
@@ -55,12 +71,12 @@ const NewsPageHeaderTemplate: React.FC<NewsPageHeaderTemplateProps> = ({ newsDat
     }, 50);
 
     if (contentRef.current) {
-      contentRef.current.addEventListener('scroll', handleScroll);
+      contentRef.current.addEventListener("scroll", handleScroll);
     }
 
     return () => {
       if (contentRef.current) {
-        contentRef.current.removeEventListener('scroll', handleScroll);
+        contentRef.current.removeEventListener("scroll", handleScroll);
       }
     };
   }, [sections, activeSection]);
@@ -73,7 +89,7 @@ const NewsPageHeaderTemplate: React.FC<NewsPageHeaderTemplateProps> = ({ newsDat
       const scrollTo = sectionLeft - (containerWidth / 2 - sectionWidth / 2);
       contentRef.current.scrollTo({
         left: scrollTo,
-        behavior: 'smooth',
+        behavior: "smooth",
       });
     }
   };
@@ -81,13 +97,14 @@ const NewsPageHeaderTemplate: React.FC<NewsPageHeaderTemplateProps> = ({ newsDat
   const handleWheelScroll = (event: React.WheelEvent) => {
     if (
       contentRef.current &&
-      planetNewsRef.current && spaceNewsRef.current &&
+      planetNewsRef.current &&
+      spaceNewsRef.current &&
       !planetNewsRef.current.contains(event.target as Node) &&
       !spaceNewsRef.current.contains(event.target as Node)
     ) {
       contentRef.current.scrollTo({
         left: contentRef.current.scrollLeft + event.deltaY * 15,
-        behavior: 'smooth',
+        behavior: "smooth",
       });
 
       setTimeout(() => {
@@ -121,18 +138,24 @@ const NewsPageHeaderTemplate: React.FC<NewsPageHeaderTemplateProps> = ({ newsDat
   return (
     <>
       <StockHeaderTemplate />
-      <NavBar activeSection={activeSection} scrollToSection={scrollToSection} sections={sections} />
+      <NavBar
+        activeSection={activeSection}
+        scrollToSection={scrollToSection}
+        sections={sections}
+      />
       <ContentContainer onWheel={handleWheelScroll} ref={contentRef}>
         <SectionContainer ref={homeRef}>
-          <p style={{ color: 'white' }}>홈 페이지 내용</p>
+          <p style={{ color: "white" }}>홈 페이지 내용</p>
         </SectionContainer>
 
         <SectionContainer ref={chartRef}>
-          <p style={{ color: 'white' }}>차트 페이지 내용</p>
+          <ChartContainer>
+            <ChartTemplate />
+          </ChartContainer>
         </SectionContainer>
 
         <SectionContainer ref={stocksRef}>
-          <p style={{ color: 'white' }}>종목 페이지 내용</p>
+          <StockInfoTemplate />
         </SectionContainer>
 
         <SectionContainer ref={planetNewsRef}>

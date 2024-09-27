@@ -7,12 +7,12 @@ import StockHeaderInfo from "../../molecules/stock/StockHeaderInfo";
 import { HeaderWrapper } from "@/app/styles/planet";
 
 const ParentContainer = styled.div`
-  width: 50vw;
+  min-width: 950px;
   height: 50vh;
   overflow-y: auto;
   background-color: #111;
   color: white;
-  width: 1000px;
+  width: 950px;
   height: 60px;
   background-color: #d9d9d9;
   border-radius: 20px;
@@ -25,7 +25,8 @@ const ParentContainer = styled.div`
 
 const Container = styled.div`
   color: black;
-  width: 1000px;
+  width: auto;
+  gap: 10vw;
   height: 60px;
   text-align: center;
   display: flex;
@@ -105,7 +106,7 @@ const StockHeaderTemplate = () => {
 
   return (
     <>
-    <HeaderWrapper>
+      <HeaderWrapper>
         <ParentContainer>
           <Container>
             <StockHeaderPrice

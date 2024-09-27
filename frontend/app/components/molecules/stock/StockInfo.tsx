@@ -7,6 +7,7 @@ import StockName from "../../atoms/stock/StockName";
 // Props 타입 정의 (TypeScript를 사용하는 경우)
 interface StockInfoProps {
   index: number;
+  stock_code: string;
   koreanName: string;
 }
 
@@ -23,8 +24,6 @@ const Container = styled.div`
   border-radius: 10px;
   transition: background-color 0.3s ease, transform 0.3s ease;
   cursor: pointer;
-
-  
 
   @media (max-width: 600px) {
     flex-direction: column;
@@ -43,11 +42,15 @@ const StockIndex = styled.span`
   }
 `;
 
-const StockInfo: React.FC<StockInfoProps> = ({ index, koreanName }) => {
+const StockInfo: React.FC<StockInfoProps> = ({
+  index,
+  stock_code,
+  koreanName,
+}) => {
   return (
-    <Container>
-      <StockIndex>{index + 1}</StockIndex>
-      <StockIcon />
+    <Container className="stock-info-container">
+      <StockIndex className="stock-index">{index + 1}</StockIndex>
+      <StockIcon stock_code={stock_code} />
       <StockName koreanName={koreanName} />
     </Container>
   );

@@ -1,6 +1,6 @@
-import React, { useRef, useEffect, useState } from 'react';
-import styled from '@emotion/styled';
-import cloud from 'd3-cloud';
+import React, { useRef, useEffect, useState } from "react";
+import styled from "@emotion/styled";
+import cloud from "d3-cloud";
 
 const TooltipContainer = styled.div<{ x: number; y: number }>`
   position: fixed;
@@ -23,7 +23,11 @@ interface TooltipProps {
 }
 
 const Tooltip: React.FC<TooltipProps> = ({ x, y, text }) => {
-  return <TooltipContainer x={x} y={y}>{text}</TooltipContainer>;
+  return (
+    <TooltipContainer x={x} y={y}>
+      {text}
+    </TooltipContainer>
+  );
 };
 
 // 워드 클라우드 컨테이너 스타일
@@ -33,43 +37,59 @@ const WordCloudContainer = styled.div`
   position: relative;
 `;
 
-// 워드 인터페이스 정의
+// Word 인터페이스 정의
 interface Word {
   text: string;
   value: number;
+  size?: number; // size 속성을 추가
 }
 
 // WordCloudComponent Props 인터페이스
 interface WordCloudProps {
-  data: Word[];
+  data: Word[]; // data는 Word 배열
   width: number; // 가로 사이즈
   height: number; // 세로 사이즈
 }
 
-const WordCloudComponent: React.FC<WordCloudProps> = ({ data, width, height }) => {
+const WordCloudComponent: React.FC<WordCloudProps> = ({
+  data,
+  width,
+  height,
+}) => {
   const svgRef = useRef<SVGSVGElement>(null);
-  const [words, setWords] = useState<Word[]>([]);
-  const [tooltip, setTooltip] = useState<{ x: number; y: number; text: string } | null>(null);
+  const [words, setWords] = useState<
+    { text: string; x: number; y: number; size: number; rotate: number }[]
+  >([]);
+  const [tooltip, setTooltip] = useState<{
+    x: number;
+    y: number;
+    text: string;
+  } | null>(null);
 
   useEffect(() => {
     const layout = cloud<Word>()
       .size([width, height]) // props로 전달된 가로 및 세로 사이즈 설정
-      .words(data.map((d) => ({
-        text: d.text,
-        size: d.value * 10,
-      })))
+      .words(
+        data.map((d) => ({
+          text: d.text,
+          size: d.value * 10, // value에 기반하여 size 계산
+        }))
+      )
       .padding(5)
       .rotate(() => (Math.random() > 0.5 ? 90 : 0))
-      .font('Impact')
+      .font("Impact")
       .fontSize((d) => d.size)
-      .on('end', (words) => {
+      .on("end", (words) => {
         setWords(words);
       });
 
     layout.start();
   }, [data, width, height]);
 
-  const handleMouseEnter = (event: React.MouseEvent<SVGTextElement, MouseEvent>, word: typeof words[0]) => {
+  const handleMouseEnter = (
+    event: React.MouseEvent<SVGTextElement, MouseEvent>,
+    word: (typeof words)[0]
+  ) => {
     const { clientX, clientY } = event;
     setTooltip({
       x: clientX + 10,
@@ -94,7 +114,7 @@ const WordCloudComponent: React.FC<WordCloudProps> = ({ data, width, height }) =
               fill="#61dafb"
               textAnchor="middle"
               transform={`translate(${word.x},${word.y}) rotate(${word.rotate})`}
-              style={{ userSelect: 'none', cursor: 'pointer' }}
+              style={{ userSelect: "none", cursor: "pointer" }}
               onMouseEnter={(e) => handleMouseEnter(e, word)}
               onMouseLeave={handleMouseLeave}
             >

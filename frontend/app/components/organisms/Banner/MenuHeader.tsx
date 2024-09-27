@@ -1,16 +1,16 @@
-'use client';
+"use client";
 
-import styled from '@emotion/styled';
-import { useState, useEffect, useRef } from 'react';
-import HomeButtonGroup from '../../molecules/ButtonGroup/Header/HomeButtonGroup';
-import ReturnTodayButtonGroup from '../../molecules/ButtonGroup/Header/ReturnTodayButtonGroup';
-import SearchIconButtonGroup from '../../molecules/ButtonGroup/Header/SearchIconButtonGroup';
-import MyIconButtonGroup from '../../molecules/ButtonGroup/Header/MyIconButtonGroup';
-import SignInButtonGroup from '../../molecules/ButtonGroup/Header/SignInButtonGroup';
-import MenuHeaderModal from '../Modal/MenuHeaderModal';
+import styled from "@emotion/styled";
+import { useState, useEffect, useRef } from "react";
+import HomeButtonGroup from "../../molecules/ButtonGroup/Header/HomeButtonGroup";
+import ReturnTodayButtonGroup from "../../molecules/ButtonGroup/Header/ReturnTodayButtonGroup";
+import SearchIconButtonGroup from "../../molecules/ButtonGroup/Header/SearchIconButtonGroup";
+import MyIconButtonGroup from "../../molecules/ButtonGroup/Header/MyIconButtonGroup";
+import SignInButtonGroup from "../../molecules/ButtonGroup/Header/SignInButtonGroup";
+import MenuHeaderModal from "../Modal/MenuHeaderModal";
 
 // 슬라이딩 애니메이션을 위한 트랜지션 시간
-const TRANSITION_DURATION = '0.3s';
+const TRANSITION_DURATION = "0.3s";
 
 // 메뉴를 감싸는 컨테이너
 const Container = styled.div`
@@ -28,7 +28,8 @@ const MenuHeaderWrapper = styled.div<{ isOpen: boolean }>`
   position: fixed;
   top: 50%;
   left: 0;
-  transform: translate(-85%, -50%) translateX(${props => (props.isOpen ? '90%' : '0')});
+  transform: translate(-85%, -50%)
+    translateX(${(props) => (props.isOpen ? "85%" : "0")});
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -45,7 +46,7 @@ const MenuHeaderWrapper = styled.div<{ isOpen: boolean }>`
   }
 
   /* 포인터 이벤트 관리 */
-  pointer-events: ${props => (props.isOpen ? 'auto' : 'none')};
+  pointer-events: ${(props) => (props.isOpen ? "auto" : "none")};
 `;
 
 const ToggleButton = styled.button`
@@ -65,17 +66,17 @@ const ToggleButton = styled.button`
 
 const MenuHeader: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);  
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const menuRef = useRef<HTMLDivElement>(null);
 
   const toggleLogin = () => {
-    setIsLoggedIn(prev => !prev);
+    setIsLoggedIn((prev) => !prev);
   };
 
   const toggleModal = () => {
-    setIsModalOpen(prev => !prev);
+    setIsModalOpen((prev) => !prev);
   };
 
   const handleMouseEnter = () => {
@@ -95,30 +96,35 @@ const MenuHeader: React.FC = () => {
 
   useEffect(() => {
     if (isMenuOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside);
     } else {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     }
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isMenuOpen]);
 
   return (
     <>
-      <Container onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-        <MenuHeaderWrapper 
+      <Container
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        <MenuHeaderWrapper
           isOpen={isMenuOpen}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
           ref={menuRef}
         >
-          
-
           <ReturnTodayButtonGroup />
           <HomeButtonGroup />
           <SearchIconButtonGroup />
-          {isLoggedIn ? <MyIconButtonGroup onClick={toggleModal} /> : <SignInButtonGroup />}
+          {isLoggedIn ? (
+            <MyIconButtonGroup onClick={toggleModal} />
+          ) : (
+            <SignInButtonGroup />
+          )}
         </MenuHeaderWrapper>
       </Container>
 
