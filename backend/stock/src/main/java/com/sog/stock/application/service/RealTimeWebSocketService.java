@@ -29,7 +29,6 @@ public class RealTimeWebSocketService {
     // kis와 spring간 -> 궁극적인 목적은 웹소켓 실시간 통신 (실시간 시세)
     private final WebSocketClient webSocketClient;
     private WebSocketSession kisWebSocketSession;
-    private final RedisService redisService;
     private final KisRealTimeWebSocketKeyService kisRealTimeWebSocketKeyService;
     private String kisWebSocketApprovalKey;
 
@@ -44,10 +43,9 @@ public class RealTimeWebSocketService {
     private final Map<WebSocketSession, String> sessionStockMap = new ConcurrentHashMap<>();
 
     @Autowired
-    public RealTimeWebSocketService(WebSocketClient webSocketClient, RedisService redisService,
+    public RealTimeWebSocketService(WebSocketClient webSocketClient,
         KisRealTimeWebSocketKeyService kisRealTimeWebSocketKeyService) {
         this.webSocketClient = webSocketClient;
-        this.redisService = redisService;
         this.kisRealTimeWebSocketKeyService = kisRealTimeWebSocketKeyService;
         this.kisWebSocketApprovalKey = kisRealTimeWebSocketKeyService.getRealTimeWebSocketKey();
     }

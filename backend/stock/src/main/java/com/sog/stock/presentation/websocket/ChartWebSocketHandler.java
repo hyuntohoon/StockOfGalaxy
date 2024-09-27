@@ -19,8 +19,9 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 public class ChartWebSocketHandler extends TextWebSocketHandler {
 
     private final ChartWebSocketService chartWebSocketService;
-    private final Map<WebSocketSession, String> sessionStockCodeMap = new ConcurrentHashMap<>();
 
+    // 웹소켓 세션을 담을 맵. 각 세션이 구독한 종목 코드와 함께 관리
+    private final Map<WebSocketSession, String> sessionStockCodeMap = new ConcurrentHashMap<>();
 
     // 웹소켓 세션 담아둘 맵
     Map<String, WebSocketSession> sessionMap = new HashMap<>(); // 웹소켓 세션 담아둘 맵
@@ -31,9 +32,9 @@ public class ChartWebSocketHandler extends TextWebSocketHandler {
         log.info("Web Socket Connected");
         log.info("session id : {}", session.getId());
         super.afterConnectionEstablished(session);
-        synchronized (sessionMap) {
-            sessionMap.put(session.getId(), session);
-        }
+//        synchronized (sessionMap) {
+//            sessionMap.put(session.getId(), session);
+//        }
         System.out.println("chart sessionMap :" + sessionMap.toString());
 
         JSONObject jsonObject = new JSONObject();
@@ -49,12 +50,12 @@ public class ChartWebSocketHandler extends TextWebSocketHandler {
         log.info("--------Message---------");
         log.info("Received stockCode : {}", stockCode);
         log.info("--------Message---------");
-        synchronized (sessionMap) {
-            sessionStockCodeMap.put(session, stockCode);
-        }
+//        synchronized (sessionMap) {
+//            sessionStockCodeMap.put(session, stockCode);
+//        }
 
         // kis에 주식 구독 요청을 보냅니다.
-        chartWebSocketService.subscribeToStock(stockCode, session);
+        chartWebSocketService.subscribeToStock(stockCode, session, false);
     }
 
 
@@ -69,8 +70,13 @@ public class ChartWebSocketHandler extends TextWebSocketHandler {
         }
 
         // 남아있는 세션이 없을 경우에는 KIS websocket도 해제
+        chartWebSocketService.disconnectFromKisWebSocket(session);
+        // 세션 맵이나 종목 구독 관리 맵에서 세션 제거
+        chartWebSocketService.disconnectFromKisWebSocket(session);
+
         if (sessionMap.isEmpty()) {
-            chartWebSocketService.disconnectFromKisWebSocket();
+            log.info("모든 클라이언트 세션이 해제되었습니다. chart KIS WebSocket 연결을 해제합니다.");
+            chartWebSocketService.disconnectFromKisWebSocket(null);
         }
         super.afterConnectionClosed(session, status); // 실제로 closed
     }
