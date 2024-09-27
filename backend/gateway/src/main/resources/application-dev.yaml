@@ -51,13 +51,11 @@ spring:
         - id: stock-service-websocket
           uri: ws://stock-service.backcd.svc.cluster.local:80
           predicates:
-            - Path=/api/ws-stock/**
+            - Path=/api/ws-stock
           filters:
-            - SetRequestHeader=Connection,Upgrade
-            - SetRequestHeader=Upgrade,websocket
-            - SetRequestHeader=Sec-WebSocket-Version,13
-            - SetRequestHeader=Sec-WebSocket-Key,{Sec-WebSocket-Key}  # 중괄호 제거
-            - SetResponseHeader=Sec-WebSocket-Accept,{Sec-WebSocket-Accept}  # 중괄호 제거
+            - RemoveRequestHeader=Sec-WebSocket-Protocol
+            - AddRequestHeader=Connection, Upgrade
+            - AddRequestHeader=Upgrade, websocket
 
         - id: news-service
           uri: http://news-service.backcd.svc.cluster.local:80
