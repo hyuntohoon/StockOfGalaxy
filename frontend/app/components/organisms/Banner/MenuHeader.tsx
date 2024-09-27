@@ -2,16 +2,16 @@
 
 import styled from '@emotion/styled';
 import { useState, useEffect, useRef } from 'react';
-import useAccessToken from '@/app/utils/libs/user/useAccessToken';
 import HomeButtonGroup from '../../molecules/ButtonGroup/Header/HomeButtonGroup';
 import ReturnTodayButtonGroup from '../../molecules/ButtonGroup/Header/ReturnTodayButtonGroup';
 import SearchIconButtonGroup from '../../molecules/ButtonGroup/Header/SearchIconButtonGroup';
 import MyIconButtonGroup from '../../molecules/ButtonGroup/Header/MyIconButtonGroup';
 import SignInButtonGroup from '../../molecules/ButtonGroup/Header/SignInButtonGroup';
 import MenuHeaderModal from '../Modal/MenuHeaderModal';
+import { useIsLoggedIn } from '@/app/store/userSlice';
 
 // 슬라이딩 애니메이션을 위한 트랜지션 시간
-const TRANSITION_DURATION = "0.3s";
+const TRANSITION_DURATION = '0.3s';
 
 // 메뉴를 감싸는 컨테이너
 const Container = styled.div`
@@ -20,7 +20,7 @@ const Container = styled.div`
   left: 0;
   height: 80%;
   width: 30px; /* 호버 감지 영역의 너비 */
-  z-index: 1000000;
+  z-index: 10000;
   background-color: transparent; /* 호버 감지 영역은 투명 */
 `;
 
@@ -46,54 +46,65 @@ const MenuHeaderWrapper = styled.div<{ isOpen: boolean }>`
   }
 
   /* 포인터 이벤트 관리 */
-  pointer-events: ${(props) => (props.isOpen ? "auto" : "none")};
+  pointer-events: ${props => (props.isOpen ? 'auto' : 'none')};
 `;
 
 const MenuHeader: React.FC = () => {
-  const { accessToken } = useAccessToken();
+  const { isLoggedIn } = useIsLoggedIn();
   const [isModalOpen, setIsModalOpen] = useState(false);  
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
 
   const menuRef = useRef<HTMLDivElement>(null);
+  const myIconRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!isMenuOpen && !isModalOpen) {
+      setIsModalOpen(false);
+    }
+  }, [isMenuOpen]);
 
   const toggleModal = () => {
-    setIsModalOpen((prev) => !prev);
+    if (myIconRef.current) {
+      const rect = myIconRef.current.getBoundingClientRect();
+      setModalPosition({ top: rect.top, left: rect.right - 15 });
+    }
+    setIsModalOpen(prev => !prev);
   };
 
   const handleMouseEnter = () => {
-    setIsMenuOpen(true); // 마우스가 호버되면 메뉴 오픈
+    setIsMenuOpen(true);
   };
 
   const handleMouseLeave = () => {
-    setIsMenuOpen(false); // 마우스가 벗어나면 메뉴 닫힘
+    if (!isModalOpen) {
+      setIsMenuOpen(false);
+      setIsModalOpen(false);
+    }
   };
 
   const handleClickOutside = (event: MouseEvent) => {
     if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-      setIsMenuOpen(false); // 다른 곳을 클릭하면 메뉴 닫힘
+      setIsMenuOpen(false);
       setIsModalOpen(false);
     }
   };
 
   useEffect(() => {
     if (isMenuOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener('mousedown', handleClickOutside);
     } else {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside);
     }
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isMenuOpen]);
 
-  const isLoggedIn = !!accessToken; // 로그인 유무
   return (
     <>
-      <Container
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-      >
-        <MenuHeaderWrapper
+      <Container onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+        <MenuHeaderWrapper 
           isOpen={isMenuOpen}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
@@ -103,14 +114,23 @@ const MenuHeader: React.FC = () => {
           <HomeButtonGroup />
           <SearchIconButtonGroup />
           {isLoggedIn ? (
-            <MyIconButtonGroup onClick={toggleModal} />
+            <div ref={myIconRef}>
+              <MyIconButtonGroup onClick={toggleModal} />
+            </div>
           ) : (
             <SignInButtonGroup />
           )}
         </MenuHeaderWrapper>
       </Container>
 
-      {isModalOpen && <MenuHeaderModal onClose={toggleModal} />}
+      {isModalOpen && (
+        <MenuHeaderModal
+          onClose={() => setIsModalOpen(false)}
+          position={modalPosition} 
+          onMouseEnter={() => setIsMenuOpen(true)}  // 모달에 마우스가 올라가면 메뉴를 열어둠
+          onMouseLeave={() => setIsMenuOpen(false)} // 모달에서 마우스가 벗어나면 메뉴를 닫음
+        />
+      )}
     </>
   );
 };

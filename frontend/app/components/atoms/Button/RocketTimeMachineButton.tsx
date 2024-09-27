@@ -1,10 +1,14 @@
 import React from 'react';
 import styled from '@emotion/styled';
+import { useRouter } from 'next/navigation';
 
 const RocketTimeMachineButton = () => {
   const handleTimeMachineClick = () => {
     alert('타임머신 api 연결 필요');
+    router.push("/timetravel");
   };
+
+  const router = useRouter();
 
   return (
     <Button onClick={handleTimeMachineClick}>

@@ -3,13 +3,15 @@ import { AiFillHome } from 'react-icons/ai';
 import HeaderButtonGroup from '../../HeaderButtonGroup';
 import Link from 'next/link';
 import styled from '@emotion/styled';
+import {dateState} from "@/app/store/date";
+import { useRecoilValue } from 'recoil'; 
 
 interface HomeButtonGroupProps {
   onClick?: () => void; 
 }
 
 const HomeButtonGroup = ({ onClick }: HomeButtonGroupProps) => {
-
+  const date = useRecoilValue(dateState);
   return (
     <div
       onClick={(e) => {
@@ -19,7 +21,7 @@ const HomeButtonGroup = ({ onClick }: HomeButtonGroupProps) => {
         }
       }}
     >
-      <StyledLink href="/">
+      <StyledLink href={`/planet/main/3/${date}`}>
         <HeaderButtonGroup
           icon={<AiFillHome />}
           label="홈"
