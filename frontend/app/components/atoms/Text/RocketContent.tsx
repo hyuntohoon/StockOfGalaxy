@@ -1,10 +1,16 @@
-import styled from 'styled-components';
+import styled from '@emotion/styled';
 
-const RocketContent = ({ message }) => {
-  return <StyledComment>{message}</StyledComment>;
+interface RocketContentProps {
+  message: string;
+  fontWeight?: number;
 };
 
-const StyledComment = styled.p`
+const RocketContent = ({ message, fontWeight = 500 }: RocketContentProps) => {
+  return <StyledComment fontWeight={fontWeight}>{message}</StyledComment>;
+};
+
+const StyledComment = styled.div<{fontWeight: number}>`
+  font-weight: ${({ fontWeight }) => `${fontWeight}`}; 
   font-size: 14px;
   color: #303030;
   margin-left: 4px;

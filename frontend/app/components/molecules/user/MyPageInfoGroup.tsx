@@ -1,18 +1,18 @@
 "use client";
 
 import { useEffect } from "react";
-import useAccessToken from "@/app/utils/user/useAccessToken";
-import { getInfo } from "@/app/utils/user/myPageAPI";
+import useAccessToken from "@/app/utils/libs/user/useAccessToken";
+import { getInfo } from "@/app/utils/apis/users";
 import MyPageInfo from "../../atoms/user/MyPageInfo";
-import styled from "styled-components";
+import styled from "@emotion/styled";
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border: 3px solid white;
-  border-radius: 25px;
+  // border: 3px solid white;
+  // border-radius: 25px;
   padding: 20px 60px;
   margin: 20px;
   width: 90%;

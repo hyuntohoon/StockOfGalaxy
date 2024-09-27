@@ -1,25 +1,31 @@
 "use client";
 
-import { useState } from "react";
-import styled from "styled-components";
+import { ChangeEvent } from "react";
+import { FormInput } from "@/app/styles/user";
+// 타입스크립트를 사용하는 경우, Props 인터페이스를 정의합니다.
+interface LoginInputFieldProps {
+  type: string;
+  placeholder: string;
+  setPassword: (value: string) => void;
+}
 
-const InputField = styled.input`
-  color: #9b9b9b;
-  border: none;
-  border-radius: 10px;
-  padding: 10px 20px;
-  width: 450px;
-  height: 45px;
-  margin: 15px 10px;
-  font-size: 1.1rem;
-`;
 
-const LoginInputField = ({ type, placeholder, setPassword }) => {
-  const handleChange = (e) => {
+
+const LoginInputField: React.FC<LoginInputFieldProps> = ({
+  type,
+  placeholder,
+  setPassword,
+}) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
   };
+
   return (
-    <InputField type={type} placeholder={placeholder} onChange={handleChange} />
+    <FormInput
+      type={type}
+      placeholder={placeholder}
+      onChange={handleChange}
+    />
   );
 };
 

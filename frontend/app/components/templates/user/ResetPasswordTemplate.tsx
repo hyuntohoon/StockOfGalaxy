@@ -2,29 +2,12 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-
-import LoginImage from "../../atoms/user/LoginImage";
+import Title from "../../atoms/common/Title";
 import ResetPasswordInputGroup from "../../molecules/user/ResetPasswordInputGroup";
 import LoginButton from "../../atoms/user/LoginButton";
-import styled from "styled-components";
+import { resetPassword } from "@/app/utils/apis/users/password";
+import { FormContainer } from "@/app/styles/user";
 
-import { resetPassword } from "@/app/utils/user/resetPassword";
-
-const LoginContainer = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: auto;
-  width: auto;
-  background: rgba(255, 255, 255, 0.85);
-  border-radius: 10px;
-  padding: 20px;
-`;
 
 const FindPasswordTemplate = () => {
   const router = useRouter();
@@ -34,8 +17,9 @@ const FindPasswordTemplate = () => {
 
   return (
     <>
-      <LoginContainer>
-        <LoginImage width={100} />
+      <FormContainer>
+      <Title text="reset password" size={45} color="white" weight={700} />
+
         <ResetPasswordInputGroup
           setPassword1={setPassword1}
           setPassword2={setPassword2}
@@ -51,7 +35,7 @@ const FindPasswordTemplate = () => {
             }
           }}
         />
-      </LoginContainer>
+      </FormContainer>
     </>
   );
 };

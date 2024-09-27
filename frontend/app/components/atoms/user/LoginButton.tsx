@@ -1,33 +1,19 @@
 "use client";
 
-import styled from "styled-components";
+import React from "react";
+import { FormButton } from "@/app/styles/user";
 
-const StyledLoginButton = styled.input`
-  color: #9b9b9b;
-  border: none;
-  border-radius: 25px;
-  padding: 10px 20px;
-  width: 200px;
-  height: 50px;
-  margin: 10px;
-  font-size: 1.1rem;
-  font-weight: bold;
-  background-color: ${({ value }) =>
-    value === "회원가입" ? "white" : "#0E224D"};
-  color: ${({ value }) => (value === "회원가입" ? "#0E224D" : "white")};
-  cursor: pointer;
-  border: ${({ value }) =>
-    value === "회원가입" ? "1px solid #0E224D" : "none"};
-`;
+interface LoginButtonProps {
+  value: string;
+  onClickProps: () => void;
+}
 
-const LoginButton = ({ value, onClickProps }) => {
+const LoginButton: React.FC<LoginButtonProps> = ({ value, onClickProps }) => {
   return (
-    <StyledLoginButton
+    <FormButton
       type="button"
       value={value}
-      onClick={() => {
-        onClickProps();
-      }}
+      onClick={onClickProps}
     />
   );
 };

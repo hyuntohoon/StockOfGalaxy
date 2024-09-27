@@ -2,13 +2,15 @@
 
 import { useState } from "react";
 import SignUpInputField from "../../atoms/user/SignUpInputField";
-import styled from "styled-components";
+import styled from "@emotion/styled";
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 0px;
+  margin-bottom: 20px;
 `;
 
 const SignUpInputGroup = ({

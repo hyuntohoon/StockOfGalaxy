@@ -10,14 +10,14 @@ const DetailTriangleButtonGuide = () => {
 };
 
 const TextContainer = styled.div`
-  position: absolute;
+  position: fixed;
   bottom: 90px;
   left: 50%;
   transform: translateX(-50%);
   font-size: 14px;
   color: #ffffffd0;
   text-align: center;
-  z-index: 10;
+  z-index: 1100;
 `;
 
 const TextStyle = styled.div`

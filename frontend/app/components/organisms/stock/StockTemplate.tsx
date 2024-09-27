@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import styled from "styled-components";
+import styled from "@emotion/styled";
 import StockPrice from "../../molecules/stock/StockPrice";
 import StockInfo from "../../molecules/stock/StockInfo";
 
@@ -40,6 +40,11 @@ const Container = styled.div`
   align-items: center;
   justify-content: space-between;
   border-radius: 20px;
+transition: background-color 0.3s ease, transform 0.3s ease;
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
 `;
 
 const Header = styled.div`
@@ -154,10 +159,6 @@ const StockTemplate = () => {
     };
   }, [coinData]);
 
-  const formatPrice = (price: number) => {
-    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  };
-
   return (
     <ParentContainer>
       <Header>
@@ -166,7 +167,7 @@ const StockTemplate = () => {
         <span>뉴스</span>
       </Header>
       {coinData.map((coin, index) => (
-        <Container key={coin.market}>
+        <Container key={coin.english_name}>
           <StockInfo index={index} koreanName={coin.korean_name}></StockInfo>
           <StockPrice market={coin.market}></StockPrice>
         </Container>

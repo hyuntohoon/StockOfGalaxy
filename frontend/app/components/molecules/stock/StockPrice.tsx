@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
-import styled from "styled-components";
+import styled from "@emotion/styled";
 import StockCurrentPrice from "../../atoms/stock/StockCurrentPrice";
 import StockChange from "../../atoms/stock/StockChange";
-import formatPrice from "@/app/utils/stock/formatPrice";
 
 const Container = styled.div`
   display: flex;
@@ -65,7 +64,7 @@ const StockPrice = ({ market }) => {
   return (
     <>
       <Container>
-        <StockCurrentPrice currentPrice={formatPrice(price)} />
+        <StockCurrentPrice currentPrice={price} />
         <StockChange changePrice={changePrice} changeRate={changeRate} />
       </Container>
     </>

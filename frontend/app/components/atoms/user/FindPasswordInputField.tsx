@@ -1,39 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import styled from "styled-components";
+import styled from "@emotion/styled";
 import {
   sendAuthenticationCode,
   checkAuthenticationCode,
-} from "@/app/utils/user/resetPassword";
-
+} from "@/app/utils/apis/users/password";
+import { FormInput, CheckButton } from "@/app/styles/user";
 const InputContainer = styled.div`
   display: flex;
   align-items: center;
   position: relative;
-`;
-
-const InputField = styled.input`
-  color: #9b9b9b;
-  border: none;
-  border-radius: 10px;
-  padding: 10px 20px;
-  width: 450px;
-  height: 40px;
-  margin: 15px 10px;
-  font-size: 1.1rem;
-`;
-
-const CheckButton = styled.button`
-  position: absolute;
-  right: 20px;
-  padding: 10px 12px;
-  border: none;
-  border-radius: 10px;
-  background-color: #0e224d;
-  color: white;
-  font-size: 0.9rem;
-  cursor: pointer;
 `;
 
 const FindPasswordInputField = ({ type, placeholder, setIsAuthenticated }) => {
@@ -50,7 +27,7 @@ const FindPasswordInputField = ({ type, placeholder, setIsAuthenticated }) => {
 
   return (
     <InputContainer>
-      <InputField
+      <FormInput
         type={type}
         placeholder={placeholder}
         onChange={handleChange}
