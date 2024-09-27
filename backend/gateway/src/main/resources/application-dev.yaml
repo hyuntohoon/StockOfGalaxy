@@ -33,6 +33,13 @@ spring:
         locator:
           enabled: true
       routes:
+        - id: authenticated-routes
+          uri: no://op
+          predicates:
+            - Path=/api/*/auth/**
+          filters:
+              - JwtAuthenticationFilter
+
         - id: gateway-status
           uri: http://localhost:8080
           predicates:
