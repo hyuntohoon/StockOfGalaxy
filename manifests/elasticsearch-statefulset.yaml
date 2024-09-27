@@ -25,15 +25,6 @@ spec:
           env:
             - name: discovery.type
               value: single-node
-  volumeClaimTemplates:
-    - metadata:
-        name: elasticsearch-data
-      spec:
-        accessModes: ["ReadWriteOnce"]
-        resources:
-          requests:
-            storage: 20Gi
-        storageClassName: standard
 ---
 apiVersion: v1
 kind: Service
