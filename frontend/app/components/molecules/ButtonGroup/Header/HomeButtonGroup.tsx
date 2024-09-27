@@ -21,7 +21,7 @@ const HomeButtonGroup = ({ onClick }: HomeButtonGroupProps) => {
         }
       }}
     >
-      <StyledLink href={`/planet/main/3/${date}`}>
+      <StyledLink href={`/main/${date}`}>
         <HeaderButtonGroup
           icon={<AiFillHome />}
           label="홈"
