@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import StockPrice from "../../molecules/stock/StockPrice";
 import StockInfo from "../../molecules/stock/StockInfo";
+import useKRStockWebSocket from "@/app/hooks/useKRStockWebSocket";
 
 const ParentContainer = styled.div`
   width: 50vw;
@@ -53,19 +54,21 @@ const Header = styled.div`
   margin-bottom: 10px;
 `;
 
-interface CoinData {
+interface stockData {
   stock_name: string;
   stock_code: string;
 }
 
-interface CoinState {
+interface stockState {
+  stock_name: string | null;
+  stock_code: string | null;
   currentPrice: number | null;
   changePrice: number | null;
   changeRate: number | null;
 }
 
 const StockTemplate = () => {
-  const [coinData, setCoinData] = useState<CoinData[]>([
+  const stockData: any = [
     {
       stock_name: "삼성전자",
       stock_code: "005930",
@@ -106,7 +109,82 @@ const StockTemplate = () => {
       stock_name: "POSCO홀딩스",
       stock_code: "005490",
     },
+  ];
+
+  const [stockDataInfo, setStockDataInfo] = useState<stockState[]>([
+    {
+      stock_name: "삼성전자",
+      stock_code: "005930",
+      currentPrice: null,
+      changePrice: null,
+      changeRate: null,
+    },
+    {
+      stock_name: "SK하이닉스",
+      stock_code: "000660",
+      currentPrice: null,
+      changePrice: null,
+      changeRate: null,
+    },
+    {
+      stock_name: "LG에너지솔루션",
+      stock_code: "051910",
+      currentPrice: null,
+      changePrice: null,
+      changeRate: null,
+    },
+    {
+      stock_name: "삼성바이오로직스",
+      stock_code: "207940",
+      currentPrice: null,
+      changePrice: null,
+      changeRate: null,
+    },
+    {
+      stock_name: "현대차",
+      stock_code: "005380",
+      currentPrice: null,
+      changePrice: null,
+      changeRate: null,
+    },
+    {
+      stock_name: "셀트리온",
+      stock_code: "068270",
+      currentPrice: null,
+      changePrice: null,
+      changeRate: null,
+    },
+    {
+      stock_name: "삼성전자우",
+      stock_code: "005935",
+      currentPrice: null,
+      changePrice: null,
+      changeRate: null,
+    },
+    {
+      stock_name: "기아",
+      stock_code: "000270",
+      currentPrice: null,
+      changePrice: null,
+      changeRate: null,
+    },
+    {
+      stock_name: "KB금융",
+      stock_code: "105560",
+      currentPrice: null,
+      changePrice: null,
+      changeRate: null,
+    },
+    {
+      stock_name: "POSCO홀딩스",
+      stock_code: "005490",
+      currentPrice: null,
+      changePrice: null,
+      changeRate: null,
+    },
   ]);
+
+  useKRStockWebSocket(stockData, setStockDataInfo);
 
   return (
     <ParentContainer>
@@ -115,14 +193,18 @@ const StockTemplate = () => {
         <span>|</span>
         <span>뉴스</span>
       </Header>
-      {coinData.map((coin, index) => (
-        <Container key={coin.stock_code}>
+      {stockDataInfo.map((stock, index) => (
+        <Container key={stock.stock_code}>
           <StockInfo
             index={index}
-            stock_code={coin.stock_code}
-            koreanName={coin.stock_name}
+            stock_code={stock.stock_code}
+            koreanName={stock.stock_name}
           />
-          <StockPrice tr_key={coin.stock_code} />
+          <StockPrice
+            currentPrice={stock.currentPrice}
+            changePrice={stock.changePrice}
+            changeRate={stock.changeRate}
+          />
         </Container>
       ))}
     </ParentContainer>

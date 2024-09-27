@@ -10,7 +10,7 @@ export const login = async (formData, setAccessToken, setLogin) => {
   
   try {
     // 기본 Axios 인스턴스를 사용하여 로그인 요청
-    const loginRes = await defaultRequest.post('/user/public/login', {
+    const loginRes = await defaultRequest.post("/user/public/login", {
       userId: formData.id,
       password: formData.password,
     });
@@ -38,9 +38,8 @@ export const login = async (formData, setAccessToken, setLogin) => {
   }
 };
 
-
 export const getInfo = async (accessToken, setAccessToken) => {
-    const authClient = authRequest(accessToken, setAccessToken);
+  const authClient = authRequest(accessToken, setAccessToken);
 
   try {
     const getInfoRes = await authClient.get("/user");
@@ -50,22 +49,19 @@ export const getInfo = async (accessToken, setAccessToken) => {
     console.error("유저 정보 조회 실패:", error);
     throw error;
   }
-  };
-  
+};
 
+export const deleteAccount = async (accessToken, setAccessToken) => {
+  const authClient = authRequest(accessToken, setAccessToken);
 
-  export const deleteAccount = async (accessToken, setAccessToken) => {
-    const authClient = authRequest(accessToken, setAccessToken);
-
-    try {
-      const deleteAccountRes = await authClient.delete("/user/quit");
-      console.log(deleteAccountRes);
-      alert("회원 탈퇴가 완료되었습니다.");
-      return true;
-    } catch (error) {
-      console.error("회원 탈퇴 실패:", error);
-      alert("회원 탈퇴에 실패했습니다.");
-      return false;
-    }
-  };
-  
+  try {
+    const deleteAccountRes = await authClient.delete("/user/quit");
+    console.log(deleteAccountRes);
+    alert("회원 탈퇴가 완료되었습니다.");
+    return true;
+  } catch (error) {
+    console.error("회원 탈퇴 실패:", error);
+    alert("회원 탈퇴에 실패했습니다.");
+    return false;
+  }
+};
