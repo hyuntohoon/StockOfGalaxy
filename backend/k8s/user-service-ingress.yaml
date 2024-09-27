@@ -11,8 +11,8 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-connect-timeout: "300"
     nginx.ingress.kubernetes.io/proxy-http-version: "1.1"
     nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
-
 spec:
+  ingressClassName: nginx  # Ingress 클래스 명시적으로 추가
   rules:
     - host: ssafy11s.com
       http:

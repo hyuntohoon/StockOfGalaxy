@@ -4,7 +4,7 @@ metadata:
   name: stock-service
   namespace: backcd
 spec:
-  replicas: 2  # 기본 레플리카 수, HPA 사용 시 동적으로 조정 가능
+  replicas: 1  # 기본 레플리카 수, HPA 사용 시 동적으로 조정 가능
   selector:
     matchLabels:
       app: stock-service
@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: stock-service
-          image: zlxldgus123/stock-service:197
+          image: zlxldgus123/stock-service:199
           ports:
             - containerPort: 8080
           env:
