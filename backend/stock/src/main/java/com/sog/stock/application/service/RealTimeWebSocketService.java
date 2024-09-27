@@ -32,7 +32,6 @@ public class RealTimeWebSocketService {
     private final KisRealTimeWebSocketKeyService kisRealTimeWebSocketKeyService;
     private String kisWebSocketApprovalKey;
 
-
     // 도메인 정보와 엔드포인트 정보 추가
     private final String kisWebSocketDomain = "ws://ops.koreainvestment.com:21000";
     private final String kisWebSocketEndPoint = "/tryitout/H0STCNT0";
@@ -73,7 +72,7 @@ public class RealTimeWebSocketService {
                 protected void handleTextMessage(WebSocketSession session, TextMessage message)
                     throws Exception {
                     String payload = message.getPayload();
-                    log.info("KIS WebSocket으로부터 메시지 수신: {}", payload);
+//                    log.info("KIS WebSocket으로부터 메시지 수신: {}", payload);
                     handleRealTimeData(payload);
 
                 }
