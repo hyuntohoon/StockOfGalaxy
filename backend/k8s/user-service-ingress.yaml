@@ -17,7 +17,7 @@ spec:
     - host: ssafy11s.com
       http:
         paths:
-          - path: /api/ws-stock
+          - path: /api/ws
             pathType: Prefix
             backend:
               service:
@@ -66,3 +66,18 @@ spec:
                 name: gateway-service
                 port:
                   number: 80
+          # ELK 스택 추가
+          - path: /kibana
+            pathType: Prefix
+            backend:
+              service:
+                name: kibana
+                port:
+                  number: 5601
+          - path: /elasticsearch
+            pathType: Prefix
+            backend:
+              service:
+                name: elasticsearch
+                port:
+                  number: 9200
