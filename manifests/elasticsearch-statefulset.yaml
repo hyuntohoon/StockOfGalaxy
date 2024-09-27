@@ -13,6 +13,9 @@ spec:
       labels:
         app: elasticsearch
     spec:
+      securityContext:
+        runAsUser: 1001        # elasticsearch 사용자 UID
+        fsGroup: 1001          # elasticsearch 그룹 GID
       containers:
         - name: elasticsearch
           image: docker.elastic.co/elasticsearch/elasticsearch:7.3.2
