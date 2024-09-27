@@ -2,6 +2,7 @@
 
 import styled from '@emotion/styled';
 import { useState, useEffect, useRef } from 'react';
+import useAccessToken from '@/app/utils/libs/user/useAccessToken';
 import HomeButtonGroup from '../../molecules/ButtonGroup/Header/HomeButtonGroup';
 import ReturnTodayButtonGroup from '../../molecules/ButtonGroup/Header/ReturnTodayButtonGroup';
 import SearchIconButtonGroup from '../../molecules/ButtonGroup/Header/SearchIconButtonGroup';
@@ -48,31 +49,12 @@ const MenuHeaderWrapper = styled.div<{ isOpen: boolean }>`
   pointer-events: ${props => (props.isOpen ? 'auto' : 'none')};
 `;
 
-const ToggleButton = styled.button`
-  margin-bottom: 20px;
-  padding: 10px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1rem;
-
-  &:hover {
-    background-color: #0056b3;
-  }
-`;
-
 const MenuHeader: React.FC = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { accessToken } = useAccessToken();
   const [isModalOpen, setIsModalOpen] = useState(false);  
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const menuRef = useRef<HTMLDivElement>(null);
-
-  const toggleLogin = () => {
-    setIsLoggedIn(prev => !prev);
-  };
 
   const toggleModal = () => {
     setIsModalOpen(prev => !prev);
@@ -104,6 +86,7 @@ const MenuHeader: React.FC = () => {
     };
   }, [isMenuOpen]);
 
+  const isLoggedIn = !!accessToken; // 로그인 유무
   return (
     <>
       <Container onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
@@ -113,8 +96,6 @@ const MenuHeader: React.FC = () => {
           onMouseLeave={handleMouseLeave}
           ref={menuRef}
         >
-          
-
           <ReturnTodayButtonGroup />
           <HomeButtonGroup />
           <SearchIconButtonGroup />
