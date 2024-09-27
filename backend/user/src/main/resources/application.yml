@@ -1,0 +1,45 @@
+spring:
+  application:
+    name: sog
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/sog_db
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: rootpassword
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect  # 최신 MySQL Dialect 사용
+        jdbc:
+          time_zone: UTC
+    show-sql: true  # SQL 쿼리 출력
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+jwt:
+  access-token-expiry: 600000    # 10분
+  refresh-token-expiry: 86400000 # 1일
+  secret: "3c84e62c46e5438e9d12e28a9876591bc34e4e92a3a489b749ab2d9c9e367d89" # 비밀키
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: debug  # Hibernate SQL 로그 레벨 설정
+    com:
+      sog:
+        user:
+          infrastructure:
+            security:
+              LoginFilter: debug # 특정 클래스에 대한 로깅 설정
+
+server:
+  error:
+    include-message: always          # 에러 메시지 포함
+    include-binding-errors: always   # 바인딩 에러 메시지 포함
