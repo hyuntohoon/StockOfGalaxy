@@ -1,33 +1,42 @@
-'use client';
+"use client";
 
-import React, { useEffect, useRef, useState } from 'react';
-import * as THREE from 'three';
-import { RecoilRoot, useRecoilValue } from 'recoil';
-import { dateState } from '@/app/store/date';
-import { HoveredPlanetData } from '@/app/types/main';
-import DateCard from '@/app/components/molecules/Card/DateCard';
-import TimeMachineButtonGroup from '@/app/components/molecules/ButtonGroup/TimeMachineButtonGroup';
-import PlanetTrendModal from '@/app/components/organisms/Modal/PlanetTrendModal';
-import { throttle } from 'lodash';
-import { useRouter } from 'next/navigation';
+import React, { useEffect, useRef, useState } from "react";
+import * as THREE from "three";
+import { RecoilRoot, useRecoilValue } from "recoil";
+import { dateState } from "@/app/store/date";
+import { HoveredPlanetData } from "@/app/types/main";
+import DateCard from "@/app/components/molecules/Card/DateCard";
+import TimeMachineButtonGroup from "@/app/components/molecules/ButtonGroup/TimeMachineButtonGroup";
+import PlanetTrendModal from "@/app/components/organisms/Modal/PlanetTrendModal";
+import { throttle } from "lodash";
+import { useRouter } from "next/navigation";
 
 const tempData = [
-  { stockCode: '100001', corpName: '삼성전자', value: 180 },
-  { stockCode: '100002', corpName: 'HLB', value: 165 },
-  { stockCode: '100003', corpName: '에코프로', value: 150 },
-  { stockCode: '100004', corpName: 'SK하이닉스', value: 135 },
-  { stockCode: '100005', corpName: '유한양행', value: 110 },
-  { stockCode: '100006', corpName: '유한양행', value: 95 },
-  { stockCode: '100007', corpName: '유한양행', value: 80 },
-  { stockCode: '100008', corpName: '유한양행', value: 65 },
+  { stockCode: "005930", corpName: "삼성전자", value: 180 },
+  { stockCode: "068270", corpName: "셀트리온", value: 165 },
+  { stockCode: "005380", corpName: "현대차", value: 150 },
+  { stockCode: "000660", corpName: "SK하이닉스", value: 135 },
+  { stockCode: "105560", corpName: "KB금융", value: 110 },
+  { stockCode: "035420", corpName: "NAVER", value: 95 },
+  { stockCode: "055550", corpName: "신한지주", value: 80 },
+  { stockCode: "207940", corpName: "삼성바이오로직스", value: 65 },
 ];
 
 export default function Page() {
   const currentDate = useRecoilValue(dateState);
   const mountRef = useRef<HTMLDivElement>(null);
-  const [hoveredPlanet, setHoveredPlanet] = useState<HoveredPlanetData | null>(null);
+  const [hoveredPlanet, setHoveredPlanet] = useState<HoveredPlanetData | null>(
+    null
+  );
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const camera = useRef<THREE.PerspectiveCamera>(new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000));
+  const camera = useRef<THREE.PerspectiveCamera>(
+    new THREE.PerspectiveCamera(
+      75,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      1000
+    )
+  );
   const router = useRouter();
 
   useEffect(() => {
@@ -59,16 +68,24 @@ export default function Page() {
       renderer.setSize(window.innerWidth, window.innerHeight);
     }
 
-    window.addEventListener('resize', onWindowResize, false);
-    window.addEventListener('mousemove', event => onMouseMove(event, scene, renderer));
-    window.addEventListener('click', event => onPlanetClick(event, scene, renderer)); // 클릭 이벤트 추가
+    window.addEventListener("resize", onWindowResize, false);
+    window.addEventListener("mousemove", (event) =>
+      onMouseMove(event, scene, renderer)
+    );
+    window.addEventListener("click", (event) =>
+      onPlanetClick(event, scene, renderer)
+    ); // 클릭 이벤트 추가
     animate();
 
     return () => {
       cancelAnimationFrame(frameId); // 애니메이션 프레임 해제
-      window.removeEventListener('resize', onWindowResize);
-      window.removeEventListener('mousemove', event => onMouseMove(event, scene, renderer));
-      window.removeEventListener('click', event => onPlanetClick(event, scene, renderer)); // 클릭 이벤트 해제
+      window.removeEventListener("resize", onWindowResize);
+      window.removeEventListener("mousemove", (event) =>
+        onMouseMove(event, scene, renderer)
+      );
+      window.removeEventListener("click", (event) =>
+        onPlanetClick(event, scene, renderer)
+      ); // 클릭 이벤트 해제
       mountRef.current?.removeChild(renderer.domElement);
     };
   }, []);
@@ -94,13 +111,13 @@ export default function Page() {
         setIsModalOpen(true); // 모달 열기
 
         // 커서를 포인터로 변경
-        document.body.style.cursor = 'pointer';
+        document.body.style.cursor = "pointer";
       } else {
         setHoveredPlanet(null);
         setIsModalOpen(false); // 모달 닫기
 
         // 커서를 기본으로 변경
-        document.body.style.cursor = 'auto';
+        document.body.style.cursor = "auto";
       }
     }, 50); // 이벤트 처리 간격을 줄임
 
@@ -126,7 +143,15 @@ export default function Page() {
   };
 
   return (
-    <div ref={mountRef} style={{ width: '100%', height: '100vh', position: 'absolute', zIndex: 1 }}>
+    <div
+      ref={mountRef}
+      style={{
+        width: "100%",
+        height: "100vh",
+        position: "absolute",
+        zIndex: 1,
+      }}
+    >
       <RecoilRoot>
         <DateCard left="30px" />
         {isModalOpen && hoveredPlanet && (
@@ -135,7 +160,9 @@ export default function Page() {
             corpName={hoveredPlanet.corpName}
             position={hoveredPlanet.position}
             camera={camera.current}
-            rendererDomElement={mountRef.current?.children[0] as HTMLCanvasElement}
+            rendererDomElement={
+              mountRef.current?.children[0] as HTMLCanvasElement
+            }
             onClose={() => setIsModalOpen(false)} // 모달 닫기 함수 전달
           />
         )}
@@ -147,7 +174,7 @@ export default function Page() {
 
 async function loadTextures(planetsData, textureLoader) {
   const promises = planetsData.map((data) => {
-    const textureId = data.stockCode % 12 + 1;
+    const textureId = (data.stockCode % 12) + 1;
     return new Promise((resolve) => {
       textureLoader.load(`/images/planetTexture/${textureId}.jpg`, resolve);
     });
@@ -170,12 +197,15 @@ function createPlanets(planetsData, scene, textures, camera) {
   planetsData.forEach((data, index) => {
     const planetSize = data.value * 0.7;
     const geometry = new THREE.SphereGeometry(planetSize, 24, 24);
-    const planet = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({ map: textures[index] }));
+    const planet = new THREE.Mesh(
+      geometry,
+      new THREE.MeshStandardMaterial({ map: textures[index] })
+    );
 
     planet.position.set(
       centerPositions[index % centerPositions.length].x,
       centerPositions[index % centerPositions.length].y,
-      centerPositions[index % centerPositions.length].z,
+      centerPositions[index % centerPositions.length].z
     );
 
     scene.add(planet);

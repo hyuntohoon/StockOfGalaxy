@@ -1,6 +1,6 @@
-import React, { useRef, useEffect, useState } from 'react';
-import styled from '@emotion/styled';
-import cloud from 'd3-cloud';
+import React, { useRef, useEffect, useState } from "react";
+import styled from "@emotion/styled";
+import cloud from "d3-cloud";
 
 const TooltipContainer = styled.div<{ x: number; y: number }>`
   position: fixed;
@@ -23,7 +23,11 @@ interface TooltipProps {
 }
 
 const Tooltip: React.FC<TooltipProps> = ({ x, y, text }) => {
-  return <TooltipContainer x={x} y={y}>{text}</TooltipContainer>;
+  return (
+    <TooltipContainer x={x} y={y}>
+      {text}
+    </TooltipContainer>
+  );
 };
 
 // 워드 클라우드 컨테이너 스타일
@@ -47,7 +51,11 @@ interface WordCloudProps {
   height: number; // 세로 사이즈
 }
 
-const WordCloudComponent: React.FC<WordCloudProps> = ({ data, width, height }) => {
+const WordCloudComponent: React.FC<WordCloudProps> = ({
+  data,
+  width,
+  height,
+}) => {
   const svgRef = useRef<SVGSVGElement>(null);
   const [words, setWords] = useState<{ text: string; x: number; y: number; size: number; rotate: number }[]>([]);
   const [tooltip, setTooltip] = useState<{ x: number; y: number; text: string } | null>(null);
@@ -61,16 +69,19 @@ const WordCloudComponent: React.FC<WordCloudProps> = ({ data, width, height }) =
       })))
       .padding(5)
       .rotate(() => (Math.random() > 0.5 ? 90 : 0))
-      .font('Impact')
+      .font("Impact")
       .fontSize((d) => d.size)
-      .on('end', (words) => {
+      .on("end", (words) => {
         setWords(words);
       });
 
     layout.start();
   }, [data, width, height]);
 
-  const handleMouseEnter = (event: React.MouseEvent<SVGTextElement, MouseEvent>, word: typeof words[0]) => {
+  const handleMouseEnter = (
+    event: React.MouseEvent<SVGTextElement, MouseEvent>,
+    word: (typeof words)[0]
+  ) => {
     const { clientX, clientY } = event;
     setTooltip({
       x: clientX + 10,
@@ -95,7 +106,7 @@ const WordCloudComponent: React.FC<WordCloudProps> = ({ data, width, height }) =
               fill="#61dafb"
               textAnchor="middle"
               transform={`translate(${word.x},${word.y}) rotate(${word.rotate})`}
-              style={{ userSelect: 'none', cursor: 'pointer' }}
+              style={{ userSelect: "none", cursor: "pointer" }}
               onMouseEnter={(e) => handleMouseEnter(e, word)}
               onMouseLeave={handleMouseLeave}
             >

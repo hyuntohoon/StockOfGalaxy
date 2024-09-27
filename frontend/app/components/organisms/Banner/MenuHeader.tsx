@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import styled from '@emotion/styled';
 import { useState, useEffect, useRef } from 'react';
@@ -11,7 +11,7 @@ import SignInButtonGroup from '../../molecules/ButtonGroup/Header/SignInButtonGr
 import MenuHeaderModal from '../Modal/MenuHeaderModal';
 
 // 슬라이딩 애니메이션을 위한 트랜지션 시간
-const TRANSITION_DURATION = '0.3s';
+const TRANSITION_DURATION = "0.3s";
 
 // 메뉴를 감싸는 컨테이너
 const Container = styled.div`
@@ -46,7 +46,7 @@ const MenuHeaderWrapper = styled.div<{ isOpen: boolean }>`
   }
 
   /* 포인터 이벤트 관리 */
-  pointer-events: ${props => (props.isOpen ? 'auto' : 'none')};
+  pointer-events: ${(props) => (props.isOpen ? "auto" : "none")};
 `;
 
 const MenuHeader: React.FC = () => {
@@ -57,7 +57,7 @@ const MenuHeader: React.FC = () => {
   const menuRef = useRef<HTMLDivElement>(null);
 
   const toggleModal = () => {
-    setIsModalOpen(prev => !prev);
+    setIsModalOpen((prev) => !prev);
   };
 
   const handleMouseEnter = () => {
@@ -77,20 +77,23 @@ const MenuHeader: React.FC = () => {
 
   useEffect(() => {
     if (isMenuOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside);
     } else {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     }
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isMenuOpen]);
 
   const isLoggedIn = !!accessToken; // 로그인 유무
   return (
     <>
-      <Container onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-        <MenuHeaderWrapper 
+      <Container
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        <MenuHeaderWrapper
           isOpen={isMenuOpen}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
@@ -99,7 +102,11 @@ const MenuHeader: React.FC = () => {
           <ReturnTodayButtonGroup />
           <HomeButtonGroup />
           <SearchIconButtonGroup />
-          {isLoggedIn ? <MyIconButtonGroup onClick={toggleModal} /> : <SignInButtonGroup />}
+          {isLoggedIn ? (
+            <MyIconButtonGroup onClick={toggleModal} />
+          ) : (
+            <SignInButtonGroup />
+          )}
         </MenuHeaderWrapper>
       </Container>
 

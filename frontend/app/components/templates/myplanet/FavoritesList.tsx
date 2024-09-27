@@ -1,7 +1,10 @@
-import { useState } from 'react';
-import { FavoriteItem } from '../../molecules/myplanet/FavoriteItem';
-import { FavoriteListContainer } from '@/app/styles/myplanet';
-import { FavoriteItemProps, FavoriteItem as FavoriteItemType } from '@/app/types/myplanet';
+import { useState } from "react";
+import { FavoriteItem } from "../../molecules/myplanet/FavoriteItem";
+import { FavoriteListContainer } from "@/app/styles/myplanet";
+import {
+  FavoriteItemProps,
+  FavoriteItem as FavoriteItemType,
+} from "@/app/types/myplanet";
 
 interface FavoritesListProps {
   items: FavoriteItemType[];
@@ -9,7 +12,11 @@ interface FavoritesListProps {
   setSelectedItem: (item: FavoriteItemType) => void;
 }
 
-export const FavoritesList: React.FC<FavoritesListProps> = ({ items, onToggleFavorite, setSelectedItem }) => {
+export const FavoritesList: React.FC<FavoritesListProps> = ({
+  items,
+  onToggleFavorite,
+  setSelectedItem,
+}) => {
   // 로컬 상태에서 삭제 중인 아이템 관리
   const [removingIndex, setRemovingIndex] = useState<number | null>(null);
 
@@ -20,7 +27,7 @@ export const FavoritesList: React.FC<FavoritesListProps> = ({ items, onToggleFav
 
     // 아이템이 제거 중인 상태로 설정
     // setRemovingIndex(index);
-    
+
     // 잠시 후, 실제 아이템 제거를 처리
     // setTimeout(() => {
     //   onToggleFavorite(index);

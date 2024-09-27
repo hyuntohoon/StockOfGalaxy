@@ -77,7 +77,7 @@ interface CoinState {
   changeRate: number | null;
 }
 
-const useCoinWebSocket = (tr_key: string, chart: any) => {
+const useStockWebSocket = (tr_key: string, chart: any) => {
   useEffect(() => {
     const socket = new WebSocket(
       "ws://ops.koreainvestment.com:21000/tryitout/HDFSCNT0"
@@ -125,4 +125,4 @@ const useCoinWebSocket = (tr_key: string, chart: any) => {
   }, [tr_key, chart]);
 };
 
-export default useCoinWebSocket;
+export default useStockWebSocket;
