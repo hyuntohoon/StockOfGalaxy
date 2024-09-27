@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sog.stock.domain.dto.ChartRealtimeResponseDTO;
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -78,7 +77,8 @@ public class ChartWebSocketService {
     }
 
     // 실시간 데이터 처리 메서드 분리
-    private void handleRealTimeData(String payload) throws IOException {
+    private void handleRealTimeData(String payload)
+        throws IOException, ExecutionException, InterruptedException {
         // json메시지 (구독 성공) 처리
         if (isJsonMessage(payload)) {
             JSONObject jsonResponse = new JSONObject(payload);
@@ -88,6 +88,32 @@ public class ChartWebSocketService {
                 return; // 연결 상태 유지 메시지이므로 여기서 처리 끝
             }
 
+            String msgCd = jsonResponse.getJSONObject("body").getString("msg_cd");
+            // "OPSP000"이 아닌 경우, 키 재발급 요청 및 재연결
+            if (!msgCd.equals("OPSP0000")) {
+                log.warn("유효하지 않은 승인 키. 새로운 키를 요청합니다. 메시지 코드: {}", msgCd);
+                kisChartWebSocketKeyService.requestNewWebSocketKey();
+                kisWebSocketApprovalKey = kisChartWebSocketKeyService.getRealTimeWebSocketKey();
+
+                // 재발급 받은 키로 다시 연결 시도
+                if (kisWebSocketApprovalKey != null && !kisWebSocketApprovalKey.isEmpty()) {
+                    log.info("새로운 키로 WebSocket을 다시 연결합니다.");
+                    connectToKisWebSocket(); // WebSocket 재연결
+
+                    // 재연결 후 기존 구독자들에 대해 다시 구독 요청 보내기
+                    for (String stockCode : stockCodeSubscribers.keySet()) {
+                        List<WebSocketSession> subscribers = stockCodeSubscribers.get(stockCode);
+                        for (WebSocketSession session : subscribers) {
+                            log.info("재발급 후 주식 코드 {}에 대한 구독 요청을 다시 시도합니다.", stockCode);
+                            subscribeToStock(stockCode, session); // 다시 구독 요청
+                        }
+                    }
+                } else {
+                    log.error("키 재발급에 실패했습니다.");
+                    throw new IllegalStateException("WebSocket 키 재발급 실패");
+                }
+                return; // 재발급 요청 후 처리 종료
+            }
             // 구독 성공 메시지 처리
             if (jsonResponse.getJSONObject("body").getString("msg1").equals("SUBSCRIBE SUCCESS")) {
                 log.info("주식 구독 성공: {}",
