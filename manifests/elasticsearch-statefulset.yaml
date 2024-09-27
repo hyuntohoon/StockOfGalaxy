@@ -25,6 +25,10 @@ spec:
           env:
             - name: discovery.type
               value: single-node
+      volumes:
+        - name: elasticsearch-data
+          persistentVolumeClaim:
+            claimName: elasticsearch-pvc
 ---
 apiVersion: v1
 kind: Service
