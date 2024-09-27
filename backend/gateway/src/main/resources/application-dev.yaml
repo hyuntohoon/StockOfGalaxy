@@ -15,6 +15,7 @@ spring:
           '[/**]':
             allowedOrigins:
               - "https://ssafy11s.com"
+              - "http://localhost:3000"
             allowedMethods:
               - GET
               - POST
