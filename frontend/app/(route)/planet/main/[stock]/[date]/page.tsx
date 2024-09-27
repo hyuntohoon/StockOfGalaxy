@@ -144,8 +144,8 @@ export default function Home() {
       }
 
       // 행성 생성
-      const planetGeometry = new THREE.SphereGeometry(planetRadius, 64, 64);
-      const planetTexture = new THREE.TextureLoader().load('/images/planetTexture/3.jpg'); // 텍스처 경로 설정
+      const planetGeometry = new THREE.SphereGeometry(planetRadius, 48, 48);
+      const planetTexture = new THREE.TextureLoader().load('/images/planetTexture/15.jpg'); // 텍스처 경로 설정
       const planetMaterial = new THREE.MeshStandardMaterial({
         map: planetTexture, // 텍스처 추가
       });
@@ -166,6 +166,32 @@ export default function Home() {
       newScene.add(lights[0]);
       newScene.add(lights[1]);
       newScene.add(lights[2]);
+
+      // 글로우 효과 추가
+      const glowMaterial = new THREE.ShaderMaterial({
+        vertexShader: `
+          varying vec3 vNormal;
+          void main() {
+            vNormal = normalize(normalMatrix * normal);
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+          }
+        `,
+        fragmentShader: `
+          varying vec3 vNormal;
+          void main() {
+            float intensity = pow(0.4 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 2.0);
+            gl_FragColor = vec4(1.0, 1.0, 0.5, 1.0) * intensity; // 더 강한 노란 빛
+          }
+        `,
+        side: THREE.FrontSide,
+        blending: THREE.AdditiveBlending,
+        transparent: true,
+        depthTest: false, // 깊이 테스트 비활성화
+      });      
+
+      const glowMesh = new THREE.Mesh(planetGeometry.clone(), glowMaterial);
+      glowMesh.scale.multiplyScalar(1.2); // 행성보다 더 크게 설정하여 외곽에 글로우
+      circle.add(glowMesh);
 
       window.addEventListener('resize', onWindowResize, false);
 
@@ -209,7 +235,6 @@ export default function Home() {
         <RocketButtonGroup onRocketClick={() => setIsRocketModalOpen(true)} />
         {scene && <Rocket scene={scene} rocketData={tempData}/>}
         {isRocketModalOpen && <RocketModal onClose={() => setIsRocketModalOpen(false)} />}
-        {/* <DateCard right='30px'/> */}
       </RecoilRoot>
       <DetailTriangleButton />
       <DetailTriangleButtonGuide />

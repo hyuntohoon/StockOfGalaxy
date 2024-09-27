@@ -28,7 +28,7 @@ const MenuHeaderWrapper = styled.div<{ isOpen: boolean }>`
   position: fixed;
   top: 50%;
   left: 0;
-  transform: translate(-85%, -50%) translateX(${props => (props.isOpen ? '90%' : '0')});
+  transform: translate(-85%, -50%) translateX(${props => (props.isOpen ? '85%' : '0')});
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -42,10 +42,6 @@ const MenuHeaderWrapper = styled.div<{ isOpen: boolean }>`
 
   & > div {
     margin-bottom: 16px;
-  }
-
-  & > div:last-of-type {
-    margin-bottom: 0;
   }
 
   /* 포인터 이벤트 관리 */
