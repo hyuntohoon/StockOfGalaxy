@@ -8,6 +8,8 @@ import { FavoriteItemProps,FavoriteItem } from '@/app/types/myplanet';
 import { PageContainer, CanvasContainer, FavoritesContainer, ToggleButton, FavoriteHeader} from "@/app/styles/myplanet"
 import styled from '@emotion/styled';
 import { css, keyframes } from '@emotion/react';
+import Image from 'next/image';
+import anime from 'animejs';
 // interface FavoritesListProps {
 //   items: Array<{
 //     rank: number;
@@ -58,24 +60,31 @@ export default function Planet() {
   const [items, setItems] = useState(planetsData);
   const [isOpen, setIsOpen] = useState(true);
   const [selectedItem, setSelectedItem] = useState<FavoriteItem | null>(null);
+  const [playing, setPlaying] = useState(false); // playing 상태 추가
 
   const handleToggleFavorite = (index: number) => {
-    // 현재 아이템의 isFavorite 상태를 가져옵니다.
     const currentItem = items[index];
-  
-    // 아이템이 이미 즐겨찾기 상태일 때만 삭제합니다.
-    if (currentItem.isFavorite) {
-      // 즐겨찾기 상태인 아이템만 필터링하여 새로운 목록을 생성합니다.
-      const updatedItems = items.filter((item, i) => i !== index);
-      setItems(updatedItems);
-    } else {
-      // 아이템이 즐겨찾기 상태가 아닐 때는 상태를 토글합니다.
-      const updatedItems = items.map((item, i) =>
-        i === index ? { ...item, isFavorite: !item.isFavorite } : item
-      );
-      setItems(updatedItems);
+    // 고유 클래스 이름을 이용해 특정 아이템의 카드 요소를 선택
+    const card = document.querySelector(`.card-${currentItem.rank}`);
+
+    if (!playing) {
+      setPlaying(true);
+      anime({
+        targets: card,
+        scale: [{ value: 1 }, { value: 1.4 }, { value: 1, delay: 250 }],
+        rotateY: { value: '+=180', delay: 200 },
+        easing: 'easeInOutSine',
+        duration: 300,
+        complete: function (anim) {
+          setPlaying(false);
+          const updatedItems = items.map((item, i) =>
+            i === index ? { ...item, isFavorite: !item.isFavorite } : item
+          );
+          setItems(updatedItems);
+        }
+      });
     }
-  };
+};
   
   const handleContainerClick = () => {
     if (!isOpen) {
@@ -292,7 +301,7 @@ export default function Planet() {
             <p>Price: {selectedItem.price}</p>
             <p>Change: {selectedItem.change}</p>
             <p>Icon:</p>
-            <img src={selectedItem.iconSrc} alt={selectedItem.name} style={{ width: '100px', height: 'auto' }} />
+            <Image src={selectedItem.iconSrc} alt={selectedItem.name} width={100} height={100} />
             <button onClick={handleCloseModal}>Close</button>
           </ModalContent>
         </ModalContainer>

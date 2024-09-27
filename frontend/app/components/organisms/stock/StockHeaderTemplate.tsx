@@ -4,14 +4,16 @@ import { useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import StockHeaderPrice from "../../molecules/stock/StockHeaderPrice";
 import StockHeaderInfo from "../../molecules/stock/StockHeaderInfo";
+import { HeaderWrapper } from "@/app/styles/planet";
+import useKRStockWebSocket from "@/app/hooks/useKRStockWebSocket";
 
 const ParentContainer = styled.div`
-  width: 50vw;
+  min-width: 950px;
   height: 50vh;
   overflow-y: auto;
   background-color: #111;
   color: white;
-  width: 1000px;
+  width: 950px;
   height: 60px;
   background-color: #d9d9d9;
   border-radius: 20px;
@@ -24,7 +26,8 @@ const ParentContainer = styled.div`
 
 const Container = styled.div`
   color: black;
-  width: 1000px;
+  width: auto;
+  gap: 10vw;
   height: 60px;
   text-align: center;
   display: flex;
@@ -33,70 +36,26 @@ const Container = styled.div`
   justify-content: space-between;
 `;
 
-interface CoinData {
-  market: string;
-  korean_name: string;
-  english_name: string;
-}
-
-interface CoinState {
+interface stockState {
+  stock_name: string | null;
+  stock_code: string | null;
   currentPrice: number | null;
   changePrice: number | null;
   changeRate: number | null;
 }
 
 const StockHeaderTemplate = () => {
-  const market = "KRW-BTC";
+  const [stockDataInfo, setStockDataInfo] = useState<stockState[]>([
+    {
+      stock_name: "삼성전자",
+      stock_code: "005930",
+      currentPrice: 0,
+      changePrice: 0,
+      changeRate: 0,
+    },
+  ]);
 
-  useEffect(() => {
-    const socket = new WebSocket("wss://api.upbit.com/websocket/v1");
-
-    socket.onopen = () => {
-      console.log(`Connected to ${market}`);
-      socket.send(
-        JSON.stringify([
-          { ticket: "UNIQUE_TICKET" },
-          {
-            type: "ticker",
-            codes: [market],
-            isOnlySnapshot: true,
-            isOnlyRealtime: true,
-          },
-          { format: "DEFAULT" },
-        ])
-      );
-    };
-
-    socket.onmessage = async (event) => {
-      const data =
-        event.data instanceof Blob ? await event.data.text() : event.data;
-      const jsonData = JSON.parse(data);
-
-      if (jsonData && jsonData.trade_price) {
-        setPrice(jsonData.trade_price);
-      }
-
-      if (jsonData && jsonData.change_price && jsonData.change) {
-        setChangePrice(
-          jsonData.change === "FALL"
-            ? -jsonData.change_price
-            : jsonData.change_price
-        );
-      }
-
-      if (jsonData && jsonData.change_rate && jsonData.change) {
-        setChangeRate(jsonData.change_rate * 100);
-      }
-    };
-
-    socket.onclose = () => {
-      console.log(`Disconnected from ${market}`);
-    };
-  }, []);
-
-  const [price, setPrice] = useState(0);
-  const [changePrice, setChangePrice] = useState(0);
-  const [changeRate, setChangeRate] = useState(0);
+  useKRStockWebSocket(stockDataInfo, setStockDataInfo);
 
   const formatPrice = (price: number) => {
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -104,16 +63,20 @@ const StockHeaderTemplate = () => {
 
   return (
     <>
-      <ParentContainer>
-        <Container>
-          <StockHeaderPrice
-            price={price}
-            changePrice={changePrice}
-            changeRate={changeRate}
-          />
-          <StockHeaderInfo />
-        </Container>
-      </ParentContainer>
+      <HeaderWrapper>
+        <ParentContainer>
+          {stockDataInfo.map((stock, index) => (
+            <Container key={index}>
+              <StockHeaderPrice
+                price={stock.currentPrice}
+                changePrice={stock.changePrice}
+                changeRate={stock.changeRate}
+              />
+              <StockHeaderInfo />
+            </Container>
+          ))}
+        </ParentContainer>
+      </HeaderWrapper>
     </>
   );
 };

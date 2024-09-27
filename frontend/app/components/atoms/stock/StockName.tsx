@@ -1,7 +1,9 @@
+"use client";
+
 import styled from "@emotion/styled";
-import starIcon from "@/public/starIcon.png";
 import Image from "next/image";
-import { subscribeStock } from "@/app/utils/stock/subscribeStock";
+import starIcon from "@/public/starIcon.png";
+import { subscribeStock } from "@/app/utils/libs/stock/subscribeStock";
 
 interface FontSize {
   $fontSize: number;
@@ -26,22 +28,18 @@ const StyledImage = styled(Image)`
 
 const StockName = ({ koreanName, fontSize = 15 }: StockNameProps) => {
   return (
-    <>
-      <Container $fontSize={fontSize}>
-        {koreanName}
-        <>
-          {fontSize !== 15 && (
-            <StyledImage
-              src={starIcon}
-              alt="star-icon"
-              width={fontSize}
-              height={fontSize}
-              onClick={subscribeStock}
-            />
-          )}
-        </>
-      </Container>
-    </>
+    <Container $fontSize={fontSize}>
+      {koreanName}
+      {fontSize !== 15 && (
+        <StyledImage
+          src={starIcon}
+          alt="star-icon"
+          width={fontSize}
+          height={fontSize}
+          onClick={subscribeStock}
+        />
+      )}
+    </Container>
   );
 };
 

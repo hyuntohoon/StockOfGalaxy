@@ -1,10 +1,15 @@
 import styled from '@emotion/styled';
 import Image from 'next/image';
 import timeIcon from '@/public/images/planet/timeIcon.png'
-
+import {useRouter} from 'next/navigation';
 const TimeMachineButtonGroup = ({ bottom = '30px', right = '100px' }) => {
+  const router = useRouter();
+
+  const handleTimeMachineClick = () => {
+    router.push("/timetravel");
+  };
   return (
-    <ButtonGroup bottom={bottom} right={right}>
+    <ButtonGroup bottom={bottom} right={right} onClick={handleTimeMachineClick}>
       <Icon>
         <Image src={timeIcon} alt="타임머신" width={50} height={50} />
       </Icon>

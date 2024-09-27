@@ -1,5 +1,7 @@
 import StockDailyPrice from "../../atoms/stock/StockDailyPrice";
 import StockDailyPriceSubTitle from "../../atoms/stock/StockDailyPriceSubTitle";
+import { getDailyStockData } from "../../../utils/apis/stock/getStockData";
+import { useEffect } from "react";
 
 import styled from "@emotion/styled";
 
@@ -7,8 +9,18 @@ const ParentContainer = styled.div`
   overflow-x: auto;
   overflow-y: auto;
   border: 1px solid #d9d9d9;
-  width: 400px;
+  width: 100%;
+  max-width: 800px;
   height: 520px;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  @media (max-width: 768px) {
+    width: 100%;
+    padding: 15px;
+  }
 `;
 
 const Container = styled.div`
@@ -17,74 +29,41 @@ const Container = styled.div`
 `;
 
 const StyledHr = styled.hr`
-  width: 940px;
-  text-align: center;
+  width: 100%;
+  border: none;
+  border-top: 1px solid #d9d9d9;
+  margin: 20px 0;
 `;
 
 interface StockDailyPriceProps {
-  date: string;
-  closePrice: number;
-  changeRate: number;
-  volume: number;
-  transactionAmount: number;
-  openPrice: number;
-  highPrice: number;
+  stockDate: string;
   lowPrice: number;
+  highPrice: number;
+  startPrice: number;
+  endPrice: number;
+  prdyVrss: string;
+  prdyVrssSign: string;
+  prdyCtrt: string;
 }
 
 const StockDailyPriceList = () => {
-  const dummyData: StockDailyPriceProps[] = [
+  const dummyData: StockDailyPriceProps[] | null = [
     {
-      date: "09.19",
-      closePrice: 154742,
-      changeRate: 2.54,
-      volume: 620229,
-      transactionAmount: 95100000000,
-      openPrice: 152532,
-      highPrice: 154755,
-      lowPrice: 152199,
-    },
-    {
-      date: "09.19",
-      closePrice: 154742,
-      changeRate: 2.54,
-      volume: 620229,
-      transactionAmount: 95100000000,
-      openPrice: 152532,
-      highPrice: 154755,
-      lowPrice: 152199,
-    },
-    {
-      date: "09.19",
-      closePrice: 154742,
-      changeRate: 2.54,
-      volume: 620229,
-      transactionAmount: 95100000000,
-      openPrice: 152532,
-      highPrice: 154755,
-      lowPrice: 152199,
-    },
-    {
-      date: "09.19",
-      closePrice: 154742,
-      changeRate: 2.54,
-      volume: 620229,
-      transactionAmount: 95100000000,
-      openPrice: 152532,
-      highPrice: 154755,
-      lowPrice: 152199,
-    },
-    {
-      date: "09.19",
-      closePrice: 154742,
-      changeRate: 2.54,
-      volume: 620229,
-      transactionAmount: 951232323124,
-      openPrice: 152532,
-      highPrice: 154755,
-      lowPrice: 152199,
+      stockDate: "2024-09-26",
+      lowPrice: 1000,
+      highPrice: 2000,
+      startPrice: 1500,
+      endPrice: 1800,
+      prdyVrss: "900",
+      prdyVrssSign: "+",
+      prdyCtrt: "200",
     },
   ];
+
+  useEffect(() => {
+    console.log(getDailyStockData("005930"));
+  }, []);
+
   return (
     <>
       <ParentContainer>
@@ -94,14 +73,14 @@ const StockDailyPriceList = () => {
           {dummyData.map((data, index) => (
             <StockDailyPrice
               key={index}
-              date={data.date}
-              closePrice={data.closePrice}
-              changeRate={data.changeRate}
-              volume={data.volume}
-              transactionAmount={Math.floor(data.transactionAmount / 100000000)}
-              openPrice={data.openPrice}
-              highPrice={data.highPrice}
+              stockDate={data.stockDate}
               lowPrice={data.lowPrice}
+              highPrice={data.highPrice}
+              startPrice={data.startPrice}
+              endPrice={data.endPrice}
+              prdyVrss={data.prdyVrss}
+              prdyVrssSign={data.prdyVrssSign}
+              prdyCtrt={data.prdyCtrt}
             />
           ))}
         </Container>

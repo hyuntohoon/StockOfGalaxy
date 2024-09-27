@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import StockPrice from "../../molecules/stock/StockPrice";
 import StockInfo from "../../molecules/stock/StockInfo";
+import useKRStockWebSocket from "@/app/hooks/useKRStockWebSocket";
 
 const ParentContainer = styled.div`
   width: 50vw;
@@ -53,106 +54,137 @@ const Header = styled.div`
   margin-bottom: 10px;
 `;
 
-interface CoinData {
-  market: string;
-  korean_name: string;
-  english_name: string;
+interface stockData {
+  stock_name: string;
+  stock_code: string;
 }
 
-interface CoinState {
+interface stockState {
+  stock_name: string | null;
+  stock_code: string | null;
   currentPrice: number | null;
   changePrice: number | null;
   changeRate: number | null;
 }
 
 const StockTemplate = () => {
-  const [coinData, setCoinData] = useState<CoinData[]>([
-    { market: "KRW-BTC", korean_name: "비트코인", english_name: "Bitcoin" },
-    { market: "KRW-ETH", korean_name: "이더리움", english_name: "Ethereum" },
-    { market: "KRW-NEO", korean_name: "네오", english_name: "NEO" },
-    { market: "KRW-MTL", korean_name: "메탈", english_name: "Metal" },
-    { market: "KRW-XRP", korean_name: "리플", english_name: "Ripple" },
-    { market: "KRW-BTC", korean_name: "비트코인", english_name: "Bitcoin1" },
-    { market: "KRW-ETH", korean_name: "이더리움", english_name: "Ethereum1" },
-    { market: "KRW-NEO", korean_name: "네오", english_name: "NEO1" },
-    { market: "KRW-MTL", korean_name: "메탈", english_name: "Metal1" },
-    { market: "KRW-XRP", korean_name: "리플", english_name: "Ripple1" },
+  const stockData: any = [
+    {
+      stock_name: "삼성전자",
+      stock_code: "005930",
+    },
+    {
+      stock_name: "SK하이닉스",
+      stock_code: "000660",
+    },
+    {
+      stock_name: "LG에너지솔루션",
+      stock_code: "051910",
+    },
+    {
+      stock_name: "삼성바이오로직스",
+      stock_code: "207940",
+    },
+    {
+      stock_name: "현대차",
+      stock_code: "005380",
+    },
+    {
+      stock_name: "셀트리온",
+      stock_code: "068270",
+    },
+    {
+      stock_name: "삼성전자우",
+      stock_code: "005935",
+    },
+    {
+      stock_name: "기아",
+      stock_code: "000270",
+    },
+    {
+      stock_name: "KB금융",
+      stock_code: "105560",
+    },
+    {
+      stock_name: "POSCO홀딩스",
+      stock_code: "005490",
+    },
+  ];
+
+  const [stockDataInfo, setStockDataInfo] = useState<stockState[]>([
+    {
+      stock_name: "삼성전자",
+      stock_code: "005930",
+      currentPrice: null,
+      changePrice: null,
+      changeRate: null,
+    },
+    {
+      stock_name: "SK하이닉스",
+      stock_code: "000660",
+      currentPrice: null,
+      changePrice: null,
+      changeRate: null,
+    },
+    {
+      stock_name: "LG에너지솔루션",
+      stock_code: "051910",
+      currentPrice: null,
+      changePrice: null,
+      changeRate: null,
+    },
+    {
+      stock_name: "삼성바이오로직스",
+      stock_code: "207940",
+      currentPrice: null,
+      changePrice: null,
+      changeRate: null,
+    },
+    {
+      stock_name: "현대차",
+      stock_code: "005380",
+      currentPrice: null,
+      changePrice: null,
+      changeRate: null,
+    },
+    {
+      stock_name: "셀트리온",
+      stock_code: "068270",
+      currentPrice: null,
+      changePrice: null,
+      changeRate: null,
+    },
+    {
+      stock_name: "삼성전자우",
+      stock_code: "005935",
+      currentPrice: null,
+      changePrice: null,
+      changeRate: null,
+    },
+    {
+      stock_name: "기아",
+      stock_code: "000270",
+      currentPrice: null,
+      changePrice: null,
+      changeRate: null,
+    },
+    {
+      stock_name: "KB금융",
+      stock_code: "105560",
+      currentPrice: null,
+      changePrice: null,
+      changeRate: null,
+    },
+    {
+      stock_name: "POSCO홀딩스",
+      stock_code: "005490",
+      currentPrice: null,
+      changePrice: null,
+      changeRate: null,
+    },
   ]);
 
-  const [coinStates, setCoinStates] = useState<Record<string, CoinState>>(
-    coinData.reduce((acc, coin) => {
-      acc[coin.market] = {
-        currentPrice: null,
-        changePrice: null,
-        changeRate: null,
-      };
-      return acc;
-    }, {} as Record<string, CoinState>)
-  );
-
-  useEffect(() => {
-    const sockets: Record<string, WebSocket> = {};
-
-    coinData.forEach((coin) => {
-      const socket = new WebSocket("wss://api.upbit.com/websocket/v1");
-
-      socket.onopen = () => {
-        console.log(`Connected to ${coin.market}`);
-        socket.send(
-          JSON.stringify([
-            { ticket: "UNIQUE_TICKET" },
-            {
-              type: "ticker",
-              codes: [coin.market],
-              isOnlySnapshot: true,
-              isOnlyRealtime: true,
-            },
-            { format: "DEFAULT" },
-          ])
-        );
-      };
-
-      socket.onmessage = async (event) => {
-        const data =
-          event.data instanceof Blob ? await event.data.text() : event.data;
-        const jsonData = JSON.parse(data);
-
-        const updatedStates = { ...coinStates };
-
-        if (jsonData && jsonData.trade_price) {
-          updatedStates[coin.market].currentPrice = jsonData.trade_price;
-        }
-
-        if (jsonData && jsonData.change_price && jsonData.change) {
-          updatedStates[coin.market].changePrice =
-            jsonData.change === "FALL"
-              ? -jsonData.change_price
-              : jsonData.change_price;
-        }
-
-        if (jsonData && jsonData.change_rate && jsonData.change) {
-          updatedStates[coin.market].changeRate =
-            jsonData.change === "FALL"
-              ? -jsonData.change_rate * 100
-              : jsonData.change_rate * 100;
-        }
-
-        setCoinStates(updatedStates);
-      };
-
-      socket.onclose = () => {
-        console.log(`Disconnected from ${coin.market}`);
-      };
-
-      sockets[coin.market] = socket;
-    });
-
-    return () => {
-      Object.values(sockets).forEach((socket) => {
-        socket.close();
-      });
-    };
-  }, [coinData]);
+  useKRStockWebSocket(stockData, setStockDataInfo);
 
   return (
     <ParentContainer>
@@ -161,10 +193,18 @@ const StockTemplate = () => {
         <span>|</span>
         <span>뉴스</span>
       </Header>
-      {coinData.map((coin, index) => (
-        <Container key={coin.english_name}>
-          <StockInfo index={index} koreanName={coin.korean_name}></StockInfo>
-          <StockPrice market={coin.market}></StockPrice>
+      {stockDataInfo.map((stock, index) => (
+        <Container key={stock.stock_code}>
+          <StockInfo
+            index={index}
+            stock_code={stock.stock_code}
+            koreanName={stock.stock_name}
+          />
+          <StockPrice
+            currentPrice={stock.currentPrice}
+            changePrice={stock.changePrice}
+            changeRate={stock.changeRate}
+          />
         </Container>
       ))}
     </ParentContainer>

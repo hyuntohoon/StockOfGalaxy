@@ -9,6 +9,7 @@ const MypageButtonGroup = () => {
 
   // 마이페이지 버튼 클릭 시 /mypage 경로로 이동
   const handleMypageClick = () => {
+    console.log("mypage")
     router.push('/mypage'); // /mypage 경로로 이동
   };
 

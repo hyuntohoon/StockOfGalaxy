@@ -8,24 +8,24 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 10px;
+  margin: 20px 0px;
 `;
 
 const FindPasswordInputGroup = ({ setIsAuthenticated }) => {
   return (
-    <>
-      <Container>
-        <FindPasswordInputField
-          type="email"
-          placeholder="이메일"
-          setIsAuthenticated={setIsAuthenticated}
-        />
-        <FindPasswordInputField
-          type="text"
-          placeholder="인증번호"
-          setIsAuthenticated={setIsAuthenticated}
-        />
-      </Container>
-    </>
+    <Container>
+      <FindPasswordInputField
+        type="email"
+        placeholder="이메일"
+        setIsAuthenticated={setIsAuthenticated}
+      />
+      <FindPasswordInputField
+        type="text"
+        placeholder="인증번호"
+        setIsAuthenticated={setIsAuthenticated}
+      />
+    </Container>
   );
 };
 

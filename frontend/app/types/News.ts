@@ -2,8 +2,8 @@ export interface News {
     id: number;
     title: string;
     content: string;
-    write_date: string;
-    신문사: string;
+    writeDate: string;
+    newspaper: string;
     img: string;
   }
   
