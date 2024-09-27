@@ -24,7 +24,7 @@ spec:
               name: http
           volumeMounts:
             - name: elasticsearch-data
-              mountPath: /usr/share/elasticsearch/data
+              mountPath: /var/lib/elasticsearch/data   # 데이터 경로 변경
           env:
             - name: discovery.type
               value: single-node
