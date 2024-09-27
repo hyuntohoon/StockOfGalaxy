@@ -28,8 +28,7 @@ const MenuHeaderWrapper = styled.div<{ isOpen: boolean }>`
   position: fixed;
   top: 50%;
   left: 0;
-  transform: translate(-85%, -50%)
-    translateX(${(props) => (props.isOpen ? "85%" : "0")});
+  transform: translate(-85%, -50%) translateX(${props => (props.isOpen ? '85%' : '0')});
   display: flex;
   flex-direction: column;
   align-items: center;
