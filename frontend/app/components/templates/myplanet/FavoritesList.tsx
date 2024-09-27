@@ -38,6 +38,7 @@ export const FavoritesList: React.FC<FavoritesListProps> = ({
     <FavoriteListContainer>
       {items.map((item, index) => (
         <FavoriteItem
+          stockCode={item.stockCode}
           key={index}
           rank={item.rank}
           name={item.name}
