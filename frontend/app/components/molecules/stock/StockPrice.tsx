@@ -1,8 +1,6 @@
-import { useState, useEffect } from "react";
 import styled from "@emotion/styled";
 import StockCurrentPrice from "../../atoms/stock/StockCurrentPrice";
 import StockChange from "../../atoms/stock/StockChange";
-import useKRStockWebSocket from "@/app/hooks/useKRStockWebSocket";
 
 const Container = styled.div`
   display: flex;
@@ -19,28 +17,22 @@ interface currentInfoData {
   prdy_ctrt: string;
 }
 
-const StockPrice = ({ tr_key }) => {
-  const [price, setPrice] = useState(0);
-  const [changePrice, setChangePrice] = useState(0);
-  const [changeRate, setChangeRate] = useState(0);
-  const [currentInfo, setCurrentInfo] = useState<currentInfoData>({
-    stock_code: tr_key,
-    stock_prpr: "0",
-    prdy_vrss_sign: "2",
-    prdy_vrss: "0",
-    prdy_ctrt: "0",
-  });
+interface StockPriceProps {
+  currentPrice: number;
+  changePrice: number;
+  changeRate: number;
+}
 
-  useKRStockWebSocket(tr_key, setCurrentInfo);
-
+const StockPrice = ({
+  currentPrice,
+  changePrice,
+  changeRate,
+}: StockPriceProps) => {
   return (
     <>
       <Container>
-        <StockCurrentPrice currentPrice={parseInt(currentInfo.stock_prpr)} />
-        <StockChange
-          changePrice={parseInt(currentInfo.prdy_vrss)}
-          changeRate={parseFloat(currentInfo.prdy_ctrt)}
-        />
+        <StockCurrentPrice currentPrice={currentPrice} />
+        <StockChange changePrice={changePrice} changeRate={changeRate} />
       </Container>
     </>
   );

@@ -27,7 +27,7 @@ const StockChange = ({
 }: StockChangeProps) => {
   return (
     <Container $changePrice={changePrice} fontSize={fontSize}>
-      {formatPrice(changePrice)}원({changeRate.toFixed(1)}%)
+      {changePrice}원({changeRate}%)
     </Container>
   );
 };
