@@ -6,6 +6,8 @@ import StockHeaderPrice from "../../molecules/stock/StockHeaderPrice";
 import StockHeaderInfo from "../../molecules/stock/StockHeaderInfo";
 import { HeaderWrapper } from "@/app/styles/planet";
 import useKRStockWebSocket from "@/app/hooks/useKRStockWebSocket";
+import { GoTriangleDown } from "react-icons/go";
+import { useParams, useRouter } from "next/navigation";
 
 const ParentContainer = styled.div`
   min-width: 950px;
@@ -36,12 +38,26 @@ const Container = styled.div`
   justify-content: space-between;
 `;
 
+const Button = styled.div`
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  cursor: pointer;
+  z-index: 1000;
+
+  &:hover {
+    color: #c6b6d0; /* 호버시 색상 변경 */
+  }
+`;
+
 interface stockState {
-  stock_name: string | null;
-  stock_code: string | null;
-  currentPrice: number | null;
-  changePrice: number | null;
-  changeRate: number | null;
+  stock_name: string;
+  stock_code: string;
+  currentPrice: number;
+  changePrice: number;
+  changeRate: number;
 }
 
 const StockHeaderTemplate = () => {
@@ -54,6 +70,9 @@ const StockHeaderTemplate = () => {
       changeRate: 0,
     },
   ]);
+  
+  const router = useRouter();
+  const { stock: stockCode, date } = useParams(); // useParams로 stockCode와 date 가져오기
 
   useKRStockWebSocket(stockDataInfo, setStockDataInfo);
 
@@ -61,23 +80,30 @@ const StockHeaderTemplate = () => {
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
+  const handleClick = () => {
+    if (stockCode && date) {
+      router.push(`/planet/main/${stockCode}/${date}`);
+    }
+  };
+
   return (
-    <>
-      <HeaderWrapper>
-        <ParentContainer>
-          {stockDataInfo.map((stock, index) => (
-            <Container key={index}>
-              <StockHeaderPrice
-                price={stock.currentPrice}
-                changePrice={stock.changePrice}
-                changeRate={stock.changeRate}
-              />
-              <StockHeaderInfo />
-            </Container>
-          ))}
-        </ParentContainer>
-      </HeaderWrapper>
-    </>
+    <HeaderWrapper>
+      <Button onClick={handleClick}>
+        <GoTriangleDown />
+      </Button>
+      <ParentContainer>
+        {stockDataInfo.map((stock, index) => (
+          <Container key={index}>
+            <StockHeaderPrice
+              price={stock.currentPrice}
+              changePrice={stock.changePrice}
+              changeRate={stock.changeRate}
+            />
+            <StockHeaderInfo />
+          </Container>
+        ))}
+      </ParentContainer>
+    </HeaderWrapper>
   );
 };
 

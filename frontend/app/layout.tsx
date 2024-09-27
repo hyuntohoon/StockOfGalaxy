@@ -1,9 +1,13 @@
+
+
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import MenuHeader from "./components/organisms/Banner/MenuHeader";
 import "./globals.css";
 import RecoilRootWrapper from "./components/atoms/RecoilRootWrapper";
-import { ibm } from '@/public/fonts'
+import { ibm } from '@/public/fonts';
+import { AnimatePresence, motion } from 'framer-motion';
+import { usePathname } from 'next/navigation';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,13 +21,15 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
   return (
     <html lang="ko">
       <body className={ibm.className}>
-        
         <RecoilRootWrapper>
           <MenuHeader />
-          {children}
+         
+              {children}  {/* 페이지의 자식 요소 */}
+         
         </RecoilRootWrapper>
       </body>
     </html>
