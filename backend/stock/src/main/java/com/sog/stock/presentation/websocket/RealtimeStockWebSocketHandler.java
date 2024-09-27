@@ -20,6 +20,7 @@ public class RealtimeStockWebSocketHandler extends TextWebSocketHandler {
 
     private final RealTimeWebSocketService realTimeWebSocketService;
 
+    // 웹소켓 세션을 담을 맵. 각 세션이 구독한 종목 코드와 함께 관리
     private final Map<WebSocketSession, String> sessionStockCodeMap = new ConcurrentHashMap<>();
 
     // 웹소켓 세션 담아둘 맵
@@ -32,12 +33,12 @@ public class RealtimeStockWebSocketHandler extends TextWebSocketHandler {
         log.info("--------Message---------");
         log.info("Received stockCode : {}", stockCode);
         log.info("--------Message---------");
-        synchronized (sessionMap) {
-            sessionStockCodeMap.put(session, stockCode);
-        }
+//        synchronized (sessionMap) {
+//            sessionStockCodeMap.put(session, stockCode);
+//        }
 
         // kis에 주식 구독 요청을 보냅니다. -> 중복 요청을 방지하는 예외처리 추가.
-        realTimeWebSocketService.subscribeToStock(stockCode, session); // 실시간 데이터 구독 요청
+        realTimeWebSocketService.subscribeToStock(stockCode, session, false); // 실시간 데이터 구독 요청
     }
 
     // 클라이언트가 소켓 연결시 동작
@@ -46,9 +47,9 @@ public class RealtimeStockWebSocketHandler extends TextWebSocketHandler {
         log.info("Web Socket Connected");
         log.info("session id : {}", session.getId());
         super.afterConnectionEstablished(session);
-        synchronized (sessionMap) {
-            sessionMap.put(session.getId(), session);
-        }
+//        synchronized (sessionMap) {
+//            sessionMap.put(session.getId(), session);
+//        }
         System.out.println("sessionMap :" + sessionMap.toString());
 
         JSONObject jsonObject = new JSONObject();
@@ -64,14 +65,22 @@ public class RealtimeStockWebSocketHandler extends TextWebSocketHandler {
         throws Exception {
         log.info("Web Socket DisConnected");
         log.info("session id : {}", session.getId());
+        // 세션이 종료되면 해당 세션을 제거
         synchronized (sessionMap) {
             sessionMap.remove(session.getId()); // 여러 클라이언트의 동시 접근하여 Map의 SessionID가 변경되는 것을 막기 위함
         }
 
-        // 남아있는 세션이 없을 경우에는 KIS websocket도 해제
+        // 남아있는 세션이 없을 경우에는 KIS WebSocket도 해제
+        realTimeWebSocketService.disconnectFromKisWebSocket(session);
+
+        // 세션 맵이나 종목 구독 관리 맵에서 세션 제거
+        realTimeWebSocketService.disconnectFromKisWebSocket(session);
+
         if (sessionMap.isEmpty()) {
-            realTimeWebSocketService.disconnectFromKisWebSocket();
+            log.info("모든 클라이언트 세션이 해제되었습니다. KIS WebSocket 연결을 해제합니다.");
+            realTimeWebSocketService.disconnectFromKisWebSocket(null); // 전체 WebSocket 해제
         }
+
         super.afterConnectionClosed(session, status); // 실제로 closed
     }
 }
