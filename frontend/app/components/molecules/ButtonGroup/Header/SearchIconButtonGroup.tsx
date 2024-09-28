@@ -11,10 +11,10 @@ const SearchIconButtonGroup = () => {
   return (
     <div
     >
-      <StyledLink href={`/myplanet`}>
+      <StyledLink href={`/search`}>
     <HeaderButtonGroup
-      icon={<FaStar />}
-      label="관심행성"
+          icon={<FaSearch />}
+          label="검색"
     />
     </StyledLink>
     </div>
