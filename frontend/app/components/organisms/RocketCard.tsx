@@ -19,7 +19,7 @@ const RocketCard = ({ data }) => {
     <Content>
       <Header>
         <ProfileImageWrapper>
-          <ProfileImage src={data.imageUrl} alt="프로필" />
+          <ProfileImage src={`/images/profile/${data.characterType}.png`} alt="프로필" />
         </ProfileImageWrapper>
         <NamePriceWrapper>
           <NameAndDelete>
@@ -38,7 +38,7 @@ const RocketCard = ({ data }) => {
           />
         </NamePriceWrapper>
       </Header>
-      <StyledRocketContent message={data.message} />
+      <StyledRocketContent message={data.content} />
       <TimeStampTimeMachineWrapper>
         <RocketTimeStamp createdAt={data.createdAt} />
         <RocketTimeMachineButton />

@@ -4,14 +4,8 @@ import rocket from '@/public/images/rocket/rockett.png'
 
 
 const CreateRocketButton = ({ onClick }) => {
-
-
-  const handleSubmit = (e) => {
-    // todo: api 연동
-  };
-
   return (
-    <Button onClick={handleSubmit}>
+    <Button onClick={onClick}>
       <Text>로켓 쏘기</Text>
       <Icon>
         <Image src={rocket} alt="로켓쏘기" width={25} height={20} />
