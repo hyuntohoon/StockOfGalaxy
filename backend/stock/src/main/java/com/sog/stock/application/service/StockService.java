@@ -5,7 +5,7 @@ import com.sog.stock.domain.dto.HolidayAddListRequestDTO;
 import com.sog.stock.domain.dto.rocket.RocketAddRequestDTO;
 import com.sog.stock.domain.dto.StockAddListRequestDTO;
 import com.sog.stock.domain.dto.StockDTO;
-import com.sog.stock.domain.dto.StockDailyPriceListResponseDTO;
+import com.sog.stock.domain.dto.StockDailyPriceListDTO;
 import com.sog.stock.domain.dto.StockNameResponseDTO;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 public interface StockService {
 
     // 주식 일별 데이터 조회
-    StockDailyPriceListResponseDTO getDailyStockHistory(String stockCode);
+    StockDailyPriceListDTO getDailyStockHistory(String stockCode);
 
     // 행성 리스트 추가
     void addStockList(StockAddListRequestDTO stockAddListRequestDTO);

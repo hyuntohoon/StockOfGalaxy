@@ -26,7 +26,7 @@ public class DailyStockHistory {
     private Integer dailyStockHistoryId;
 
     @Column(nullable = false)
-    private Date dailyStockHistoryDate;
+    private String dailyStockHistoryDate;
 
     @Column(nullable = false)
     private Integer openPrice;

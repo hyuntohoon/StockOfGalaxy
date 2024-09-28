@@ -1,18 +1,15 @@
 package com.sog.stock.presentation.controller;
 
 import com.sog.stock.application.service.StockService;
-import com.sog.stock.domain.dto.FinancialDTO;
 import com.sog.stock.domain.dto.FinancialListDTO;
 import com.sog.stock.domain.dto.HolidayAddListRequestDTO;
 import com.sog.stock.domain.dto.StockAddListRequestDTO;
 import com.sog.stock.domain.dto.StockDTO;
-import com.sog.stock.domain.dto.StockDailyPriceListResponseDTO;
+import com.sog.stock.domain.dto.StockDailyPriceListDTO;
 import com.sog.stock.domain.dto.StockNameResponseDTO;
-import com.sun.net.httpserver.HttpsServer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,7 +26,7 @@ public class StockController {
 
     // 주식 일별 시세 조회
     @GetMapping("/{stockCode}/history")
-    public StockDailyPriceListResponseDTO getStockHistory(@PathVariable String stockCode) {
+    public StockDailyPriceListDTO getStockHistory(@PathVariable String stockCode) {
         return stockService.getDailyStockHistory(stockCode);
     }
 

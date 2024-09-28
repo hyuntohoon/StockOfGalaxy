@@ -7,8 +7,8 @@ import com.sog.stock.domain.dto.HolidayAddRequestDTO;
 import com.sog.stock.domain.dto.rocket.RocketAddRequestDTO;
 import com.sog.stock.domain.dto.StockAddListRequestDTO;
 import com.sog.stock.domain.dto.StockDTO;
-import com.sog.stock.domain.dto.StockDailyPriceListResponseDTO;
-import com.sog.stock.domain.dto.StockDailyPriceResponseDTO;
+import com.sog.stock.domain.dto.StockDailyPriceListDTO;
+import com.sog.stock.domain.dto.StockDailyPriceDTO;
 import com.sog.stock.domain.dto.StockNameResponseDTO;
 import com.sog.stock.domain.model.DailyStockHistory;
 import com.sog.stock.domain.model.FinancialStatements;
@@ -37,19 +37,19 @@ public class StockServiceImpl implements StockService {
     private final FinancialStatementsRepository financialStatementsRepository;
 
     @Override
-    public StockDailyPriceListResponseDTO getDailyStockHistory(String stockCode) {
+    public StockDailyPriceListDTO getDailyStockHistory(String stockCode) {
 
         // 종목번호로 모든 데이터 조회
         List<DailyStockHistory> historyList = dailyStockHistoryRepository.findByStockCodeOrderByDateDesc(
             stockCode);
 
         // entity 리스트 -> dto리스트 변환
-        List<StockDailyPriceResponseDTO> dtoList = historyList.stream()
-            .map(StockDailyPriceResponseDTO::fromEntity)
+        List<StockDailyPriceDTO> dtoList = historyList.stream()
+            .map(StockDailyPriceDTO::fromEntity)
             .collect(Collectors.toList());
 
         // DTO 리스트를 감싸서 반환
-        return new StockDailyPriceListResponseDTO(dtoList);
+        return new StockDailyPriceListDTO(dtoList);
     }
 
     @Override
