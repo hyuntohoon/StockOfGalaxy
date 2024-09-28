@@ -7,6 +7,7 @@ import com.sog.stock.domain.dto.RocketResponseListDTO;
 import com.sog.stock.domain.dto.StockAddListRequestDTO;
 import com.sog.stock.domain.dto.StockDTO;
 import com.sog.stock.domain.dto.StockDailyPriceListResponseDTO;
+import com.sog.stock.domain.dto.StockNameResponseDTO;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -29,6 +30,13 @@ public interface StockService {
 
     // 공휴일 정보 조회
     boolean isHoliday(String holidayDate);
+
+    // 제무재표 등록
+
+    // 제무재표 조회
+
+    // 종목이름 조회
+    StockNameResponseDTO searchStockName(String stockCode);
 
     /*
      * 로켓 관련

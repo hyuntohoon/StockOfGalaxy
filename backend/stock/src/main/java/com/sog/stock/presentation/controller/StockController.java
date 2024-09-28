@@ -5,6 +5,8 @@ import com.sog.stock.domain.dto.HolidayAddListRequestDTO;
 import com.sog.stock.domain.dto.StockAddListRequestDTO;
 import com.sog.stock.domain.dto.StockDTO;
 import com.sog.stock.domain.dto.StockDailyPriceListResponseDTO;
+import com.sog.stock.domain.dto.StockNameResponseDTO;
+import com.sun.net.httpserver.HttpsServer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -69,4 +71,23 @@ public class StockController {
         boolean isHoliday = stockService.isHoliday(locDate);
         return new ResponseEntity<>(isHoliday, HttpStatus.OK);
     }
+
+
+
+    // 재무재표 등록
+
+    // 제무재표 조회
+
+    // 종목 이름 조회
+    @GetMapping("/{stockCode}/name")
+    public ResponseEntity<?> getStockName(@PathVariable String stockCode) {
+        StockNameResponseDTO stockNameResponseDTO = stockService.searchStockName(stockCode);
+        return new ResponseEntity<>(stockNameResponseDTO, HttpStatus.OK);
+
+    }
+
+
+
+
+
 }

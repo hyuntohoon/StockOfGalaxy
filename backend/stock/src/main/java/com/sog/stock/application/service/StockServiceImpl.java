@@ -9,6 +9,7 @@ import com.sog.stock.domain.dto.StockAddListRequestDTO;
 import com.sog.stock.domain.dto.StockDTO;
 import com.sog.stock.domain.dto.StockDailyPriceListResponseDTO;
 import com.sog.stock.domain.dto.StockDailyPriceResponseDTO;
+import com.sog.stock.domain.dto.StockNameResponseDTO;
 import com.sog.stock.domain.model.DailyStockHistory;
 import com.sog.stock.domain.model.Rocket;
 import com.sog.stock.domain.model.Stock;
@@ -87,6 +88,17 @@ public class StockServiceImpl implements StockService {
     public boolean isHoliday(String holidayDate) {
         return stockHolidayRepository.existsByLocDate(holidayDate);
     }
+
+    @Override
+    public StockNameResponseDTO searchStockName(String stockCode) {
+        // stockCode로 db에서 검색하여 Stock 객체를 반환
+        Stock stock = stockRepository.findById(stockCode)
+            .orElseThrow(() -> new IllegalArgumentException("해당 종목 코드가 존재하지 않습니다: " + stockCode));
+
+        // StockNameResponseDTO로 변환하여 반환
+        return new StockNameResponseDTO(stock.getCompanyName());
+    }
+
 
     // 로켓 전체 조회 -> 같은 주식 코드로 연결된 로켓 리스트
 //    @Override
