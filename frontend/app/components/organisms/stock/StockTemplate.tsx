@@ -68,7 +68,7 @@ interface stockState {
 }
 
 const StockTemplate = () => {
-  const stockData: any = [
+  const stockData: stockData[] = [
     {
       stock_name: "삼성전자",
       stock_code: "005930",
