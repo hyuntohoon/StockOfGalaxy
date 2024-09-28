@@ -6,6 +6,9 @@ import { todayNewsApi } from '@/app/utils/apis/news';
 import { getDailyStockKeywordFrequency, getDailyKeywordFrequency } from '@/app/utils/apis/wordcloud';
 import { useRecoilValue } from 'recoil';
 import { dateState } from '@/app/store/date';
+import TimeMachineButtonGroup from '@/app/components/molecules/ButtonGroup/TimeMachineButtonGroup';
+import RocketButtonGroup from '@/app/components/molecules/ButtonGroup/RocketButtonGroup';
+import RocketModal from '@/app/components/organisms/Modal/RocketModal';
 
 const NewsPage: React.FC = (props: any) => {
   const {stock, date} = props.params;
@@ -13,6 +16,7 @@ const NewsPage: React.FC = (props: any) => {
   const [newsData, setNewsData] = useState<any[]>([]); // API에서 받은 뉴스를 저장할 상태
   const [wordData1, setWordData1] = useState<any[]>([]); // res1 저장
   const [wordData2, setWordData2] = useState<any[]>([]); // res2 저장
+  const [isRocketModalOpen, setIsRocketModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchNewsData = async () => {
@@ -39,6 +43,10 @@ const NewsPage: React.FC = (props: any) => {
   return (
     <>
       <NewsPageHeaderTemplate newsData={newsData} wordData1={wordData1} wordData2={wordData2} />
+      <TimeMachineButtonGroup />
+      <RocketButtonGroup onRocketClick={() => setIsRocketModalOpen(true)} />
+      {isRocketModalOpen && <RocketModal onClose={() => setIsRocketModalOpen(false)} />}
+
     </>
   );
 };
