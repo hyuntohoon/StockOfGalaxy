@@ -1,3 +1,4 @@
+import { withNextVideo } from "next-video/process";
 /** @type {import('next').NextConfig} */
 import TerserPlugin from "terser-webpack-plugin";
 
@@ -32,6 +33,7 @@ const nextConfig = {
   compiler: {
     styledComponents: true,
   },
+  
 };
 
-export default nextConfig;
+export default withNextVideo(nextConfig, { folder: 'videos' });
