@@ -11,11 +11,13 @@ export const FormContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: auto;
-  width: auto;
+  height: auto; // 자동 높이
+  width: auto; // 자동 너비
+  min-width: 300px; // 최소 너비를 설정하여 작은 화면에서도 보기 좋게
   background: rgba(255, 255, 255, 0.15);
   border-radius: 30px;
   padding: 40px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5); // 그림자를 추가하여 부각시킴
 `;
 
 export const LinkContainer = styled.div`
