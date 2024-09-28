@@ -85,6 +85,9 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
+        // CORS 설정을 위해 헤더 추가
+        response.setHeader("Access-Control-Expose-Headers", "Authorization");
+
         // 응답 본문에 포함할 데이터 생성
         Map<String, Object> responseBody = new HashMap<>();
         responseBody.put("memberId", memberId);
