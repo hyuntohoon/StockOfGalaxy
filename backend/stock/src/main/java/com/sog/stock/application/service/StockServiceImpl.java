@@ -121,7 +121,28 @@ public class StockServiceImpl implements StockService {
 
     @Override
     public FinancialListDTO searchFinancial(String stockCode) {
-        return null;
+        // 종목번호별로 제무재표 list 조회
+        // stockCode로 Stock 객체 조회
+        Stock stock = stockRepository.findById(stockCode)
+            .orElseThrow(() -> new IllegalArgumentException("해당 종목 코드가 존재하지 않습니다: " + stockCode));
+
+        // Stock에 해당하는 FinancialStatements 리스트 조회
+        List<FinancialStatements> financialStatementsList = financialStatementsRepository.findByStock(stock);
+
+        // FinancialDTO 리스트로 변환
+        List<FinancialDTO> financialDTOList = financialStatementsList.stream()
+            .map(fs -> new FinancialDTO(
+                fs.getStock().getStock_code(),
+                fs.getStacyymm(),
+                fs.getCurrentAssets(),
+                fs.getCurrentLiabilities(),
+                fs.getTotalLiabilities(),
+                fs.getTotalEquity()
+            ))
+            .collect(Collectors.toList());
+
+        // FinancialListDTO에 담아서 반환
+        return new FinancialListDTO(financialDTOList);
     }
 
     @Override

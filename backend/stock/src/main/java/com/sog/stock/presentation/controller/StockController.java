@@ -82,6 +82,11 @@ public class StockController {
     }
 
     // 제무재표 조회
+    @GetMapping("/financial-statements/{stockCode}")
+    public ResponseEntity<?> searchFinancialStatements(@PathVariable String stockCode) {
+        FinancialListDTO financialListDTO = stockService.searchFinancial(stockCode);
+        return new ResponseEntity<>(financialListDTO, HttpStatus.OK);
+    }
 
     // 종목 이름 조회
     @GetMapping("/{stockCode}/name")

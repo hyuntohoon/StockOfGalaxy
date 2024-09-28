@@ -1,9 +1,11 @@
 package com.sog.stock.domain.dto;
 
 import java.math.BigDecimal;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 public class FinancialDTO {
 
     private String stock_code;
