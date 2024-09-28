@@ -25,49 +25,28 @@ import lombok.NoArgsConstructor;
 public class Stock {
 
     @Id
-    private String stockCode;
+    private String stock_code;
 
     @Column(nullable = false)
-    private String companyName;
+    private String corp_name;
 
     @Column(nullable = false)
-    private String companyDescription;
+    private String corp_description;
 
     @Column(nullable = false)
-    private Integer establishedYear; // YEAR type
+    private Integer est_dt; // YEAR type
 
     @Column(nullable = false)
-    private String ceo;
+    private String ceo_nm;
 
     @Column(nullable = false)
-    private String webSite;
+    private String hm_url;
 
     @Column(nullable = false)
-    private Integer fiscalMonth;
+    private Integer acc_mt;
 
     @Column(nullable = false)
-    private Boolean isDelisted = false;
-
-    @Column(nullable = false)
-    private Integer dividendYear;
-
-    @Column(nullable = false)
-    private BigDecimal dividendAmount;
-
-    @Column(nullable = false)
-    private Integer dividendFrequency;
-
-    @Column(nullable = false)
-    private BigDecimal totalLiabilities;
-
-    @Column(nullable = false)
-    private BigDecimal totalEquity;
-
-    @Column(nullable = false)
-    private BigDecimal currentAssets;
-
-    @Column(nullable = false)
-    private BigDecimal currentLiabilities;
+    private Boolean is_delisted = false;
 
     // 일대다 관계 설정
     @OneToMany(mappedBy = "stock", fetch = FetchType.LAZY)
@@ -82,34 +61,28 @@ public class Stock {
     // Dto to entity
     public static Stock fromDTO(StockDTO dto) {
         return Stock.builder()
-            .stockCode(dto.getStockCode())
-            .companyName(dto.getCompanyName())
-            .companyDescription(dto.getCompanyDescription())
-            .establishedYear(dto.getEstablishedYear())
-            .ceo(dto.getCeo())
-            .webSite(dto.getWebSite())
-            .fiscalMonth(dto.getFiscalMonth())
-            .isDelisted(dto.isDelisted())
-            .dividendYear(dto.getDividendYear())
-            .dividendAmount(dto.getDividendAmount())
-            .dividendFrequency(dto.getDividendFrequency())
+            .stock_code(dto.getStockCode())
+            .corp_name(dto.getCompanyName())
+            .corp_description(dto.getCompanyDescription())
+            .est_dt(dto.getEstablishedYear())
+            .ceo_nm(dto.getCeo())
+            .hm_url(dto.getWebSite())
+            .acc_mt(dto.getFiscalMonth())
+            .is_delisted(dto.isDelisted())
             .build();
     }
 
     // entity to dto
     public StockDTO toDTO() {
         return StockDTO.builder()
-            .stockCode(this.stockCode)
-            .companyName(this.companyName)
-            .companyDescription(this.companyDescription)
-            .establishedYear(this.establishedYear)
-            .ceo(this.ceo)
-            .webSite(this.webSite)
-            .fiscalMonth(this.fiscalMonth)
-            .isDelisted(this.isDelisted)
-            .dividendYear(this.dividendYear)
-            .dividendAmount(this.dividendAmount)
-            .dividendFrequency(this.dividendFrequency)
+            .stockCode(this.stock_code)
+            .companyName(this.corp_name)
+            .companyDescription(this.corp_description)
+            .establishedYear(this.est_dt)
+            .ceo(this.ceo_nm)
+            .webSite(this.hm_url)
+            .fiscalMonth(this.acc_mt)
+            .isDelisted(this.is_delisted)
             .build();
     }
 
