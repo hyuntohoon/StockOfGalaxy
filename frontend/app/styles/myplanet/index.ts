@@ -53,11 +53,7 @@ padding: 12px 20px;
 margin-bottom: 10px;
 color: #ffffff;
 transition: opacity 0.4s ease; /* 애니메이션 추가 */
-${({ isRemoving }) =>
-  isRemoving &&
-  css`
-    animation: ${fadeOut} 0.5s forwards; /* 사라지는 애니메이션 적용 */
-  `}
+
 `;
 
 export const LeftSection = styled.div`

@@ -55,6 +55,8 @@ export default function Planet() {
     { rank: 3, name: '에코프로', stockCode: '086530', price: '51,796원', change: '- 227원 (3.1%)', isFavorite: true, iconSrc: '/images/logo/ecopro.png' },
     { rank: 4, name: 'SK하이닉스', stockCode: '000660', price: '159,394원', change: '+ 2,377원 (1.5%)', isFavorite: true, iconSrc: '/images/logo/SK.png' },
     { rank: 5, name: '유한양행', stockCode: '000100', price: '77,968원', change: '+ 2,190원 (2.8%)', isFavorite: true, iconSrc: '/images/logo/uhan.png' },
+    { rank: 6, name: 'NAVER', stockCode: '035420', price: '51,796원', change: '- 227원 (3.1%)', isFavorite: true, iconSrc: '/images/logo/naver.png' },
+    { rank: 7, name: 'SK이노베이션', stockCode: '096770', price: '51,796원', change: '- 227원 (3.1%)', isFavorite: true, iconSrc: '/images/logo/naver.png' },
   ];
 
   const [items, setItems] = useState(planetsData);
@@ -71,10 +73,10 @@ export default function Planet() {
       setPlaying(true);
       anime({
         targets: card,
-        scale: [{ value: 1 }, { value: 1.4 }, { value: 1, delay: 250 }],
-        rotateY: { value: '+=180', delay: 200 },
+        scale: [{ value: 1 }, { value: 1.4 }, { value: 1, delay: 100 }],
+        rotateY: { value: '+=180', delay: 100 },
         easing: 'easeInOutSine',
-        duration: 300,
+        duration: 200,
         complete: function (anim) {
           setPlaying(false);
           const updatedItems = items.map((item, i) =>
@@ -113,6 +115,7 @@ export default function Planet() {
     let circle: THREE.Object3D;
     let surroundingPlanets: Array<{ mesh: THREE.Mesh; radius: number; angle: number; speed: number }> = [];
     let starGroup: THREE.Group; // 별 그룹
+    let particle: THREE.Object3D;
   
     const textureLoader = new THREE.TextureLoader();
     const numSurroundingPlanets = planetsData.length;
@@ -137,29 +140,52 @@ export default function Planet() {
   
       circle = new THREE.Object3D();
       scene.add(circle);
+      particle = new THREE.Object3D();
+      scene.add(particle);
+
+      const geometry = new THREE.TetrahedronGeometry(1, 0);
+      const material = new THREE.MeshPhongMaterial({
+        color: 0xffffff,
+        flatShading: true,
+      });
+
+      for (let i = 0; i < 1000; i++) {
+        const mesh = new THREE.Mesh(geometry, material);
+        mesh.position
+          .set(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5)
+          .normalize();
+        mesh.position.multiplyScalar(180 + Math.random() * 700);
+        mesh.rotation.set(
+          Math.random() * 2,
+          Math.random() * 2,
+          Math.random() * 2
+        );
+        particle.add(mesh);
+      }
+
   
       // 별 그룹 생성
-      starGroup = new THREE.Group();
-      scene.add(starGroup);
+      // starGroup = new THREE.Group();
+      // scene.add(starGroup);
   
       // 별 생성
-      const starGeometry = new THREE.SphereGeometry(0.5, 8, 8); // 기본 별의 모양
-      const starMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
+      // const starGeometry = new THREE.SphereGeometry(0.5, 8, 8); // 기본 별의 모양
+      // const starMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
   
-      for (let i = 0; i < 2000; i++) {
-        const starMesh = new THREE.Mesh(starGeometry, starMaterial);
+      // for (let i = 0; i < 2000; i++) {
+      //   const starMesh = new THREE.Mesh(starGeometry, starMaterial);
   
-        // 별의 크기와 위치를 랜덤하게 설정
-        const scale = Math.random() * 0.5 + 0.5; // 0.5에서 1.0 사이의 랜덤 크기
-        starMesh.scale.set(scale, scale, scale);
+      //   // 별의 크기와 위치를 랜덤하게 설정
+      //   const scale = Math.random() * 0.5 + 0.5; // 0.5에서 1.0 사이의 랜덤 크기
+      //   starMesh.scale.set(scale, scale, scale);
   
-        starMesh.position.set(
-          (Math.random() - 0.5) * 2000, // x 좌표
-          (Math.random() - 0.5) * 2000, // y 좌표
-          (Math.random() - 0.5) * 2000  // z 좌표
-        );
-        starGroup.add(starMesh); // 별을 그룹에 추가
-      }
+      //   starMesh.position.set(
+      //     (Math.random() - 0.5) * 2000, // x 좌표
+      //     (Math.random() - 0.5) * 2000, // y 좌표
+      //     (Math.random() - 0.5) * 2000  // z 좌표
+      //   );
+      //   starGroup.add(starMesh); // 별을 그룹에 추가
+      // }
   
       // 구 모양의 행성으로 변경
       const geom = new THREE.SphereGeometry(14, 36, 36);
@@ -183,37 +209,39 @@ export default function Planet() {
       const sizes = [6, 6, 6, 6, 5, 6];
       const textures = await loadTextures(planetsData, textureLoader); // 주변 행성 텍스처 로드
   
-      for (let i = 0; i < numSurroundingPlanets; i++) {
-        const radius = centralPlanetRadius * 20 + 150;
-        const speed = 0.01 + Math.random() * 0.005; // 공전 속도를 더 빠르게 조정
-  
-        const surroundingPlanet = new THREE.Mesh(
-          geom,
-          new THREE.MeshStandardMaterial({ map: textures[i] }) // 주변 행성 텍스처
-        );
-        surroundingPlanet.scale.set(sizes[i % sizes.length], sizes[i % sizes.length], sizes[i % sizes.length]);
-  
-        const angle = i * (2 * Math.PI / numSurroundingPlanets);
-        const x = radius * Math.cos(angle);
-        const z = Math.random() * 5;
-        surroundingPlanet.position.set(x, 0, z % 50);
-  
-        surroundingPlanets.push({ mesh: surroundingPlanet, radius, angle, speed });
-        circle.add(surroundingPlanet);
-      }
+      surroundingPlanets = planetsData.map((data, index) => {
+        const planetMesh = createPlanetMesh(index); // 행성 메쉬 생성
+        const radius = centralPlanetRadius * 20 + 180; // 거리 조정
+        const speed = 0.01 + Math.random() * 0.002;
+        const angle = (index * (2 * Math.PI / numSurroundingPlanets)); // 원형 배치
+
+        // 행성의 위치 설정
+        planetMesh.scale.set(6,6,6);
+        planetMesh.position.set(radius * Math.cos(angle), 0, radius * Math.sin(angle));
+
+        return { mesh: planetMesh, radius, angle, speed };
+      });
+      circle.add(...surroundingPlanets.map(p => p.mesh)); // 모든 행성을 그룹에 추가
   
       // 조명 및 스타필드 설정
       addLights(scene);
   
       window.addEventListener('resize', onWindowResize, false);
     }
+
+    function createPlanetMesh(index: number) {
+      const geom = new THREE.SphereGeometry(12, 36, 36); // 구체 생성
+      const texture = textureLoader.load(`/images/planetTexture/${index + 1}.jpg`); // 행성 텍스처 로드
+      const material = new THREE.MeshStandardMaterial({ map: texture });
+      return new THREE.Mesh(geom, material);
+    }
   
     async function loadTextures(planetsData: any[], textureLoader: THREE.TextureLoader): Promise<THREE.Texture[]> {
       const promises: Promise<THREE.Texture>[] = [];
       for (let i = 0; i < planetsData.length; i++) {
-        const stockCode = Number(planetsData[i].stockCode.slice(0, -1)) % 18 + 1; // todo: planetTexture 수에 맞게 '%' 뒤의 숫자 적용
+        const stockCode = Number(planetsData[i].stockCode.slice(0, -1)) % 18 + 1;
         promises.push(new Promise((resolve) => {
-          textureLoader.load(`/images/planetTexture/${stockCode}.jpg`, (texture) => resolve(texture)); // stockCode로 이미지 로드
+          textureLoader.load(`/images/planetTexture/${stockCode}.jpg`, (texture) => resolve(texture)); 
         }));
       }
       return await Promise.all(promises);
@@ -248,8 +276,9 @@ export default function Planet() {
       circle.rotation.y += 0.001;
   
       // 별 그룹을 천천히 회전시킴
-      starGroup.rotation.y += 0.0005;
-  
+      // starGroup.rotation.y += 0.0005;
+      particle.rotation.y -= 0.003;
+
       surroundingPlanets.forEach(({ mesh, radius, angle, speed }) => {
         const newAngle = angle + speed;
         const x = radius * Math.cos(newAngle);
@@ -275,7 +304,7 @@ export default function Planet() {
       }
       renderer.dispose();
     };
-  }, [planetsData]);
+  }, []);
   
 
   return (
