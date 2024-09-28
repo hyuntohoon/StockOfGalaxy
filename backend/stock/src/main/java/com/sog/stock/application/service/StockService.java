@@ -9,6 +9,7 @@ import com.sog.stock.domain.dto.StockAddListRequestDTO;
 import com.sog.stock.domain.dto.StockDTO;
 import com.sog.stock.domain.dto.DailyStockPriceListDTO;
 import com.sog.stock.domain.dto.StockNameResponseDTO;
+import com.sog.stock.domain.enums.QuarterType;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,7 +22,7 @@ public interface StockService {
     void addDailyStockHistory(DailyStockPriceListDTO stockDailyPriceList);
 
     // 주식 분기별 데이터 조회
-    QuarterStockPriceListDTO getQuarterStockHistory(String stockCode, String quarterType);
+    QuarterStockPriceListDTO getQuarterStockHistory(String stockCode, QuarterType quarterType);
 
     // 주식 분기별 데이터 추가
     void addQuarterStockHistory(QuarterStockPriceListDTO quarterStockPriceList);

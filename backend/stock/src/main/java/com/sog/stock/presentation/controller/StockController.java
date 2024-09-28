@@ -3,10 +3,12 @@ package com.sog.stock.presentation.controller;
 import com.sog.stock.application.service.StockService;
 import com.sog.stock.domain.dto.FinancialListDTO;
 import com.sog.stock.domain.dto.HolidayAddListRequestDTO;
+import com.sog.stock.domain.dto.QuarterStockPriceListDTO;
 import com.sog.stock.domain.dto.StockAddListRequestDTO;
 import com.sog.stock.domain.dto.StockDTO;
 import com.sog.stock.domain.dto.DailyStockPriceListDTO;
 import com.sog.stock.domain.dto.StockNameResponseDTO;
+import com.sog.stock.domain.enums.QuarterType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -32,10 +35,25 @@ public class StockController {
 
     // 주식 일별 시세 등록
     @PostMapping("/history")
-    public ResponseEntity<?> addStockHistory(@RequestBody DailyStockPriceListDTO stockDailyPriceList) {
+    public ResponseEntity<?> addStockHistory(
+        @RequestBody DailyStockPriceListDTO stockDailyPriceList) {
         stockService.addDailyStockHistory(stockDailyPriceList);
         return new ResponseEntity<>("등록이 완료되었습니다.", HttpStatus.OK);
     }
+
+    // 주식 분기별 시세 조회
+    @GetMapping("/{stockCode}/quarterhistory")
+    public ResponseEntity<QuarterStockPriceListDTO> getQuarterStockHistory(
+        @PathVariable String stockCode,
+        @RequestParam("type") QuarterType type
+    ) {
+        QuarterStockPriceListDTO stockPriceList = stockService.getQuarterStockHistory(stockCode,
+            type);
+        return ResponseEntity.ok(stockPriceList);
+    }
+
+    // 주식 분기별 시세 등록
+
 
     // 행성 정보 조회
     @GetMapping("/{stockCode}")

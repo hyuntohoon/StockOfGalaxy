@@ -49,7 +49,7 @@ public class QuarterStockPriceDTO {
             .stockLowPrice(quarterStockHistory.getStock_low_price())
             .stockAcmlVol(quarterStockHistory.getStock_acml_vol())
             .stockAcmlTrPbmn(quarterStockHistory.getStock_acml_tr_pbmn())
-            .stockCode(quarterStockHistory.getStock().getStock_code())
+            .stockCode(quarterStockHistory.getStock().getStockCode())
             .build();
     }
 

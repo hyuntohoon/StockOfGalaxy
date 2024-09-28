@@ -57,7 +57,7 @@ public class DailyStockPriceDTO {
             .prdyCtrt(dailyStockHistory.getPrdyCtrt())
             .stockAcmlVol(dailyStockHistory.getStockAcmlVol())
             .stockAcmlTrPbmn(dailyStockHistory.getStockAcmlTrPbmn())
-            .stockCode(dailyStockHistory.getStock().getStock_code()) // Stock 객체에서 stockCode 추출
+            .stockCode(dailyStockHistory.getStock().getStockCode()) // Stock 객체에서 stockCode 추출
             .build();
     }
 

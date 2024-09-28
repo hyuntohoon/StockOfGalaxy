@@ -25,28 +25,29 @@ import lombok.NoArgsConstructor;
 public class Stock {
 
     @Id
-    private String stock_code;
+    @Column(name = "stock_code")
+    private String stockCode;
 
-    @Column(nullable = false)
-    private String corp_name;
+    @Column(name = "corp_name", nullable = false)
+    private String corpName;
 
-    @Column(nullable = false)
-    private String corp_description;
+    @Column(name = "corp_description", nullable = false)
+    private String corpDescription;
 
-    @Column(nullable = false)
-    private Integer est_dt; // YEAR type
+    @Column(name = "est_dt", nullable = false)
+    private Integer estDt;
 
-    @Column(nullable = false)
-    private String ceo_nm;
+    @Column(name = "ceo_nm", nullable = false)
+    private String ceoNm;
 
-    @Column(nullable = false)
-    private String hm_url;
+    @Column(name = "hm_url", nullable = false)
+    private String hmUrl;
 
-    @Column(nullable = false)
-    private Integer acc_mt;
+    @Column(name = "acc_mt", nullable = false)
+    private Integer accMt;
 
-    @Column(nullable = false)
-    private Boolean is_delisted = false;
+    @Column(name = "is_delisted", nullable = false)
+    private Boolean isDelisted = false;
 
     // 일대다 관계 설정
     @OneToMany(mappedBy = "stock", fetch = FetchType.LAZY)
@@ -64,29 +65,28 @@ public class Stock {
     // Dto to entity
     public static Stock fromDTO(StockDTO dto) {
         return Stock.builder()
-            .stock_code(dto.getStockCode())
-            .corp_name(dto.getCompanyName())
-            .corp_description(dto.getCompanyDescription())
-            .est_dt(dto.getEstablishedYear())
-            .ceo_nm(dto.getCeo())
-            .hm_url(dto.getWebSite())
-            .acc_mt(dto.getFiscalMonth())
-            .is_delisted(dto.isDelisted())
+            .stockCode(dto.getStockCode())
+            .corpName(dto.getCompanyName())
+            .corpDescription(dto.getCompanyDescription())
+            .estDt(dto.getEstablishedYear())
+            .ceoNm(dto.getCeo())
+            .hmUrl(dto.getWebSite())
+            .accMt(dto.getFiscalMonth())
+            .isDelisted(dto.isDelisted())
             .build();
     }
 
     // entity to dto
     public StockDTO toDTO() {
         return StockDTO.builder()
-            .stockCode(this.stock_code)
-            .companyName(this.corp_name)
-            .companyDescription(this.corp_description)
-            .establishedYear(this.est_dt)
-            .ceo(this.ceo_nm)
-            .webSite(this.hm_url)
-            .fiscalMonth(this.acc_mt)
-            .isDelisted(this.is_delisted)
+            .stockCode(this.stockCode)
+            .companyName(this.corpName)
+            .companyDescription(this.corpDescription)
+            .establishedYear(this.estDt)
+            .ceo(this.ceoNm)
+            .webSite(this.hmUrl)
+            .fiscalMonth(this.accMt)
+            .isDelisted(this.isDelisted)
             .build();
     }
-
 }

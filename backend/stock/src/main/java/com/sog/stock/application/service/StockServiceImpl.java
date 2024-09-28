@@ -11,6 +11,7 @@ import com.sog.stock.domain.dto.StockDTO;
 import com.sog.stock.domain.dto.DailyStockPriceListDTO;
 import com.sog.stock.domain.dto.DailyStockPriceDTO;
 import com.sog.stock.domain.dto.StockNameResponseDTO;
+import com.sog.stock.domain.enums.QuarterType;
 import com.sog.stock.domain.model.DailyStockHistory;
 import com.sog.stock.domain.model.FinancialStatements;
 import com.sog.stock.domain.model.QuarterStockHistory;
@@ -44,7 +45,7 @@ public class StockServiceImpl implements StockService {
     public DailyStockPriceListDTO getDailyStockHistory(String stockCode) {
 
         // 종목번호로 모든 데이터 조회
-        List<DailyStockHistory> historyList = dailyStockHistoryRepository.findByStockCodeOrderByDateDesc(
+        List<DailyStockHistory> historyList = dailyStockHistoryRepository.findByStock_StockCodeOrderByDailyStockHistoryDateDesc(
             stockCode);
 
         // entity 리스트 -> dto리스트 변환
@@ -78,25 +79,25 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public QuarterStockPriceListDTO getQuarterStockHistory(String stockCode, String quarterType) {
+    public QuarterStockPriceListDTO getQuarterStockHistory(String stockCode, QuarterType quarterType) {
         List<QuarterStockHistory> historyList;
 
         // quarterType에 따라 다르게 처리
         switch (quarterType) {
-            case "D":
+            case D:
                 // "D" 타입일 경우 최근 90개의 데이터를 반환
-                historyList = quarterStockHistoryRepository.findTop90ByStockCodeOrderByStockStartDateDesc(
-                    stockCode);
+                historyList = quarterStockHistoryRepository.findTop90ByStock_StockCodeAndQuarterTypeOrderByStock_EstDtDesc(
+                    stockCode, quarterType);
                 break;
-            case "M":
+            case M:
                 // "M" 타입일 경우 최근 60개의 데이터를 반환
-                historyList = quarterStockHistoryRepository.findTop60ByStockCodeOrderByStockStartDateDesc(
-                    stockCode);
+                historyList = quarterStockHistoryRepository.findTop60ByStock_StockCodeAndQuarterTypeOrderByStock_EstDtDesc(
+                    stockCode, quarterType);
                 break;
-            case "Y":
+            case Y:
                 // "Y" 타입일 경우 해당 종목코드의 모든 데이터를 반환
-                historyList = quarterStockHistoryRepository.findByStockCodeAndQuarterType(
-                    stockCode);
+                historyList = quarterStockHistoryRepository.findByStock_StockCodeAndQuarterType(
+                    stockCode, quarterType);
                 break;
             default:
                 throw new IllegalArgumentException("Invalid quarter type: " + quarterType);
@@ -111,8 +112,7 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public void addStockList(StockAddListRequestDTO stockAddListRequestDTO
-    ) {
+    public void addStockList(StockAddListRequestDTO stockAddListRequestDTO) {
         // 각 stockDTO를 stock entity로 변환후 저장
         for (StockDTO addStock : stockAddListRequestDTO.getStocks()) {
             Stock stock = Stock.fromDTO(addStock);
@@ -191,7 +191,7 @@ public class StockServiceImpl implements StockService {
         // FinancialDTO 리스트로 변환
         List<FinancialDTO> financialDTOList = financialStatementsList.stream()
             .map(fs -> new FinancialDTO(
-                fs.getStock().getStock_code(),
+                fs.getStock().getStockCode(),
                 fs.getStacyymm(),
                 fs.getCurrentAssets(),
                 fs.getCurrentLiabilities(),
@@ -211,7 +211,7 @@ public class StockServiceImpl implements StockService {
             .orElseThrow(() -> new IllegalArgumentException("해당 종목 코드가 존재하지 않습니다: " + stockCode));
 
         // StockNameResponseDTO로 변환하여 반환
-        return new StockNameResponseDTO(stock.getCorp_name());
+        return new StockNameResponseDTO(stock.getCorpName());
     }
 
 
