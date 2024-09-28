@@ -30,6 +30,13 @@ public class StockController {
         return stockService.getDailyStockHistory(stockCode);
     }
 
+    // 주식 일별 시세 등록
+    @PostMapping("/history")
+    public ResponseEntity<?> addStockHistory(@RequestBody StockDailyPriceListDTO stockDailyPriceList) {
+        stockService.addDailyStockHistory(stockDailyPriceList);
+        return new ResponseEntity<>("등록이 완료되었습니다.", HttpStatus.OK);
+    }
+
     // 행성 정보 조회
     @GetMapping("/{stockCode}")
     public ResponseEntity<?> getStockInfo(@PathVariable String stockCode) {

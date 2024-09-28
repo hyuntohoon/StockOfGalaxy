@@ -53,6 +53,26 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
+    public void addDailyStockHistory(StockDailyPriceListDTO stockDailyPriceList) {
+        List<StockDailyPriceDTO> dtoList = stockDailyPriceList.getStockDailyPriceList();
+
+        // 각 DTO를 Entity로 변환하여 저장
+        List<DailyStockHistory> entityList = dtoList.stream()
+            .map(dto -> {
+                // stockCode로 Stock 엔티티 조회
+                Stock stock = stockRepository.findById(dto.getStock_code())
+                    .orElseThrow(() -> new IllegalArgumentException("해당 종목 코드가 존재하지 않습니다: " + dto.getStock_code()));
+
+                // DTO를 Entity로 변환 (Stock 객체와 연결)
+                return dto.toEntity(stock);
+            })
+            .collect(Collectors.toList());
+
+        // 변환된 엔티티를 저장
+        dailyStockHistoryRepository.saveAll(entityList);
+    }
+
+    @Override
     public void addStockList(StockAddListRequestDTO stockAddListRequestDTO
     ) {
         // 각 stockDTO를 stock entity로 변환후 저장

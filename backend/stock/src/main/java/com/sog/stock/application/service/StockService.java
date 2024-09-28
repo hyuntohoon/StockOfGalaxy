@@ -15,6 +15,9 @@ public interface StockService {
     // 주식 일별 데이터 조회
     StockDailyPriceListDTO getDailyStockHistory(String stockCode);
 
+    // 주식 일별 데이터 추가
+    void addDailyStockHistory(StockDailyPriceListDTO stockDailyPriceList);
+
     // 행성 리스트 추가
     void addStockList(StockAddListRequestDTO stockAddListRequestDTO);
 
