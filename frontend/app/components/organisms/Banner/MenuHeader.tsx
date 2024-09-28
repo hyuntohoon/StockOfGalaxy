@@ -32,11 +32,11 @@ const MenuHeaderWrapper = styled.div<{ isOpen: boolean }>`
   transform: translate(-85%, -50%) translateX(${props => (props.isOpen ? '85%' : '0')});
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: center; 
   padding: 20px 5px;
-  background-color: rgba(255, 255, 255, 0.35);
+  background-color: rgba(255, 255, 255, 0.65);
   border-radius: 30px;
-  justify-content: space-around;
+  justify-content: center;
   width: 120px;
   transition: transform ${TRANSITION_DURATION} ease-in-out;
   box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);

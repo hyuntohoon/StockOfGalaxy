@@ -52,6 +52,7 @@ const Header = styled.div`
   font-size: 1.1rem;
   font-weight: bold;
   margin-bottom: 10px;
+  color: black;
 `;
 
 interface stockData {
