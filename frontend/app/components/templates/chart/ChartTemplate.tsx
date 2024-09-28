@@ -102,6 +102,9 @@ const ChartTemplate = () => {
 
   const changeType = (type: string) => {
     chart?.clearData();
+
+    // 임시 데이터
+    // 추후 http 통신으로 데이터를 받아와서 적용해야 함
     chart?.applyNewData([
       {
         timestamp: Date.now(),
