@@ -6,13 +6,16 @@ import FinancialMetricsContainer from "@/app/components/organisms/stock/Financia
 
 const Container = styled.div`
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
 `;
 
 const SubContainer = styled.div`
   display: flex;
   flex-direction: column;
-  width: 50%;
+  min-width: 100%;
+  height: auto;
 `;
 
 const StockInfoTemplate = () => {

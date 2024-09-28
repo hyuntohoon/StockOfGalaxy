@@ -1,6 +1,5 @@
-import styled from '@emotion/styled';
-import { keyframes } from '@emotion/react';
-
+import styled from "@emotion/styled";
+import { keyframes } from "@emotion/react";
 
 export const ContentContainer = styled.div`
   display: flex;
@@ -22,28 +21,26 @@ export const SectionContainer = styled.div`
   gap: 20px;
   padding: 10px 5%; /* 좌우 패딩을 추가하여 화면의 5% 여유 공간 */
   align-items: stretch; /* 높이를 맞추기 위한 설정 */
-  
+
   & > div {
     background-color: #f0f0f0;
     border-radius: 15px;
     height: 450px;
     overflow: hidden;
   }
-  
+
   /* NewsList가 65%, WordCloudComponent가 35% */
   .news-list {
     flex: 0 0 65%;
     overflow: auto;
     scrollbar-width: none; /* 스크롤바 숨기기 */
     scroll-radius: 15px;
-    
   }
 
   .word-cloud {
     flex: 0 0 35%;
   }
 `;
-
 
 export const NavBarWrapper = styled.nav`
   display: flex;
@@ -57,30 +54,29 @@ export const NavBarWrapper = styled.nav`
   z-index: 1001;
 `;
 
-
 export const HeaderWrapper = styled.header`
-display: flex;
-justify-content: center;
-align-items: center;
-padding: 10px 60px;
-color: white;
-position: relative;
-height: 60px;
-z-index: 1000;
-border-radius: 10px;
-margin: 30px 100px 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 60px;
+  color: white;
+  position: relative;
+  height: 60px;
+  z-index: 1000;
+  border-radius: 10px;
+  margin: 30px 100px 30px;
 
-@media (max-width: 768px) {
-  padding: 10px 20px;
-}
+  @media (max-width: 768px) {
+    padding: 10px 20px;
+  }
 `;
 
 export const HeaderContent = styled.div`
-display: flex;
-align-items: center;
-justify-content: space-between;
-width: 100%;
-max-width: 1200px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 1200px;
 `;
 
 const fadeIn = keyframes`
@@ -178,7 +174,6 @@ export const ModalContent = styled.div`
     width: 90%; /* 모바일 뷰에서 너비 조정 */
   }
 `;
-
 
 export const NewsListWrapper = styled.div`
   display: flex;

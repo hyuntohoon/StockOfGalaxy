@@ -10,11 +10,15 @@ import { debounce } from "@/app/utils/libs/debounce";
 import { ContentContainer, SectionContainer } from "@/app/styles/planet";
 import ChartTemplate from "@/app/components/templates/chart/ChartTemplate";
 import StockInfoTemplate from "@/app/components/templates/stock/StockInfoTemplate";
+import StockDailyPriceTemplate from "@/app/components/organisms/stock/StockDailyPriceTeplate";
 import styled from "@emotion/styled";
 
 const ChartContainer = styled.div`
-  width: 800px;
+  min-width: 100%;
+  width: 100%;
+  max-width: 100%;
   height: auto;
+  display: flex;
 `;
 
 interface NewsPageHeaderTemplateProps {
@@ -149,13 +153,19 @@ const NewsPageHeaderTemplate: React.FC<NewsPageHeaderTemplateProps> = ({
         </SectionContainer>
 
         <SectionContainer ref={chartRef}>
-          <ChartContainer>
+          <div className="news-list">
             <ChartTemplate />
-          </ChartContainer>
+          </div>
+          <div className="word-cloud">
+            <StockDailyPriceTemplate />
+          </div>
         </SectionContainer>
 
         <SectionContainer ref={stocksRef}>
-          <StockInfoTemplate />
+          <div className="news-list">
+            <StockInfoTemplate />
+          </div>
+          <div className="word-cloud"></div>
         </SectionContainer>
 
         <SectionContainer ref={planetNewsRef}>

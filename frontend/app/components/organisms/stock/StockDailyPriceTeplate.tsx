@@ -5,15 +5,17 @@ import StockDailyPriceTitle from "../../atoms/stock/StockDailyPriceTitle";
 import StockDailyPriceList from "../../molecules/stock/StockDailyPriceList";
 
 const Container = styled.div`
-  width: 400px;
-  height: 520px;
-  background-color: #d9d9d9;
-  border-radius: 20px;
-  padding: 15px 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 50px;
+  position: fixed;
+  width: 500px;
+  height: 440px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  pointer-events: none;
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 1000;
 `;
 
 const StockDailyPriceTemplate = () => {
