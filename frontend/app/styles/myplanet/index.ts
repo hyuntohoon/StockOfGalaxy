@@ -2,8 +2,6 @@ import styled from '@emotion/styled';
 import { css, keyframes } from '@emotion/react';
 
 
-
-
 export const FavoriteListContainer = styled.div`
 display: flex;
 flex-direction: column;
@@ -53,11 +51,7 @@ padding: 12px 20px;
 margin-bottom: 10px;
 color: #ffffff;
 transition: opacity 0.4s ease; /* 애니메이션 추가 */
-${({ isRemoving }) =>
-  isRemoving &&
-  css`
-    animation: ${fadeOut} 0.5s forwards; /* 사라지는 애니메이션 적용 */
-  `}
+
 `;
 
 export const LeftSection = styled.div`
@@ -231,7 +225,7 @@ export const ToggleButton = styled.button`
   position: absolute;
   top: 10px;
   right: 30px;
-  z-index: 10;
+  z-index: 0;
   font-size: 2rem;
   color: #333;
   transition: color 0.3s ease;

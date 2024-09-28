@@ -25,67 +25,60 @@ const tempData = [
 export default function Page() {
   const currentDate = useRecoilValue(dateState);
   const mountRef = useRef<HTMLDivElement>(null);
-  const [hoveredPlanet, setHoveredPlanet] = useState<HoveredPlanetData | null>(
-    null
-  );
+  const [hoveredPlanet, setHoveredPlanet] = useState<HoveredPlanetData | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const camera = useRef<THREE.PerspectiveCamera>(
-    new THREE.PerspectiveCamera(
+  const camera = useRef<THREE.PerspectiveCamera | null>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    // 클라이언트 환경에서만 실행되도록 함
+    if (typeof window === "undefined") return;
+
+    camera.current = new THREE.PerspectiveCamera(
       75,
       window.innerWidth / window.innerHeight,
       0.1,
       1000
-    )
-  );
-  const router = useRouter();
+    );
 
-  useEffect(() => {
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
     mountRef.current?.appendChild(renderer.domElement);
 
     const scene = new THREE.Scene();
-    camera.current.position.z = 550; // 카메라 위치 조정
+    camera.current.position.z = 550;
 
     setupLights(scene);
     createStars(scene);
 
     const textureLoader = new THREE.TextureLoader();
     loadTextures(tempData, textureLoader).then((textures) => {
-      createPlanets(tempData, scene, textures, camera.current);
+      createPlanets(tempData, scene, textures, camera.current!);
     });
 
-    let frameId; // 애니메이션 프레임 ID 저장
+    let frameId: number; // 애니메이션 프레임 ID 저장
     function animate() {
       frameId = requestAnimationFrame(animate); // 애니메이션 프레임 요청
-      renderer.render(scene, camera.current);
+      renderer.render(scene, camera.current!);
     }
 
     function onWindowResize() {
-      camera.current.aspect = window.innerWidth / window.innerHeight;
-      camera.current.updateProjectionMatrix();
+      camera.current!.aspect = window.innerWidth / window.innerHeight;
+      camera.current!.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
     }
 
     window.addEventListener("resize", onWindowResize, false);
-    window.addEventListener("mousemove", (event) =>
-      onMouseMove(event, scene, renderer)
-    );
-    window.addEventListener("click", (event) =>
-      onPlanetClick(event, scene, renderer)
-    ); // 클릭 이벤트 추가
+    window.addEventListener("mousemove", (event) => onMouseMove(event, scene, renderer));
+    window.addEventListener("click", (event) => onPlanetClick(event, scene, renderer)); // 클릭 이벤트 추가
     animate();
 
     return () => {
       cancelAnimationFrame(frameId); // 애니메이션 프레임 해제
       window.removeEventListener("resize", onWindowResize);
-      window.removeEventListener("mousemove", (event) =>
-        onMouseMove(event, scene, renderer)
-      );
-      window.removeEventListener("click", (event) =>
-        onPlanetClick(event, scene, renderer)
-      ); // 클릭 이벤트 해제
+      window.removeEventListener("mousemove", (event) => onMouseMove(event, scene, renderer));
+      window.removeEventListener("click", (event) => onPlanetClick(event, scene, renderer)); // 클릭 이벤트 해제
       mountRef.current?.removeChild(renderer.domElement);
     };
   }, []);
@@ -98,7 +91,7 @@ export default function Page() {
         -(event.clientY / renderer.domElement.clientHeight) * 2 + 1
       );
 
-      raycaster.setFromCamera(mouse, camera.current);
+      raycaster.setFromCamera(mouse, camera.current!);
       const intersects = raycaster.intersectObjects(scene.children);
 
       if (intersects.length > 0) {
@@ -108,13 +101,13 @@ export default function Page() {
           corpName: intersected.userData.corpName,
           position: intersected.position.clone(),
         });
-        setIsModalOpen(true); // 모달 열기
+        setIsModalOpen(true);
 
         // 커서를 포인터로 변경
         document.body.style.cursor = "pointer";
       } else {
         setHoveredPlanet(null);
-        setIsModalOpen(false); // 모달 닫기
+        setIsModalOpen(false);
 
         // 커서를 기본으로 변경
         document.body.style.cursor = "auto";
@@ -131,13 +124,12 @@ export default function Page() {
       -(event.clientY / renderer.domElement.clientHeight) * 2 + 1
     );
 
-    raycaster.setFromCamera(mouse, camera.current);
+    raycaster.setFromCamera(mouse, camera.current!);
     const intersects = raycaster.intersectObjects(scene.children);
 
     if (intersects.length > 0) {
       const clickedPlanet = intersects[0].object;
       const { stockCode } = clickedPlanet.userData;
-      // 클릭 시 해당 행성 메인 페이지로 이동
       router.push(`/planet/main/${stockCode}/${currentDate}`);
     }
   };
@@ -149,7 +141,7 @@ export default function Page() {
         width: "100%",
         height: "100vh",
         position: "absolute",
-        zIndex: 1,
+        zIndex: 0,
       }}
     >
       <RecoilRoot>
@@ -159,7 +151,7 @@ export default function Page() {
             stockCode={hoveredPlanet.stockCode}
             corpName={hoveredPlanet.corpName}
             position={hoveredPlanet.position}
-            camera={camera.current}
+            camera={camera.current!}
             rendererDomElement={
               mountRef.current?.children[0] as HTMLCanvasElement
             }

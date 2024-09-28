@@ -10,7 +10,7 @@ export async function GET(request) {
     }
 
     // 여기서 비디오 파일 경로를 적절히 설정
-    const videoPath = `./public${url}`; // 예를 들어, public/video/main_video.mp4
+    const videoPath = `./public/videos${url}`; // 예를 들어, public/video/main_video.mp4
 
     try {
         const videoStream = await fetch(videoPath); // Fetching the video

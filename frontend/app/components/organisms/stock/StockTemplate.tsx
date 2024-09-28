@@ -8,12 +8,11 @@ import useKRStockWebSocket from "@/app/hooks/useKRStockWebSocket";
 
 const ParentContainer = styled.div`
   width: 50vw;
-  height: 50vh;
   overflow-y: auto;
   background-color: #111;
   color: white;
   width: 300px;
-  height: 80%;
+  max-height: 80%;
   background-color: #d9d9d9;
   border-radius: 20px;
   padding: 20px;
@@ -52,6 +51,7 @@ const Header = styled.div`
   font-size: 1.1rem;
   font-weight: bold;
   margin-bottom: 10px;
+  color: black;
 `;
 
 interface stockData {

@@ -3,11 +3,13 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import MenuHeader from "./components/organisms/Banner/MenuHeader";
+import StockHeader from "./components/organisms/Banner/StockHeader";
 import "./globals.css";
 import RecoilRootWrapper from "./components/atoms/RecoilRootWrapper";
 import { ibm } from '@/public/fonts';
 import { AnimatePresence, motion } from 'framer-motion';
 import { usePathname } from 'next/navigation';
+import StockTemplate from "./components/organisms/stock/StockTemplate";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -29,7 +31,7 @@ export default function RootLayout({
           <MenuHeader />
          
               {children}  {/* 페이지의 자식 요소 */}
-         
+         <StockHeader />
         </RecoilRootWrapper>
       </body>
     </html>
