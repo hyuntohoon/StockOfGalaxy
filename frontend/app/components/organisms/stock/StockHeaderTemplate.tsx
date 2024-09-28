@@ -5,6 +5,9 @@ import styled from "@emotion/styled";
 import StockHeaderPrice from "../../molecules/stock/StockHeaderPrice";
 import StockHeaderInfo from "../../molecules/stock/StockHeaderInfo";
 import { HeaderWrapper } from "@/app/styles/planet";
+import useKRStockWebSocket from "@/app/hooks/useKRStockWebSocket";
+import { GoTriangleDown } from "react-icons/go";
+import { useParams, useRouter } from "next/navigation";
 
 const ParentContainer = styled.div`
   min-width: 950px;
@@ -35,90 +38,72 @@ const Container = styled.div`
   justify-content: space-between;
 `;
 
-interface CoinData {
-  market: string;
-  korean_name: string;
-  english_name: string;
-}
+const Button = styled.div`
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  cursor: pointer;
+  z-index: 1000;
 
-interface CoinState {
-  currentPrice: number | null;
-  changePrice: number | null;
-  changeRate: number | null;
+  &:hover {
+    color: #c6b6d0; /* 호버시 색상 변경 */
+  }
+`;
+
+interface stockState {
+  stock_name: string;
+  stock_code: string;
+  currentPrice: number;
+  changePrice: number;
+  changeRate: number;
 }
 
 const StockHeaderTemplate = () => {
-  const market = "KRW-BTC";
+  const [stockDataInfo, setStockDataInfo] = useState<stockState[]>([
+    {
+      stock_name: "삼성전자",
+      stock_code: "005930",
+      currentPrice: 0,
+      changePrice: 0,
+      changeRate: 0,
+    },
+  ]);
+  
+  const router = useRouter();
+  const { stock: stockCode, date } = useParams(); // useParams로 stockCode와 date 가져오기
 
-  useEffect(() => {
-    const socket = new WebSocket("wss://api.upbit.com/websocket/v1");
-
-    socket.onopen = () => {
-      console.log(`Connected to ${market}`);
-      socket.send(
-        JSON.stringify([
-          { ticket: "UNIQUE_TICKET" },
-          {
-            type: "ticker",
-            codes: [market],
-            isOnlySnapshot: true,
-            isOnlyRealtime: true,
-          },
-          { format: "DEFAULT" },
-        ])
-      );
-    };
-
-    socket.onmessage = async (event) => {
-      const data =
-        event.data instanceof Blob ? await event.data.text() : event.data;
-      const jsonData = JSON.parse(data);
-
-      if (jsonData && jsonData.trade_price) {
-        setPrice(jsonData.trade_price);
-      }
-
-      if (jsonData && jsonData.change_price && jsonData.change) {
-        setChangePrice(
-          jsonData.change === "FALL"
-            ? -jsonData.change_price
-            : jsonData.change_price
-        );
-      }
-
-      if (jsonData && jsonData.change_rate && jsonData.change) {
-        setChangeRate(jsonData.change_rate * 100);
-      }
-    };
-
-    socket.onclose = () => {
-      console.log(`Disconnected from ${market}`);
-    };
-  }, []);
-
-  const [price, setPrice] = useState(0);
-  const [changePrice, setChangePrice] = useState(0);
-  const [changeRate, setChangeRate] = useState(0);
+  useKRStockWebSocket(stockDataInfo, setStockDataInfo);
 
   const formatPrice = (price: number) => {
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
+  const handleClick = () => {
+    if (stockCode && date) {
+      router.push(`/planet/main/${stockCode}/${date}`);
+    }
+  };
+
   return (
-    <>
-      <HeaderWrapper>
-        <ParentContainer>
-          <Container>
+    <HeaderWrapper>
+      <Button onClick={handleClick}>
+        <GoTriangleDown />
+      </Button>
+      <ParentContainer>
+        {stockDataInfo.map((stock, index) => (
+          <Container key={index}>
             <StockHeaderPrice
-              price={price}
-              changePrice={changePrice}
-              changeRate={changeRate}
+              price={stock.currentPrice}
+              changePrice={stock.changePrice}
+              changeRate={stock.changeRate}
             />
             <StockHeaderInfo />
           </Container>
-        </ParentContainer>
-      </HeaderWrapper>
-    </>
+        ))}
+      </ParentContainer>
+    </HeaderWrapper>
   );
 };
 

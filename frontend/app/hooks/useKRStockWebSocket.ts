@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 const delay = (ms) => {
-  return new Promise((resolve) => setTimeout(resolve, 200 * ms));
+  return new Promise((resolve) => setTimeout(resolve, 500 * ms));
 };
 
 const useKRStockWebSocket = (stockData, setStockDataInfo: any) => {
@@ -13,13 +13,9 @@ const useKRStockWebSocket = (stockData, setStockDataInfo: any) => {
     socket.onopen = async () => {
       console.log("Connected to server");
 
-      stockData.forEach((stock) => {
-        console.log(stock.stock_code);
-      });
-
       stockData.forEach(async (stock) => {
         await delay(1);
-        socket.send(stock.stock_code);
+        await socket.send(stock.stock_code);
       });
     };
 

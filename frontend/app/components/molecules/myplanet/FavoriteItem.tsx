@@ -32,6 +32,15 @@ export const FavoriteItem: React.FC<FavoriteItemProps> = ({
 }) => {
   const router = useRouter();
 
+  // 가격을 포맷하는 함수
+  const formatPrice = (price: number) => {
+    return price.toLocaleString();
+  };
+
+  // price와 change 값이 문자열일 경우 숫자로 변환
+  const numericPrice = typeof price === "string" ? parseFloat(price) : price;
+  const numericChange = typeof change === "string" ? parseFloat(change) : change;
+
   return (
     <FavoriteItemContainer isRemoving={isRemoving} onClick={onClick}>
       <LeftSection>
@@ -57,7 +66,6 @@ export const FavoriteItem: React.FC<FavoriteItemProps> = ({
                     <Image
                       src={like}
                       alt="Favorite Toggle"
-                      layout="fixed"
                       width={24}
                       height={24}
                     />
@@ -66,7 +74,6 @@ export const FavoriteItem: React.FC<FavoriteItemProps> = ({
                     <Image
                       src={unlike}
                       alt="Favorite Toggle"
-                      layout="fixed"
                       width={24}
                       height={24}
                     />
@@ -79,10 +86,13 @@ export const FavoriteItem: React.FC<FavoriteItemProps> = ({
       </LeftSection>
       <RightSection>
         <Text size="17px" weight="bold">
-          {price}
+          {formatPrice(numericPrice)}
         </Text>
-        <Text size="14px" color={parseInt(change) > 0 ? "#FF4500" : "#1E90FF"}>
-          {change}
+        <Text
+          size="14px"
+          color={numericChange > 0 ? "#FF4500" : "#1E90FF"} // 양수/음수에 따른 색상
+        >
+          {numericChange}
         </Text>
       </RightSection>
     </FavoriteItemContainer>

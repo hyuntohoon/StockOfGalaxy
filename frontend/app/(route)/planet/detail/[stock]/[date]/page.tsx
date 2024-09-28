@@ -10,6 +10,7 @@ import TimeMachineButtonGroup from '@/app/components/molecules/ButtonGroup/TimeM
 import RocketButtonGroup from '@/app/components/molecules/ButtonGroup/RocketButtonGroup';
 import RocketModal from '@/app/components/organisms/Modal/RocketModal';
 
+
 const NewsPage: React.FC = (props: any) => {
   const {stock, date} = props.params;
   const todayDate = useRecoilValue(dateState);
@@ -17,6 +18,7 @@ const NewsPage: React.FC = (props: any) => {
   const [wordData1, setWordData1] = useState<any[]>([]); // res1 저장
   const [wordData2, setWordData2] = useState<any[]>([]); // res2 저장
   const [isRocketModalOpen, setIsRocketModalOpen] = useState(false);
+
 
   useEffect(() => {
     const fetchNewsData = async () => {
@@ -42,6 +44,7 @@ const NewsPage: React.FC = (props: any) => {
 
   return (
     <>
+ 
       <NewsPageHeaderTemplate newsData={newsData} wordData1={wordData1} wordData2={wordData2} />
       <TimeMachineButtonGroup />
       <RocketButtonGroup onRocketClick={() => setIsRocketModalOpen(true)} />

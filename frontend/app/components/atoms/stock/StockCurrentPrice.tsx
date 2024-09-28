@@ -21,7 +21,11 @@ const StockCurrentPrice = ({
   currentPrice,
   fontSize = 13,
 }: CurrentPriceProps) => {
-  return <CurrentPrice $fontSize={fontSize}>{currentPrice}원</CurrentPrice>;
+  return (
+    <CurrentPrice $fontSize={fontSize}>
+      {formatPrice(currentPrice)}원
+    </CurrentPrice>
+  );
 };
 
 export default StockCurrentPrice;

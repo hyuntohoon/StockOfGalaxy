@@ -22,23 +22,23 @@ export const FavoritesList: React.FC<FavoritesListProps> = ({
 
   const handleToggleFavorite = (index: number) => {
     // 현재 아이템이 이미 제거 중인지 확인
-    // if (removingIndex === index) return;
-    onToggleFavorite(index);
+    if (removingIndex === index) return;
 
     // 아이템이 제거 중인 상태로 설정
-    // setRemovingIndex(index);
+    setRemovingIndex(index);
 
     // 잠시 후, 실제 아이템 제거를 처리
-    // setTimeout(() => {
-    //   onToggleFavorite(index);
-    //   setRemovingIndex(null); // 제거 완료 후 상태 초기화
-    // }, 500); // 애니메이션과 일치하도록 딜레이 설정
+    setTimeout(() => {
+      onToggleFavorite(index); // 즐겨찾기 상태 토글
+      setRemovingIndex(null); // 제거 완료 후 상태 초기화
+    }, 500); // 애니메이션과 일치하도록 딜레이 설정
   };
 
   return (
     <FavoriteListContainer>
       {items.map((item, index) => (
         <FavoriteItem
+          stockCode={item.stockCode}
           key={index}
           rank={item.rank}
           name={item.name}

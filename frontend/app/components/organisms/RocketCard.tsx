@@ -59,6 +59,26 @@ const Content = styled.div`
   justify-content: space-between;
   overflow-x: hidden;
   overflow-y: auto;
+
+  /* 스크롤바 커스텀 스타일링 */
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #848484;
+    border-radius: 20px;
+    transition: background-color 0.3s;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: #84848484;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
+  }
 `;
 
 const StyledRocketContent = styled(RocketContent)`
