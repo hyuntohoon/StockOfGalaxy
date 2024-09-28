@@ -4,19 +4,22 @@ import com.sog.stock.domain.dto.FinancialDTO;
 import com.sog.stock.domain.dto.FinancialListDTO;
 import com.sog.stock.domain.dto.HolidayAddListRequestDTO;
 import com.sog.stock.domain.dto.HolidayAddRequestDTO;
+import com.sog.stock.domain.dto.QuarterStockPriceListDTO;
 import com.sog.stock.domain.dto.rocket.RocketAddRequestDTO;
 import com.sog.stock.domain.dto.StockAddListRequestDTO;
 import com.sog.stock.domain.dto.StockDTO;
-import com.sog.stock.domain.dto.StockDailyPriceListDTO;
-import com.sog.stock.domain.dto.StockDailyPriceDTO;
+import com.sog.stock.domain.dto.DailyStockPriceListDTO;
+import com.sog.stock.domain.dto.DailyStockPriceDTO;
 import com.sog.stock.domain.dto.StockNameResponseDTO;
 import com.sog.stock.domain.model.DailyStockHistory;
 import com.sog.stock.domain.model.FinancialStatements;
+import com.sog.stock.domain.model.QuarterStockHistory;
 import com.sog.stock.domain.model.Rocket;
 import com.sog.stock.domain.model.Stock;
 import com.sog.stock.domain.model.StockHoliday;
 import com.sog.stock.domain.repository.DailyStockHistoryRepository;
 import com.sog.stock.domain.repository.FinancialStatementsRepository;
+import com.sog.stock.domain.repository.QuarterStockHistoryRepository;
 import com.sog.stock.domain.repository.RocketRepository;
 import com.sog.stock.domain.repository.StockHolidayRepository;
 import com.sog.stock.domain.repository.StockRepository;
@@ -31,37 +34,39 @@ import org.springframework.stereotype.Service;
 public class StockServiceImpl implements StockService {
 
     private final DailyStockHistoryRepository dailyStockHistoryRepository;
+    private final QuarterStockHistoryRepository quarterStockHistoryRepository;
     private final StockHolidayRepository stockHolidayRepository;
     private final StockRepository stockRepository;
     private final RocketRepository rocketRepository;
     private final FinancialStatementsRepository financialStatementsRepository;
 
     @Override
-    public StockDailyPriceListDTO getDailyStockHistory(String stockCode) {
+    public DailyStockPriceListDTO getDailyStockHistory(String stockCode) {
 
         // 종목번호로 모든 데이터 조회
         List<DailyStockHistory> historyList = dailyStockHistoryRepository.findByStockCodeOrderByDateDesc(
             stockCode);
 
         // entity 리스트 -> dto리스트 변환
-        List<StockDailyPriceDTO> dtoList = historyList.stream()
-            .map(StockDailyPriceDTO::fromEntity)
+        List<DailyStockPriceDTO> dtoList = historyList.stream()
+            .map(DailyStockPriceDTO::fromEntity)
             .collect(Collectors.toList());
 
         // DTO 리스트를 감싸서 반환
-        return new StockDailyPriceListDTO(dtoList);
+        return new DailyStockPriceListDTO(dtoList);
     }
 
     @Override
-    public void addDailyStockHistory(StockDailyPriceListDTO stockDailyPriceList) {
-        List<StockDailyPriceDTO> dtoList = stockDailyPriceList.getStockDailyPriceList();
+    public void addDailyStockHistory(DailyStockPriceListDTO stockDailyPriceList) {
+        List<DailyStockPriceDTO> dtoList = stockDailyPriceList.getStockDailyPriceList();
 
         // 각 DTO를 Entity로 변환하여 저장
         List<DailyStockHistory> entityList = dtoList.stream()
             .map(dto -> {
                 // stockCode로 Stock 엔티티 조회
-                Stock stock = stockRepository.findById(dto.getStock_code())
-                    .orElseThrow(() -> new IllegalArgumentException("해당 종목 코드가 존재하지 않습니다: " + dto.getStock_code()));
+                Stock stock = stockRepository.findById(dto.getStockCode())
+                    .orElseThrow(() -> new IllegalArgumentException(
+                        "해당 종목 코드가 존재하지 않습니다: " + dto.getStockCode()));
 
                 // DTO를 Entity로 변환 (Stock 객체와 연결)
                 return dto.toEntity(stock);
@@ -70,6 +75,39 @@ public class StockServiceImpl implements StockService {
 
         // 변환된 엔티티를 저장
         dailyStockHistoryRepository.saveAll(entityList);
+    }
+
+    @Override
+    public QuarterStockPriceListDTO getQuarterStockHistory(String stockCode, String quarterType) {
+        List<QuarterStockHistory> historyList;
+
+        // quarterType에 따라 다르게 처리
+        switch (quarterType) {
+            case "D":
+                // "D" 타입일 경우 최근 90개의 데이터를 반환
+                historyList = quarterStockHistoryRepository.findTop90ByStockCodeOrderByStockStartDateDesc(
+                    stockCode);
+                break;
+            case "M":
+                // "M" 타입일 경우 최근 60개의 데이터를 반환
+                historyList = quarterStockHistoryRepository.findTop60ByStockCodeOrderByStockStartDateDesc(
+                    stockCode);
+                break;
+            case "Y":
+                // "Y" 타입일 경우 해당 종목코드의 모든 데이터를 반환
+                historyList = quarterStockHistoryRepository.findByStockCodeAndQuarterType(
+                    stockCode);
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid quarter type: " + quarterType);
+        }
+
+        return null;
+    }
+
+    @Override
+    public void addQuarterStockHistory(QuarterStockPriceListDTO quarterStockPriceList) {
+
     }
 
     @Override
@@ -147,7 +185,8 @@ public class StockServiceImpl implements StockService {
             .orElseThrow(() -> new IllegalArgumentException("해당 종목 코드가 존재하지 않습니다: " + stockCode));
 
         // Stock에 해당하는 FinancialStatements 리스트 조회
-        List<FinancialStatements> financialStatementsList = financialStatementsRepository.findByStock(stock);
+        List<FinancialStatements> financialStatementsList = financialStatementsRepository.findByStock(
+            stock);
 
         // FinancialDTO 리스트로 변환
         List<FinancialDTO> financialDTOList = financialStatementsList.stream()

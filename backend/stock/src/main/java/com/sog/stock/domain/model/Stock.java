@@ -58,6 +58,9 @@ public class Stock {
     @OneToMany(mappedBy = "stock", fetch = FetchType.LAZY)
     private List<FinancialStatements> financialStatements = new ArrayList<>();
 
+    @OneToMany(mappedBy = "stock", fetch = FetchType.LAZY)
+    private List<QuarterStockHistory> quarterStockHistories = new ArrayList<>();
+
     // Dto to entity
     public static Stock fromDTO(StockDTO dto) {
         return Stock.builder()

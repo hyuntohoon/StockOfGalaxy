@@ -5,7 +5,7 @@ import com.sog.stock.domain.dto.FinancialListDTO;
 import com.sog.stock.domain.dto.HolidayAddListRequestDTO;
 import com.sog.stock.domain.dto.StockAddListRequestDTO;
 import com.sog.stock.domain.dto.StockDTO;
-import com.sog.stock.domain.dto.StockDailyPriceListDTO;
+import com.sog.stock.domain.dto.DailyStockPriceListDTO;
 import com.sog.stock.domain.dto.StockNameResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,13 +26,13 @@ public class StockController {
 
     // 주식 일별 시세 조회
     @GetMapping("/{stockCode}/history")
-    public StockDailyPriceListDTO getStockHistory(@PathVariable String stockCode) {
+    public DailyStockPriceListDTO getStockHistory(@PathVariable String stockCode) {
         return stockService.getDailyStockHistory(stockCode);
     }
 
     // 주식 일별 시세 등록
     @PostMapping("/history")
-    public ResponseEntity<?> addStockHistory(@RequestBody StockDailyPriceListDTO stockDailyPriceList) {
+    public ResponseEntity<?> addStockHistory(@RequestBody DailyStockPriceListDTO stockDailyPriceList) {
         stockService.addDailyStockHistory(stockDailyPriceList);
         return new ResponseEntity<>("등록이 완료되었습니다.", HttpStatus.OK);
     }

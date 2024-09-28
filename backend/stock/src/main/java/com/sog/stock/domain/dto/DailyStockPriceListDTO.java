@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class StockDailyPriceListDTO {
+public class DailyStockPriceListDTO {
 
-    private List<StockDailyPriceDTO> stockDailyPriceList;
+    private List<DailyStockPriceDTO> stockDailyPriceList;
 
 }

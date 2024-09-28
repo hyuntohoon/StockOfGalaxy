@@ -2,10 +2,12 @@ package com.sog.stock.application.service;
 
 import com.sog.stock.domain.dto.FinancialListDTO;
 import com.sog.stock.domain.dto.HolidayAddListRequestDTO;
+import com.sog.stock.domain.dto.QuarterStockPriceDTO;
+import com.sog.stock.domain.dto.QuarterStockPriceListDTO;
 import com.sog.stock.domain.dto.rocket.RocketAddRequestDTO;
 import com.sog.stock.domain.dto.StockAddListRequestDTO;
 import com.sog.stock.domain.dto.StockDTO;
-import com.sog.stock.domain.dto.StockDailyPriceListDTO;
+import com.sog.stock.domain.dto.DailyStockPriceListDTO;
 import com.sog.stock.domain.dto.StockNameResponseDTO;
 import org.springframework.stereotype.Service;
 
@@ -13,10 +15,16 @@ import org.springframework.stereotype.Service;
 public interface StockService {
 
     // 주식 일별 데이터 조회
-    StockDailyPriceListDTO getDailyStockHistory(String stockCode);
+    DailyStockPriceListDTO getDailyStockHistory(String stockCode);
 
     // 주식 일별 데이터 추가
-    void addDailyStockHistory(StockDailyPriceListDTO stockDailyPriceList);
+    void addDailyStockHistory(DailyStockPriceListDTO stockDailyPriceList);
+
+    // 주식 분기별 데이터 조회
+    QuarterStockPriceListDTO getQuarterStockHistory(String stockCode, String quarterType);
+
+    // 주식 분기별 데이터 추가
+    void addQuarterStockHistory(QuarterStockPriceListDTO quarterStockPriceList);
 
     // 행성 리스트 추가
     void addStockList(StockAddListRequestDTO stockAddListRequestDTO);
