@@ -13,50 +13,46 @@ spec:
       labels:
         app: gateway-service
     spec:
-      # Init Container 설정 추가
       volumes:
-      - name: elastic-apm-agent
-        emptyDir: {}
-        
+        - name: elastic-apm-agent
+          emptyDir: {}
       initContainers:
-      - name: elastic-java-agent
-        image: docker.elastic.co/observability/apm-agent-java:1.12.0
-        volumeMounts:
-        - mountPath: /elastic/apm/agent
-          name: elastic-apm-agent
-        command: ['cp', '-v', '/usr/agent/elastic-apm-agent.jar', '/elastic/apm/agent']
-
-      # Main Container 설정
+        - name: elastic-java-agent
+          image: docker.elastic.co/observability/apm-agent-java:1.52.0
+          volumeMounts:
+            - mountPath: /elastic/apm/agent
+              name: elastic-apm-agent
+          command: ['cp', '-v', '/usr/agent/elastic-apm-agent.jar', '/elastic/apm/agent']
       containers:
-      - name: gateway-service
-        image: zlxldgus123/gateway-service:200
-        ports:
-          - containerPort: 8080
-        env:
-          - name: JWT_SECRET
-            valueFrom:
-              secretKeyRef:
-                name: jwt-secret
-                key: secret  # jwt-secret의 secret 필드를 환경 변수로 사용
-          # APM 환경 변수 설정
-          - name: ELASTIC_APM_SERVER_URL
-            value: "http://apm-server.dev.svc.cluster.local:8200" # APM 서버 주소
-          - name: ELASTIC_APM_SERVICE_NAME
-            value: "gateway-service"
-          - name: ELASTIC_APM_APPLICATION_PACKAGES
-            value: "com.example"  # 애플리케이션의 패키지 네임 (변경 필요)
-          - name: ELASTIC_APM_ENVIRONMENT
-            value: "production" # 환경명 (예: production, dev)
-          - name: JAVA_TOOL_OPTIONS
-            value: "-javaagent:/elastic/apm/agent/elastic-apm-agent.jar"
-        
-        volumeMounts:
-        - mountPath: /elastic/apm/agent
-          name: elastic-apm-agent
-        resources:
-          requests:
-            memory: "512Mi"
-            cpu: "250m"
-          limits:
-            memory: "1Gi"
-            cpu: "500m"
+        - name: gateway-service
+          image: zlxldgus123/gateway-service:200
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - mountPath: /elastic/apm/agent
+              name: elastic-apm-agent
+          env:
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: secret  # jwt-secret의 secret 필드를 환경 변수로 사용
+            - name: ELASTIC_APM_SERVER_URLS
+              value: "http://apm-server.dev.svc.cluster.local:8200"
+            - name: ELASTIC_APM_SERVICE_NAME
+              value: "gateway-service"
+            - name: ELASTIC_APM_APPLICATION_PACKAGES
+              value: "com.sog"  # 애플리케이션의 패키지 네임 (적절히 변경)
+            - name: ELASTIC_APM_ENVIRONMENT
+              value: "production"  # 환경 설정 (production, development 등)
+            - name: ELASTIC_APM_LOG_LEVEL
+              value: "DEBUG"  # 로그 레벨 설정 (필요에 따라 조정 가능)
+            - name: JAVA_TOOL_OPTIONS
+              value: -javaagent:/elastic/apm/agent/elastic-apm-agent.jar
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
