@@ -13,22 +13,24 @@ const Container = styled.div`
   right: 0;
   height: 100vh;
   width: 50px; /* 호버 감지 영역의 너비 */
-  z-index: 100000000000;
+  z-index: 10000000;
   background-color: transparent; /* 호버 감지 영역은 투명 */
 `;
 
-// 실제 메뉴 헤더
 const MenuHeaderWrapper = styled.div<{ isOpen: boolean }>`
   position: fixed;
-  top: 50%;
+  top: 5%;  /* 상단에서 5% 떨어진 위치 */
   right: 0;
-  transform: translate(100%, -50%) translateX(${props => (props.isOpen ? '-105%' : '0')});
+  height: 90%;  /* 전체 높이의 90%를 차지 */
+
+  transform: translate(100%, -50%) translateX(${props => (props.isOpen ? '-101%' : '0')}) translateY(55%);
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 20px;
+  margin: 10px;
 
-  justify-content: space-around;
+  justify-content: center;
   width: 300px;
   transition: transform ${TRANSITION_DURATION} ease-in-out;
   box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
@@ -36,6 +38,7 @@ const MenuHeaderWrapper = styled.div<{ isOpen: boolean }>`
   /* 포인터 이벤트 관리 */
   pointer-events: ${props => (props.isOpen ? 'auto' : 'none')};
 `;
+
 
 const StockHeader: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);

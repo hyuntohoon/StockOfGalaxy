@@ -2,8 +2,6 @@ import styled from '@emotion/styled';
 import { css, keyframes } from '@emotion/react';
 
 
-
-
 export const FavoriteListContainer = styled.div`
 display: flex;
 flex-direction: column;
@@ -227,7 +225,7 @@ export const ToggleButton = styled.button`
   position: absolute;
   top: 10px;
   right: 30px;
-  z-index: 10;
+  z-index: 0;
   font-size: 2rem;
   color: #333;
   transition: color 0.3s ease;
