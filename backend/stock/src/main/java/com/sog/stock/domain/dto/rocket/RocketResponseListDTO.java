@@ -1,4 +1,4 @@
-package com.sog.stock.domain.dto;
+package com.sog.stock.domain.dto.rocket;
 
 import java.util.List;
 import lombok.AllArgsConstructor;

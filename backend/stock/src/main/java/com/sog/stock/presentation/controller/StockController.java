@@ -1,6 +1,8 @@
 package com.sog.stock.presentation.controller;
 
 import com.sog.stock.application.service.StockService;
+import com.sog.stock.domain.dto.FinancialDTO;
+import com.sog.stock.domain.dto.FinancialListDTO;
 import com.sog.stock.domain.dto.HolidayAddListRequestDTO;
 import com.sog.stock.domain.dto.StockAddListRequestDTO;
 import com.sog.stock.domain.dto.StockDTO;
@@ -72,9 +74,12 @@ public class StockController {
         return new ResponseEntity<>(isHoliday, HttpStatus.OK);
     }
 
-
-
     // 재무재표 등록
+    @PostMapping("/financial-statements")
+    public ResponseEntity<?> addFinancialStatements(@RequestBody FinancialListDTO financialList) {
+        stockService.addFinancialList(financialList);
+        return new ResponseEntity<>("제무재표 리스트가 정상적으로 등록되었습니다.", HttpStatus.OK);
+    }
 
     // 제무재표 조회
 
@@ -85,9 +90,6 @@ public class StockController {
         return new ResponseEntity<>(stockNameResponseDTO, HttpStatus.OK);
 
     }
-
-
-
 
 
 }

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 public interface DailyStockHistoryRepository extends JpaRepository<DailyStockHistory, Integer> {
 
     // 종목번호로 검색한 후 날짜 순으로 정렬
-    @Query("SELECT d FROM DailyStockHistory d WHERE d.stock.stockCode = :stockCode ORDER BY d.dailyStockHistoryDate DESC")
+    @Query("SELECT d FROM DailyStockHistory d WHERE d.stock.stock_code = :stockCode ORDER BY d.dailyStockHistoryDate DESC")
     List<DailyStockHistory> findByStockCodeOrderByDateDesc(@Param("stockCode") String stockCode);
 
 }

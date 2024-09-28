@@ -1,25 +1,16 @@
 package com.sog.stock.domain.dto;
 
+import java.math.BigDecimal;
 import lombok.Data;
 
 @Data
-public class FinancialRequestDTO {
+public class FinancialDTO {
 
-    private String stockCode;
-    private String stacyymm;
-    private
-
-
-    /*
-    *
-    *
-    "stock_code": "005930",
-    "stac_yymm": "202406",
-    "current_assets": 2178581.0,
-    "current_liabilities": 843549.0,
-    "total_liabilities": 1022310.0,
-    "total_equity": 3835267.0
-    *
-    * */
+    private String stock_code;
+    private String stac_yymm;
+    private BigDecimal current_assets;
+    private BigDecimal current_liabilities;
+    private BigDecimal total_liabilities;
+    private BigDecimal total_equity;
 
 }

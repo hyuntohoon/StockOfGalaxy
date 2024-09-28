@@ -1,5 +1,7 @@
 package com.sog.stock.domain.model;
 
+import com.sog.stock.domain.dto.FinancialDTO;
+import com.sog.stock.domain.dto.FinancialListDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

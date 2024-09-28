@@ -1,9 +1,8 @@
 package com.sog.stock.application.service;
 
+import com.sog.stock.domain.dto.FinancialListDTO;
 import com.sog.stock.domain.dto.HolidayAddListRequestDTO;
-import com.sog.stock.domain.dto.RocketAddRequestDTO;
-import com.sog.stock.domain.dto.RocketResponseDTO;
-import com.sog.stock.domain.dto.RocketResponseListDTO;
+import com.sog.stock.domain.dto.rocket.RocketAddRequestDTO;
 import com.sog.stock.domain.dto.StockAddListRequestDTO;
 import com.sog.stock.domain.dto.StockDTO;
 import com.sog.stock.domain.dto.StockDailyPriceListResponseDTO;
@@ -32,8 +31,10 @@ public interface StockService {
     boolean isHoliday(String holidayDate);
 
     // 제무재표 등록
+    void addFinancialList(FinancialListDTO financialList);
 
     // 제무재표 조회
+    FinancialListDTO searchFinancial(String stockCode);
 
     // 종목이름 조회
     StockNameResponseDTO searchStockName(String stockCode);

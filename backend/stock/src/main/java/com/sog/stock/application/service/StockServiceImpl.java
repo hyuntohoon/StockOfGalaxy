@@ -1,29 +1,29 @@
 package com.sog.stock.application.service;
 
+import com.sog.stock.domain.dto.FinancialDTO;
+import com.sog.stock.domain.dto.FinancialListDTO;
 import com.sog.stock.domain.dto.HolidayAddListRequestDTO;
 import com.sog.stock.domain.dto.HolidayAddRequestDTO;
-import com.sog.stock.domain.dto.RocketAddRequestDTO;
-import com.sog.stock.domain.dto.RocketResponseDTO;
-import com.sog.stock.domain.dto.RocketResponseListDTO;
+import com.sog.stock.domain.dto.rocket.RocketAddRequestDTO;
 import com.sog.stock.domain.dto.StockAddListRequestDTO;
 import com.sog.stock.domain.dto.StockDTO;
 import com.sog.stock.domain.dto.StockDailyPriceListResponseDTO;
 import com.sog.stock.domain.dto.StockDailyPriceResponseDTO;
 import com.sog.stock.domain.dto.StockNameResponseDTO;
 import com.sog.stock.domain.model.DailyStockHistory;
+import com.sog.stock.domain.model.FinancialStatements;
 import com.sog.stock.domain.model.Rocket;
 import com.sog.stock.domain.model.Stock;
 import com.sog.stock.domain.model.StockHoliday;
 import com.sog.stock.domain.repository.DailyStockHistoryRepository;
+import com.sog.stock.domain.repository.FinancialStatementsRepository;
 import com.sog.stock.domain.repository.RocketRepository;
 import com.sog.stock.domain.repository.StockHolidayRepository;
 import com.sog.stock.domain.repository.StockRepository;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -34,6 +34,7 @@ public class StockServiceImpl implements StockService {
     private final StockHolidayRepository stockHolidayRepository;
     private final StockRepository stockRepository;
     private final RocketRepository rocketRepository;
+    private final FinancialStatementsRepository financialStatementsRepository;
 
     @Override
     public StockDailyPriceListResponseDTO getDailyStockHistory(String stockCode) {
@@ -90,13 +91,47 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
+    public void addFinancialList(FinancialListDTO financialList) {
+        // 각 financial dto를 entity로 변환 후 저장
+        for (FinancialDTO financialDTO : financialList.getFinancialList()) {
+            // stockCode가 null인지 확인
+            System.out.println(financialDTO);
+            if (financialDTO.getStock_code() == null || financialDTO.getStock_code().isEmpty()) {
+                throw new IllegalArgumentException("종목 코드가 null이거나 비어있습니다.");
+            }
+            // Stock 조회
+            Stock stock = stockRepository.findById(financialDTO.getStock_code())
+                .orElseThrow(() -> new IllegalArgumentException(
+                    "해당 종목 코드가 존재하지 않습니다: " + financialDTO.getStock_code()));
+
+            // DTO TO ENTITY
+            FinancialStatements financialStatements = FinancialStatements.builder()
+                .stacyymm(financialDTO.getStac_yymm())
+                .totalLiabilities(financialDTO.getTotal_liabilities())
+                .totalEquity(financialDTO.getTotal_equity())
+                .currentAssets(financialDTO.getCurrent_assets())
+                .currentLiabilities(financialDTO.getCurrent_liabilities())
+                .stock(stock)
+                .build();
+
+            financialStatementsRepository.save(financialStatements);
+        }
+
+    }
+
+    @Override
+    public FinancialListDTO searchFinancial(String stockCode) {
+        return null;
+    }
+
+    @Override
     public StockNameResponseDTO searchStockName(String stockCode) {
         // stockCode로 db에서 검색하여 Stock 객체를 반환
         Stock stock = stockRepository.findById(stockCode)
             .orElseThrow(() -> new IllegalArgumentException("해당 종목 코드가 존재하지 않습니다: " + stockCode));
 
         // StockNameResponseDTO로 변환하여 반환
-        return new StockNameResponseDTO(stock.getCompanyName());
+        return new StockNameResponseDTO(stock.getCorp_name());
     }
 
 

@@ -1,4 +1,4 @@
-package com.sog.stock.domain.dto;
+package com.sog.stock.domain.dto.rocket;
 
 import java.time.LocalDateTime;
 import lombok.Data;
@@ -8,10 +8,7 @@ public class RocketAddRequestDTO {
 
     private Long memberId;
     private String stockCode;
-    private String nickname;
     private int price;
     private String message;
-    private LocalDateTime createdAt;
-    private int characterType;
 
 }
