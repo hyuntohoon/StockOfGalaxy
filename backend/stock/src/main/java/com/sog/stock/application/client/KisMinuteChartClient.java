@@ -28,7 +28,6 @@ public class KisMinuteChartClient {
     // 30분 간격으로 차트 데이터를 요청
     public KisMinuteStockResponseDTO requestMinuteChart(String stockCode, String time,
         String token) {
-        log.info("시간시간시간!!!! " + time);
         KisMinuteStockResponseDTO response = webClient.get()
             .uri(uriBuilder -> uriBuilder
                 .path("/uapi/domestic-stock/v1/quotations/inquire-time-itemchartprice")
