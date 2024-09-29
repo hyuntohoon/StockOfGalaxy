@@ -1,13 +1,17 @@
 package com.sog.stock.application.service;
 
+import com.sog.stock.application.client.KisMinuteChartClient;
 import com.sog.stock.application.client.KisPresentPriceClient;
 import com.sog.stock.domain.dto.FinancialDTO;
 import com.sog.stock.domain.dto.FinancialListDTO;
 import com.sog.stock.domain.dto.HolidayAddListRequestDTO;
 import com.sog.stock.domain.dto.HolidayAddRequestDTO;
+import com.sog.stock.domain.dto.MinuteStockPriceDTO;
+import com.sog.stock.domain.dto.MinuteStockPriceListDTO;
 import com.sog.stock.domain.dto.QuarterStockPriceDTO;
 import com.sog.stock.domain.dto.QuarterStockPriceListDTO;
 import com.sog.stock.domain.dto.StockPresentPriceResponseDTO;
+import com.sog.stock.domain.dto.kis.KisMinuteStockResponseDTO;
 import com.sog.stock.domain.dto.kis.KisPresentPriceResponseDTO;
 import com.sog.stock.domain.dto.rocket.RocketAddRequestDTO;
 import com.sog.stock.domain.dto.StockAddListRequestDTO;
@@ -29,6 +33,8 @@ import com.sog.stock.domain.repository.RocketRepository;
 import com.sog.stock.domain.repository.StockHolidayRepository;
 import com.sog.stock.domain.repository.StockRepository;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -49,6 +55,7 @@ public class StockServiceImpl implements StockService {
 
     private final KisTokenService kisTokenService;
     private final KisPresentPriceClient kisPresentPriceClient;
+    private final KisMinuteChartClient kisMinuteChartClient;
 
     @Override
     public DailyStockPriceListDTO getDailyStockHistory(String stockCode) {
@@ -263,7 +270,8 @@ public class StockServiceImpl implements StockService {
         }
 
         // 한국투자증권 API에 현재가 요청
-        KisPresentPriceResponseDTO response = kisPresentPriceClient.requestStockPresentPrice(stockCode, token);
+        KisPresentPriceResponseDTO response = kisPresentPriceClient.requestStockPresentPrice(
+            stockCode, token);
 
         // 응답값을 StockPresentPriceResponseDTO로 매핑하여 반환
         return StockPresentPriceResponseDTO.builder()
@@ -272,6 +280,62 @@ public class StockServiceImpl implements StockService {
             .prdyVrss(response.getOutput().getPrdyVrss())         // 전일대비
             .prdyVrssSign(response.getOutput().getPrdyVrssSign()) // 전일대비 부호
             .prdyCtrt(response.getOutput().getPrdyCtrt())         // 전일대비율
+            .build();
+    }
+
+    @Override
+    public MinuteStockPriceListDTO getMinuteStockPriceList(String stockCode, String time) {
+        // kisToken redis에서 가져오기 (필요하면 재발급)
+        String token = kisTokenService.getAccessToken().block();
+        if (token == null) {
+            throw new RuntimeException("KIS 토큰 접근 실패");
+        }
+
+        // 090000보다 크면 1번 요청, 입력된 시간이 093000보다 크면 2번 요청, 100000보다 크면 3번 요청
+        List<MinuteStockPriceDTO> minutePrices = new ArrayList<>();
+        LocalTime requestedTime = LocalTime.parse(time, DateTimeFormatter.ofPattern("HHmmss"));
+        LocalTime openingTime = LocalTime.of(9, 0, 0);  // 장 오픈 시간
+        int requestCount = 0;  // 요청 횟수
+
+        // 시간에 따른 요청 횟수 계산
+        if (requestedTime.isAfter(LocalTime.of(10, 0, 0))) {
+            // 100000보다 크면 3번 요청
+            requestCount = 3;
+        } else if (requestedTime.isAfter(LocalTime.of(9, 30, 0))) {
+            // 093000보다 크고 100000보다 작으면 2번 요청
+            requestCount = 2;
+        } else if (requestedTime.isAfter(openingTime)) {
+            // 090000보다 크고 093000보다 작으면 1번 요청
+            requestCount = 1;
+        }
+
+        // 필요한 만큼 요청 보내기
+        for (int i = 0; i < requestCount; i++) {
+            KisMinuteStockResponseDTO response = kisMinuteChartClient.requestMinuteChart(stockCode,
+                requestedTime.format(DateTimeFormatter.ofPattern("HHmmss")), token);
+            List<KisMinuteStockResponseDTO.Output2> output2List = response.getOutput2();
+
+            output2List.forEach(output2 -> {
+                MinuteStockPriceDTO dto = MinuteStockPriceDTO.builder()
+                    .stckBsopDate(output2.getStckBsopDate())
+                    .stckCntgHour(output2.getStckCntgHour())
+                    .stckPrpr(output2.getStckPrpr())
+                    .stckOprc(output2.getStckOprc())
+                    .stckHgpr(output2.getStckHgpr())
+                    .stckLwpr(output2.getStckLwpr())
+                    .cntgVol(output2.getCntgVol())
+                    .acmlTrPbmn(output2.getAcmlTrPbmn())
+                    .build();
+
+                minutePrices.add(dto);
+            });
+
+            // 30분씩 감소시켜서 다음 요청 시간을 조정
+            requestedTime = requestedTime.minusMinutes(30);
+        }
+
+        return MinuteStockPriceListDTO.builder()
+            .minuteStockPrices(minutePrices)
             .build();
     }
 

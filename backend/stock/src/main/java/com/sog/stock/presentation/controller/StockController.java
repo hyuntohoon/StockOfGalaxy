@@ -3,6 +3,7 @@ package com.sog.stock.presentation.controller;
 import com.sog.stock.application.service.StockService;
 import com.sog.stock.domain.dto.FinancialListDTO;
 import com.sog.stock.domain.dto.HolidayAddListRequestDTO;
+import com.sog.stock.domain.dto.MinuteStockPriceListDTO;
 import com.sog.stock.domain.dto.QuarterStockPriceListDTO;
 import com.sog.stock.domain.dto.StockAddListRequestDTO;
 import com.sog.stock.domain.dto.StockDTO;
@@ -132,6 +133,15 @@ public class StockController {
             stockCode);
         return new ResponseEntity<>(stockPresentPriceResponse, HttpStatus.OK);
 
+    }
+
+    // 분봉 데이터 조회
+    @GetMapping("/{stockCode}/minute-chart/{time}")
+    public ResponseEntity<?> getMinuteChart(@PathVariable String stockCode,
+        @PathVariable String time) {
+        MinuteStockPriceListDTO minuteStockPriceList = stockService.getMinuteStockPriceList(
+            stockCode, time);
+        return new ResponseEntity<>(minuteStockPriceList, HttpStatus.OK);
     }
 
 

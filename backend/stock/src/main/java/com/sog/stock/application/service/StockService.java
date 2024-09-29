@@ -2,6 +2,7 @@ package com.sog.stock.application.service;
 
 import com.sog.stock.domain.dto.FinancialListDTO;
 import com.sog.stock.domain.dto.HolidayAddListRequestDTO;
+import com.sog.stock.domain.dto.MinuteStockPriceListDTO;
 import com.sog.stock.domain.dto.QuarterStockPriceDTO;
 import com.sog.stock.domain.dto.QuarterStockPriceListDTO;
 import com.sog.stock.domain.dto.StockPresentPriceResponseDTO;
@@ -55,6 +56,8 @@ public interface StockService {
     // 주식 현재가 조회
     StockPresentPriceResponseDTO searchStockPresentPrice(String stockCode);
 
+    // 시간에 따른 분봉 차트 데이터를 조회
+    MinuteStockPriceListDTO getMinuteStockPriceList(String stockCode, String time);
     /*
      * 로켓 관련
      * */
