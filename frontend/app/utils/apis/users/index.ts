@@ -38,6 +38,18 @@ export const login = async (formData, setAccessToken, setLogin) => {
   }
 };
 
+export const logout = async (accessToken, setAccessToken) => {
+  const authClient = authRequest(accessToken, setAccessToken);
+  try {
+    const logoutRes = await authClient.get("/user/logout");
+    alert("로그아웃 api 확인 필요, utils/apis/users/index.ts");
+    return true;
+  }catch (error) {
+    alert("로그아웃 실패");
+    return false;
+  }
+}
+
 export const getInfo = async (accessToken, setAccessToken) => {
   const authClient = authRequest(accessToken, setAccessToken);
 
