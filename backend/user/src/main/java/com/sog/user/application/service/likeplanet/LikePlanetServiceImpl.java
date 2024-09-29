@@ -55,13 +55,13 @@ public class LikePlanetServiceImpl implements LikePlanetService {
     // 관심행성 삭제
     @Override
     @Transactional
-    public void deleteLikePlanet(LikePlanetNumberDTO likePlanetNumberDTO, long memberId) {
+    public void deleteLikePlanet(String stockCode, long memberId) {
         Member member = userRepository.findById(memberId)
             .orElseThrow(() -> new IllegalArgumentException("해당 멤버를 찾을 수 없습니다."));
 
         // 복합키로 삭제
         LikedStockId likedStockId = new LikedStockId(member.getMemberId(),
-            likePlanetNumberDTO.getStockCode());
+            stockCode);
         likePlanetRepository.deleteByLikedStockId(likedStockId);
     }
 }

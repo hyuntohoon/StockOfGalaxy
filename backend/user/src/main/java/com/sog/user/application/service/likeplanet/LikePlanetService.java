@@ -12,6 +12,6 @@ public interface LikePlanetService {
     public void addLikePlanet(LikePlanetNumberDTO likePlanetNumberDTO, long memberId);
 
     // 관심행성 삭제
-    public void deleteLikePlanet(LikePlanetNumberDTO likePlanetNumberDTO, long memberId);
+    public void deleteLikePlanet(String stockCode, long memberId);
 
 }

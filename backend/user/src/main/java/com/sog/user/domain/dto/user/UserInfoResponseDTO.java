@@ -12,6 +12,7 @@ public class UserInfoResponseDTO {
     private String userId;
     private String nickname;
     private String email;
+    private Integer characterType;
     private boolean isQuit;
 
 }
