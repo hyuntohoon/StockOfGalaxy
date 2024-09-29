@@ -190,8 +190,7 @@ const StockTemplate = () => {
     <ParentContainer>
       <Header>
         <span>실시간 차트</span>
-        <span>|</span>
-        <span>뉴스</span>
+        
       </Header>
       {stockDataInfo.map((stock, index) => (
         <Container key={stock.stock_code}>
