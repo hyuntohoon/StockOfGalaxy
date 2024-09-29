@@ -8,10 +8,10 @@ import com.sog.news.domain.dto.TodayStockCloudResponseDTO;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import com.sog.news.domain.repository.NewsRepository;
+import com.sog.news.global.exception.exceptions.NewsNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -148,32 +148,10 @@ public class NewsServiceImpl implements NewsService {
         return ResponseEntity.ok(keywordFrequency);
     }
 
-    public ResponseEntity<NewsResponseDTO> getNewsById(Long id) {
-        // 더미 데이터 생성 (삼성전자와 애플 관련)
-        NewsResponseDTO news = null;
-        if (id == 1L) {
-            news = NewsResponseDTO.builder()
-                    .id(id)
-                    .title("삼성전자, 새로운 갤럭시 출시")
-                    .content("삼성전자가 새로운 갤럭시 시리즈를 공개하며 모바일 시장에서의 입지를 강화하고 있습니다.")
-                    .writeDate(LocalDateTime.of(2024, 4, 20, 10, 0)) // 날짜를 timestamp로 처리
-                    .newspaper("조선일보")
-                    .img("/images/logo/samsung.png")
-                    .keywords(Arrays.asList("삼성전자", "애플"))
-                    .build();
-        } else if (id == 2L) {
-            news = NewsResponseDTO.builder()
-                    .id(id)
-                    .title("애플, iPhone 16 공개")
-                    .content("애플이 iPhone 16을 공개하며 카메라 성능 및 배터리 효율성 등에서 큰 개선을 이루었습니다.")
-                    .writeDate(LocalDateTime.of(2024, 5, 15, 12, 0))
-                    .newspaper("동아일보")
-                    .img("/images/logo/apple.png")
-                    .keywords(Arrays.asList("애플", "삼성전자"))
-                    .build();
-        }
-
-        // ResponseEntity로 반환
-        return ResponseEntity.ok(news);
+    @Override
+    public NewsResponseDTO getNewsById(Long id) {
+        return newsRepository.findById(id)
+                .map(NewsResponseDTO::fromEntity)  // News 엔티티를 DTO로 변환
+                .orElseThrow(() -> new NewsNotFoundException("ID : " + id + " 에 해당하는 뉴스가 존재하지 않습니다."));  // 커스텀 예외 사용
     }
 }
