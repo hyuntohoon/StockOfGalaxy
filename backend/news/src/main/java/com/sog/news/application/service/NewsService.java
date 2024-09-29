@@ -13,7 +13,7 @@ public interface NewsService {
 
     List<TodayNewsResponseDTO> getTodayNews(LocalDate date);
 
-    ResponseEntity<List<TodayPlanetNewsResposeDTO>> getTodayPlanetNews(LocalDate date, String stockCode);
+    List<TodayPlanetNewsResposeDTO> getTodayPlanetNews(LocalDate date, String stockName);
 
     ResponseEntity<?> searchNewsContentByKeyword(String keyword);
 
