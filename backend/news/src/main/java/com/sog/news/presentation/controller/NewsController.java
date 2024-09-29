@@ -1,6 +1,7 @@
 package com.sog.news.presentation.controller;
 
 import com.sog.news.application.service.NewsService;
+import com.sog.news.domain.dto.NewsResponseDTO;
 import com.sog.news.domain.dto.TodayNewsResponseDTO;
 import com.sog.news.domain.dto.TodayPlanetNewsResposeDTO;
 import io.swagger.v3.oas.annotations.Operation;
@@ -58,7 +59,8 @@ public class NewsController {
 
     @Operation(summary = "뉴스 검색", description = "뉴스를 상세 조회합니다.")
     @GetMapping("/{id}")
-    public ResponseEntity<?> getNewsById(@PathVariable Long id) {
-        return newsService.getNewsById(id);
+    public ResponseEntity<NewsResponseDTO> getNewsById(@PathVariable Long id) {
+        NewsResponseDTO news = newsService.getNewsById(id);
+        return new ResponseEntity<>(news, HttpStatus.OK);
     }
 }
