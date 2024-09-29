@@ -15,12 +15,6 @@ import java.time.LocalDateTime;
 public class TodayNewsResponseDTO {
     private Long newsId;
     private String title;
-    private String content;
-    private NewsCategory category;
     private LocalDateTime publishedDate;
-    private String newsLink;
-    private double sentimentIndex;
     private String thumbnailImg;
-    private LocalDateTime newsCreatedAt;
-    private LocalDateTime newsUpdatedAt;
 }

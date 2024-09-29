@@ -10,11 +10,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import com.sog.news.domain.model.News;
 import com.sog.news.domain.repository.NewsRepository;
-import com.sog.news.global.NewsCategory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -32,8 +29,8 @@ public class NewsServiceImpl implements NewsService {
         LocalDateTime endOfDay = date.atTime(23, 59, 59);
 
         // 뉴스 발행일자 기준으로 조회
-        List<News> newsList = newsRepository.findByPublishedDateBetween(startOfDay, endOfDay);
-        return convertToTodayNewsResponseDTO(newsList);
+        List<TodayNewsResponseDTO> newsList = newsRepository.findTodayNews(startOfDay, endOfDay);
+        return newsList;
     }
 
     @Override
@@ -179,22 +176,4 @@ public class NewsServiceImpl implements NewsService {
         // ResponseEntity로 반환
         return ResponseEntity.ok(news);
     }
-
-    private List<TodayNewsResponseDTO> convertToTodayNewsResponseDTO(List<News> newsList) {
-        return newsList.stream()
-                .map(news -> TodayNewsResponseDTO.builder()
-                        .newsId(news.getNewsId())
-                        .title(news.getTitle())
-                        .content(news.getContent())
-                        .category(news.getCategory())
-                        .publishedDate(news.getPublishedDate())
-                        .newsLink(news.getNewsLink())
-                        .sentimentIndex(news.getSentimentIndex())
-                        .thumbnailImg(news.getThumbnailImg())
-                        .newsCreatedAt(news.getNewsCreatedAt())
-                        .newsUpdatedAt(news.getNewsUpdatedAt())
-                        .build())
-                .collect(Collectors.toList());
-    }
-
 }
