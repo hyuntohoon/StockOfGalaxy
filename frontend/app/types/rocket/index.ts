@@ -6,7 +6,5 @@ export interface RocketData {
   priceChange: string;
   message: string;
   createdAt: string;
-  imageUrl: string;
+  characterType: number;
 }
-
-// todo: imageUrl -> characterType(number) 로 변경해야 함
