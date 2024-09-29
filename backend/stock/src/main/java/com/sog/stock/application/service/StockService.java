@@ -4,6 +4,7 @@ import com.sog.stock.domain.dto.FinancialListDTO;
 import com.sog.stock.domain.dto.HolidayAddListRequestDTO;
 import com.sog.stock.domain.dto.QuarterStockPriceDTO;
 import com.sog.stock.domain.dto.QuarterStockPriceListDTO;
+import com.sog.stock.domain.dto.StockPresentPriceResponseDTO;
 import com.sog.stock.domain.dto.rocket.RocketAddRequestDTO;
 import com.sog.stock.domain.dto.StockAddListRequestDTO;
 import com.sog.stock.domain.dto.StockDTO;
@@ -50,6 +51,9 @@ public interface StockService {
 
     // 종목이름 조회
     StockNameResponseDTO searchStockName(String stockCode);
+
+    // 주식 현재가 조회
+    StockPresentPriceResponseDTO searchStockPresentPrice(String stockCode);
 
     /*
      * 로켓 관련

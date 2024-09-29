@@ -37,7 +37,7 @@ public class KisTokenService {
 
     // get access token from redis
     public Mono<String> getAccessToken() {
-        log.info("getAccessToken method called.");
+        log.info("kis토큰 접근 메서드 호출");
         String token = redisService.getValue(TOKEN_KEY);
         if (token != null) {
             return Mono.just(token);

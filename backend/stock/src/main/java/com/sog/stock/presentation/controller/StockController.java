@@ -8,6 +8,7 @@ import com.sog.stock.domain.dto.StockAddListRequestDTO;
 import com.sog.stock.domain.dto.StockDTO;
 import com.sog.stock.domain.dto.DailyStockPriceListDTO;
 import com.sog.stock.domain.dto.StockNameResponseDTO;
+import com.sog.stock.domain.dto.StockPresentPriceResponseDTO;
 import com.sog.stock.domain.enums.QuarterType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -121,6 +122,15 @@ public class StockController {
     public ResponseEntity<?> getStockName(@PathVariable String stockCode) {
         StockNameResponseDTO stockNameResponseDTO = stockService.searchStockName(stockCode);
         return new ResponseEntity<>(stockNameResponseDTO, HttpStatus.OK);
+
+    }
+
+    // 주식 현재가 조회
+    @GetMapping("/{stockCode}/current")
+    public ResponseEntity<?> getCurrentStockInfo(@PathVariable String stockCode) {
+        StockPresentPriceResponseDTO stockPresentPriceResponse = stockService.searchStockPresentPrice(
+            stockCode);
+        return new ResponseEntity<>(stockPresentPriceResponse, HttpStatus.OK);
 
     }
 

@@ -1,11 +1,14 @@
 package com.sog.stock.application.service;
 
+import com.sog.stock.application.client.KisPresentPriceClient;
 import com.sog.stock.domain.dto.FinancialDTO;
 import com.sog.stock.domain.dto.FinancialListDTO;
 import com.sog.stock.domain.dto.HolidayAddListRequestDTO;
 import com.sog.stock.domain.dto.HolidayAddRequestDTO;
 import com.sog.stock.domain.dto.QuarterStockPriceDTO;
 import com.sog.stock.domain.dto.QuarterStockPriceListDTO;
+import com.sog.stock.domain.dto.StockPresentPriceResponseDTO;
+import com.sog.stock.domain.dto.kis.KisPresentPriceResponseDTO;
 import com.sog.stock.domain.dto.rocket.RocketAddRequestDTO;
 import com.sog.stock.domain.dto.StockAddListRequestDTO;
 import com.sog.stock.domain.dto.StockDTO;
@@ -43,6 +46,9 @@ public class StockServiceImpl implements StockService {
     private final StockRepository stockRepository;
     private final RocketRepository rocketRepository;
     private final FinancialStatementsRepository financialStatementsRepository;
+
+    private final KisTokenService kisTokenService;
+    private final KisPresentPriceClient kisPresentPriceClient;
 
     @Override
     public DailyStockPriceListDTO getDailyStockHistory(String stockCode) {
@@ -246,6 +252,27 @@ public class StockServiceImpl implements StockService {
 
         // StockNameResponseDTO로 변환하여 반환
         return new StockNameResponseDTO(stock.getCorpName());
+    }
+
+    @Override
+    public StockPresentPriceResponseDTO searchStockPresentPrice(String stockCode) {
+        // kisToken redis에서
+        String token = kisTokenService.getAccessToken().block(); // 동기처리
+        if (token == null) {
+            throw new RuntimeException("kis 토큰 접근 실패");
+        }
+
+        // 한국투자증권 API에 현재가 요청
+        KisPresentPriceResponseDTO response = kisPresentPriceClient.requestStockPresentPrice(stockCode, token);
+
+        // 응답값을 StockPresentPriceResponseDTO로 매핑하여 반환
+        return StockPresentPriceResponseDTO.builder()
+            .stockCode(stockCode)
+            .stckPrpr(response.getOutput().getStckPrpr())         // 현재가
+            .prdyVrss(response.getOutput().getPrdyVrss())         // 전일대비
+            .prdyVrssSign(response.getOutput().getPrdyVrssSign()) // 전일대비 부호
+            .prdyCtrt(response.getOutput().getPrdyCtrt())         // 전일대비율
+            .build();
     }
 
 
