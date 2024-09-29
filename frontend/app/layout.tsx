@@ -10,6 +10,7 @@ import { ibm } from '@/public/fonts';
 import { AnimatePresence, motion } from 'framer-motion';
 import { usePathname } from 'next/navigation';
 import StockTemplate from "./components/organisms/stock/StockTemplate";
+import MSWComponent from "./components/MSWComponent";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,6 +28,7 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className={ibm.className}>
+        <MSWComponent /> {/* Mock Service Worker */}
         <RecoilRootWrapper>
           <MenuHeader />
          
