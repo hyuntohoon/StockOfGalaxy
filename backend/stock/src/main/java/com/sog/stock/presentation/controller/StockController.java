@@ -53,6 +53,12 @@ public class StockController {
     }
 
     // 주식 분기별 시세 등록
+    @PostMapping("/quarterhistory")
+    public ResponseEntity<?> addQuarterStockHistory(
+        @RequestBody QuarterStockPriceListDTO quarterStockPriceList) {
+        stockService.addQuarterStockHistory(quarterStockPriceList);
+        return new ResponseEntity<>("등록이 완료되었습니다", HttpStatus.OK);
+    }
 
 
     // 행성 정보 조회

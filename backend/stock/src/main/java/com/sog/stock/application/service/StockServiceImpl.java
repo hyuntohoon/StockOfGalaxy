@@ -4,6 +4,7 @@ import com.sog.stock.domain.dto.FinancialDTO;
 import com.sog.stock.domain.dto.FinancialListDTO;
 import com.sog.stock.domain.dto.HolidayAddListRequestDTO;
 import com.sog.stock.domain.dto.HolidayAddRequestDTO;
+import com.sog.stock.domain.dto.QuarterStockPriceDTO;
 import com.sog.stock.domain.dto.QuarterStockPriceListDTO;
 import com.sog.stock.domain.dto.rocket.RocketAddRequestDTO;
 import com.sog.stock.domain.dto.StockAddListRequestDTO;
@@ -25,6 +26,7 @@ import com.sog.stock.domain.repository.RocketRepository;
 import com.sog.stock.domain.repository.StockHolidayRepository;
 import com.sog.stock.domain.repository.StockRepository;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -79,7 +81,27 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public QuarterStockPriceListDTO getQuarterStockHistory(String stockCode, QuarterType quarterType) {
+    public void addQuarterStockHistory(QuarterStockPriceListDTO quarterStockPriceList) {
+        // 각 QuarterStockPriceDTO를 entity로 변환 후 저장
+        List<QuarterStockPriceDTO> quarterStocklist = quarterStockPriceList.getQuarterStockPriceList();
+
+        List<QuarterStockHistory> entityList = quarterStocklist.stream()
+            .map(dto -> {
+                // stockCode로 Stock 엔티티 조회
+                Stock stock = stockRepository.findById(dto.getStockCode())
+                    .orElseThrow((() -> new IllegalArgumentException(
+                        "해당 종목 코드가 존재하지 않습니다: " + dto.getStockCode())));
+                return dto.toEntity(stock);
+
+            })
+            .collect(Collectors.toList());
+
+        quarterStockHistoryRepository.saveAll(entityList);
+    }
+
+    @Override
+    public QuarterStockPriceListDTO getQuarterStockHistory(String stockCode,
+        QuarterType quarterType) {
         List<QuarterStockHistory> historyList;
 
         // quarterType에 따라 다르게 처리
@@ -103,13 +125,9 @@ public class StockServiceImpl implements StockService {
                 throw new IllegalArgumentException("Invalid quarter type: " + quarterType);
         }
 
-        return null;
+        return null; // 예외처리
     }
 
-    @Override
-    public void addQuarterStockHistory(QuarterStockPriceListDTO quarterStockPriceList) {
-
-    }
 
     @Override
     public void addStockList(StockAddListRequestDTO stockAddListRequestDTO) {
