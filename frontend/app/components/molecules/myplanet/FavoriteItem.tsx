@@ -1,7 +1,9 @@
+'use client';
+
 import { Icon } from "@/app/components/atoms/myplanet/Icon";
-import Image from "next/image"; // Next.js Image 컴포넌트 import
-import like from "@/public/images/myplanet/like.png"; // 경로를 적절히 수정
-import unlike from "@/public/images/myplanet/unlike.png"; // 경로를 적절히 수정
+import Image from "next/image";
+import like from "@/public/images/myplanet/like.png";
+import unlike from "@/public/images/myplanet/unlike.png";
 import {
   FavoriteItemContainer,
   LeftSection,
@@ -27,19 +29,24 @@ export const FavoriteItem: React.FC<FavoriteItemProps> = ({
   isFavorite,
   onToggleFavorite,
   iconSrc,
-  isRemoving = false, // 기본값 false
+  isRemoving = false,
   onClick,
 }) => {
   const router = useRouter();
 
   // 가격을 포맷하는 함수
-  const formatPrice = (price: number) => {
-    return price.toLocaleString();
+  const formatPrice = (price: number | string) => {
+    if (typeof price === 'number') {
+      return price.toLocaleString();
+    }
+    return price; // 숫자 형식이 아닐 경우 그대로 반환
   };
 
-  // price와 change 값이 문자열일 경우 숫자로 변환
-  const numericPrice = typeof price === "string" ? parseFloat(price) : price;
-  const numericChange = typeof change === "string" ? parseFloat(change) : change;
+  // 가격 변동을 포맷하는 함수
+  const formatChange = (change: number | string) => {
+    const numericChange = typeof change === 'string' ? parseFloat(change) : change;
+    return numericChange > 0 ? `+${numericChange.toFixed(2)}` : numericChange.toFixed(2);
+  };
 
   return (
     <FavoriteItemContainer isRemoving={isRemoving} onClick={onClick}>
@@ -49,7 +56,7 @@ export const FavoriteItem: React.FC<FavoriteItemProps> = ({
           <StyledText
             size="15px"
             weight="bold"
-            onClick={() => router.push("/planet/main/005930/20240927")}
+            onClick={() => router.push("/planet/main/005930/20240927")} // 예시 URL
           >
             {name}
           </StyledText>
@@ -86,13 +93,13 @@ export const FavoriteItem: React.FC<FavoriteItemProps> = ({
       </LeftSection>
       <RightSection>
         <Text size="17px" weight="bold">
-          {formatPrice(numericPrice)}
+          {formatPrice(price)}원
         </Text>
         <Text
           size="14px"
-          color={numericChange > 0 ? "#FF4500" : "#1E90FF"} // 양수/음수에 따른 색상
+          color={typeof change === 'string' || change > 0 ? "#FF4500" : "#1E90FF"}
         >
-          {numericChange}
+          {formatChange(change)}
         </Text>
       </RightSection>
     </FavoriteItemContainer>

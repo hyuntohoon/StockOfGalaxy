@@ -8,19 +8,12 @@ import { FavoriteItemProps,FavoriteItem } from '@/app/types/myplanet';
 import { PageContainer, CanvasContainer, FavoritesContainer, ToggleButton, FavoriteHeader} from "@/app/styles/myplanet"
 import styled from '@emotion/styled';
 import { css, keyframes } from '@emotion/react';
+import { stockData } from '@/app/mocks/stockData';
+import useKRChartWebSocket from '@/app/hooks/useKRChartWebSocket';
 import Image from 'next/image';
 import anime from 'animejs';
-// interface FavoritesListProps {
-//   items: Array<{
-//     rank: number;
-//     name: string;
-//     price: string;
-//     change: string;
-//     isFavorite: boolean;
-//     iconSrc: string;
-//   }>;
-//   onToggleFavorite: (index: number) => void;
-// }
+import useKRStockWebSocket from '@/app/hooks/useKRStockWebSocket';
+
 const ModalContainer = styled.div<{ isOpen: boolean }>`
   ${({ isOpen }) => css`
     position: fixed;
@@ -44,9 +37,39 @@ const ModalContent = styled.div`
   width: 100%;
 `;
 
+interface stockData {
+  stock_name: string;
+  stock_code: string;
+}
+
+interface favoriteItem {
+  stock_name: string;
+  stock_code: string;
+  currentPrice: number | null;
+  changePrice: number | null;
+  changeRate: number | null;
+  isFavorite: boolean | null;
+}
+
 
 export default function Planet() {
   const mountRef = useRef<HTMLDivElement>(null);
+  const [stockDataInfo, setStockDataInfo] = useState<favoriteItem[]>(
+    stockData.map((stock, idx) => ({
+      rank: idx + 1,
+      stock_name: stock.stock_name,
+      stock_code: stock.stock_code,
+      currentPrice: null,
+      changePrice: null,
+      changeRate: null,
+      isFavorite: false,
+    }))
+  );
+
+  useKRStockWebSocket(stockData, setStockDataInfo);
+
+
+
 
   // 즐겨찾기 리스트 데이터
   const planetsData: FavoriteItem[] = [
@@ -58,8 +81,20 @@ export default function Planet() {
     { rank: 6, name: 'NAVER', stockCode: '035420', price: '51,796원', change: '- 227원 (3.1%)', isFavorite: true, iconSrc: '/images/logo/naver.png' },
     { rank: 7, name: 'SK이노베이션', stockCode: '096770', price: '51,796원', change: '- 227원 (3.1%)', isFavorite: true, iconSrc: '/images/logo/naver.png' },
   ];
+  const [items, setItems] = useState<FavoriteItem[]>(
+    stockDataInfo.map(stock => ({
+      rank: stockDataInfo.indexOf(stock) + 1,
+      name: stock.stock_name,
+      stockCode: stock.stock_code,
+      price: stock.currentPrice ? `${stock.currentPrice}원` : '',
+      change: stock.changePrice
+        ? `${stock.changePrice > 0 ? '+' : ''}${stock.changePrice}원 (${stock.changeRate}%)`
+        : '변동 정보 없음',
+      isFavorite: stock.isFavorite ?? false,
+      iconSrc: `/stock_logos/Stock${stock.stock_code}.svg`,
+    }))
+  );
 
-  const [items, setItems] = useState(planetsData);
   const [isOpen, setIsOpen] = useState(true);
   const [selectedItem, setSelectedItem] = useState<FavoriteItem | null>(null);
   const [playing, setPlaying] = useState(false); // playing 상태 추가
@@ -114,7 +149,6 @@ export default function Planet() {
     let camera: THREE.PerspectiveCamera;
     let circle: THREE.Object3D;
     let surroundingPlanets: Array<{ mesh: THREE.Mesh; radius: number; angle: number; speed: number }> = [];
-    let starGroup: THREE.Group; // 별 그룹
     let particle: THREE.Object3D;
   
     const textureLoader = new THREE.TextureLoader();
@@ -164,30 +198,6 @@ export default function Planet() {
       }
 
   
-      // 별 그룹 생성
-      // starGroup = new THREE.Group();
-      // scene.add(starGroup);
-  
-      // 별 생성
-      // const starGeometry = new THREE.SphereGeometry(0.5, 8, 8); // 기본 별의 모양
-      // const starMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
-  
-      // for (let i = 0; i < 2000; i++) {
-      //   const starMesh = new THREE.Mesh(starGeometry, starMaterial);
-  
-      //   // 별의 크기와 위치를 랜덤하게 설정
-      //   const scale = Math.random() * 0.5 + 0.5; // 0.5에서 1.0 사이의 랜덤 크기
-      //   starMesh.scale.set(scale, scale, scale);
-  
-      //   starMesh.position.set(
-      //     (Math.random() - 0.5) * 2000, // x 좌표
-      //     (Math.random() - 0.5) * 2000, // y 좌표
-      //     (Math.random() - 0.5) * 2000  // z 좌표
-      //   );
-      //   starGroup.add(starMesh); // 별을 그룹에 추가
-      // }
-  
-      // 구 모양의 행성으로 변경
       const geom = new THREE.SphereGeometry(14, 36, 36);
   
       // 텍스처 로딩 (중앙 행성에만 해당 텍스처 사용)
