@@ -13,6 +13,12 @@ export const userState = atom({
   default: null,
 });
 
+// memberId 상태 (숫자)
+export const memberIdState = atom<number>({
+  key: 'memberIdState',
+  default: 0,  // 기본값 설정
+});
+
 // 로그인 상태
 export const isLoggedInState = atom({
   key: "isLoggedInState",
@@ -30,6 +36,12 @@ export const useUser = () => {
   const [user, setUser] = useRecoilState(userState);
   return { user, setUser };
 };
+
+// memberId 훅
+export const useMemberId = () => {
+  const [memberId, setMemberId] = useRecoilState(memberIdState);
+  return { memberId, setMemberId };
+}
 
 // 로그인 상태 훅
 export const useIsLoggedIn = () => {

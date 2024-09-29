@@ -1,13 +1,12 @@
 import { useRouter } from 'next/navigation';
 import { defaultRequest, authRequest } from '../request';
 
-
-export const login = async (formData, setAccessToken, setLogin) => {
+export const login = async (formData, setAccessToken, setLogin, setMemberId, setUser) => {
   if (!formData.id || !formData.password) {
     alert("아이디와 비밀번호를 입력해주세요.");
     return false;
   }
-  
+
   try {
     // 기본 Axios 인스턴스를 사용하여 로그인 요청
     const loginRes = await defaultRequest.post("/user/public/login", {
@@ -21,12 +20,18 @@ export const login = async (formData, setAccessToken, setLogin) => {
     const accessToken = authorizationHeader
       ? authorizationHeader.replace(/^Bearer\s+/i, "")
       : null;
+    const memberId = loginRes.data.memberId;
     console.log(accessToken);
 
     if (accessToken) {
       setAccessToken(accessToken); // 유저 정보 저장
       setLogin(true);
-      
+      setMemberId(memberId); // memberId 저장
+
+      // 로그인에 성공했을 때 getInfo 호출
+      const userInfo = await getInfo(accessToken, setAccessToken);
+      setUser(userInfo); // 유저 정보 저장
+
       return true;
     } else {
       throw new Error("토큰이 존재하지 않습니다.");
