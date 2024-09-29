@@ -28,6 +28,7 @@ import com.sog.stock.domain.repository.StockRepository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -125,7 +126,22 @@ public class StockServiceImpl implements StockService {
                 throw new IllegalArgumentException("Invalid quarter type: " + quarterType);
         }
 
-        return null; // 예외처리
+        // 데이터가 비어 있는 경우 처리
+        if (historyList == null || historyList.isEmpty()) {
+            throw new NoSuchElementException(
+                "No stock history found for the given stock code and quarter type.");
+        }
+
+        // List<QuarterStockHistory> -> List<QuarterStockPriceDTO> 변환
+        List<QuarterStockPriceDTO> stockPriceDTOList = historyList.stream()
+            .map(QuarterStockPriceDTO::fromEntity) // fromEntity 메서드를 사용하여 변환
+            .collect(Collectors.toList());
+
+        // DTO 리스트를 담은 QuarterStockPriceListDTO 생성
+        QuarterStockPriceListDTO stockPriceListDTO = new QuarterStockPriceListDTO();
+        stockPriceListDTO.setQuarterStockPriceList(stockPriceDTOList); // 변환된 리스트 설정
+
+        return stockPriceListDTO; // DTO 리스트 반환
     }
 
 
