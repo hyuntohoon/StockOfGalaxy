@@ -1,19 +1,30 @@
 package com.sog.news.domain.dto;
 
+import com.sog.news.domain.model.News;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class TodayPlanetNewsResposeDTO {
-    private Long id;
+    private Long newsId;
     private String title;
-    private String content;
-    private String writeDate;  // 'write_date'는 자바에서 카멜케이스로 변경
-    private String newspaper;  // '신문사'는 영어로 변환
-    private String img;
+    private LocalDateTime publishedDate;
+    private String thumbnailImg;
+
+    // News 엔티티를 TodayPlanetNewsResposeDTO로 변환하는 메서드
+    public static TodayPlanetNewsResposeDTO fromEntity(News news) {
+        return TodayPlanetNewsResposeDTO.builder()
+                .newsId(news.getNewsId())
+                .title(news.getTitle())
+                .publishedDate(news.getPublishedDate())
+                .thumbnailImg(news.getThumbnailImg())
+                .build();
+    }
 }
