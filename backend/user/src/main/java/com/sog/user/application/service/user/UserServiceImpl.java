@@ -89,6 +89,7 @@ public class UserServiceImpl implements UserService {
             member.getUserId(),
             member.getNickname(),
             member.getEmail(),
+            member.getCharacterType(),
             member.getIsQuit()
         );
     }

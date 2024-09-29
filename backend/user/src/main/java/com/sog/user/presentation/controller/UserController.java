@@ -44,7 +44,7 @@ public class UserController {
     private final PasswordResetService passwordResetService;
 
     // 회원가입
-    @PostMapping("/public/join")
+    @PostMapping("/join")
     public ResponseEntity<?> register(@RequestBody UserRegisterRequestDTO registerDTO) {
         log.info("회원가입 요청 requestDto : {} ", registerDTO);
         UserRegisterResponseDTO registerResponseDTO = userService.register(registerDTO);
@@ -52,7 +52,7 @@ public class UserController {
     }
 
     // 아이디 중복확인
-    @GetMapping("/public/validate/{userId}")
+    @GetMapping("/validate/{userId}")
     public ResponseEntity<?> checkUserId(@PathVariable("userId") String userId) {
         if (userService.checkUserIdDuplicate(userId)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("이미 사용중인 아이디입니다.");
@@ -62,7 +62,7 @@ public class UserController {
     }
 
     // 로그아웃
-    @PostMapping("/public/logout")
+    @PostMapping("/logout")
     public ResponseEntity<?> logout(@RequestBody LogoutDTO logoutDTO) {
         try {
             log.info("로그아웃 요청 수신: memberId={}", logoutDTO.getMemberId());
@@ -80,7 +80,7 @@ public class UserController {
     }
 
     // 비밀번호 변경
-    @PostMapping("/public/change-password")
+    @PostMapping("/change-password")
     public ResponseEntity<?> changePassword(
         @RequestBody PasswordResetRequestDTO passwordResetRequestDTO) {
         passwordResetService.resetPassword(passwordResetRequestDTO.getUserId(),
@@ -90,7 +90,7 @@ public class UserController {
     }
 
     // 이메일 인증번호 전송
-    @PostMapping("/public/request-verification-code")
+    @PostMapping("/request-verification-code")
     public ResponseEntity<?> sendVerificationCode(
         @RequestBody UserPasswordRequestDTO passwordRequestDTO) {
         try {
@@ -105,7 +105,7 @@ public class UserController {
     }
 
     // 인증번호 일치 확인
-    @PostMapping("/public/request-verification")
+    @PostMapping("/request-verification")
     public ResponseEntity<?> verifyCode(@RequestBody VerifyCodeRequestDTO verifyCodeRequestDTO) {
         boolean isCorrect = passwordResetService.validateAuthCode(verifyCodeRequestDTO.getUserId(),
             verifyCodeRequestDTO.getCode());
@@ -117,7 +117,7 @@ public class UserController {
     }
 
     // 회원 탈퇴
-    @DeleteMapping
+    @DeleteMapping("/auth/quit")
     public ResponseEntity<?> quitUser(@RequestHeader("memberId") Long memberId) {
         boolean isQuit = userService.quitMember(memberId);
 
@@ -147,7 +147,7 @@ public class UserController {
     }
 
     // 유저 정보 조회
-    @GetMapping
+    @GetMapping("/auth/info")
     public ResponseEntity<?> userInfo(@RequestHeader("memberId") Long memberId) {
         UserInfoResponseDTO userInfo = userService.getUserInfo(memberId);
 
@@ -159,7 +159,7 @@ public class UserController {
      */
 
     // 관심 행성 조회
-    @GetMapping("/planet")
+    @GetMapping("/auth/planet")
     public ResponseEntity<?> getPlanetList(@RequestHeader("memberId") Long memberId) {
         // 종목번호 조회 -> 주식 서버로 요청 (우선 종목번호만 return하는 형태로 추후에 변경 가능성 있음.)
         LikePlanetListDTO likePlanetListDTO = likePlanetService.getLikePlanetList(memberId);
@@ -168,7 +168,7 @@ public class UserController {
     }
 
     // 관심 행성 추가 -> 종목번호 추가
-    @PostMapping("/planet")
+    @PostMapping("/auth/planet")
     public ResponseEntity<?> addPlanet(@RequestHeader("memberId") Long memberId, @RequestBody
     LikePlanetNumberDTO likePlanetNumberDTO) {
         likePlanetService.addLikePlanet(likePlanetNumberDTO, memberId);
@@ -176,10 +176,10 @@ public class UserController {
     }
 
     // 관심 행성 삭제 -> 종목번호 삭제
-    @DeleteMapping("/planet")
+    @DeleteMapping("/auth/planet/{stockCode}")
     public ResponseEntity<?> deletePlanet(@RequestHeader("memberId") Long memberId,
-        @RequestBody LikePlanetNumberDTO likePlanetNumberDTO) {
-        likePlanetService.deleteLikePlanet(likePlanetNumberDTO, memberId);
+        @PathVariable("stockCode") String stockCode) {
+        likePlanetService.deleteLikePlanet(stockCode, memberId);
         return ResponseEntity.ok().build();
     }
 
