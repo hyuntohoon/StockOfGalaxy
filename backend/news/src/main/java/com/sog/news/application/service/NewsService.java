@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 @Service
 public interface NewsService {
 
-    ResponseEntity<List<TodayNewsResponseDTO>> getTodayNews(LocalDate date);
+    List<TodayNewsResponseDTO> getTodayNews(LocalDate date);
 
     ResponseEntity<List<TodayPlanetNewsResposeDTO>> getTodayPlanetNews(LocalDate date, String stockCode);
 
