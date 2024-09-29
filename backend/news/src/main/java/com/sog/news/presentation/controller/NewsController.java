@@ -34,9 +34,10 @@ public class NewsController {
     }
 
     @Operation(summary = "오늘의 행성 뉴스 조회", description = "오늘 날짜의 행성 관련 뉴스를 조회합니다.")
-    @GetMapping("/today/planet")
-    public ResponseEntity<List<TodayPlanetNewsResposeDTO>> getTodayPlanetNews(@RequestParam LocalDate date, @RequestParam String stockCode) {
-        return newsService.getTodayPlanetNews(date, stockCode);
+    @GetMapping("/today/planet/{date}/{stockName}")
+    public ResponseEntity<List<TodayPlanetNewsResposeDTO>> getTodayPlanetNews(@PathVariable LocalDate date, @PathVariable String stockName) {
+        List<TodayPlanetNewsResposeDTO> todayPlanetNews = newsService.getTodayPlanetNews(date, stockName);
+        return new ResponseEntity<>(todayPlanetNews, HttpStatus.OK);
     }
 
     @Operation(summary = "뉴스 제목 키워드 검색", description = "뉴스 제목에서 키워드로 검색합니다.")
