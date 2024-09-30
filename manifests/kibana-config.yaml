@@ -9,6 +9,6 @@ data:
     server.port: 5601
     elasticsearch.hosts: ["http://3.38.183.146:30193"]
     elasticsearch.username: "kibana_system"
-    elasticsearch.password: "rootpassword"  # 실제 환경에서는 Secret으로 관리하는 것이 좋습니다
+    elasticsearch.password: "ua8747ll"  # 실제 환경에서는 Secret으로 관리하는 것이 좋습니다
     xpack.security.enabled: true
     xpack.encryptedSavedObjects.encryptionKey: "something_at_least_32_characters"
