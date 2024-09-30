@@ -28,6 +28,8 @@ spec:
           env:
             - name: discovery.type
               value: single-node
+            - name: xpack.security.enabled
+              value: "false"  # 보안 비활성화
       volumes:
         - name: elasticsearch-data
           persistentVolumeClaim:
