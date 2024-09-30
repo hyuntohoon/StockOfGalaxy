@@ -52,7 +52,7 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(user -> user
                         .requestMatchers("/api/user/login", "/api/user/join",
-                                "/api/user/public/**", "/api/user/request-verification-code",
+                                "/api/user/validate/**", "/api/user/request-verification-code",
                                 "/api/user/request-verification", "/api/user/change-password",
                                 "/api/user/reissue", "/api/user/logout")
                         .permitAll()
