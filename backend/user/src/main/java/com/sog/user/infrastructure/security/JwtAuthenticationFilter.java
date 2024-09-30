@@ -27,7 +27,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // 토큰이 필요 없는 요청인지 확인 -> 임시
         if (requestURI.startsWith("/api/user/login") || requestURI.startsWith(
-            "/api/user/public/join")
+            "/api/user/join")
             || requestURI.startsWith("/api/user/validate/") || requestURI.startsWith(
             "/api/user/request-verification-code") || requestURI.startsWith(
             "/api/user/request-verification") || requestURI.startsWith(
