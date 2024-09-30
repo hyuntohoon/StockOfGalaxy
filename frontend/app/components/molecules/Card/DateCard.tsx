@@ -32,7 +32,7 @@ const DateCardContainer = styled.div<{ right?: string; left?: string }>`
   justify-content: center;
   background-color: rgba(255, 255, 255, 0.4);
   padding: 14px 20px;
-  border-radius: 10px;
+  border-radius: 15px;
   color: #ffffff;
   font-weight: 600;
   font-size: 18px;

@@ -9,6 +9,7 @@ import { throttle } from 'lodash';
 interface RocketProps {
   scene: THREE.Scene;
   rocketData: RocketData[];
+  currentPrice: string; // currentPrice 추가
 }
 
 const fixedPositions = [
@@ -21,7 +22,7 @@ const fixedPositions = [
   { x: 10, y: 10, z: 150 },
 ];
 
-export default function Rockets({ scene, rocketData }: RocketProps) {
+export default function Rockets({ scene, rocketData, currentPrice }: RocketProps) { // currentPrice 추가
   const [selectedRocket, setSelectedRocket] = useState<RocketData | null>(null);
   const [hoveredRocket, setHoveredRocket] = useState<THREE.Mesh | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -126,6 +127,7 @@ export default function Rockets({ scene, rocketData }: RocketProps) {
           camera={camera.current!}
           rendererDomElement={mountRef.current?.querySelector('canvas')!}
           data={selectedRocket}
+          currentPrice={currentPrice} // currentPrice 전달
         />
       )}
     </div>

@@ -1,30 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, ChangeEvent } from 'react';
 import styled from '@emotion/styled';
 import CreateRocketButton from '../Button/CreateRocketButton';
-import { useRecoilValue } from 'recoil';
-import { isLoggedInState } from '@/app/store/userSlice';
+import { useIsLoggedIn } from '@/app/store/userSlice';
 import { createRocketApi } from '@/app/utils/apis/rocket';
 import { useParams } from 'next/navigation';
+import { useMemberId } from '@/app/store/userSlice';
 
-const RocketInputField = () => {
-  const [inputValue, setInputValue] = useState('');
-  const isLoggedIn = useRecoilValue(isLoggedInState);
-  const memberId = 1; // todo: 실제 회원 ID로 수정 필요
-  const stockCodeParam = useParams().stock;
+interface RocketInputFieldProps {
+  currentPrice: string | null; // 실시간 주가 데이터
+  isToday: boolean;
+}
+
+const RocketInputField: React.FC<RocketInputFieldProps> = ({ currentPrice, isToday }) => {
+  const [inputValue, setInputValue] = useState<string>('');
+  const { isLoggedIn } = useIsLoggedIn();
+  const { memberId } = useMemberId();
+  const stockCodeParam = useParams().stock as string | string[];
   const stockCode = Array.isArray(stockCodeParam) ? stockCodeParam[0] : stockCodeParam;
-  const stockPrice = "52100"; // todo: ws 연결해서 댓글 작성 당시의 주가로 변경해야 
 
-  const handleInputChange = (event) => {
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
   };
 
   const handleSubmit = async () => {
-    if (isLoggedIn) {
+    if (isLoggedIn && currentPrice !== null) {
       try {
         const response = await createRocketApi(
           memberId,
-          stockCode,   
-          stockPrice,
+          stockCode,
+          currentPrice,  // 실시간 주가를 함께 전송
           inputValue
         );
         console.log('로켓 작성 성공:', response);
@@ -38,14 +42,24 @@ const RocketInputField = () => {
     }
   };
 
+  const getPlaceholderText = () => {
+    if (!isLoggedIn) {
+      return '로그인 후 댓글 작성이 가능합니다.';
+    } else if (!isToday) {
+      return '과거에서는 로켓 작성이 불가능합니다';
+    } else {
+      return '메시지를 입력하세요';
+    }
+  };
+
   return (
     <Container>
       <Input
         type="text"
-        placeholder={isLoggedIn ? '댓글을 입력하세요' : '로그인 후 작성 가능합니다'}
+        placeholder={getPlaceholderText()}
         value={inputValue}
         onChange={handleInputChange}
-        disabled={!isLoggedIn}
+        disabled={!isLoggedIn || !isToday}
       />
       <CreateRocketButton onClick={handleSubmit} />
     </Container>
