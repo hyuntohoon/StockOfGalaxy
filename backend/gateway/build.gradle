@@ -39,9 +39,6 @@ dependencies {
 	//프로메테우스
 	implementation 'io.micrometer:micrometer-registry-prometheus'
 
-	// https://mvnrepository.com/artifact/jakarta.servlet/jakarta.servlet-api
-	compileOnly group: 'jakarta.servlet', name: 'jakarta.servlet-api', version: '6.0.0'
-
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'io.projectreactor:reactor-test'
 	testImplementation 'org.springframework.cloud:spring-cloud-starter-contract-stub-runner'
