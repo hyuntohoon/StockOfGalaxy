@@ -14,7 +14,7 @@ interface MenuHeaderModalProps {
 
 // forwardRef 사용
 const MenuHeaderModal = forwardRef<HTMLDivElement, MenuHeaderModalProps>(
-  ({position, onMouseEnter, onMouseLeave }, ref) => {
+  ({ position, onMouseEnter, onMouseLeave }, ref) => {
     return (
       <ModalContainer
         ref={ref}
@@ -37,6 +37,9 @@ const MenuHeaderModal = forwardRef<HTMLDivElement, MenuHeaderModalProps>(
     );
   }
 );
+
+// displayName 설정
+MenuHeaderModal.displayName = 'MenuHeaderModal';
 
 const ModalContainer = styled.div`
   position: absolute;
