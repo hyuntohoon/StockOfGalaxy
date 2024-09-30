@@ -6,7 +6,7 @@ metadata:
 data:
   apm-server.yml: |
     output.elasticsearch:
-      hosts: ["elasticsearch.namespace.svc.cluster.local:9200"]
+      hosts: ["http://elasticsearch:9200"]
       username: "elastic"
       password: "rootpassword"
     setup.kibana:
