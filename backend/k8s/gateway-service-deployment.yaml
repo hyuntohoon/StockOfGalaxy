@@ -38,7 +38,7 @@ spec:
                   name: jwt-secret
                   key: secret
             - name: ELASTIC_APM_SERVER_URLS
-              value: "http://3.38.183.146:8200"
+              value: "http://apm-server.dev.svc.cluster.local:8200"
             - name: ELASTIC_APM_SERVICE_NAME
               value: "gateway-service"
             - name: ELASTIC_APM_APPLICATION_PACKAGES
