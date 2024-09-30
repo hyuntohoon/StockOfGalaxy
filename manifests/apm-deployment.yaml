@@ -20,7 +20,7 @@ spec:
             - containerPort: 8200
           env:
             - name: ELASTICSEARCH_HOSTS
-              value: "http://elastic3search:9200"
+              value: "http://3.38.183.146:30193"
             - name: ELASTICSEARCH_USERNAME
               value: "elastic"
             - name: ELASTICSEARCH_PASSWORD
