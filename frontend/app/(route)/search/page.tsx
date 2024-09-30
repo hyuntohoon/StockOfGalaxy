@@ -11,13 +11,38 @@ import {
     Tab, 
     SearchResultsContainer, 
     SearchItem, 
-    StockPrice, 
+    // StockPrice, 
     NewsDescription, 
     NoResults, 
     NewsInfo
 } from '@/app/styles/search';
 import { stockData } from '@/app/mocks/stockData';
 import useKRStockWebSocket from '@/app/hooks/useKRStockWebSocket';
+import formatPrice from '@/app/utils/apis/stock/formatPrice';
+import styled from '@emotion/styled';
+import { format } from 'path';
+
+const StockPriceContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px; /* 각 항목 사이에 여백을 줍니다 */
+`;
+
+const StockPrice = styled.div`
+  font-size: 16px;
+  font-weight: bold;
+  color: white; /* 기본 텍스트 색상 */
+`;
+
+const ChangePrice = styled.span<{ isPositive: boolean }>`
+  color: ${({ isPositive }) => (isPositive ? '#FF4500' : '#1E90FF')}; /* 빨간색과 파란색 */
+  font-weight: bold;
+`;
+
+const ChangeRate = styled.span<{ isPositive: boolean }>`
+  color: ${({ isPositive }) => (isPositive ? '#FF4500' : '#1E90FF')}; /* 빨간색과 파란색 */
+  font-weight: bold;
+`;
 
 interface stockData {
     stock_name: string;
@@ -137,29 +162,28 @@ const SearchPage = () => {
                             <div>
                                 <strong>{stock.stock_name}</strong> ({stock.stock_code})
                             </div>
-                            <div>
-                                <StockPrice>{stock.currentPrice ? `${stock.currentPrice.toLocaleString()}원` : '정보 없음'}</StockPrice>
-                                <span>
-                                    {stock.changePrice !== null && (
-                                        <>
-                                            ({stock.changePrice > 0 ? '+' : ''}{stock.changePrice?.toLocaleString()}원)
-                                        </>
-                                    )}
-                                </span>
-                                <span>
-                                    {stock.changeRate !== null && (
-                                        <>
-                                            {stock.changeRate > 0 ? '▲' : '▼'}{Math.abs(stock.changeRate)}%
-                                        </>
-                                    )}
-                                </span>
-                            </div>
+                            <StockPriceContainer>
+                            <StockPrice>{stock.currentPrice ? `${formatPrice(stock.currentPrice)}원` : ''}</StockPrice>
+                            
+                            {stock.changePrice !== null && (
+                                <ChangePrice isPositive={stock.changePrice > 0}>
+                                ({stock.changePrice > 0 ? '+' : ''}{formatPrice(stock.changePrice)?.toLocaleString()}원)
+                                </ChangePrice>
+                            )}
+
+                            {stock.changeRate !== null && (
+                                <ChangeRate isPositive={stock.changeRate > 0}>
+                                
+                                {Math.abs(stock.changeRate)}%
+                                </ChangeRate>
+                            )}
+                            </StockPriceContainer>
                         </SearchItem>
                     ))}
                 </SearchResultsContainer>
             )}
 
-            {/* 뉴스 탭 */}
+            
             {hasSearched && activeTab === 'news' && filteredNews.length > 0 && (
                 <SearchResultsContainer>
                     {filteredNews.map((news, index) => (

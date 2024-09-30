@@ -76,10 +76,11 @@ const MenuHeader: React.FC = () => {
   const handleMouseLeave = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     const target = event.relatedTarget as Node | null;
 
-    // target이 유효한 Node 타입인지를 먼저 확인
-    if (target && 
-        (!menuRef.current || !menuRef.current.contains(target)) &&
-        (!modalRef.current || !modalRef.current.contains(target))) {
+    // 메뉴와 모달 영역을 확인하여 마우스가 두 영역 모두를 벗어났을 때만 메뉴와 모달을 닫음
+    if (
+      (!menuRef.current || (target && !menuRef.current.contains(target))) &&
+      (!modalRef.current || (target && !modalRef.current.contains(target)))
+    ) {
       setIsMenuOpen(false);
       setIsModalOpen(false);
     }
