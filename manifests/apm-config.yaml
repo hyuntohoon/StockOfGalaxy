@@ -6,14 +6,14 @@ metadata:
 data:
   apm-server.yml: |
     output.elasticsearch:
-      hosts: ["http://elasticsearch:9200"]
-      username: "elastic"  # 방금 설정한 elastic 사용자 이름
-      password: "rootpassword"  # 설정한 elastic 사용자의 비밀번호
-
+      hosts: ["http://elasticsearch.dev.svc.cluster.local:9200"]
+      username: "elastic"
+      password: "rootpassword"
     setup.kibana:
-      host: "http://kibana:5601"
-      username: "kibana_system"  # kibana_system 사용자
-      password: "rootpassword"  # 설정한 kibana_system 사용자의 비밀번호
-
+      host: "http://kibana.dev.svc.cluster.local:5601"
+      username: "kibana_system"
+      password: "rootpassword"
     apm-server:
       host: "0.0.0.0:8200"
+    http.host: "0.0.0.0"
+    http.port: 8200
