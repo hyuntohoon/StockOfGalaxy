@@ -38,7 +38,7 @@ spring:
           predicates:
             - Path=/api/*/auth/**
           filters:
-              - JwtAuthenticationFilter
+            - JwtAuthenticationFilter
 
         - id: gateway-status
           uri: http://localhost:8080
@@ -54,6 +54,11 @@ spring:
           uri: http://stock-service.backcd.svc.cluster.local:80
           predicates:
             - Path=/api/stock/**
+
+        - id: stock-rocket-service
+          uri: http://stock-service.backcd.svc.cluster.local:80
+          predicates:
+            - Path=/api/rockets/**
 
         - id: stock-service-websocket
           uri: ws://stock-service.backcd.svc.cluster.local:80
@@ -118,3 +123,14 @@ management:
 logging:
   level:
     org.springframework.cloud.gateway: DEBUG
+
+# Elastic APM 관련 설정
+elastic:
+  apm:
+    service_name: "gateway-service" # APM에 등록될 서비스 이름
+    server_urls: "http://apm-server.dev.svc.cluster.local:8200" # APM 서버 URL
+    application_packages: "com.sog" # 패키지 이름 설정
+    enable_framework_auto_detection: true # WebFlux 자동 감지 활성화
+    distributed_tracing: true # 분산 추적 활성화
+    capture_body: "all" # 모든 요청 본문 캡처
+    capture_headers: true # HTTP 헤더 캡처 활성화
