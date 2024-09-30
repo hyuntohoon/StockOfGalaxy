@@ -21,6 +21,10 @@ spec:
           env:
             - name: ELASTICSEARCH_HOSTS
               value: "http://elasticsearch:9200"
+            - name: ELASTICSEARCH_USERNAME
+              value: "kibana_system"  # 설정한 사용자 이름
+            - name: ELASTICSEARCH_PASSWORD
+              value: "rootpassword"   # 설정한 비밀번호
 
 ---
 apiVersion: v1
