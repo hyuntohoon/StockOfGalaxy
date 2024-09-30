@@ -13,6 +13,7 @@ import useKRChartWebSocket from '@/app/hooks/useKRChartWebSocket';
 import Image from 'next/image';
 import anime from 'animejs';
 import useKRStockWebSocket from '@/app/hooks/useKRStockWebSocket';
+import formatPrice from '@/app/utils/apis/stock/formatPrice';
 
 const ModalContainer = styled.div<{ isOpen: boolean }>`
   ${({ isOpen }) => css`
@@ -68,29 +69,33 @@ export default function Planet() {
 
   useKRStockWebSocket(stockData, setStockDataInfo);
 
+  useEffect(() => {
+    setItems(stockDataInfo.map(stock => ({
+      rank: stockDataInfo.indexOf(stock) + 1,
+      name: stock.stock_name,
+      stockCode: stock.stock_code,
+      price: stock.currentPrice ? `${stock.currentPrice}` : '',
+      change: stock.changePrice
+        ? `${stock.changePrice > 0 ? '+' : ''}${stock.changePrice}`
+        : '',
+      isFavorite: stock.isFavorite,
+      iconSrc: `/stock_logos/Stock${stock.stock_code}.svg`,
+    })));
+    }, [stockDataInfo]);
+  
 
 
-
-  // 즐겨찾기 리스트 데이터
-  const planetsData: FavoriteItem[] = [
-    { rank: 1, name: '삼성전자', stockCode: '005930', price: '159,394원', change: '+ 2,377원 (1.5%)', isFavorite: true, iconSrc: '/images/logo/samsung.png' },
-    { rank: 2, name: 'HLB', stockCode: '057880', price: '77,968원', change: '+ 2,190원 (2.8%)', isFavorite: true, iconSrc: '/images/logo/hlb.png' },
-    { rank: 3, name: '에코프로', stockCode: '086530', price: '51,796원', change: '- 227원 (3.1%)', isFavorite: true, iconSrc: '/images/logo/ecopro.png' },
-    { rank: 4, name: 'SK하이닉스', stockCode: '000660', price: '159,394원', change: '+ 2,377원 (1.5%)', isFavorite: true, iconSrc: '/images/logo/SK.png' },
-    { rank: 5, name: '유한양행', stockCode: '000100', price: '77,968원', change: '+ 2,190원 (2.8%)', isFavorite: true, iconSrc: '/images/logo/uhan.png' },
-    { rank: 6, name: 'NAVER', stockCode: '035420', price: '51,796원', change: '- 227원 (3.1%)', isFavorite: true, iconSrc: '/images/logo/naver.png' },
-    { rank: 7, name: 'SK이노베이션', stockCode: '096770', price: '51,796원', change: '- 227원 (3.1%)', isFavorite: true, iconSrc: '/images/logo/naver.png' },
-  ];
+ 
   const [items, setItems] = useState<FavoriteItem[]>(
     stockDataInfo.map(stock => ({
       rank: stockDataInfo.indexOf(stock) + 1,
       name: stock.stock_name,
       stockCode: stock.stock_code,
-      price: stock.currentPrice ? `${stock.currentPrice}원` : '',
+      price: stock.currentPrice ? `${formatPrice(stock.currentPrice)}` : '',
       change: stock.changePrice
-        ? `${stock.changePrice > 0 ? '+' : ''}${stock.changePrice}원 (${stock.changeRate}%)`
-        : '변동 정보 없음',
-      isFavorite: stock.isFavorite ?? false,
+        ? `${stock.changePrice > 0 ? '+' : ''}${formatPrice(stock.changePrice)}`
+        : '',
+      isFavorite: stock.isFavorite,
       iconSrc: `/stock_logos/Stock${stock.stock_code}.svg`,
     }))
   );
@@ -152,7 +157,7 @@ export default function Planet() {
     let particle: THREE.Object3D;
   
     const textureLoader = new THREE.TextureLoader();
-    const numSurroundingPlanets = planetsData.length;
+    const numSurroundingPlanets = items.length;
   
     async function init() {
       renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -217,9 +222,9 @@ export default function Planet() {
   
       const centralPlanetRadius = 16;
       const sizes = [6, 6, 6, 6, 5, 6];
-      const textures = await loadTextures(planetsData, textureLoader); // 주변 행성 텍스처 로드
+      const textures = await loadTextures(items, textureLoader); // 주변 행성 텍스처 로드
   
-      surroundingPlanets = planetsData.map((data, index) => {
+      surroundingPlanets = items.map((data, index) => {
         const planetMesh = createPlanetMesh(index); // 행성 메쉬 생성
         const radius = centralPlanetRadius * 20 + 180; // 거리 조정
         const speed = 0.01 + Math.random() * 0.002;
@@ -246,10 +251,10 @@ export default function Planet() {
       return new THREE.Mesh(geom, material);
     }
   
-    async function loadTextures(planetsData: any[], textureLoader: THREE.TextureLoader): Promise<THREE.Texture[]> {
+    async function loadTextures(items: any[], textureLoader: THREE.TextureLoader): Promise<THREE.Texture[]> {
       const promises: Promise<THREE.Texture>[] = [];
-      for (let i = 0; i < planetsData.length; i++) {
-        const stockCode = Number(planetsData[i].stockCode.slice(0, -1)) % 18 + 1;
+      for (let i = 0; i < items.length; i++) {
+        const stockCode = Number(items[i].stockCode.slice(0, -1)) % 18 + 1;
         promises.push(new Promise((resolve) => {
           textureLoader.load(`/images/planetTexture/${stockCode}.jpg`, (texture) => resolve(texture)); 
         }));
@@ -303,7 +308,6 @@ export default function Planet() {
       renderer.clear();
       renderer.render(scene, camera);
     }
-  
     init();
     animate();
   

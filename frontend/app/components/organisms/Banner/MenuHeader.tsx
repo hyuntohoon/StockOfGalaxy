@@ -74,12 +74,14 @@ const MenuHeader: React.FC = () => {
   };
 
   const handleMouseLeave = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    event.stopPropagation(); // 이벤트 전파 중단
     const target = event.relatedTarget as Node | null;
-
-    // 메뉴와 모달 영역을 확인하여 마우스가 두 영역 모두를 벗어났을 때만 메뉴와 모달을 닫음
+  
+    // target이 null이 아닌지 확인하고, 메뉴와 모달 영역을 벗어났을 때만 닫음
     if (
-      (!menuRef.current || (target && !menuRef.current.contains(target))) &&
-      (!modalRef.current || (target && !modalRef.current.contains(target)))
+      target &&
+      (!menuRef.current || !menuRef.current.contains(target)) &&
+      (!modalRef.current || !modalRef.current.contains(target))
     ) {
       setIsMenuOpen(false);
       setIsModalOpen(false);
@@ -87,6 +89,7 @@ const MenuHeader: React.FC = () => {
   };
 
   const handleClickOutside = (event: MouseEvent) => {
+    event.stopPropagation(); // 이벤트 전파 중단
     if (
       menuRef.current && 
       !menuRef.current.contains(event.target as Node) &&
