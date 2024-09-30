@@ -38,7 +38,7 @@ spec:
                   name: jwt-secret
                   key: secret
             - name: ELASTIC_APM_SERVER_URLS
-              value: "http://apm-server.dev.svc.cluster.local:8200"
+              value: "http://http://3.38.183.146:8200"
             - name: ELASTIC_APM_SERVICE_NAME
               value: "gateway-service"
             - name: ELASTIC_APM_APPLICATION_PACKAGES
@@ -46,7 +46,15 @@ spec:
             - name: ELASTIC_APM_ENVIRONMENT
               value: "production"
             - name: ELASTIC_APM_LOG_LEVEL
-              value: "DEBUG"
+              value: "INFO"
+            - name: ELASTIC_APM_DISABLE_INSTRUMENTATIONS
+              value: "spring-webmvc"
+            - name: ELASTIC_APM_ENABLE_EXPERIMENTAL_INSTRUMENTATIONS
+              value: "true"
+            - name: ELASTIC_APM_REACTOR_INSTRUMENTATION
+              value: "true"
+            - name: ELASTIC_APM_TRACE_METHODS
+              value: "com.sog.gateway.*"
             - name: JAVA_TOOL_OPTIONS
               value: "-javaagent:/elastic/apm/agent/elastic-apm-agent.jar -Dspring.main.web-application-type=reactive"
           resources:
@@ -56,3 +64,15 @@ spec:
             limits:
               memory: "1Gi"
               cpu: "500m"
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 15
