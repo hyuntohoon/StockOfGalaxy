@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import {useAccessToken} from "@/app/utils/libs/user/useAccessToken";
+import { useAccessToken } from "@/app/store/userSlice";
 import { getInfo } from "@/app/utils/apis/users";
 import MyPageInfo from "../../atoms/user/MyPageInfo";
 import styled from "@emotion/styled";
