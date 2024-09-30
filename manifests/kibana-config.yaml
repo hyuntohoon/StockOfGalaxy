@@ -1,11 +1,11 @@
-#apiVersion: v1
-#kind: ConfigMap
-#metadata:
-#  name: kibana-config
-#  namespace: dev
-#data:
-#  kibana.yml: |
-#    server.host: "0.0.0.0"
-#    elasticsearch.hosts: ["http://elasticsearch:9200"]
-#    xpack.security.enabled: false  # 기본 보안 비활성화 (필요에 따라 수정 가능)
-#    xpack.apm.ui.enabled: true
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kibana-config
+  namespace: dev
+data:
+  kibana.yml: |
+    server.host: "0.0.0.0"
+    elasticsearch.hosts: ["http://elasticsearch:9200"]
+    xpack.security.enabled: true  # 기본 보안 비활성화 (필요에 따라 수정 가능)
+    xpack.encryptedSavedObjects.encryptionKey: "something_at_least_32_characters"
