@@ -8,11 +8,11 @@ data:
     output.elasticsearch:
       hosts: ["http://elasticsearch:9200"]
       username: "elastic"
-      password: "rootpassword"
+      password: "ua8747ll"
     setup.kibana:
       host: "http://3.38.183.146:30056"
       username: "kibana_system"
-      password: "rootpassword"
+      password: "ua8747ll"
     apm-server:
       host: "0.0.0.0:8200"
     http.host: "0.0.0.0"
