@@ -13,7 +13,7 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
         jdbc:
-          time_zone: UTC
+          time_zone: Asia/Seoul
     show-sql: true
   data:
 #    redis:
@@ -31,6 +31,13 @@ server:
   error:
     include-message: always
     include-binding-errors: always
+  tomcat:
+    uri-encoding: UTF-8
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
 
 management:
   endpoints:
