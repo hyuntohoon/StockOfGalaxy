@@ -1,5 +1,6 @@
 package com.sog.news.application.service;
 
+import com.sog.news.domain.dto.NewsResponseDTO;
 import com.sog.news.domain.dto.TodayNewsResponseDTO;
 import com.sog.news.domain.dto.TodayPlanetNewsResposeDTO;
 import java.time.LocalDate;
@@ -10,9 +11,9 @@ import org.springframework.stereotype.Service;
 @Service
 public interface NewsService {
 
-    ResponseEntity<List<TodayNewsResponseDTO>> getTodayNews(LocalDate date);
+    List<TodayNewsResponseDTO> getTodayNews(LocalDate date);
 
-    ResponseEntity<List<TodayPlanetNewsResposeDTO>> getTodayPlanetNews(LocalDate date, String stockCode);
+    List<TodayPlanetNewsResposeDTO> getTodayPlanetNews(LocalDate date, String stockName);
 
     ResponseEntity<?> searchNewsContentByKeyword(String keyword);
 
@@ -22,5 +23,5 @@ public interface NewsService {
 
     ResponseEntity<?> getDailyKeywordFrequency(LocalDate startDate);
 
-    ResponseEntity<?> getNewsById(Long id);
+    NewsResponseDTO getNewsById(Long id);
 }
