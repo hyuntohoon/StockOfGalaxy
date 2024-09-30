@@ -7,13 +7,13 @@ data:
   apm-server.yml: |
     output.elasticsearch:
       hosts: ["http://elasticsearch:9200"]
-      username: "elastic"
-      password: "ua8747ll"
+      username: "elastic"  # 방금 설정한 elastic 사용자 이름
+      password: "ua8747ll"  # 설정한 elastic 사용자의 비밀번호
+
     setup.kibana:
-      host: "http://3.38.183.146:30056"
-      username: "kibana_system"
-      password: "ua8747ll"
+      host: "http://kibana:5601"
+      username: "kibana_system"  # kibana_system 사용자
+      password: "ua8747ll"  # 설정한 kibana_system 사용자의 비밀번호
+
     apm-server:
       host: "0.0.0.0:8200"
-    http.host: "0.0.0.0"
-    http.port: 8200
