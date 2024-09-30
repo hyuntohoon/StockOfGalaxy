@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { RecoilRoot } from 'recoil';
+import { useParams } from 'next/navigation';
 import DateCard from '@/app/components/molecules/Card/DateCard';
 import TimeMachineButtonGroup from '@/app/components/molecules/ButtonGroup/TimeMachineButtonGroup';
 import RocketButtonGroup from '@/app/components/molecules/ButtonGroup/RocketButtonGroup';
@@ -12,93 +13,53 @@ import DetailTriangleButtonGuide from '@/app/components/atoms/Text/DetailTriangl
 import Rocket from '@/app/components/atoms/Button/Rocket';
 import RocketModal from '@/app/components/organisms/Modal/RocketModal';
 import { RocketData } from '@/app/types/rocket';
+import useKRStockWebSocket from '@/app/hooks/useKRStockWebSocket';
+import { getTop7RocketsApi } from '@/app/utils/apis/rocket';
 
 let renderer: THREE.WebGLRenderer;
 let camera: THREE.PerspectiveCamera;
 
-// 임시 댓글 데이터
-// todo: imageUrl -> characterType(number) 로 변경해야 함
-const tempData: RocketData[] = [
-  {
-    userId: 1,
-    nickname: '참1',
-    price: '715200',
-    priceChangeSign: '-',
-    priceChange: '0.04',
-    message: '응 절대 안 올라 평생 버텨봐~우오오ㅇ아~우오오~우오오~우오오ㅇdddddfasdfasdf아아아아',
-    createdAt: "2024.08.29 11:23",
-    imageUrl: '/images/rocket/profile2.png'
-  },
-  {
-    userId: 2,
-    nickname: '참2',
-    price: '715100',
-    priceChangeSign: '+',
-    priceChange: '0.02',
-    message: '절대 안 올라~ 버텨~ 우오오ㅇ아!',
-    createdAt: "2024.08.29 12:00",
-    imageUrl: '/images/rocket/profile2.png'
-  },
-  {
-    userId: 3,
-    nickname: '참3',
-    price: '714200',
-    priceChangeSign: '+',
-    priceChange: '0.07',
-    message: '아무리 기다려도 오르지 않을걸~',
-    createdAt: "2024.08.29 12:30",
-    imageUrl: '/images/rocket/profile2.png'
-  },
-  {
-    userId: 4,
-    nickname: '참4',
-    price: '716200',
-    priceChangeSign: '-',
-    priceChange: '0.02',
-    message: '이거는 진짜 안 올라!',
-    createdAt: "2024.08.29 13:00",
-    imageUrl: '/images/rocket/profile2.png'
-  },
-  {
-    userId: 5,
-    nickname: '참5',
-    price: '715900',
-    priceChangeSign: '-',
-    priceChange: '0.02',
-    message: '버텨봐도 소용없어~',
-    createdAt: "2024.08.29 13:30",
-    imageUrl: '/images/rocket/profile2.png'
-  },
-  {
-    userId: 6,
-    nickname: '참6',
-    price: '715200',
-    priceChangeSign: '+',
-    priceChange: '0.02',
-    message: '우오오~ 이건 절대 오르지 않아!',
-    createdAt: "2024.08.29 14:00",
-    imageUrl: '/images/rocket/profile2.png'
-  },
-  {
-    userId: 7,
-    nickname: '참7',
-    price: '715200',
-    priceChangeSign: '+',
-    priceChange: '0.02',
-    message: '포기해~ 올라갈 리가 없어!',
-    createdAt: "2024.08.29 14:30",
-    imageUrl: '/images/rocket/profile2.png'
-  }
-];
-
-
 export default function Home() {
   const mountRef = useRef<HTMLDivElement>(null);
   const [isRocketModalOpen, setIsRocketModalOpen] = useState(false);
+  const [rocketData, setRocketData] = useState<RocketData[]>([]); // 로켓 데이터 상태
+  const [currentPrice, setCurrentPrice] = useState<string | null>(null); // 실시간 주가 상태
   const planetRadius = 150; // 행성의 반지름
+  const stockCodeParam = useParams().stock;
+  const stockCode = Array.isArray(stockCodeParam) ? stockCodeParam[0] : stockCodeParam;
 
   // scene을 상태로 관리
   const [scene, setScene] = useState<THREE.Scene | null>(null);
+
+  // API로부터 로켓 데이터를 불러오는 함수
+  const fetchRocketData = async () => {
+    try {
+      const response = await getTop7RocketsApi(stockCode);
+      setRocketData(response); // 로켓 데이터를 상태로 저장
+    } catch (error) {
+      console.error('로켓 데이터를 불러오는 중 에러가 발생했습니다.', error);
+    }
+  };
+
+  // 웹소켓을 통해 실시간 주가 데이터를 받아오는 훅
+  useKRStockWebSocket(
+    [{ stock_code: stockCode, stock_name: "삼성전자" }],  // todo: 주식 코드와 주식 이름을 전달
+    (updatedStockData) => {
+      // updatedStockData가 배열인지 확인
+      if (Array.isArray(updatedStockData)) {
+        const stock = updatedStockData.find((s) => s.stock_code === stockCode);
+        if (stock) {
+          setCurrentPrice(stock.currentPrice); // 실시간 주가 업데이트
+        }
+      } else {
+        console.error('updatedStockData가 배열이 아닙니다:', updatedStockData);
+      }
+    }
+  );
+
+  useEffect(() => {
+    fetchRocketData(); // 컴포넌트가 마운트될 때 로켓 데이터 불러오기
+  }, [stockCode]);
 
   useEffect(() => {
     let circle: THREE.Object3D;
@@ -229,11 +190,11 @@ export default function Home() {
     <div style={{ position: 'relative' }}>
       <div ref={mountRef} id="canvas" style={{ width: '100%', height: '100vh', position: 'absolute', zIndex: 1 }}></div>
       <RecoilRoot>
-        <DateCard  right='30px' />
+        <DateCard right='30px' />
         <PlanetSimpleInfoCard />
         <TimeMachineButtonGroup />
         <RocketButtonGroup onRocketClick={() => setIsRocketModalOpen(true)} />
-        {scene && <Rocket scene={scene} rocketData={tempData}/>}
+        {scene && <Rocket scene={scene} rocketData={rocketData} currentPrice={currentPrice} />} {/* 실시간 주가 전달 */}
         {isRocketModalOpen && <RocketModal onClose={() => setIsRocketModalOpen(false)} />}
       </RecoilRoot>
       <DetailTriangleButton />

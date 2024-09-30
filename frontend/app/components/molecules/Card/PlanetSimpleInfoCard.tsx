@@ -1,38 +1,29 @@
 import styled from '@emotion/styled';
 import PlanetCardTitle from '../../atoms/Text/PlanetCardTitle';
-import PlanetCardInfo from '../../atoms/Text/PlanetCardInfo';
+import { Icon } from '../../atoms/myplanet/Icon';
+import { useParams } from 'next/navigation';
 
+// todo: 실제 데이터로 변경
 const tempData = {
-  marketCap: 4029603000000000, // 시가총액
-  lowestYear: 52360,       // 1년 최저가
-  lowestDay: 154865,       // 1일 최저가
-  highestDay: 161498,      // 1일 최고가
+  iconSrc: '/images/logo/samsung.png',
 };
 
 const PlanetSimpleInfoCard = () => {
+  const stockCode = useParams().stock;
   return (
     <CardContainer>
       <CardTitle>
+        <Icon src={tempData.iconSrc} size="40px" width={20} />
         <PlanetCardTitle title="삼성전자" />
       </CardTitle>
-      <Line />
-      <InfoContainer>
-        <div>
-          <PlanetCardInfo label="시가총액" value={tempData.marketCap} />
-          <PlanetCardInfo label="1년 최저" value={tempData.lowestYear} />
-        </div>
-        <div>
-          <PlanetCardInfo label="1일 최저" value={tempData.lowestDay} />
-          <PlanetCardInfo label="1일 최고" value={tempData.highestDay} />
-        </div>
-      </InfoContainer>
+      <StockCode>{stockCode}</StockCode> {/* 회색 글씨로 stockCode 추가 */}
     </CardContainer>
   );
 };
 
 const CardContainer = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   background-color: rgba(255, 255, 255, 0.4);
   padding: 14px 20px;
   border-radius: 20px;
@@ -44,25 +35,24 @@ const CardContainer = styled.div`
   top: 30px;
   left: 30px;
   z-index: 1000;
-  width: 220px;
+  min-width: 120px;
 `;
 
 const CardTitle = styled.div`
-  text-align: center;
-`;
-
-const InfoContainer = styled.div`
   display: flex;
-  justify-content: space-between;
-  margin-top: 10px;
+  text-align: center;
+  align-items: center;
 `;
 
-const Line = styled.div`
-  width: 100%;
-  height: 2px;
-  background-color: #ffffffd1;
-  margin-top: 12px;
-  margin-bottom: 4px;
+const StockCode = styled.span`
+  display: flex;
+  margin-left: 8px;
+  margin-bottom: 5px;
+  color: #ffffffd3;
+  font-size: 14px;
+  font-weight: 400;
+  align-items: end;
+  font-weight: bold;
 `;
 
 export default PlanetSimpleInfoCard;

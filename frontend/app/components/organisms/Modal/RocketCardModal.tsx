@@ -6,6 +6,7 @@ import RocketContent from '../../atoms/Text/RocketContent';
 import RocketTimeStamp from '../../atoms/Text/RocketTimeStamp';
 import RocketPriceGroup from '../../molecules/ButtonGroup/RocketPriceGroup';
 import { RocketData } from '@/app/types/rocket';
+import { calculatePriceChange } from '@/app/utils/libs/stock/calculatePriceChange';
 
 interface RocketCardModalProps {
   onClose: () => void;
@@ -13,6 +14,7 @@ interface RocketCardModalProps {
   camera: PerspectiveCamera;  // 3D 좌표를 변환하기 위한 카메라
   rendererDomElement: HTMLCanvasElement; // 렌더러의 DOM 요소
   data: RocketData;
+  currentPrice: string;
 }
 
 const RocketCardModal: React.FC<RocketCardModalProps> = ({
@@ -21,8 +23,10 @@ const RocketCardModal: React.FC<RocketCardModalProps> = ({
   camera,
   rendererDomElement,
   data,
+  currentPrice
 }) => {
   const [screenPosition, setScreenPosition] = useState({ x: -9999, y: -9999 }); // 초기 위치를 화면 밖으로 설정
+  const { priceChange, priceChangeSign } = calculatePriceChange(data.stockPrice, currentPrice);
 
   useEffect(() => {
     // 3D 좌표를 2D 화면 좌표로 변환하는 함수
@@ -48,9 +52,9 @@ const RocketCardModal: React.FC<RocketCardModalProps> = ({
         </UserInfoWrapper>
         <ContentContainer>
           <RocketPriceGroup
-            price={data.price}
-            priceChange={data.priceChange}
-            priceChangeSign={data.priceChangeSign}
+            stockPrice={data.stockPrice}
+            priceChange={priceChange}
+            priceChangeSign={priceChangeSign}
           />
           <RocketContent message={data.message} fontWeight={600} />
           <TimeSection>

@@ -4,31 +4,56 @@ import { IoClose } from "react-icons/io5";
 import RocketInputField from '../../atoms/InputField/RocketInputField';
 import RocketCard from '../RocketCard';
 import LoadingSpinner from '../../atoms/LoadingSpinner';
-import { getRocketListApi } from '@/app/utils/apis/rocket'; // API 호출
+import { getRocketListApi } from '@/app/utils/apis/rocket';
 import { useParams } from 'next/navigation';
+import useKRStockWebSocket from '@/app/hooks/useKRStockWebSocket'; // 웹소켓 사용
+import { useRecoilValue } from 'recoil';
+import { getTodayDate } from '@/app/utils/libs/getTodayDate';
+import { dateState } from '@/app/store/date';
 
 const RocketModal = ({ onClose }) => {
   const [data, setData] = useState([]); // 현재 보여주는 데이터
   const [allData, setAllData] = useState([]); // 전체 데이터를 저장할 상태
   const [loading, setLoading] = useState(false);
+  const [currentPrice, setCurrentPrice] = useState<string | null>(null); // 실시간 주가 데이터 상태 추가
   const stockCodeParam = useParams().stock;
   const stockCode = Array.isArray(stockCodeParam) ? stockCodeParam[0] : stockCodeParam;
+  const currentSetDate = useRecoilValue(dateState); // 현재 사용자가 설정한 날짜
+  const realDate = getTodayDate(); // 실제 오늘 날짜
+  const isToday = currentSetDate === realDate;
+
+  // 웹소켓 연결 및 실시간 주가 데이터 업데이트
+  useKRStockWebSocket(
+    [{ stock_code: stockCode, stock_name: "삼성전자" }],  // todo: 주식 코드와 주식 이름을 전달(실제로)
+    (updatedStockData) => {
+      // updatedStockData가 배열인지 확인
+      if (Array.isArray(updatedStockData)) {
+        const stock = updatedStockData.find((s) => s.stock_code === stockCode);
+        if (stock) {
+          setCurrentPrice(stock.currentPrice); // 실시간 주가 업데이트
+        }
+      } else {
+        console.error('updatedStockData가 배열이 아닙니다:', updatedStockData);
+      }
+    }
+  );
+
+  // fetchData 함수 분리
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const response = await getRocketListApi(stockCode); // 전체 데이터를 불러옴
+      setAllData(response); // 전체 데이터를 상태에 저장
+      setData(response.slice(0, 8)); // 초기 8개 데이터만 보여줌
+    } catch (err) {
+      console.error('로켓 데이터를 불러오는 중 에러가 발생했습니다.', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // 처음에 데이터를 불러오는 useEffect
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const response = await getRocketListApi(stockCode); // 전체 데이터를 불러옴
-        setAllData(response); // 전체 데이터를 상태에 저장
-        setData(response.slice(0, 8)); // 초기 8개 데이터만 보여줌
-      } catch (err) {
-        console.error('로켓 데이터를 불러오는 중 에러가 발생했습니다.', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchData();
   }, [stockCode]);
 
@@ -39,7 +64,7 @@ const RocketModal = ({ onClose }) => {
     setLoading(true);
     setTimeout(() => {
       const additionalData = allData.slice(data.length, data.length + 8); // 다음 8개 데이터 추가
-      setData(prevData => [...prevData, ...additionalData]); // 기존 데이터 + 추가 데이터 병합
+      setData(prevData => [...prevData, ...additionalData]); // 기존 데이터 + 추가 데이터
       setLoading(false);
     }, 1500);
   }, [data, allData, loading]);
@@ -51,6 +76,7 @@ const RocketModal = ({ onClose }) => {
     }
   }, [fetchMoreData, loading]);
 
+  // handleDelete에서 fetchData 전달
   return (
     <ModalOverlay>
       <ModalWrapper>
@@ -58,11 +84,11 @@ const RocketModal = ({ onClose }) => {
         <ModalContent onScroll={handleScroll}>
           <StyledCloseIcon onClick={onClose}/>
           <Header>
-            <RocketInputField />  
+            <RocketInputField currentPrice={currentPrice} isToday={isToday} />  {/* 실시간 주가 전달 */}
           </Header>
           <CardsContainer>
             {data.map((item) => (
-              <RocketCard key={item.userId} data={item} />
+              <RocketCard key={item.rocketId} data={item} currentPrice={currentPrice} fetchData={fetchData} />
             ))}
           </CardsContainer>
           {loading && <LoadingSpinner />}
@@ -86,25 +112,22 @@ const ModalOverlay = styled.div`
 `;
 
 const ModalWrapper = styled.div`
-  width: 80%;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  justify-items: center;
   z-index: 2100;
-`
+`;
 
 const ModalTitle = styled.div`
-  position: absolute;
-  top: 75px;
-  left: 264px;
   font-size: 24px;
+  margin-left: 10px;
   font-weight: bold;
   color: white;
   text-align: left;
   margin-bottom: 20px;
-`
+`;
+
 
 const ModalContent = styled.div`
   background: rgba(255, 255, 255, 0.9);
@@ -159,12 +182,6 @@ const StyledCloseIcon = styled(IoClose)`
   right: 16px;
   font-size: 24px;
   cursor: pointer;
-`;
-
-const ErrorMessage = styled.div`
-  color: #FF4500;
-  font-size: 14px;
-  margin-top: 10px;
 `;
 
 export default RocketModal;

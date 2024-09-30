@@ -1,10 +1,27 @@
 export interface RocketData {
-  userId: number;
+  memberId: number;
   nickname: string;
-  price: string;
-  priceChangeSign: string;
-  priceChange: string;
+  stockPrice: string;
   message: string;
   createdAt: string;
   characterType: number;
+}
+
+export interface RocketPriceGroupProps {
+  stockPrice: string;
+  priceChange: string; // 변동률
+  priceChangeSign: string; // 변동률 부호
+}
+
+export interface RocketCardProps {
+  data: {
+    rocketId: number,
+    memberId: number;
+    characterType: number;
+    nickname: string;
+    stockPrice: string; // 로켓 작성 당시 주가
+    content: string;
+    createdAt: string;
+  };
+  currentPrice: string; // 실시간으로 받아오는 현재 주가
 }

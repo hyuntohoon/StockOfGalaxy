@@ -1,17 +1,12 @@
 import styled from '@emotion/styled';
 import RocketPrice from "../../atoms/Text/RocketPrice";
 import RocketPriceChange from "../../atoms/Text/RocketPriceChange";
+import { RocketPriceGroupProps } from '@/app/types/rocket';
 
-interface RocketPriceGroupProps {
-  price: string;
-  priceChange: string;
-  priceChangeSign: string;
-}
-
-const RocketPriceGroup = ({ price, priceChange, priceChangeSign }: RocketPriceGroupProps) => {
+const RocketPriceGroup = ({ stockPrice, priceChange, priceChangeSign }: RocketPriceGroupProps) => {
   return (
     <PriceContainer>
-      <RocketPrice price={price}/>
+      <RocketPrice price={stockPrice}/>
       <RocketPriceChange priceChange={priceChange} priceChangeSign={priceChangeSign}/>
     </PriceContainer>
   );

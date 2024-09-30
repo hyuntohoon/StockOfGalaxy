@@ -13,6 +13,7 @@ const Title = styled.h2`
   font-weight: bold;
   color: white;
   margin: 0;
+  letter-spacing: 1px; /* 자간 설정 */
 `;
 
 export default PlanetCardTitle;
