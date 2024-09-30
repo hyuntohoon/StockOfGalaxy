@@ -128,7 +128,7 @@ logging:
 elastic:
   apm:
     service_name: "gateway-service" # APM에 등록될 서비스 이름
-    server_urls: "http://apm-server.dev.svc.cluster.local:8200" # APM 서버 URL
+    server_urls: "http://3.38.183.146:8200" # APM 서버 URL
     application_packages: "com.sog" # 패키지 이름 설정
     enable_framework_auto_detection: true # WebFlux 자동 감지 활성화
     distributed_tracing: true # 분산 추적 활성화
