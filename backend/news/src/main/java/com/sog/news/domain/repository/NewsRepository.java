@@ -28,4 +28,6 @@ public interface NewsRepository extends JpaRepository<News, Long> {
 
     // 뉴스의 제목에서 키워드로 검색하며, 페이징 처리
     Page<News> findByTitleContaining(String titleKeyword, Pageable pageable);
+    // 뉴스의 내용에서 키워드로 검색하며, 페이징 처리
+    Page<News> findByContentContaining(String contentKeyword, Pageable pageable);
 }
