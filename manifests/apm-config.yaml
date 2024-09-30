@@ -1,19 +1,19 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: apm-server-config
-  namespace: dev
-data:
-  apm-server.yml: |
-    output.elasticsearch:
-      hosts: ["http://elasticsearch:9200"]
-      username: "elastic"
-      password: "rootpassword"
-    setup.kibana:
-      host: "http://3.38.183.146:30056"
-      username: "kibana_system"
-      password: "rootpassword"
-    apm-server:
-      host: "0.0.0.0:8200"
-    http.host: "0.0.0.0"
-    http.port: 8200
+# apiVersion: v1
+# kind: ConfigMap
+# metadata:
+#   name: apm-server-config
+#   namespace: dev
+# data:
+#   apm-server.yml: |
+#     output.elasticsearch:
+#       hosts: ["http://elasticsearch:9200"]
+#       username: "elastic"
+#       password: "rootpassword"
+#     setup.kibana:
+#       host: "http://3.38.183.146:30056"
+#       username: "kibana_system"
+#       password: "rootpassword"
+#     apm-server:
+#       host: "0.0.0.0:8200"
+#     http.host: "0.0.0.0"
+#     http.port: 8200
