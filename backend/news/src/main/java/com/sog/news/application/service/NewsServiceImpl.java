@@ -56,10 +56,17 @@ public class NewsServiceImpl implements NewsService {
     }
 
     public List<NewsPreviewResponseDTO> searchNewsByTitleWithPaging(String keyword, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page, size);  // 페이지와 크기 설정
         return newsRepository.findByTitleContaining(keyword, pageable)
                 .map(NewsPreviewResponseDTO::fromEntity)
                 .getContent();  // 페이징 정보 제외하고 DTO content만 추출하여 반환
+    }
+
+    public List<NewsPreviewResponseDTO> searchNewsByContentWithPaging(String keyword, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);  // 페이지와 크기 설정
+        return newsRepository.findByContentContaining(keyword, pageable)
+                .map(NewsPreviewResponseDTO::fromEntity)
+                .getContent();  // 페이징 정보 제외하고 DTO content만 반환
     }
 
     public ResponseEntity<List<TodayStockCloudResponseDTO>> getDailyStockKeywordFrequency(LocalDate date, String stockCode) {
