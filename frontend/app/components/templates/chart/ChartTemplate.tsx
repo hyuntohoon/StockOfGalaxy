@@ -3,6 +3,7 @@
 import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
 import { init } from "klinecharts";
+import { getMinuteStockData } from "@/app/utils/apis/stock/getStockData";
 
 import useKRChartWebSocket from "@/app/hooks/useKRChartWebSocket";
 
@@ -39,10 +40,11 @@ const ChartTemplate = () => {
 
   useEffect(() => {
     if (chartContainerRef) {
+      const dataList = getMinuteStockData("005930");
       const newChart = init(chartContainerRef);
 
-      newChart?.createIndicator("MA", false, { id: "candle_pane" });
-      newChart?.createIndicator("VOL");
+      newChart.createIndicator("MA", false, { id: "candle_pane" });
+      newChart.createIndicator("VOL");
 
       newChart?.setStyles({
         grid: {
@@ -70,18 +72,6 @@ const ChartTemplate = () => {
         },
       });
 
-      newChart?.applyNewData([
-        {
-          timestamp: Date.now(),
-          open: parseFloat((Math.random() * 1000).toFixed(2)),
-          high: parseFloat((Math.random() * 1000).toFixed(2)),
-          low: parseFloat((Math.random() * 1000).toFixed(2)),
-          close: parseFloat((Math.random() * 1000).toFixed(2)),
-          volume: Math.floor(Math.random() * 10000),
-          turnover: Math.floor(Math.random() * 10000),
-        },
-      ]);
-
       setChart(newChart);
     }
   }, [chartContainerRef]);
@@ -103,21 +93,7 @@ const ChartTemplate = () => {
   const changeType = (type: string) => {
     chart?.clearData();
 
-    // 임시 데이터
-    // 추후 http 통신으로 데이터를 받아와서 적용해야 함
-    chart?.applyNewData([
-      {
-        timestamp: Date.now(),
-        open: parseFloat((Math.random() * 1000).toFixed(2)),
-        high: parseFloat((Math.random() * 1000).toFixed(2)),
-        low: parseFloat((Math.random() * 1000).toFixed(2)),
-        close: parseFloat((Math.random() * 1000).toFixed(2)),
-        volume: Math.floor(Math.random() * 10000),
-        turnover: Math.floor(Math.random() * 10000),
-      },
-    ]);
     setType(type);
-    console.log(new Date(Date.now()).toString().split(" "));
   };
 
   return (

@@ -1,6 +1,17 @@
 import { useEffect, useState } from "react";
 
-import formatTimeStamp from "../utils/libs/stock/formatTimestampToKoreanTime";
+// 숫자를 K, M, B로 변환하는 함수
+const formatNumber = (number) => {
+  if (number >= 1e9) {
+    return (number / 1e9).toFixed(1) + "B"; // Billion
+  } else if (number >= 1e6) {
+    return (number / 1e6).toFixed(1) + "M"; // Million
+  } else if (number >= 1e3) {
+    return (number / 1e3).toFixed(1) + "K"; // Thousand
+  } else {
+    return number.toString();
+  }
+};
 
 const useKRChartWebSocket = (tr_key: string, chart: any, type: string) => {
   useEffect(() => {
@@ -8,10 +19,11 @@ const useKRChartWebSocket = (tr_key: string, chart: any, type: string) => {
       return;
     }
 
-    const socket = new WebSocket("ws://localhost:8080");
-    // const socket = new WebSocket(
-    //   `${process.env.NEXT_PUBLIC_WS_BASE_URL}/api/ws-chart`
-    // );
+    // const socket = new WebSocket("ws://localhost:8080");
+
+    const socket = new WebSocket(
+      `${process.env.NEXT_PUBLIC_WS_BASE_URL}/ws/chart`
+    );
 
     socket.onopen = () => {
       console.log(`Connected to ${tr_key}`);
@@ -20,45 +32,47 @@ const useKRChartWebSocket = (tr_key: string, chart: any, type: string) => {
 
     socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      const prevData = chart.getDataList();
+      if (!data || !data.closePrice) {
+        return;
+      }
 
-      const cur = formatTimeStamp(data.timestamp);
-      const prev = prevData[prevData.length - 1];
-      const prevTime = formatTimeStamp(prev.timestamp);
+      const currentTimeStamp = Date.now();
+      const currentMinute = new Date(currentTimeStamp).getMinutes();
+      const currentSecond = new Date(currentTimeStamp).getSeconds();
 
-      const dataList = {
-        timestamp: prevData.timestamp,
-        open: prevData.openPrice,
-        high: prevData.highPrice,
-        low: prevData.lowPrice,
-        close: prevData.closePrice,
-        volume: data.stockAcmlVol,
-        turnover: data.stockAcmlTrPbmn,
+      const prevDataList = chart.getDataList();
+      const prevData = prevDataList[prevDataList.length - 1] || {};
+
+      const prevDataTimeStamp = prevData.timestamp || currentTimeStamp;
+      const prevDataMinute = new Date(prevDataTimeStamp).getMinutes();
+      const prevDataSecond = new Date(prevDataTimeStamp).getSeconds();
+
+      let dataList = {
+        timestamp: prevData.timestamp || currentTimeStamp,
+        open: prevData.open || data.closePrice,
+        high: Math.max(prevData.high || data.closePrice, data.closePrice),
+        low: Math.min(prevData.low || data.closePrice, data.closePrice),
+        close: data.closePrice,
+        volume: formatNumber(data.stockAcmlVol),
+        turnover: formatNumber(data.stockAcmlTrPbmn),
       };
 
-      console.log(cur, prevTime);
-
-      // timestamp, open, high, low, close, volume, turnover
-      if (type === "minute") {
-        if (cur[cur.length - 2] != prevTime[prevTime.length - 2]) {
-          dataList.timestamp = data.timestamp;
-          dataList.open = data.closePrice;
-          dataList.high = data.closePrice;
-          dataList.low = data.closePrice;
-          dataList.close = data.closePrice;
-          chart.updateData(dataList);
-        } else {
-          dataList.timestamp = prevData.timestamp;
-          dataList.high = Math.max(prevData.high, data.closePrice);
-          dataList.low = Math.min(prevData.low, data.closePrice);
-          chart.updateData(dataList);
-        }
-      } else {
-        dataList.timestamp = prevData.timestamp;
-        dataList.high = Math.max(prevData.high, data.high);
-        dataList.low = Math.min(prevData.low, data.low);
-        chart.updateData(dataList);
+      if (
+        type === "minute" &&
+        currentSecond === 0 &&
+        currentMinute !== prevDataMinute
+      ) {
+        dataList = {
+          ...dataList,
+          timestamp: currentTimeStamp,
+          open: data.closePrice,
+          high: data.closePrice,
+          low: data.closePrice,
+          close: data.closePrice,
+        };
       }
+
+      chart.updateData(dataList);
     };
 
     socket.onclose = () => {

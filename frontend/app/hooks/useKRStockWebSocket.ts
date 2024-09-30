@@ -6,11 +6,11 @@ const delay = (ms) => {
 
 const useKRStockWebSocket = (stockData, setStockDataInfo: any) => {
   useEffect(() => {
-    const socket = new WebSocket("ws://localhost:8081");
+    // const socket = new WebSocket("ws://localhost:8081");
 
-    // const socket = new WebSocket(
-    //   `${process.env.NEXT_PUBLIC_WS_BASE_URL}/ws/stock`
-    // );
+    const socket = new WebSocket(
+      `${process.env.NEXT_PUBLIC_WS_BASE_URL}/ws/stock`
+    );
 
     socket.onopen = async () => {
       console.log("Connected to server");
