@@ -13,17 +13,50 @@ spec:
       labels:
         app: gateway-service
     spec:
+      volumes:
+        - name: elastic-apm-agent
+          emptyDir: {}
+      initContainers:
+        - name: elastic-java-agent
+          image: docker.elastic.co/observability/apm-agent-java:1.52.0
+          volumeMounts:
+            - mountPath: /elastic/apm/agent
+              name: elastic-apm-agent
+          command: ['cp', '-v', '/usr/agent/elastic-apm-agent.jar', '/elastic/apm/agent']
       containers:
         - name: gateway-service
           image: zlxldgus123/gateway-service:208
           ports:
             - containerPort: 8080
+          volumeMounts:
+            - mountPath: /elastic/apm/agent
+              name: elastic-apm-agent
           env:
             - name: JWT_SECRET
               valueFrom:
                 secretKeyRef:
                   name: jwt-secret
                   key: secret
+            - name: ELASTIC_APM_SERVER_URLS
+              value: "http://localhost:8200"
+            - name: ELASTIC_APM_SERVICE_NAME
+              value: "gateway-service"
+            - name: ELASTIC_APM_APPLICATION_PACKAGES
+              value: "com.sog"
+            - name: ELASTIC_APM_ENVIRONMENT
+              value: "production"
+            - name: ELASTIC_APM_LOG_LEVEL
+              value: "INFO"
+            - name: ELASTIC_APM_DISABLE_INSTRUMENTATIONS
+              value: "spring-webmvc"
+            - name: ELASTIC_APM_ENABLE_EXPERIMENTAL_INSTRUMENTATIONS
+              value: "true"
+            - name: ELASTIC_APM_REACTOR_INSTRUMENTATION
+              value: "true"
+            - name: ELASTIC_APM_TRACE_METHODS
+              value: "com.sog.gateway.*"
+            - name: JAVA_TOOL_OPTIONS
+              value: "-javaagent:/elastic/apm/agent/elastic-apm-agent.jar -Dspring.main.web-application-type=reactive"
           resources:
             requests:
               memory: "512Mi"
@@ -43,81 +76,3 @@ spec:
               port: 8080
             initialDelaySeconds: 60
             periodSeconds: 15
-# apiVersion: apps/v1
-# kind: Deployment
-# metadata:
-#   name: gateway-service
-#   namespace: backcd
-# spec:
-#   replicas: 2
-#   selector:
-#     matchLabels:
-#       app: gateway-service
-#   template:
-#     metadata:
-#       labels:
-#         app: gateway-service
-#     spec:
-#       volumes:
-#         - name: elastic-apm-agent
-#           emptyDir: {}
-#       initContainers:
-#         - name: elastic-java-agent
-#           image: docker.elastic.co/observability/apm-agent-java:1.52.0
-#           volumeMounts:
-#             - mountPath: /elastic/apm/agent
-#               name: elastic-apm-agent
-#           command: ['cp', '-v', '/usr/agent/elastic-apm-agent.jar', '/elastic/apm/agent']
-#       containers:
-#         - name: gateway-service
-#           image: zlxldgus123/gateway-service:208
-#           ports:
-#             - containerPort: 8080
-#           volumeMounts:
-#             - mountPath: /elastic/apm/agent
-#               name: elastic-apm-agent
-#           env:
-#             - name: JWT_SECRET
-#               valueFrom:
-#                 secretKeyRef:
-#                   name: jwt-secret
-#                   key: secret
-#             - name: ELASTIC_APM_SERVER_URLS
-#               value: "http://3.38.183.146:30192"
-#             - name: ELASTIC_APM_SERVICE_NAME
-#               value: "gateway-service"
-#             - name: ELASTIC_APM_APPLICATION_PACKAGES
-#               value: "com.sog"
-#             - name: ELASTIC_APM_ENVIRONMENT
-#               value: "production"
-#             - name: ELASTIC_APM_LOG_LEVEL
-#               value: "INFO"
-#             - name: ELASTIC_APM_DISABLE_INSTRUMENTATIONS
-#               value: "spring-webmvc"
-#             - name: ELASTIC_APM_ENABLE_EXPERIMENTAL_INSTRUMENTATIONS
-#               value: "true"
-#             - name: ELASTIC_APM_REACTOR_INSTRUMENTATION
-#               value: "true"
-#             - name: ELASTIC_APM_TRACE_METHODS
-#               value: "com.sog.gateway.*"
-#             - name: JAVA_TOOL_OPTIONS
-#               value: "-javaagent:/elastic/apm/agent/elastic-apm-agent.jar -Dspring.main.web-application-type=reactive"
-#           resources:
-#             requests:
-#               memory: "512Mi"
-#               cpu: "250m"
-#             limits:
-#               memory: "1Gi"
-#               cpu: "500m"
-#           readinessProbe:
-#             httpGet:
-#               path: /actuator/health/readiness
-#               port: 8080
-#             initialDelaySeconds: 30
-#             periodSeconds: 10
-#           livenessProbe:
-#             httpGet:
-#               path: /actuator/health/liveness
-#               port: 8080
-#             initialDelaySeconds: 60
-#             periodSeconds: 15
