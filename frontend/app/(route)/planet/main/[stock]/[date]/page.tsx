@@ -15,6 +15,7 @@ import RocketModal from '@/app/components/organisms/Modal/RocketModal';
 import { RocketData } from '@/app/types/rocket';
 import useKRStockWebSocket from '@/app/hooks/useKRStockWebSocket';
 import { getTop7RocketsApi } from '@/app/utils/apis/rocket';
+import TypeWritter from './TypeWritter';
 
 let renderer: THREE.WebGLRenderer;
 let camera: THREE.PerspectiveCamera;
@@ -22,6 +23,7 @@ let camera: THREE.PerspectiveCamera;
 export default function Home() {
   const mountRef = useRef<HTMLDivElement>(null);
   const [isRocketModalOpen, setIsRocketModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);  // 로딩 상태
   const [rocketData, setRocketData] = useState<RocketData[]>([]); // 로켓 데이터 상태
   const [currentPrice, setCurrentPrice] = useState<string | null>(null); // 실시간 주가 상태
   const planetRadius = 150; // 행성의 반지름
@@ -175,30 +177,38 @@ export default function Home() {
       animate();
     }
 
-    init();
+    if (!isLoading) { // 로딩이 끝나면 초기화 실행
+      init();
+    }
 
     return () => {
       window.removeEventListener('resize', onWindowResize);
-      if (mountRef.current) {
-        mountRef.current.removeChild(renderer.domElement);
+      if (mountRef.current && renderer) { // renderer가 초기화된 경우에만 제거
+         renderer.dispose(); // renderer가 있을 때만 dispose 호출
       }
-      renderer.dispose();
     };
-  }, []);
+    
+  }, [isLoading]);
 
-  return (
+ return (
     <div style={{ position: 'relative' }}>
-      <div ref={mountRef} id="canvas" style={{ width: '100%', height: '100vh', position: 'absolute', zIndex: 1 }}></div>
-      <RecoilRoot>
-        <DateCard right='30px' />
-        <PlanetSimpleInfoCard />
-        <TimeMachineButtonGroup />
-        <RocketButtonGroup onRocketClick={() => setIsRocketModalOpen(true)} />
-        {scene && <Rocket scene={scene} rocketData={rocketData} currentPrice={currentPrice} />} {/* 실시간 주가 전달 */}
-        {isRocketModalOpen && <RocketModal onClose={() => setIsRocketModalOpen(false)} />}
-      </RecoilRoot>
-      <DetailTriangleButton />
-      <DetailTriangleButtonGuide />
+      {isLoading ? (
+        <TypeWritter onFinish={() => setIsLoading(false)} />  // 3초 후 로딩 완료
+      ) : (
+        <>
+          <div ref={mountRef} id="canvas" style={{ width: '100%', height: '100vh', position: 'absolute', zIndex: 1 }}></div>
+          <RecoilRoot>
+            <DateCard right='30px' />
+            <PlanetSimpleInfoCard />
+            <TimeMachineButtonGroup />
+            <RocketButtonGroup onRocketClick={() => setIsRocketModalOpen(true)} />
+            {scene && <Rocket scene={scene} rocketData={rocketData} currentPrice={currentPrice} />} {/* 실시간 주가 전달 */}
+            {isRocketModalOpen && <RocketModal onClose={() => setIsRocketModalOpen(false)} />}
+          </RecoilRoot>
+          <DetailTriangleButton />
+          <DetailTriangleButtonGuide />
+        </>
+      )}
     </div>
   );
 }

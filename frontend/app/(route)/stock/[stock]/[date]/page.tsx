@@ -6,8 +6,8 @@ const StockPage = () => {
   return (
     <>
       {/* <StockDailyPriceTemplate /> */}
-      <StockHeaderTemplate />
-      {/* <StockTemplate /> */}
+      {/* <StockHeaderTemplate /> */}
+      <StockTemplate />
     </>
   );
 };

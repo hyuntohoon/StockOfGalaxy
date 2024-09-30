@@ -1,6 +1,6 @@
 {
   "status": "ready",
-  "originalFilePath": "/videos/get-started.mp4",
+  "originalFilePath": "videos/get-started.mp4",
   "provider": "mux",
   "providerMetadata": {
     "mux": {

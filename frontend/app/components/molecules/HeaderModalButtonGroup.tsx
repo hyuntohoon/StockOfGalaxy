@@ -40,6 +40,7 @@ const Text = styled.div`
   font-size: 12px;
   font-weight: bold;
   text-align: center;
+  text-decoration: none;
 `;
 
 export default HeaderModalButtonGroup;

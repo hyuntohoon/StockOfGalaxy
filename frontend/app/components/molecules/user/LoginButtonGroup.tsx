@@ -14,7 +14,7 @@ const ButtonContainer = styled.div`
 
 const LoginButtonGroup = ({ inputValue }) => {
   const router = useRouter();
-  const { setAccessToken} = useAccessToken();
+  const { setAccessToken } = useAccessToken();
   const {setIsLoggedIn} = useIsLoggedIn();
   
   const handleLogin = async () => {

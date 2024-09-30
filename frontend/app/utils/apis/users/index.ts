@@ -16,13 +16,14 @@ export const login = async (formData, setAccessToken, setLogin, setMemberId, set
     console.log(loginRes.headers["authorization"]);
     console.log(loginRes.data);
     console.log(loginRes.headers.common.authorization);
+   
     const authorizationHeader = loginRes.headers["authorization"];
     const accessToken = authorizationHeader
       ? authorizationHeader.replace(/^Bearer\s+/i, "")
       : null;
     const memberId = loginRes.data.memberId;
     console.log(accessToken);
-
+    alert(accessToken)
     if (accessToken) {
       setAccessToken(accessToken); // 유저 정보 저장
       setLogin(true);
@@ -42,6 +43,18 @@ export const login = async (formData, setAccessToken, setLogin, setMemberId, set
     return false;
   }
 };
+
+export const logout = async (accessToken, setAccessToken) => {
+  const authClient = authRequest(accessToken, setAccessToken);
+  try {
+    const logoutRes = await authClient.get("/user/logout");
+    alert("로그아웃 api 확인 필요, utils/apis/users/index.ts");
+    return true;
+  }catch (error) {
+    alert("로그아웃 실패");
+    return false;
+  }
+}
 
 export const getInfo = async (accessToken, setAccessToken) => {
   const authClient = authRequest(accessToken, setAccessToken);
