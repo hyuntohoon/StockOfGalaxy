@@ -30,6 +30,8 @@ spec:
               value: single-node
             - name: xpack.security.enabled
               value: "true"  # 보안 활성화
+            - name: xpack.security.authc.api_key.enabled
+              value: "true"  # API 키 인증 활성화
       volumes:
         - name: elasticsearch-data
           persistentVolumeClaim:
