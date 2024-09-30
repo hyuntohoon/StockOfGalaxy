@@ -65,6 +65,17 @@ public class NewsController {
         return new ResponseEntity<>(newsPreviewResponseDTOS, HttpStatus.OK);
     }
 
+    @Operation(summary = "뉴스 제목+내용 키워드 검색", description = "뉴스 제목이나 내용에서 키워드로 검색합니다.")
+    @GetMapping("/search/title-content")
+    public ResponseEntity<List<NewsPreviewResponseDTO>> searchNewsByTitleOrContent(
+            @RequestParam String keyword,
+            @RequestParam(defaultValue = "0") int page,  // 기본값으로 첫 번째 페이지를 설정
+            @RequestParam(defaultValue = "10") int size  // 한 페이지에 10개의 데이터를 보냄
+    ) {
+        List<NewsPreviewResponseDTO> newsPreviewResponseDTOS = newsService.searchNewsByTitleOrContentWithPaging(keyword, page, size);
+        return new ResponseEntity<>(newsPreviewResponseDTOS, HttpStatus.OK);
+    }
+
     @Operation(summary = "날짜 주식별 뉴스 키워드 검색", description = "해당 날짜, 주식별 모든 키워드를 검색합니다.")
     @GetMapping("/keyword-frequency/daily-stock")
     public ResponseEntity<?> getDailyStockKeywordFrequency(@RequestParam LocalDate date, @RequestParam(required = false) String stockCode) {
