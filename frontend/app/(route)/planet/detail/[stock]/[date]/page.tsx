@@ -44,12 +44,7 @@ const NewsPage: React.FC = (props: any) => {
 
   return (
     <>
- 
       <NewsPageHeaderTemplate newsData={newsData} wordData1={wordData1} wordData2={wordData2} />
-      <TimeMachineButtonGroup />
-      <RocketButtonGroup onRocketClick={() => setIsRocketModalOpen(true)} />
-      {isRocketModalOpen && <RocketModal onClose={() => setIsRocketModalOpen(false)} />}
-
     </>
   );
 };
