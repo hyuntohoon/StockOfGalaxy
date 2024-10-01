@@ -12,7 +12,8 @@ public class StockServiceClient {
     private final WebClient webClient;
 
     public StockServiceClient(WebClient.Builder webClientBuilder) {
-        this.webClient = webClientBuilder.baseUrl("http://localhost:8090/api").build();
+        this.webClient = webClientBuilder.baseUrl(
+            "http://stock-service.backcd.svc.cluster.local:80/api").build();
     }
 
     // 종목명을 가져오는 메서드
