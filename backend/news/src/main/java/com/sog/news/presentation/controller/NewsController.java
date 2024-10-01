@@ -87,6 +87,17 @@ public class NewsController {
         return new ResponseEntity<>(newsPreviewResponseDTOS, HttpStatus.OK);
     }
 
+    @Operation(summary = "뉴스 내용 키워드 검색(본문 프리뷰 포함)", description = "뉴스 내용에서 키워드로 본문 미리보기를 포함하여 검색합니다.")
+    @GetMapping("/search/content/contain-preview")
+    public ResponseEntity<List<NewsPreviewContainContentResponseDTO>> searchNewsByContentContainContent(
+            @RequestParam String keyword,
+            @RequestParam(defaultValue = "0") int page,  // 기본값으로 첫 번째 페이지를 설정
+            @RequestParam(defaultValue = "10") int size  // 한 페이지에 10개의 데이터를 보냄
+    ) {
+        List<NewsPreviewContainContentResponseDTO> newsPreviewResponseDTOS = newsService.searchNewsByContentWithPagingWithContent(keyword, page, size);
+        return new ResponseEntity<>(newsPreviewResponseDTOS, HttpStatus.OK);
+    }
+
     @Operation(summary = "뉴스 제목+내용 키워드 검색", description = "뉴스 제목이나 내용에서 키워드로 검색합니다.")
     @GetMapping("/search/title-content")
     public ResponseEntity<List<NewsPreviewResponseDTO>> searchNewsByTitleOrContent(
