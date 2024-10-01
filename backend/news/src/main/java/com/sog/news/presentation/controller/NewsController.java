@@ -145,4 +145,11 @@ public class NewsController {
         List<NewsCountByDateResponseDTO> newsCounts = newsService.getNewsCountByDateRange(startDate, endDate);
         return new ResponseEntity<>(newsCounts, HttpStatus.OK);
     }
+
+    @Operation(summary = "종목별 기사 수 상위 8개 조회", description = "특정 일자에 종목별 뉴스 기사 수 상위 8개를 조회합니다.")
+    @GetMapping("/top-stocks/{date}")
+    public ResponseEntity<List<StockNewsCountResponseDTO>> getTopNewsStockCountByDate(@PathVariable LocalDate date) {
+        List<StockNewsCountResponseDTO> topStockNewsCounts = newsService.getTopNewsStockCountByDate(date);
+        return new ResponseEntity<>(topStockNewsCounts, HttpStatus.OK);
+    }
 }
