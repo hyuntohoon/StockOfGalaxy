@@ -94,6 +94,8 @@ const NewsPageHeaderTemplate: React.FC<NewsPageHeaderTemplateProps> = ({
     }
   };
 
+
+
   const handleWheelScroll = (event: React.WheelEvent) => {
     if (
       contentRef.current &&

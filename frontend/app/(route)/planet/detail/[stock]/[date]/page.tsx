@@ -2,46 +2,63 @@
 
 import React, { useEffect, useState } from 'react';
 import NewsPageHeaderTemplate from '@/app/components/templates/planet/NewsPageHeaderTemplate';
-import { todayNewsApi } from '@/app/utils/apis/news';
+import { getPlanetNews, getSpaceNews } from '@/app/utils/apis/news';
 import { getDailyStockKeywordFrequency, getDailyKeywordFrequency } from '@/app/utils/apis/wordcloud';
 import { useRecoilValue } from 'recoil';
 import { dateState } from '@/app/store/date';
-
+import { getStockInfo } from '@/app/utils/apis/stock/planet';
+import { News, Stock } from '@/app/types/planet';
+import PlanetDetailTemplate from '@/app/components/templates/planet/PlanetDetailTemplate'
 
 const NewsPage: React.FC = (props: any) => {
   const {stock, date} = props.params;
   const todayDate = useRecoilValue(dateState);
-  const [newsData, setNewsData] = useState<any[]>([]); // API에서 받은 뉴스를 저장할 상태
-  const [wordData1, setWordData1] = useState<any[]>([]); // res1 저장
-  const [wordData2, setWordData2] = useState<any[]>([]); // res2 저장
+  const [planetNews, setPlanetNews] = useState<News[]>();
+  const [spaceNews, setSpaceNews] = useState<News[]>();
+  const [planetWord, setPlanetWord] = useState<[]>();
+  const [spaceWord, setSpaceWord] = useState<[]>();
+  const [stockInfo, setStockInfo] = useState<Stock>();
 
 
   useEffect(() => {
-    const fetchNewsData = async () => {
-      try {
-        const response = await todayNewsApi(date);
-        setNewsData(response); // API에서 받은 뉴스를 저장
-        console.log(response);
+    const fetchStockData = async() => {
+      try{
+        const res = await getStockInfo(stock);
+        setStockInfo(res); // API에서 받은 stock info를 저장        
+      }catch(error){
+        console.error('Error fetching stock data:', error);
+      }
+    }
 
-        const res1 = await getDailyKeywordFrequency(todayDate); // 첫 번째 워드 클라우드 데이터
-        setWordData1(res1); 
-        console.log(res1);
-
-        const res2 = await getDailyStockKeywordFrequency(todayDate); // 두 번째 워드 클라우드 데이터
-        setWordData2(res2);
-        console.log(res2);
+    const fetchPlanetData = async () => {
+      try{
+        const planetNews = await getPlanetNews(date, stockInfo.companyName);
+        setPlanetNews(planetNews); // API에서 받은 planet news를 저장
+        ///planer word 가져오기
       } catch (error) {
         console.error('Error fetching news data:', error);
       }
     };
 
-    fetchNewsData();
+    const fetchSpaceData = async () => {
+      try{
+        const spaceNews = await getSpaceNews(date);
+        setSpaceNews(spaceNews); // API에서 받은 space news를 저장
+        ///space word 가져오기
+      } catch (error) {
+        console.error('Error fetching news data:', error);
+      }
+    }
+
+    fetchStockData();
+    fetchPlanetData();
+    fetchSpaceData();
   }, [todayDate]);
 
   return (
     <>
- 
-      <NewsPageHeaderTemplate newsData={newsData} wordData1={wordData1} wordData2={wordData2} />
+      <PlanetDetailTemplate newsData={[]} wordData1={[]} wordData2={[[]]}/>
+      {/* <NewsPageHeaderTemplate  /> */}
     </>
   );
 };
