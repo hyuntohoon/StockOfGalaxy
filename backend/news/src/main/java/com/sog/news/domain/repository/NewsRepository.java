@@ -39,4 +39,11 @@ public interface NewsRepository extends JpaRepository<News, Long> {
     // 제목 또는 본문에서 키워드를 검색하며, 페이징 처리
     Page<News> findByTitleContainingOrContentContaining(String titleKeyword, String contentKeyword, Pageable pageable);
 
+    // 일자별로 기사 수를 조회, 0번째 인덱스는 날짜, 1번째 인덱스는 기사 수를 담고있음
+    @Query("SELECT DATE(n.publishedDate) as date, COUNT(n) as count " +
+            "FROM News n " +
+            "WHERE n.publishedDate BETWEEN :startDate AND :endDate " +
+            "GROUP BY DATE(n.publishedDate) " +
+            "ORDER BY DATE(n.publishedDate)")
+    List<Object[]> findNewsCountByDateBetween(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
 }
