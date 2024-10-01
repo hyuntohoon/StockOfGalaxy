@@ -26,7 +26,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Table(name = "members")
+@Table(name = "member")
 public class Member implements UserDetails {
 
     @Id

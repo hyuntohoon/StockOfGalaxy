@@ -82,7 +82,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/user/login", "/api/user/join",
                     "/api/user/validate/**", "/api/user/request-verification-code",
                     "/api/user/request-verification", "/api/user/change-password",
-                    "/api/user/reissue", "/api/user/logout")
+                    "/api/user/reissue", "/api/user/logout", "/api/user/info/**")
                 .permitAll()
 
                 .anyRequest().authenticated())

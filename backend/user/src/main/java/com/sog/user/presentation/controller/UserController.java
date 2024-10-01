@@ -9,6 +9,7 @@ import com.sog.user.domain.dto.likeplanet.LikePlanetNumberDTO;
 import com.sog.user.domain.dto.user.LogoutDTO;
 import com.sog.user.domain.dto.user.PasswordResetRequestDTO;
 import com.sog.user.domain.dto.user.TokenDTO;
+import com.sog.user.domain.dto.user.UserInfoForStockResponseDTO;
 import com.sog.user.domain.dto.user.UserInfoResponseDTO;
 import com.sog.user.domain.dto.user.UserPasswordRequestDTO;
 import com.sog.user.domain.dto.user.UserRegisterRequestDTO;
@@ -151,6 +152,13 @@ public class UserController {
     public ResponseEntity<?> userInfo(@RequestHeader("memberId") Long memberId) {
         UserInfoResponseDTO userInfo = userService.getUserInfo(memberId);
 
+        return ResponseEntity.ok(userInfo);
+    }
+
+    // 유저 정보 조회 - no token, for backend
+    @GetMapping("/info/{memberId}")
+    public ResponseEntity<?> userInfoForStock(@PathVariable("memberId") Long memberId) {
+        UserInfoForStockResponseDTO userInfo = userService.getUserInfoForStock(memberId);
         return ResponseEntity.ok(userInfo);
     }
 
