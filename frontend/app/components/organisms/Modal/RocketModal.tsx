@@ -15,7 +15,7 @@ const RocketModal = ({ onClose }) => {
   const [data, setData] = useState([]); // 현재 보여주는 데이터
   const [allData, setAllData] = useState([]); // 전체 데이터를 저장할 상태
   const [loading, setLoading] = useState(false);
-  const [currentPrice, setCurrentPrice] = useState<string | null>(null); // 실시간 주가 데이터 상태 추가
+  const [currentPrice, setCurrentPrice] = useState<number | null>(null); // 실시간 주가 데이터 상태 추가
   const stockCodeParam = useParams().stock;
   const stockCode = Array.isArray(stockCodeParam) ? stockCodeParam[0] : stockCodeParam;
   const currentSetDate = useRecoilValue(dateState); // 현재 사용자가 설정한 날짜

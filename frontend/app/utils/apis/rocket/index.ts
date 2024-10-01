@@ -4,11 +4,11 @@ import { defaultRequest } from "../request";
 // {
 //   "memberId": 1,
 //   "stockCode" : "123456", // 종목 번호
-//   "stocPrpr" : "52100", // 현재가(댓글 작성 당시 주가)
+//   "stocPrpr" : 52100, // 현재가(댓글 작성 당시 주가)
 //   "content": "응 절대 안 올라 평생 버텨봐",
 // }
 // 로켓 작성
-export const createRocketApi = async (memberId: Number, stockCode: string, stocPrpr: string, content: string) => {
+export const createRocketApi = async (memberId: Number, stockCode: string, stocPrpr: number, content: string) => {
   try {
     const response = await defaultRequest.post('/rockets', {
       params: {
