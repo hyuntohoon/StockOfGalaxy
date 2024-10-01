@@ -25,6 +25,8 @@ public interface NewsService {
 
     List<NewsPreviewResponseDTO> searchNewsByContentWithPaging(String keyword, int page, int size);
 
+    List<NewsPreviewContainContentResponseDTO> searchNewsByContentWithPagingWithContent(String keyword, int page, int size);
+
     List<NewsPreviewResponseDTO> searchNewsByTitleOrContentWithPaging(String keyword, int page, int size);
 
     ResponseEntity<?> getDailyStockKeywordFrequency(LocalDate date, String stockCode);

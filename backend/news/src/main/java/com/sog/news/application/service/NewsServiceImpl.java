@@ -91,11 +91,18 @@ public class NewsServiceImpl implements NewsService {
                 .getContent();  // 페이징 정보 제외하고 DTO content만 추출하여 반환
     }
 
-
     public List<NewsPreviewResponseDTO> searchNewsByContentWithPaging(String keyword, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);  // 페이지와 크기 설정
         return newsRepository.findByContentContaining(keyword, pageable)
                 .map(NewsPreviewResponseDTO::fromEntity)
+                .getContent();  // 페이징 정보 제외하고 DTO content만 반환
+    }
+
+    @Override
+    public List<NewsPreviewContainContentResponseDTO> searchNewsByContentWithPagingWithContent(String keyword, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);  // 페이지와 크기 설정
+        return newsRepository.findByContentContaining(keyword, pageable)
+                .map(NewsPreviewContainContentResponseDTO::fromEntity)
                 .getContent();  // 페이징 정보 제외하고 DTO content만 반환
     }
 
