@@ -26,10 +26,9 @@ export interface PlanetTrendModalProps {
 export interface SelectedPlanetTrendData {
   stockCode: string; // 주식 코드
   corpName: string; // 주식명
-  stockPrpr: string; // 현재가
+  stockPrpr: number; // 현재가
   prdyVrssSign: string; // 전일 대비 부호
   prdyVrss: string; // 전일 대비
   prdyCtrt: string; // 전일 대비율
-  isFavorite: boolean;
   iconSrc: string;
 }
