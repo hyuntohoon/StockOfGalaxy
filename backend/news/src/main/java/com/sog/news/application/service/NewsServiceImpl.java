@@ -36,6 +36,17 @@ public class NewsServiceImpl implements NewsService {
     }
 
     @Override
+    public List<NewsPreviewContainContentResponseDTO> getTodayNewsWithContent(LocalDate date) {
+        // LocalDate를 LocalDateTime으로 변환 (해당 날짜의 시작과 끝)
+        LocalDateTime startOfDay = date.atStartOfDay();
+        LocalDateTime endOfDay = date.atTime(23, 59, 59);
+
+        // 뉴스 발행일자 기준으로 조회
+        List<NewsPreviewContainContentResponseDTO> newsList = newsRepository.findTodayNewsWithContent(startOfDay, endOfDay);
+        return newsList;
+    }
+
+    @Override
     public List<TodayPlanetNewsResposeDTO> getTodayPlanetNews(LocalDate date, String stockName) {
         // LocalDate를 LocalDateTime으로 변환 (해당 날짜의 시작과 끝)
         LocalDateTime startOfDay = date.atStartOfDay();

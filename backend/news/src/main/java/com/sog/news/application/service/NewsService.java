@@ -1,9 +1,7 @@
 package com.sog.news.application.service;
 
-import com.sog.news.domain.dto.NewsPreviewResponseDTO;
-import com.sog.news.domain.dto.NewsResponseDTO;
-import com.sog.news.domain.dto.TodayNewsResponseDTO;
-import com.sog.news.domain.dto.TodayPlanetNewsResposeDTO;
+import com.sog.news.domain.dto.*;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -14,6 +12,8 @@ import org.springframework.stereotype.Service;
 public interface NewsService {
 
     List<TodayNewsResponseDTO> getTodayNews(LocalDate date);
+
+    List<NewsPreviewContainContentResponseDTO> getTodayNewsWithContent(LocalDate date);
 
     List<TodayPlanetNewsResposeDTO> getTodayPlanetNews(LocalDate date, String stockName);
 
