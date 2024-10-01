@@ -2,6 +2,7 @@ package com.sog.stock.presentation.controller;
 
 import com.sog.stock.application.service.StockService;
 import com.sog.stock.domain.dto.rocket.RocketAddRequestDTO;
+import com.sog.stock.domain.dto.rocket.RocketResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,7 +33,12 @@ public class RocketController {
     }
 
     // 로켓 상세 조회
-//    @GetMapping("/rocket/{rocketId}")
+    @GetMapping("/rocket/{rocketId}/info")
+    public Mono<ResponseEntity<RocketResponseDTO>> getRocketById(@PathVariable int rocketId) {
+        return stockService.getRocketById(rocketId)
+            .map(rocket -> ResponseEntity.ok(rocket))
+            .defaultIfEmpty(ResponseEntity.notFound().build());
+    }
 
     // 로켓 삭제
     @DeleteMapping("/rocket/{rocketId}/member/{memberId}")

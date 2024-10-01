@@ -375,18 +375,21 @@ public class StockServiceImpl implements StockService {
     }
 
     // 로켓 개별 조회
-//    @Override
-//    public RocketResponseDTO getRocketById(int rocketId) {
-//        return rocketRepository.findById(rocketId)
-//            .map(rocket -> RocketResponseDTO.builder()
-//                .nickname(rocket.getNickname())
-//                .characterType(rocket.getCharacterType())
-//                .createdAt(rocket.getRocketCreatedAt())
-//                .message(rocket.getContent())
-//                .price(rocket.getStockPrice())
-//                .build())
-//            .orElseThrow(() -> new RuntimeException("Rocket not found"));
-//    }
+    @Override
+    public Mono<RocketResponseDTO> getRocketById(int rocketId) {
+        return Mono.justOrEmpty(rocketRepository.findById(rocketId))
+            .filter(rocket -> !rocket.getIsDeleted()) // isDeleted가 false인 경우만 처리
+            .switchIfEmpty(Mono.error(new RuntimeException("삭제되었거나 존재하지 않는 로켓입니다.")))
+            .flatMap(rocket -> userClient.getUserInfo(rocket.getMemberId())
+                .map(userInfoResponseDTO -> RocketResponseDTO.builder()
+                    .nickname(userInfoResponseDTO.getNickname())
+                    .characterType(userInfoResponseDTO.getCharacterType())
+                    .createdAt(rocket.getRocketCreatedAt())
+                    .message(rocket.getContent())
+                    .price(rocket.getStockPrice())
+                    .build()));
+    }
+
 
     @Override
     public boolean deleteRocket(int rocketId, Long memberId) {

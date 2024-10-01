@@ -69,7 +69,7 @@ public interface StockService {
     public Mono<RocketResponseListDTO> getAllRocketsByStockCode(String stockCode);
 
     // 로켓 상세 조회
-//    RocketResponseDTO getRocketById(int rocketId);
+    Mono<RocketResponseDTO> getRocketById(int rocketId);
 
     // 로켓 삭제
     boolean deleteRocket(int rocketId, Long memberId);
