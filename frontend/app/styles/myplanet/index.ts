@@ -2,8 +2,6 @@ import styled from '@emotion/styled';
 import { css, keyframes } from '@emotion/react';
 
 
-
-
 export const FavoriteListContainer = styled.div`
 display: flex;
 flex-direction: column;
@@ -44,20 +42,17 @@ const fadeOut = keyframes`
 `;
 
 export const FavoriteItemContainer = styled.div<{ isRemoving?: boolean }>`
-display: flex;
-justify-content: space-between;
-align-items: center;
-background-color: rgba(31, 31, 31, 0.7); /* 투명도 0.7 설정 */
-border-radius: 10px;
-padding: 12px 20px;
-margin-bottom: 10px;
-color: #ffffff;
-transition: opacity 0.4s ease; /* 애니메이션 추가 */
-${({ isRemoving }) =>
-  isRemoving &&
-  css`
-    animation: ${fadeOut} 0.5s forwards; /* 사라지는 애니메이션 적용 */
-  `}
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: rgba(31, 31, 31, 0.7); /* 투명도 0.7 설정 */
+  border-radius: 15px;
+  padding: 12px 20px;
+  margin-bottom: 10px;
+  color: #ffffff;
+  transition: opacity 0.4s ease, transform 0.4s ease; /* 애니메이션 추가 */
+  // opacity: ${({ isRemoving }) => (isRemoving ? 0 : 1)};
+  // transform: ${({ isRemoving }) => (isRemoving ? 'scale(0.95)' : 'scale(1)')}; /* 삭제 시 크기 축소 효과 */
 `;
 
 export const LeftSection = styled.div`
@@ -79,27 +74,28 @@ align-items: flex-end;
 `;
 
 export const FavoriteButton = styled.div`
-width: 24px; /* Adjust size as needed */
-height: 24px;
-cursor: pointer;
-margin-left: 10px; /* Adjust margin as needed */
-display: flex;
-align-items: center;
-justify-content: center;
-position: relative;
-transition: transform 0.2s ease; /* 애니메이션 추가 */
+  width: 24px; /* Adjust size as needed */
+  height: 24px;
+  cursor: pointer;
+  margin-left: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: transform 0.2s ease;
 
-&:hover {
-  transform: scale(1.1); /* 호버 시 아이콘 크기 증가 */
-}
+  &:hover {
+    transform: scale(1.2); /* 호버 시 아이콘 크기 더 증가 */
+  }
 `;
 
 export const FavoriteIconWrapper = styled.div<{ isFavorite: boolean }>`
 position: absolute;
-width: 24px;
-height: 24px;
-transition: opacity 0.4s ease;
-opacity: ${({ isFavorite }) => (isFavorite ? 1 : 0.2)};
+  width: 24px;
+  height: 24px;
+  transition: transform 0.4s ease, opacity 0.4s ease;
+  opacity: ${({ isFavorite }) => (isFavorite ? 1 : 0.2)};
+  transform: ${({ isFavorite }) => (isFavorite ? 'rotateY(0)' : 'rotateY(180deg)')}; /* 아이콘 전환 시 회전 효과 */
 
 .card-container
 {
@@ -204,7 +200,7 @@ export const FavoritesContainer = styled.div<{ isOpen: boolean }>`
     width: ${isOpen ? '350px' : '250px'};
     height: ${isOpen ? 'fit-content' : '27px'};
     background-color: ${isOpen ? 'rgba(245, 245, 245, 0.35)' : 'rgba(245, 245, 245, 0.15)'};
-    padding: 20px;
+    padding: ${isOpen ? '20px' : '10px'}; /* 닫혔을 때는 padding 줄이기 */
     color: #000;
     border-radius: 15px;
     margin: 20px;
@@ -216,9 +212,15 @@ export const FavoritesContainer = styled.div<{ isOpen: boolean }>`
     right: 20px;
     cursor: ${isOpen ? 'auto' : 'pointer'};
     
-    &:not([data-isopen='true']):hover {
-      background-color: ${isOpen ? 'rgba(245, 245, 245, 0.35)' : 'rgba(245, 245, 245, 0.25)'};
-      box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.3);
+    /* 반응형 디자인 추가 */
+    @media (max-width: 768px) {
+      width: ${isOpen ? '100%' : '200px'};
+      top: 10px;
+      right: 10px;
+    }
+
+    &:hover {
+      background-color: rgba(245, 245, 245, 0.5); /* 호버 시 백그라운드 밝게 */
     }
   `}
 `;
@@ -231,7 +233,7 @@ export const ToggleButton = styled.button`
   position: absolute;
   top: 10px;
   right: 30px;
-  z-index: 10;
+  z-index: 0;
   font-size: 2rem;
   color: #333;
   transition: color 0.3s ease;

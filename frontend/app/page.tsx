@@ -20,7 +20,7 @@ const FullscreenVideo = styled.video`
   left: 50%;
   width: 100%;
   height: 100%;
-  object-fit: cover; // 비디오가 화면에 맞게 커지도록 설정
+  object-fit: fill; // 비디오가 화면에 맞게 커지도록 설정
   transform: translate(-50%, -50%); // 비디오 중앙에 위치
 `;
 

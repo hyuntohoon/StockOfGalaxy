@@ -30,16 +30,10 @@ export const CenterWrapper = styled.div`
   flex: 2;
 `;
 
-export const Logo = styled.img`
-  width: 36px;
-  height: 36px;
-  margin-right: 12px;
-  border-radius: 20px;
-`;
-
 export const CompanyName = styled.div`
   font-size: 16px;
   font-weight: bold;
+  margin-left: 12px;
   color: #333;
   white-space: nowrap;
 `;

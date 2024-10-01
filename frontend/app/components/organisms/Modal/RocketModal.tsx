@@ -1,144 +1,82 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import styled from '@emotion/styled';
 import { IoClose } from "react-icons/io5";
 import RocketInputField from '../../atoms/InputField/RocketInputField';
 import RocketCard from '../RocketCard';
 import LoadingSpinner from '../../atoms/LoadingSpinner';
-
-// 임시 댓글 데이터
-const tempData = [
-  {
-    userId: 1,
-    nickname: '참1',
-    price: '715200',
-    priceChangeSign: '-',
-    priceChange: '0.04',
-    message: '응 절대 안 올라 평생 버텨봐~우오오ㅇ아~우오오~우오오~우오오ㅇ아아아아',
-    createdAt: "2024.08.29 11:23",
-    imageUrl: '/images/rocket/profile2.png'
-  },
-  {
-    userId: 2,
-    nickname: '참2',
-    price: '715100',
-    priceChangeSign: '+',
-    priceChange: '0.02',
-    message: '절대 안 올라~ 버텨~ 우오오ㅇ아!',
-    createdAt: "2024.08.29 12:00",
-    imageUrl: '/images/rocket/profile2.png'
-  },
-  {
-    userId: 3,
-    nickname: '참3',
-    price: '714200',
-    priceChangeSign: '+',
-    priceChange: '0.07',
-    message: '아무리 기다려도 오르지 않을걸~',
-    createdAt: "2024.08.29 12:30",
-    imageUrl: '/images/rocket/profile2.png'
-  },
-  {
-    userId: 4,
-    nickname: '참4',
-    price: '716200',
-    priceChangeSign: '-',
-    priceChange: '0.02',
-    message: '이거는 진짜 안 올라!',
-    createdAt: "2024.08.29 13:00",
-    imageUrl: '/images/rocket/profile2.png'
-  },
-  {
-    userId: 5,
-    nickname: '참5',
-    price: '715900',
-    priceChangeSign: '-',
-    priceChange: '0.02',
-    message: '버텨봐도 소용없어~',
-    createdAt: "2024.08.29 13:30",
-    imageUrl: '/images/rocket/profile2.png'
-  },
-  {
-    userId: 6,
-    nickname: '참6',
-    price: '715200',
-    priceChangeSign: '+',
-    priceChange: '0.02',
-    message: '우오오~ 이건 절대 오르지 않아!',
-    createdAt: "2024.08.29 14:00",
-    imageUrl: '/images/rocket/profile2.png'
-  },
-  {
-    userId: 7,
-    nickname: '참7',
-    price: '715200',
-    priceChangeSign: '+',
-    priceChange: '0.02',
-    message: '포기해~ 올라갈 리가 없어!',
-    createdAt: "2024.08.29 14:30",
-    imageUrl: '/images/rocket/profile2.png'
-  },
-  {
-    userId: 8,
-    nickname: '참8',
-    price: '715200',
-    priceChangeSign: '+',
-    priceChange: '0.02',
-    message: '이건 진짜 힘들어!',
-    createdAt: "2024.08.29 15:00",
-    imageUrl: '/images/rocket/profile2.png'
-  },
-  {
-    userId: 9,
-    nickname: '참9',
-    price: '715200',
-    priceChangeSign: '+',
-    priceChange: '0.02',
-    message: '버텨도 소용없어~!',
-    createdAt: "2024.08.29 15:30",
-    imageUrl: '/images/rocket/profile2.png'
-  },
-  {
-    userId: 10,
-    nickname: '참10',
-    price: '715200',
-    priceChangeSign: '+',
-    priceChange: '0.02',
-    message: '이건 절대 안 올라~',
-    createdAt: "2024.08.29 16:00",
-    imageUrl: '/images/rocket/profile2.png'
-  }
-];
-
-// 임시 사용자
-const tempUser = {
-  userId: 1,
-  nickname: '참',
-  imageUrl: '/images/rocket/profile2.png'
-};
+import { getRocketListApi } from '@/app/utils/apis/rocket';
+import { useParams } from 'next/navigation';
+import useKRStockWebSocket from '@/app/hooks/useKRStockWebSocket'; // 웹소켓 사용
+import { useRecoilValue } from 'recoil';
+import { getTodayDate } from '@/app/utils/libs/getTodayDate';
+import { dateState } from '@/app/store/date';
 
 const RocketModal = ({ onClose }) => {
-  const [data, setData] = useState(tempData.slice(0, 8)); // 초기 8개 데이터 로드
+  const [data, setData] = useState([]); // 현재 보여주는 데이터
+  const [allData, setAllData] = useState([]); // 전체 데이터를 저장할 상태
   const [loading, setLoading] = useState(false);
+  const [currentPrice, setCurrentPrice] = useState<string | null>(null); // 실시간 주가 데이터 상태 추가
+  const stockCodeParam = useParams().stock;
+  const stockCode = Array.isArray(stockCodeParam) ? stockCodeParam[0] : stockCodeParam;
+  const currentSetDate = useRecoilValue(dateState); // 현재 사용자가 설정한 날짜
+  const realDate = getTodayDate(); // 실제 오늘 날짜
+  const isToday = currentSetDate === realDate;
+
+  // 웹소켓 연결 및 실시간 주가 데이터 업데이트
+  useKRStockWebSocket(
+    [{ stock_code: stockCode, stock_name: "삼성전자" }],  // todo: 주식 코드와 주식 이름을 전달(실제로)
+    (updatedStockData) => {
+      // updatedStockData가 배열인지 확인
+      if (Array.isArray(updatedStockData)) {
+        const stock = updatedStockData.find((s) => s.stock_code === stockCode);
+        if (stock) {
+          setCurrentPrice(stock.currentPrice); // 실시간 주가 업데이트
+        }
+      } else {
+        console.error('updatedStockData가 배열이 아닙니다:', updatedStockData);
+      }
+    }
+  );
+
+  // fetchData 함수 분리
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const response = await getRocketListApi(stockCode); // 전체 데이터를 불러옴
+      setAllData(response); // 전체 데이터를 상태에 저장
+      setData(response.slice(0, 8)); // 초기 8개 데이터만 보여줌
+    } catch (err) {
+      console.error('로켓 데이터를 불러오는 중 에러가 발생했습니다.', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 처음에 데이터를 불러오는 useEffect
+  useEffect(() => {
+    fetchData();
+  }, [stockCode]);
 
   const fetchMoreData = useCallback(() => {
-    if (data.length >= tempData.length || loading) {
+    if (data.length >= allData.length || loading) { // 모든 데이터를 불러왔거나 로딩 중이면 중단
       return;
     }
     setLoading(true);
     setTimeout(() => {
-      const additionalData = tempData.slice(data.length, data.length + 8); // 다음 8개 데이터 로드
-      setData(prevData => [...prevData, ...additionalData]);
+      const additionalData = allData.slice(data.length, data.length + 8); // 다음 8개 데이터 추가
+      setData(prevData => [...prevData, ...additionalData]); // 기존 데이터 + 추가 데이터
       setLoading(false);
     }, 1500);
-  }, [data, loading]);
+  }, [data, allData, loading]);
 
   const handleScroll = useCallback((e) => {
     const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
-    if (scrollHeight - scrollTop <= clientHeight + 50 && !loading) { // 스크롤이 거의 바닥에 도달하면 데이터 로드
+    if (scrollHeight - scrollTop <= clientHeight + 50 && !loading) {
       fetchMoreData();
-    }    
+    }
   }, [fetchMoreData, loading]);
 
+  // handleDelete에서 fetchData 전달
   return (
     <ModalOverlay>
       <ModalWrapper>
@@ -146,11 +84,11 @@ const RocketModal = ({ onClose }) => {
         <ModalContent onScroll={handleScroll}>
           <StyledCloseIcon onClick={onClose}/>
           <Header>
-            <RocketInputField />  
+            <RocketInputField currentPrice={currentPrice} isToday={isToday} />  {/* 실시간 주가 전달 */}
           </Header>
           <CardsContainer>
             {data.map((item) => (
-              <RocketCard key={item.userId} data={item} />
+              <RocketCard key={item.rocketId} data={item} currentPrice={currentPrice} fetchData={fetchData} />
             ))}
           </CardsContainer>
           {loading && <LoadingSpinner />}
@@ -174,25 +112,22 @@ const ModalOverlay = styled.div`
 `;
 
 const ModalWrapper = styled.div`
-  width: 80%;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  justify-items: center;
   z-index: 2100;
-`
+`;
 
 const ModalTitle = styled.div`
-  position: absolute;
-  top: 75px;
-  left: 264px;
   font-size: 24px;
+  margin-left: 10px;
   font-weight: bold;
   color: white;
   text-align: left;
   margin-bottom: 20px;
-`
+`;
+
 
 const ModalContent = styled.div`
   background: rgba(255, 255, 255, 0.9);

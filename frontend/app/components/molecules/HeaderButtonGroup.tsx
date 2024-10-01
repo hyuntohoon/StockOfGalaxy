@@ -39,9 +39,9 @@ const ButtonContainer = styled.div`
 `;
 
 const Text = styled.div`
-  color: #fff;
+  color: black;
   margin-top: 5px;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: bold;
   text-align: center;
 `;

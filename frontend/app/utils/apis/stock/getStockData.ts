@@ -12,12 +12,13 @@ interface StockDailyPriceProps {
 }
 
 export const getDailyStockData = async (
-  stockCode: string
+  stockCode: string,
+  date: string
 ): Promise<StockDailyPriceProps | void> => {
   try {
     const res = await axios({
       method: "GET",
-      url: `${process.env.NEXT_PUBLIC_API_BASE_URL}/stock/${stockCode}/history`,
+      url: `${process.env.NEXT_PUBLIC_API_BASE_URL}/stock/${stockCode}/history/${date}`,
     });
 
     console.log("여기");

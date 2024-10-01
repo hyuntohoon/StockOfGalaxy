@@ -6,39 +6,53 @@ import RocketTimeStamp from '../atoms/Text/RocketTimeStamp';
 import RocketTimeMachineButton from '../atoms/Button/RocketTimeMachineButton';
 import RocketDeleteButton from '../atoms/Button/RocketDeleteButton';
 import RocketPriceGroup from '../molecules/ButtonGroup/RocketPriceGroup';
+import { calculatePriceChange } from '@/app/utils/libs/stock/calculatePriceChange';
+import { useMemberId } from '@/app/store/userSlice';
+import { RocketCardProps } from '@/app/types/rocket';
+import { deleteRocketApi } from '@/app/utils/apis/rocket';
 
+const RocketCard: React.FC<RocketCardProps & { fetchData: () => void }> = ({ data, currentPrice, fetchData }) => {
+  const { priceChange, priceChangeSign } = calculatePriceChange(data.stockPrice, currentPrice);
+  const { memberId: currentMemberId } = useMemberId();
 
-const handleDelete = () => {
-  // todo: 로켓 삭제 api 호출
-  alert('로켓 삭제 api 호출 필요')
-};
+  const handleDelete = async () => {
+    const confirmDelete = window.confirm('정말로 이 로켓을 삭제하시겠습니까?');
+    if (!confirmDelete) return;
 
+    try {
+      // 로켓 삭제 API 호출
+      await deleteRocketApi(data.rocketId, currentMemberId);
+      alert('로켓이 삭제되었습니다.');
+      // 삭제 후 전체 리스트 갱신
+      fetchData();
+    } catch (error) {
+      alert('로켓 삭제에 실패했습니다.');
+    }
+  };
 
-const RocketCard = ({ data }) => {
   return (
     <Content>
       <Header>
         <ProfileImageWrapper>
-          <ProfileImage src={data.imageUrl} alt="프로필" />
+          <ProfileImage src={`/images/profile/${data.characterType}.png`} alt="프로필" />
         </ProfileImageWrapper>
         <NamePriceWrapper>
           <NameAndDelete>
             <Name>{data.nickname}</Name>
-            {/* todo: 실제 유저 데이터로 변경 */}
             <RocketDeleteButton
-              authorId={data.userId}
-              currentUserId={1}
+              authorId={data.memberId} // 작성자 memberId
+              currentMemberId={currentMemberId} // 현재 로그인한 유저의 memberId
               onDelete={handleDelete}
             />
           </NameAndDelete>
           <RocketPriceGroup
-            price={data.price}
-            priceChange={data.priceChange}
-            priceChangeSign={data.priceChangeSign}
+            stockPrice={data.stockPrice}
+            priceChange={priceChange} // 변동률
+            priceChangeSign={priceChangeSign} // 변동률 부호
           />
         </NamePriceWrapper>
       </Header>
-      <StyledRocketContent message={data.message} />
+      <StyledRocketContent message={data.content} />
       <TimeStampTimeMachineWrapper>
         <RocketTimeStamp createdAt={data.createdAt} />
         <RocketTimeMachineButton />
@@ -47,6 +61,7 @@ const RocketCard = ({ data }) => {
   );
 };
 
+// 스타일 정의
 const Content = styled.div`
   position: relative;
   width: 216px;

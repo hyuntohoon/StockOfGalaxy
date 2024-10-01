@@ -32,11 +32,11 @@ const MenuHeaderWrapper = styled.div<{ isOpen: boolean }>`
   transform: translate(-85%, -50%) translateX(${props => (props.isOpen ? '85%' : '0')});
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: center; 
   padding: 20px 5px;
-  background-color: rgba(255, 255, 255, 0.35);
+  background-color: rgba(255, 255, 255, 0.65);
   border-radius: 30px;
-  justify-content: space-around;
+  justify-content: center;
   width: 120px;
   transition: transform ${TRANSITION_DURATION} ease-in-out;
   box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
@@ -56,10 +56,11 @@ const MenuHeader: React.FC = () => {
   const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
 
   const menuRef = useRef<HTMLDivElement>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
   const myIconRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!isMenuOpen && !isModalOpen) {
+    if (!isMenuOpen) {
       setIsModalOpen(false);
     }
   }, [isMenuOpen]);
@@ -72,19 +73,26 @@ const MenuHeader: React.FC = () => {
     setIsModalOpen(prev => !prev);
   };
 
-  const handleMouseEnter = () => {
-    setIsMenuOpen(true);
-  };
+  const handleMouseLeave = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    const target = event.relatedTarget as Node | null;
 
-  const handleMouseLeave = () => {
-    if (!isModalOpen) {
+    // 메뉴와 모달 영역을 확인하여 마우스가 두 영역 모두를 벗어났을 때만 메뉴와 모달을 닫음
+    if (
+      (!menuRef.current || (target && !menuRef.current.contains(target))) &&
+      (!modalRef.current || (target && !modalRef.current.contains(target)))
+    ) {
       setIsMenuOpen(false);
       setIsModalOpen(false);
     }
   };
 
   const handleClickOutside = (event: MouseEvent) => {
-    if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+    if (
+      menuRef.current && 
+      !menuRef.current.contains(event.target as Node) &&
+      modalRef.current &&
+      !modalRef.current.contains(event.target as Node)
+    ) {
       setIsMenuOpen(false);
       setIsModalOpen(false);
     }
@@ -103,11 +111,9 @@ const MenuHeader: React.FC = () => {
 
   return (
     <>
-      <Container onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+      <Container onMouseEnter={() => setIsMenuOpen(true)} onMouseLeave={handleMouseLeave}>
         <MenuHeaderWrapper 
           isOpen={isMenuOpen}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
           ref={menuRef}
         >
           <ReturnTodayButtonGroup />
@@ -124,11 +130,10 @@ const MenuHeader: React.FC = () => {
       </Container>
 
       {isModalOpen && (
-        <MenuHeaderModal
-          onClose={() => setIsModalOpen(false)}
+        <MenuHeaderModal ref={modalRef}
           position={modalPosition} 
           onMouseEnter={() => setIsMenuOpen(true)}  // 모달에 마우스가 올라가면 메뉴를 열어둠
-          onMouseLeave={() => setIsMenuOpen(false)} // 모달에서 마우스가 벗어나면 메뉴를 닫음
+          onMouseLeave={handleMouseLeave} // 모달에서 마우스가 벗어나면 닫음
         />
       )}
     </>

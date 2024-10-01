@@ -2,12 +2,12 @@ import { FaTrashAlt } from "react-icons/fa";
 import styled from '@emotion/styled';
 interface RocketDeleteButtonProps {
   authorId: number;
-  currentUserId: number;
+  currentMemberId: number;
   onDelete: () => void;
 }
 
-const RocketDeleteButton = ({ authorId, currentUserId, onDelete }: RocketDeleteButtonProps) => {
-  if (authorId !== currentUserId) return null;
+const RocketDeleteButton = ({ authorId, currentMemberId, onDelete }: RocketDeleteButtonProps) => {
+  if (authorId !== currentMemberId) return null;
 
   return (
     <StyledIcon onClick={onDelete}>
