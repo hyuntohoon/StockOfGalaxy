@@ -208,20 +208,20 @@ public class StockServiceImpl implements StockService {
         for (FinancialDTO financialDTO : financialList.getFinancialList()) {
             // stockCode가 null인지 확인
             System.out.println(financialDTO);
-            if (financialDTO.getStock_code() == null || financialDTO.getStock_code().isEmpty()) {
+            if (financialDTO.getStockCode() == null || financialDTO.getStockCode().isEmpty()) {
                 throw new IllegalArgumentException("종목 코드가 null이거나 비어있습니다.");
             }
             // Stock 조회
-            Stock stock = stockRepository.findById(financialDTO.getStock_code())
+            Stock stock = stockRepository.findById(financialDTO.getStockCode())
                 .orElseThrow(() -> new IllegalArgumentException(
-                    "해당 종목 코드가 존재하지 않습니다: " + financialDTO.getStock_code()));
+                    "해당 종목 코드가 존재하지 않습니다: " + financialDTO.getStockCode()));
 
             // DTO TO ENTITY
             FinancialStatements financialStatements = FinancialStatements.builder()
-                .stacyymm(financialDTO.getStac_yymm())
+                .stacyymm(financialDTO.getStacYymm())
                 .totalLiabilities(financialDTO.getTotal_liabilities())
                 .totalEquity(financialDTO.getTotal_equity())
-                .currentAssets(financialDTO.getCurrent_assets())
+                .currentAssets(financialDTO.getCurrentAssets())
                 .currentLiabilities(financialDTO.getCurrent_liabilities())
                 .stock(stock)
                 .build();
