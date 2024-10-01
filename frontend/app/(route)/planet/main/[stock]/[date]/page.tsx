@@ -116,7 +116,7 @@ export default function Home() {
       circle.add(planet);
 
       // 조명 설정
-      const ambientLight = new THREE.AmbientLight(0x999999);
+      const ambientLight = new THREE.AmbientLight(0xBEBEBE);
       newScene.add(ambientLight);
 
       const lights: THREE.DirectionalLight[] = [];
@@ -168,7 +168,7 @@ export default function Home() {
         requestAnimationFrame(animate);
 
         stars.rotation.y -= 0.001; // 별들이 천천히 회전
-        circle.rotation.y -= 0.004; // 행성 회전
+        circle.rotation.y += 0.004; // 행성 회전
 
         renderer.clear();
         renderer.render(newScene, camera);
