@@ -16,9 +16,10 @@ const LoginButtonGroup = ({ inputValue }) => {
   const router = useRouter();
   const { setAccessToken } = useAccessToken();
   const {setIsLoggedIn} = useIsLoggedIn();
+  const {setMemberId} = useMemberId();
   
   const handleLogin = async () => {
-    const success = await login(inputValue, setAccessToken, setIsLoggedIn, useMemberId, useUser);
+    const success = await login(inputValue, setAccessToken, setIsLoggedIn, setMemberId, useUser);
     if (success) {
       router.push("/"); // 로그인 성공 시 메인 페이지로 이동
     }
