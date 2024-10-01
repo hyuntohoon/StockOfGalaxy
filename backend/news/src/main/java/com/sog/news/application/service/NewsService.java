@@ -17,6 +17,8 @@ public interface NewsService {
 
     List<TodayPlanetNewsResposeDTO> getTodayPlanetNews(LocalDate date, String stockName);
 
+    List<NewsPreviewContainContentResponseDTO> getTodayPlanetNewsWithContent(LocalDate date, String stockName);
+
     ResponseEntity<?> searchNewsContentByKeyword(String keyword);
 
     List<NewsPreviewResponseDTO> searchNewsByTitleWithPaging(String keyword, int page, int size);

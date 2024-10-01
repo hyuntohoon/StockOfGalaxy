@@ -62,6 +62,22 @@ public class NewsServiceImpl implements NewsService {
     }
 
     @Override
+    public List<NewsPreviewContainContentResponseDTO> getTodayPlanetNewsWithContent(LocalDate date, String stockName) {
+        // LocalDate를 LocalDateTime으로 변환 (해당 날짜의 시작과 끝)
+        LocalDateTime startOfDay = date.atStartOfDay();
+        LocalDateTime endOfDay = date.atTime(23, 59, 59);
+
+        // 뉴스 발행일자와 주식 이름으로 조회
+        List<News> newsList = newsRepository.findByPublishedDateAndStockName(startOfDay, endOfDay, stockName);
+
+        // DTO로 변환 후 반환
+        return newsList.stream()
+                .map(NewsPreviewContainContentResponseDTO::fromEntity)  // fromEntity 메서드를 이용한 변환
+                .collect(Collectors.toList());
+    }
+
+
+    @Override
     public ResponseEntity<?> searchNewsContentByKeyword(String keyword) {
         return null;
     }
