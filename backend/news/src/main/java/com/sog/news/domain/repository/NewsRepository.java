@@ -46,4 +46,12 @@ public interface NewsRepository extends JpaRepository<News, Long> {
             "GROUP BY DATE(n.publishedDate) " +
             "ORDER BY DATE(n.publishedDate)")
     List<Object[]> findNewsCountByDateBetween(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
+
+    // 종목별로 기사 수를 집계하고 상위 8개를 조회
+    @Query("SELECT k.newsStockName, COUNT(n) as count " +
+            "FROM News n JOIN n.keywords k " +
+            "WHERE DATE(n.publishedDate) = :date " +
+            "GROUP BY k.newsStockName " +
+            "ORDER BY count DESC")
+    List<Object[]> findTopNewsStockCountByDate(@Param("date") LocalDate date, Pageable pageable);
 }
