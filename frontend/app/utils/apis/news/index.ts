@@ -1,7 +1,7 @@
 import { defaultRequest } from "../request";
 
 const convertToApiDateFormat = (dateString: string): string => {
-    // yyyy.MM.dd 형식을 yyyy-MM-dd 형식으로 변환
+    // yyyyMMdd 형식을 yyyy-MM-dd 형식으로 변환
     const year = dateString.slice(0, 4);   // 첫 4자리: 년도
   const month = dateString.slice(4, 6);  // 5~6자리: 월
   const day = dateString.slice(6, 8);    // 7~8자리: 일
@@ -10,35 +10,52 @@ const convertToApiDateFormat = (dateString: string): string => {
   };
   
 
-export const todayNewsApi = async (today: string) => {
+
+export const getSpaceNews = async(today: string) => {
     try {
-        const formattedDate = convertToApiDateFormat(today);
-        const res = await defaultRequest.get(`/news/today`, {
-            params: {
-                date: formattedDate,  // 날짜를 쿼리 파라미터로 전송
-            },
-        });
+        const res = await defaultRequest.get(`/news/today/${convertToApiDateFormat(today)}`);
         console.log(res);
         return res.data;
     } catch (error) {
-        console.error("오늘의 소식 조회 실패", error);
+        console.error("우주 소식 조회 실패", error);
         throw error;
     }
-};
+}
 
-export const todayPlanetNewsApi = async (today: string, stock: number) => {
+export const getSpaceNewsWithContent = async(today:string) => {
     try {
         const formattedDate = convertToApiDateFormat(today);
-        const res = await defaultRequest.get(`/news/today/`, {
-            params: {
-                date: formattedDate,  
-                stock: stock,  
-            }
-        });
+        const res = await defaultRequest.get(`/news/today/space/contain-preview/${formattedDate}`);
+        console.log(res);
+        return res.data;  // 우주 소식(내용) 조회
+    } catch (error) {
+        console.error("우주 소식(내용) 조회 실패", error);
+        throw error;
+    }
+}
+
+
+
+export const getPlanetNews = async (today: string, stockName: string) => {
+    try {
+        const formattedDate = convertToApiDateFormat(today);
+        const res = await defaultRequest.get(`/news/today/planet/${formattedDate}/${stockName}`);
         console.log(res);
         return res.data;
-    }catch(error){
-        console.error("행성별 소식 조회 실��", error);
+    } catch (error) {
+        console.error("행성별 소식 조회 실패", error);
+        throw error;
+    }
+}
+
+export const getPlanetNewsWithContent = async (today: string, stockName: string) => {
+    try {
+        const formattedDate = convertToApiDateFormat(today);
+        const res = await defaultRequest.get(`/news/today/planet/contain-preview/${formattedDate}/${stockName}`);
+        console.log(res);
+        return res.data;  // ��성별 소식(내용) 조회
+    } catch (error) {
+        console.error("행성별 소식(내용) 조회 실패", error);
         throw error;
     }
 }
@@ -54,3 +71,4 @@ export const getNewsDetail = async (id: number) => {
         throw error;
     }
 };
+

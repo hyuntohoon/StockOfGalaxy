@@ -8,6 +8,7 @@ export interface News {
   }
   
 
+
 export interface NewsDetail {
   news: News;
   keywords: string[];
