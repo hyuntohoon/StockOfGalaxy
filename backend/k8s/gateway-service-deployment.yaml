@@ -29,7 +29,7 @@ spec:
                   name: jwt-secret
                   key: secret
             - name: JAVA_TOOL_OPTIONS
-              value: "-javaagent:/elastic/elastic-apm-agent-1.51.0.jar -Delastic.apm.service_name=gateway-service -Delastic.apm.server_urls=http://apm-server:8200 -Delastic.apm.application_packages=com.sog"
+              value: "-javaagent:/elastic/elastic-apm-agent-1.51.0.jar -Delastic.apm.service_name=gateway-service -Delastic.apm.server_urls=http://10.96.90.238:8200 -Delastic.apm.application_packages=com.sog"
           volumeMounts:
             - name: elastic-apm-volume
               mountPath: /elastic
