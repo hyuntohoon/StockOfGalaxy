@@ -138,4 +138,11 @@ public class NewsController {
         NewsResponseDTO news = newsService.getNewsById(id);
         return new ResponseEntity<>(news, HttpStatus.OK);
     }
+
+    @Operation(summary = "날짜별 기사 수 조회", description = "시작날짜~종료날짜까지 날짜별로 뉴스 기사 수를 조회합니다.")
+    @GetMapping("/count-news/{startDate}/{endDate}")
+    public ResponseEntity<List<NewsCountByDateResponseDTO>> getNewsCountByDateRange(@PathVariable LocalDate startDate, @PathVariable LocalDate endDate) {
+        List<NewsCountByDateResponseDTO> newsCounts = newsService.getNewsCountByDateRange(startDate, endDate);
+        return new ResponseEntity<>(newsCounts, HttpStatus.OK);
+    }
 }
