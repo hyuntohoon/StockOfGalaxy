@@ -47,6 +47,13 @@ public class NewsController {
         return new ResponseEntity<>(todayPlanetNews, HttpStatus.OK);
     }
 
+    @Operation(summary = "오늘의 행성 뉴스 조회(본문 프리뷰 포함)", description = "오늘 날짜의 행성 관련 뉴스를 본문 미리보기를 포함하여 조회합니다.")
+    @GetMapping("/today/planet/contain-previewcontain-preview/{date}/{stockName}")
+    public ResponseEntity<List<NewsPreviewContainContentResponseDTO>> getTodayPlanetNewsContainContent(@PathVariable LocalDate date, @PathVariable String stockName) {
+        List<NewsPreviewContainContentResponseDTO> todayPlanetNews = newsService.getTodayPlanetNewsWithContent(date, stockName);
+        return new ResponseEntity<>(todayPlanetNews, HttpStatus.OK);
+    }
+
     @Operation(summary = "뉴스 제목 키워드 검색", description = "뉴스 제목에서 키워드로 검색합니다.")
     @GetMapping("/search/title")
     public ResponseEntity<List<NewsPreviewResponseDTO>> searchNewsByTitle(
