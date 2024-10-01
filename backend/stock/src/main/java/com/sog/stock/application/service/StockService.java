@@ -1,19 +1,33 @@
 package com.sog.stock.application.service;
 
+import com.sog.stock.domain.dto.FinancialListDTO;
 import com.sog.stock.domain.dto.HolidayAddListRequestDTO;
-import com.sog.stock.domain.dto.RocketAddRequestDTO;
-import com.sog.stock.domain.dto.RocketResponseDTO;
-import com.sog.stock.domain.dto.RocketResponseListDTO;
+import com.sog.stock.domain.dto.MinuteStockPriceListDTO;
+import com.sog.stock.domain.dto.QuarterStockPriceDTO;
+import com.sog.stock.domain.dto.QuarterStockPriceListDTO;
+import com.sog.stock.domain.dto.StockPresentPriceResponseDTO;
+import com.sog.stock.domain.dto.rocket.RocketAddRequestDTO;
 import com.sog.stock.domain.dto.StockAddListRequestDTO;
 import com.sog.stock.domain.dto.StockDTO;
-import com.sog.stock.domain.dto.StockDailyPriceListResponseDTO;
+import com.sog.stock.domain.dto.DailyStockPriceListDTO;
+import com.sog.stock.domain.dto.StockNameResponseDTO;
+import com.sog.stock.domain.enums.QuarterType;
 import org.springframework.stereotype.Service;
 
 @Service
 public interface StockService {
 
     // 주식 일별 데이터 조회
-    StockDailyPriceListResponseDTO getDailyStockHistory(String stockCode);
+    DailyStockPriceListDTO getDailyStockHistory(String stockCode);
+
+    // 주식 일별 데이터 추가
+    void addDailyStockHistory(DailyStockPriceListDTO stockDailyPriceList);
+
+    // 주식 분기별 데이터 조회
+    QuarterStockPriceListDTO getQuarterStockHistory(String stockCode, QuarterType quarterType);
+
+    // 주식 분기별 데이터 추가
+    void addQuarterStockHistory(QuarterStockPriceListDTO quarterStockPriceList);
 
     // 행성 리스트 추가
     void addStockList(StockAddListRequestDTO stockAddListRequestDTO);
@@ -30,6 +44,20 @@ public interface StockService {
     // 공휴일 정보 조회
     boolean isHoliday(String holidayDate);
 
+    // 제무재표 등록
+    void addFinancialList(FinancialListDTO financialList);
+
+    // 제무재표 조회
+    FinancialListDTO searchFinancial(String stockCode);
+
+    // 종목이름 조회
+    StockNameResponseDTO searchStockName(String stockCode);
+
+    // 주식 현재가 조회
+    StockPresentPriceResponseDTO searchStockPresentPrice(String stockCode);
+
+    // 시간에 따른 분봉 차트 데이터를 조회
+    MinuteStockPriceListDTO getMinuteStockPriceList(String stockCode, String time);
     /*
      * 로켓 관련
      * */

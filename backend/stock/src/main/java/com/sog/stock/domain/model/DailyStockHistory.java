@@ -12,12 +12,14 @@ import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.Date;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Table(name = "daily_stock_history")
 public class DailyStockHistory {
 
@@ -26,7 +28,7 @@ public class DailyStockHistory {
     private Integer dailyStockHistoryId;
 
     @Column(nullable = false)
-    private Date dailyStockHistoryDate;
+    private String dailyStockHistoryDate;
 
     @Column(nullable = false)
     private Integer openPrice;
@@ -40,7 +42,7 @@ public class DailyStockHistory {
     @Column(nullable = false)
     private Integer lowPrice;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private Long stockAcmlVol;
 
     @Column(nullable = false)

@@ -6,8 +6,8 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class StockDailyPriceListResponseDTO {
+public class FinancialListDTO {
 
-    private List<StockDailyPriceResponseDTO> stockDailyPriceList;
+    private List<FinancialDTO> financialList;
 
 }
