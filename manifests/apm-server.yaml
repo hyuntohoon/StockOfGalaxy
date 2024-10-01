@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: apm-server
-  namespace: dev  # 네임스페이스 변경 가능
+  namespace: dev
   labels:
     app: apm-server
 spec:
@@ -22,12 +22,11 @@ spec:
             - containerPort: 8200
           env:
             - name: ELASTICSEARCH_HOSTS
-              value: "http://10.109.249.133:9200"  # Elasticsearch 서버 주소
-            # API Key 또는 Secret Token 사용:
-            - name: ELASTIC_APM_API_KEY  # API Key 사용 시
-              value: "T0tSeFNKSUJlUFk1cDcwVndwMDg6VEE0ektIbl9RRktxb1lyRDhIMVdMQQ=="
-            # - name: ELASTIC_APM_SECRET_TOKEN  # Secret Token 사용 시 (API Key와 함께 사용하지 않음)
-            #   value: "your_apm_server_password"
+              value: "http://10.109.249.133:9200"
+            - name: ELASTIC_APM_USERNAME  # 사용자 이름 설정
+              value: "elastic"
+            - name: ELASTIC_APM_PASSWORD  # 비밀번호 설정
+              value: "ua8747ll"
           volumeMounts:
             - name: apm-config-volume
               mountPath: /usr/share/apm-server/config
