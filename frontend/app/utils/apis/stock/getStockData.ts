@@ -1,4 +1,4 @@
-import axios from "axios";
+import { defaultRequest } from "../request";
 
 interface StockDailyPriceProps {
   stockDate: string;
@@ -13,14 +13,9 @@ interface StockDailyPriceProps {
 
 export const getDailyStockData = async (
   stockCode: string,
-  date: string
 ): Promise<StockDailyPriceProps | void> => {
   try {
-    const res = await axios({
-      method: "GET",
-      url: `${process.env.NEXT_PUBLIC_API_BASE_URL}/stock/${stockCode}/history/${date}`,
-    });
-
+    const res = await defaultRequest.get(`/stock/${stockCode}/dailyhistory`)
     console.log("여기");
     return res.data;
   } catch (error) {

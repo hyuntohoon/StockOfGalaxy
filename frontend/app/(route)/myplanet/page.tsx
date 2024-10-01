@@ -174,7 +174,7 @@ export default function Planet() {
     let particle: THREE.Object3D;
   
     const textureLoader = new THREE.TextureLoader();
-    const numSurroundingPlanets = planetsData.length;
+    const numSurroundingPlanets = items.length;
   
     async function init() {
       renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -239,9 +239,9 @@ export default function Planet() {
   
       const centralPlanetRadius = 16;
       const sizes = [6, 6, 6, 6, 5, 6];
-      const textures = await loadTextures(planetsData, textureLoader); // 주변 행성 텍스처 로드
+      const textures = await loadTextures(items, textureLoader); // 주변 행성 텍스처 로드
   
-      surroundingPlanets = planetsData.map((data, index) => {
+      surroundingPlanets = items.map((data, index) => {
         const planetMesh = createPlanetMesh(index); // 행성 메쉬 생성
         const radius = centralPlanetRadius * 20 + 180; // 거리 조정
         const speed = 0.01 + Math.random() * 0.002;
@@ -268,10 +268,10 @@ export default function Planet() {
       return new THREE.Mesh(geom, material);
     }
   
-    async function loadTextures(planetsData: any[], textureLoader: THREE.TextureLoader): Promise<THREE.Texture[]> {
+    async function loadTextures(items: any[], textureLoader: THREE.TextureLoader): Promise<THREE.Texture[]> {
       const promises: Promise<THREE.Texture>[] = [];
-      for (let i = 0; i < planetsData.length; i++) {
-        const stockCode = Number(planetsData[i].stockCode.slice(0, -1)) % 18 + 1;
+      for (let i = 0; i < items.length; i++) {
+        const stockCode = Number(items[i].stockCode.slice(0, -1)) % 18 + 1;
         promises.push(new Promise((resolve) => {
           textureLoader.load(`/images/planetTexture/${stockCode}.jpg`, (texture) => resolve(texture)); 
         }));
