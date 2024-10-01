@@ -196,4 +196,16 @@ public class NewsServiceImpl implements NewsService {
                 .map(NewsCountByDateResponseDTO::fromEntity)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public List<StockNewsCountResponseDTO> getTopNewsStockCountByDate(LocalDate date) {
+        Pageable pageable = PageRequest.of(0, 8);  // 상위 8개만 가져오도록 페이지 크기 설정
+        List<Object[]> results = newsRepository.findTopNewsStockCountByDate(date, pageable);
+
+        // fromEntity 메서드를 사용해 DTO로 변환
+        return results.stream()
+                .map(StockNewsCountResponseDTO::fromEntity)
+                .collect(Collectors.toList());
+    }
+
 }

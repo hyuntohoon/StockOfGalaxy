@@ -38,4 +38,6 @@ public interface NewsService {
     NewsResponseDTO getNewsById(Long id);
 
     List<NewsCountByDateResponseDTO> getNewsCountByDateRange(LocalDate startDate, LocalDate endDate);
+
+    List<StockNewsCountResponseDTO> getTopNewsStockCountByDate(LocalDate date);
 }
