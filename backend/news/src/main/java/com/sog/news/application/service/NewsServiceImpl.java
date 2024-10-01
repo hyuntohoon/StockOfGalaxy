@@ -36,6 +36,17 @@ public class NewsServiceImpl implements NewsService {
     }
 
     @Override
+    public List<NewsPreviewContainContentResponseDTO> getTodayNewsWithContent(LocalDate date) {
+        // LocalDate를 LocalDateTime으로 변환 (해당 날짜의 시작과 끝)
+        LocalDateTime startOfDay = date.atStartOfDay();
+        LocalDateTime endOfDay = date.atTime(23, 59, 59);
+
+        // 뉴스 발행일자 기준으로 조회
+        List<NewsPreviewContainContentResponseDTO> newsList = newsRepository.findTodayNewsWithContent(startOfDay, endOfDay);
+        return newsList;
+    }
+
+    @Override
     public List<TodayPlanetNewsResposeDTO> getTodayPlanetNews(LocalDate date, String stockName) {
         // LocalDate를 LocalDateTime으로 변환 (해당 날짜의 시작과 끝)
         LocalDateTime startOfDay = date.atStartOfDay();
@@ -51,14 +62,32 @@ public class NewsServiceImpl implements NewsService {
     }
 
     @Override
-    public ResponseEntity<?> searchNewsContentByKeyword(String keyword) {
-        return null;
+    public List<NewsPreviewContainContentResponseDTO> getTodayPlanetNewsWithContent(LocalDate date, String stockName) {
+        // LocalDate를 LocalDateTime으로 변환 (해당 날짜의 시작과 끝)
+        LocalDateTime startOfDay = date.atStartOfDay();
+        LocalDateTime endOfDay = date.atTime(23, 59, 59);
+
+        // 뉴스 발행일자와 주식 이름으로 조회
+        List<News> newsList = newsRepository.findByPublishedDateAndStockName(startOfDay, endOfDay, stockName);
+
+        // DTO로 변환 후 반환
+        return newsList.stream()
+                .map(NewsPreviewContainContentResponseDTO::fromEntity)  // fromEntity 메서드를 이용한 변환
+                .collect(Collectors.toList());
     }
 
     public List<NewsPreviewResponseDTO> searchNewsByTitleWithPaging(String keyword, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);  // 페이지와 크기 설정
         return newsRepository.findByTitleContaining(keyword, pageable)
                 .map(NewsPreviewResponseDTO::fromEntity)
+                .getContent();  // 페이징 정보 제외하고 DTO content만 추출하여 반환
+    }
+
+    @Override
+    public List<NewsPreviewContainContentResponseDTO> searchNewsByTitleWithPagingWithContent(String keyword, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);  // 페이지와 크기 설정
+        return newsRepository.findByTitleContaining(keyword, pageable)
+                .map(NewsPreviewContainContentResponseDTO::fromEntity)
                 .getContent();  // 페이징 정보 제외하고 DTO content만 추출하여 반환
     }
 
@@ -69,10 +98,26 @@ public class NewsServiceImpl implements NewsService {
                 .getContent();  // 페이징 정보 제외하고 DTO content만 반환
     }
 
+    @Override
+    public List<NewsPreviewContainContentResponseDTO> searchNewsByContentWithPagingWithContent(String keyword, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);  // 페이지와 크기 설정
+        return newsRepository.findByContentContaining(keyword, pageable)
+                .map(NewsPreviewContainContentResponseDTO::fromEntity)
+                .getContent();  // 페이징 정보 제외하고 DTO content만 반환
+    }
+
     public List<NewsPreviewResponseDTO> searchNewsByTitleOrContentWithPaging(String keyword, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);  // 페이지와 크기 설정
         return newsRepository.findByTitleContainingOrContentContaining(keyword, keyword, pageable)  // 제목 또는 본문에서 키워드 검색
                 .map(NewsPreviewResponseDTO::fromEntity)  // 엔티티를 DTO로 변환
+                .getContent();  // 페이징 정보 제외하고 DTO content만 반환
+    }
+
+    @Override
+    public List<NewsPreviewContainContentResponseDTO> searchNewsByTitleOrContentWithPagingWithContent(String keyword, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);  // 페이지와 크기 설정
+        return newsRepository.findByTitleContainingOrContentContaining(keyword, keyword, pageable)  // 제목 또는 본문에서 키워드 검색
+                .map(NewsPreviewContainContentResponseDTO::fromEntity)  // 엔티티를 DTO로 변환
                 .getContent();  // 페이징 정보 제외하고 DTO content만 반환
     }
 
