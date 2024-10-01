@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: apm-server
-  namespace: monitoring  # 네임스페이스 변경 가능
+  namespace: dev  # 네임스페이스 변경 가능
   labels:
     app: apm-server
 spec:
@@ -41,7 +41,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: apm-server
-  namespace: monitoring  # 네임스페이스 변경 가능
+  namespace: dev  # 네임스페이스 변경 가능
 spec:
   selector:
     app: apm-server
