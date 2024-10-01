@@ -1,5 +1,6 @@
 package com.sog.news.domain.repository;
 
+import com.sog.news.domain.dto.NewsPreviewContainContentResponseDTO;
 import com.sog.news.domain.dto.TodayNewsResponseDTO;
 import com.sog.news.domain.model.News;
 import org.springframework.data.domain.Page;
@@ -19,6 +20,11 @@ public interface NewsRepository extends JpaRepository<News, Long> {
     @Query("SELECT new com.sog.news.domain.dto.TodayNewsResponseDTO(n.newsId, n.title, n.publishedDate, n.thumbnailImg) " +
             "FROM News n WHERE n.publishedDate BETWEEN :startOfDay AND :endOfDay")
     List<TodayNewsResponseDTO> findTodayNews(LocalDateTime startOfDay, LocalDateTime endOfDay);
+
+    // 필요한 필드들만 선택적으로 조회
+    @Query("SELECT new com.sog.news.domain.dto.NewsPreviewContainContentResponseDTO(n.newsId, n.title, n.publishedDate, n.thumbnailImg, SUBSTRING(n.content, 1, 50)) " +
+            "FROM News n WHERE n.publishedDate BETWEEN :startOfDay AND :endOfDay")
+    List<NewsPreviewContainContentResponseDTO> findTodayNewsWithContent(LocalDateTime startOfDay, LocalDateTime endOfDay);
 
     // 특정 날짜와 주식 이름을 기준으로 조회
     @Query("SELECT n FROM News n JOIN n.keywords k WHERE n.publishedDate BETWEEN :startOfDay AND :endOfDay AND k.newsStockName = :stockName")
