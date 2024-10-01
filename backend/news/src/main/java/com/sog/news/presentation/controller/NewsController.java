@@ -48,7 +48,7 @@ public class NewsController {
     }
 
     @Operation(summary = "오늘의 행성 뉴스 조회(본문 프리뷰 포함)", description = "오늘 날짜의 행성 관련 뉴스를 본문 미리보기를 포함하여 조회합니다.")
-    @GetMapping("/today/planet/contain-previewcontain-preview/{date}/{stockName}")
+    @GetMapping("/today/planet/contain-preview/{date}/{stockName}")
     public ResponseEntity<List<NewsPreviewContainContentResponseDTO>> getTodayPlanetNewsContainContent(@PathVariable LocalDate date, @PathVariable String stockName) {
         List<NewsPreviewContainContentResponseDTO> todayPlanetNews = newsService.getTodayPlanetNewsWithContent(date, stockName);
         return new ResponseEntity<>(todayPlanetNews, HttpStatus.OK);
@@ -62,6 +62,17 @@ public class NewsController {
             @RequestParam(defaultValue = "10") int size  // 한 페이지에 10개의 데이터를 보냄
     ) {
         List<NewsPreviewResponseDTO> newsPreviewResponseDTOS = newsService.searchNewsByTitleWithPaging(keyword, page, size);
+        return new ResponseEntity<>(newsPreviewResponseDTOS, HttpStatus.OK);
+    }
+
+    @Operation(summary = "뉴스 제목 키워드 검색(본문 프리뷰 포함)", description = "뉴스 제목에서 키워드로 본문 미리보기를 포함하여 검색합니다.")
+    @GetMapping("/search/title/contain-preview")
+    public ResponseEntity<List<NewsPreviewContainContentResponseDTO>> searchNewsByTitleContainContent(
+            @RequestParam String keyword,
+            @RequestParam(defaultValue = "0") int page,  // 기본값으로 첫 번째 페이지를 설정
+            @RequestParam(defaultValue = "10") int size  // 한 페이지에 10개의 데이터를 보냄
+    ) {
+        List<NewsPreviewContainContentResponseDTO> newsPreviewResponseDTOS = newsService.searchNewsByTitleWithPagingWithContent(keyword, page, size);
         return new ResponseEntity<>(newsPreviewResponseDTOS, HttpStatus.OK);
     }
 
