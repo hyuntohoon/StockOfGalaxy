@@ -129,7 +129,7 @@ public class UserController {
     }
 
     // token 재발급
-    @PostMapping("/public/reissue")
+    @PostMapping("/reissue")
     public ResponseEntity<?> refreshAccessToken(HttpServletRequest request,
         HttpServletResponse response) {
         // 쿠키에서 리프레시 토큰 추출

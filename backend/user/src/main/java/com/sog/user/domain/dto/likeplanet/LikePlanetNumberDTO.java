@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 public class LikePlanetNumberDTO {
 
     private String stockCode;
+    private String stockName;
 
     public LikedStock toEntity(Member member) {
         return LikedStock.builder()

@@ -48,7 +48,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         LoginFilter loginFilter = new LoginFilter(authenticationManager(), jwtTokenProvider,
             objectMapper(), redisService, memberDetailService, jwtCookieUtil);
-        loginFilter.setFilterProcessesUrl("/api/user/public/login"); // 로그인 엔드포인트
+        loginFilter.setFilterProcessesUrl("/api/user/login"); // 로그인 엔드포인트
 
         httpSecurity
             .cors((corsCustomizer -> corsCustomizer.configurationSource(
@@ -79,10 +79,10 @@ public class SecurityConfig {
             .formLogin(AbstractHttpConfigurer::disable)
             .httpBasic(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(user -> user
-                .requestMatchers("/api/user/public/login", "/api/user/public/join",
-                    "/api/user/public/validate/**", "/api/user/public/request-verification-code",
-                    "/api/user/public/request-verification", "/api/user/public/change-password",
-                    "/api/user/public/reissue", "/api/user/public/logout")
+                .requestMatchers("/api/user/login", "/api/user/join",
+                    "/api/user/validate/**", "/api/user/request-verification-code",
+                    "/api/user/request-verification", "/api/user/change-password",
+                    "/api/user/reissue", "/api/user/logout")
                 .permitAll()
 
                 .anyRequest().authenticated())
