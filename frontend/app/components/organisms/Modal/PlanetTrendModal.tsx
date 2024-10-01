@@ -13,7 +13,7 @@ import {
   PlanetTrendModalProps,
 } from "@/app/types/main";
 import useKRStockWebSocket from "@/app/hooks/useKRStockWebSocket";
-import { getDailyStockData } from "@/app/utils/apis/stock/getStockData";
+import { getStockHistoryInfoApi } from "@/app/utils/apis/stock";
 import { useRecoilValue } from 'recoil';
 import { getTodayDate } from '@/app/utils/libs/getTodayDate';
 import { dateState } from '@/app/store/date';
@@ -49,8 +49,32 @@ const PlanetTrendModal: React.FC<PlanetTrendModalProps> = ({
   const realDate = getTodayDate(); // 실제 오늘 날짜
   const isToday = currentSetDate === realDate;
 
-  // 웹소켓을 통해 실시간 데이터를 받아오는 훅 호출
-  useKRStockWebSocket(stockDataInfo, setStockDataInfo);
+  // 훅을 항상 호출하고 내부에서 조건에 따라 웹소켓 연결
+  useKRStockWebSocket(isToday ? stockDataInfo : [], setStockDataInfo);
+
+  useEffect(() => {
+    if (!isToday) {
+      // 과거 데이터 조회 API 호출
+      const fetchStockHistoryData = async () => {
+        try {
+          const historicalData = await getStockHistoryInfoApi(stockCode, currentSetDate);
+          if (historicalData) {
+            setStockDataInfo([{
+              stock_name: corpName || null,
+              stock_code: stockCode || null,
+              currentPrice: historicalData.endPrice, // 과거 데이터의 종가 사용
+              changePrice: historicalData.changePrice,
+              changeRate: historicalData.changeRate,
+            }]);
+          }
+        } catch (error) {
+          console.error("과거 주식 데이터를 가져오는 중 오류 발생:", error);
+        }
+      };
+
+      fetchStockHistoryData();
+    }
+  }, [isToday, stockCode, currentSetDate]);
 
   useEffect(() => {
     if (!position || !camera || !rendererDomElement) return;
