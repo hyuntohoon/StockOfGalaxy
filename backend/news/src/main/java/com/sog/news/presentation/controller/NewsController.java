@@ -1,10 +1,7 @@
 package com.sog.news.presentation.controller;
 
 import com.sog.news.application.service.NewsService;
-import com.sog.news.domain.dto.NewsPreviewResponseDTO;
-import com.sog.news.domain.dto.NewsResponseDTO;
-import com.sog.news.domain.dto.TodayNewsResponseDTO;
-import com.sog.news.domain.dto.TodayPlanetNewsResposeDTO;
+import com.sog.news.domain.dto.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
@@ -33,6 +30,13 @@ public class NewsController {
     @GetMapping("/today/{date}")
     public ResponseEntity<List<TodayNewsResponseDTO>> getTodayNews(@PathVariable LocalDate date) {
         List<TodayNewsResponseDTO> todayNews = newsService.getTodayNews(date);
+        return new ResponseEntity<>(todayNews, HttpStatus.OK);
+    }
+
+    @Operation(summary = "오늘의 소식 조회(본문 프리뷰 포함)", description = "오늘 날짜의 모든 뉴스를 본문 미리보기를 포함하여 조회합니다.")
+    @GetMapping("/today/contain-preview/{date}")
+    public ResponseEntity<List<NewsPreviewContainContentResponseDTO>> getTodayNewsContainContent(@PathVariable LocalDate date) {
+        List<NewsPreviewContainContentResponseDTO> todayNews = newsService.getTodayNewsWithContent(date);
         return new ResponseEntity<>(todayNews, HttpStatus.OK);
     }
 
