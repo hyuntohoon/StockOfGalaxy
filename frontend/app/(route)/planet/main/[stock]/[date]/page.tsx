@@ -108,7 +108,7 @@ export default function Home() {
 
       // 행성 생성
       const planetGeometry = new THREE.SphereGeometry(planetRadius, 48, 48);
-      const planetTexture = new THREE.TextureLoader().load('/images/planetTexture/15.jpg'); // 텍스처 경로 설정
+      const planetTexture = new THREE.TextureLoader().load('/images/planetTexture/1.jpg'); // todo: stockCode 로 텍스처 경로 설정
       const planetMaterial = new THREE.MeshStandardMaterial({
         map: planetTexture, // 텍스처 추가
       });
