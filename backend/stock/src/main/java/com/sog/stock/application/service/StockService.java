@@ -11,8 +11,11 @@ import com.sog.stock.domain.dto.StockAddListRequestDTO;
 import com.sog.stock.domain.dto.StockDTO;
 import com.sog.stock.domain.dto.DailyStockPriceListDTO;
 import com.sog.stock.domain.dto.StockNameResponseDTO;
+import com.sog.stock.domain.dto.rocket.RocketResponseDTO;
+import com.sog.stock.domain.dto.rocket.RocketResponseListDTO;
 import com.sog.stock.domain.enums.QuarterType;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 @Service
 public interface StockService {
@@ -63,9 +66,9 @@ public interface StockService {
      * */
 
     // 로켓 전체 조회 -> 같은 주식에 대한 로켓 목록
-//    RocketResponseListDTO getAllRocketsByStockCode(String stockCode);
-//
-//    // 로켓 상세 조회
+    public Mono<RocketResponseListDTO> getAllRocketsByStockCode(String stockCode);
+
+    // 로켓 상세 조회
 //    RocketResponseDTO getRocketById(int rocketId);
 
     // 로켓 삭제

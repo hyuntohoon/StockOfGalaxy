@@ -1,6 +1,6 @@
 package com.sog.stock.presentation.websocket;
 
-import com.sog.stock.application.service.ChartWebSocketService;
+import com.sog.stock.application.service.websocket.ChartWebSocketService;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
