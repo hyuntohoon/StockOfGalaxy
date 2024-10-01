@@ -11,4 +11,4 @@ data:
     elasticsearch.username: "kibana_system"
     elasticsearch.password: "ua8747ll"  # 실제 환경에서는 Secret으로 관리하는 것이 좋습니다
     xpack.security.enabled: true
-    xpack.encryptedSavedObjects.encryptionKey: "something_at_least_32_characters"
+    xpack.encryptedSavedObjects.encryptionKey: "wEn9kTt4Dw56DTDABL+JlAx+dDlA0Qu7pFNIxhqMbHQ="
