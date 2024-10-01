@@ -2,6 +2,7 @@ package com.sog.gateway.infrastructure;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.SignatureException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
@@ -45,9 +46,8 @@ public class JwtAuthenticationFilter extends AbstractGatewayFilterFactory<Object
             token = token.substring(7);
 
             try {
-                // JWT 파싱 (Jwts.parser() 대신 Jwts.parserBuilder() 사용)
                 Claims claims = Jwts.parserBuilder()
-                    .setSigningKey(secret)
+                    .setSigningKey(secret.getBytes())
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
@@ -56,7 +56,7 @@ public class JwtAuthenticationFilter extends AbstractGatewayFilterFactory<Object
 
                 // 요청에 "memberId" 헤더 추가
                 ServerHttpRequest modifiedRequest = exchange.getRequest().mutate()
-                    .header("memberId", memberId)  // 헤더 이름을 "memberId"로 변경
+                    .header("memberId", memberId)
                     .build();
 
                 return chain.filter(exchange.mutate().request(modifiedRequest).build());
