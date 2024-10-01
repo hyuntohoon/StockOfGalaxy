@@ -1,10 +1,7 @@
 package com.sog.news.application.service;
 
-import com.sog.news.domain.dto.NewsResponseDTO;
-import com.sog.news.domain.dto.TodayKeywordCloudResponseDTO;
-import com.sog.news.domain.dto.TodayNewsResponseDTO;
-import com.sog.news.domain.dto.TodayPlanetNewsResposeDTO;
-import com.sog.news.domain.dto.TodayStockCloudResponseDTO;
+import com.sog.news.domain.dto.*;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -15,6 +12,9 @@ import com.sog.news.domain.model.News;
 import com.sog.news.domain.repository.NewsRepository;
 import com.sog.news.global.exception.exceptions.NewsNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -55,10 +55,27 @@ public class NewsServiceImpl implements NewsService {
         return null;
     }
 
-    @Override
-    public ResponseEntity<?> searchNewsTitleByKeyword(String keyword) {
-        return null;
+    public List<NewsPreviewResponseDTO> searchNewsByTitleWithPaging(String keyword, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);  // 페이지와 크기 설정
+        return newsRepository.findByTitleContaining(keyword, pageable)
+                .map(NewsPreviewResponseDTO::fromEntity)
+                .getContent();  // 페이징 정보 제외하고 DTO content만 추출하여 반환
     }
+
+    public List<NewsPreviewResponseDTO> searchNewsByContentWithPaging(String keyword, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);  // 페이지와 크기 설정
+        return newsRepository.findByContentContaining(keyword, pageable)
+                .map(NewsPreviewResponseDTO::fromEntity)
+                .getContent();  // 페이징 정보 제외하고 DTO content만 반환
+    }
+
+    public List<NewsPreviewResponseDTO> searchNewsByTitleOrContentWithPaging(String keyword, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);  // 페이지와 크기 설정
+        return newsRepository.findByTitleContainingOrContentContaining(keyword, keyword, pageable)  // 제목 또는 본문에서 키워드 검색
+                .map(NewsPreviewResponseDTO::fromEntity)  // 엔티티를 DTO로 변환
+                .getContent();  // 페이징 정보 제외하고 DTO content만 반환
+    }
+
 
     public ResponseEntity<List<TodayStockCloudResponseDTO>> getDailyStockKeywordFrequency(LocalDate date, String stockCode) {
         // 더미 데이터 생성
