@@ -11,7 +11,8 @@ public class UserClient {
     private final WebClient webClient;
 
     public UserClient(WebClient.Builder webClientBuilder) {
-        this.webClient = webClientBuilder.baseUrl("http://localhost:8080/api").build();
+        this.webClient = webClientBuilder.baseUrl(
+            "http://user-service.backcd.svc.cluster.local:80/api").build();
     }
 
     // 유저 정보를 가져오는 메서드

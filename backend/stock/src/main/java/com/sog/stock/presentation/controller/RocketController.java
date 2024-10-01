@@ -3,6 +3,7 @@ package com.sog.stock.presentation.controller;
 import com.sog.stock.application.service.StockService;
 import com.sog.stock.domain.dto.rocket.RocketAddRequestDTO;
 import com.sog.stock.domain.dto.rocket.RocketResponseDTO;
+import com.sog.stock.domain.dto.rocket.RocketResponseListDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,6 +40,15 @@ public class RocketController {
             .map(rocket -> ResponseEntity.ok(rocket))
             .defaultIfEmpty(ResponseEntity.notFound().build());
     }
+
+    // 상위 7개 조회
+    @GetMapping("/rocket/{stockCode}/top7")
+    public Mono<ResponseEntity<RocketResponseListDTO>> getLimitedRockets(
+        @PathVariable String stockCode) {
+        return stockService.getLimitedRocketsByStockCode(stockCode, 7)
+            .map(ResponseEntity::ok);
+    }
+
 
     // 로켓 삭제
     @DeleteMapping("/rocket/{rocketId}/member/{memberId}")

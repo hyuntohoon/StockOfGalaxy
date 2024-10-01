@@ -66,10 +66,13 @@ public interface StockService {
      * */
 
     // 로켓 전체 조회 -> 같은 주식에 대한 로켓 목록
-    public Mono<RocketResponseListDTO> getAllRocketsByStockCode(String stockCode);
+    Mono<RocketResponseListDTO> getAllRocketsByStockCode(String stockCode);
 
     // 로켓 상세 조회
     Mono<RocketResponseDTO> getRocketById(int rocketId);
+
+    // 로켓 횟수 제한 조회
+    public Mono<RocketResponseListDTO> getLimitedRocketsByStockCode(String stockCode, int limit);
 
     // 로켓 삭제
     boolean deleteRocket(int rocketId, Long memberId);

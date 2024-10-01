@@ -390,6 +390,23 @@ public class StockServiceImpl implements StockService {
                     .build()));
     }
 
+    @Override
+    public Mono<RocketResponseListDTO> getLimitedRocketsByStockCode(String stockCode, int limit) {
+        Stock stock = stockRepository.findById(stockCode)
+            .orElseThrow(() -> new RuntimeException("Stock not found"));
+
+        List<Rocket> rockets = rocketRepository.findByStockAndIsDeletedFalse(stock).stream()
+            .limit(limit)  // 7개로 제한
+            .collect(Collectors.toList());
+
+        // Mono 리스트를 Flux로 변환하여 모두 처리
+        return Flux.fromIterable(rockets)
+            .flatMap(this::buildRocketResponse) // 각 rocket을 비동기적으로 처리
+            .collectList() // 처리된 RocketResponseDTO 리스트를 다시 Mono로 변환
+            .map(RocketResponseListDTO::new); // 리스트를 RocketResponseListDTO로 변환
+    }
+
+
 
     @Override
     public boolean deleteRocket(int rocketId, Long memberId) {
