@@ -49,6 +49,10 @@ spring:
           uri: http://user-service.backcd.svc.cluster.local:80
           predicates:
             - Path=/api/user/**
+          filters:
+            - RemoveRequestHeader=Authorization
+            - AddRequestHeader=Authorization, "#{jwt-token}" # Authorization 헤더를 다시 추가
+            - PreserveHostHeader=true
 
         - id: stock-service
           uri: http://stock-service.backcd.svc.cluster.local:80
