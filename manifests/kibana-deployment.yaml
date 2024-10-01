@@ -24,7 +24,7 @@ spec:
             - name: ELASTICSEARCH_USERNAME
               value: "kibana_system"  # 설정한 사용자 이름
             - name: ELASTICSEARCH_PASSWORD
-              value: "rootpassword"   # 설정한 비밀번호
+              value: "ua8747ll"   # 설정한 비밀번호
 
 ---
 apiVersion: v1
