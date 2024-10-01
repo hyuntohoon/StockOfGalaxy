@@ -13,6 +13,10 @@ spec:
       labels:
         app: gateway-service
     spec:
+      securityContext:
+        runAsUser: 1000  # 컨테이너에서 사용하는 사용자 ID
+        runAsGroup: 1000  # 그룹 ID
+        fsGroup: 1000     # 볼륨에 접근할 때 사용할 그룹 ID
       containers:
         - name: gateway-service
           image: zlxldgus123/gateway-service:211
@@ -24,25 +28,61 @@ spec:
                 secretKeyRef:
                   name: jwt-secret
                   key: secret
-          resources:
-            requests:
-              memory: "512Mi"
-              cpu: "250m"
-            limits:
-              memory: "1Gi"
-              cpu: "500m"
-          readinessProbe:
-            httpGet:
-              path: /actuator/health/readiness
-              port: 8080
-            initialDelaySeconds: 30
-            periodSeconds: 10
-          livenessProbe:
-            httpGet:
-              path: /actuator/health/liveness
-              port: 8080
-            initialDelaySeconds: 60
-            periodSeconds: 15
+            - name: JAVA_TOOL_OPTIONS
+              value: "-javaagent:/elastic/elastic-apm-agent-1.51.0.jar -Delastic.apm.service_name=gateway-service -Delastic.apm.server_urls=http://apm-server:8200 -Delastic.apm.application_packages=com.sog"
+          volumeMounts:
+            - name: elastic-apm-volume
+              mountPath: /elastic
+      volumes:
+        - name: elastic-apm-volume
+          persistentVolumeClaim:
+            claimName: elastic-apm-pvc
+
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: gateway-service
+#   namespace: backcd
+# spec:
+#   replicas: 2
+#   selector:
+#     matchLabels:
+#       app: gateway-service
+#   template:
+#     metadata:
+#       labels:
+#         app: gateway-service
+#     spec:
+#       containers:
+#         - name: gateway-service
+#           image: zlxldgus123/gateway-service:211
+#           ports:
+#             - containerPort: 8080
+#           env:
+#             - name: JWT_SECRET
+#               valueFrom:
+#                 secretKeyRef:
+#                   name: jwt-secret
+#                   key: secret
+#           resources:
+#             requests:
+#               memory: "512Mi"
+#               cpu: "250m"
+#             limits:
+#               memory: "1Gi"
+#               cpu: "500m"
+#           readinessProbe:
+#             httpGet:
+#               path: /actuator/health/readiness
+#               port: 8080
+#             initialDelaySeconds: 30
+#             periodSeconds: 10
+#           livenessProbe:
+#             httpGet:
+#               path: /actuator/health/liveness
+#               port: 8080
+#             initialDelaySeconds: 60
+#             periodSeconds: 15
 
 # apiVersion: apps/v1
 # kind: Deployment
