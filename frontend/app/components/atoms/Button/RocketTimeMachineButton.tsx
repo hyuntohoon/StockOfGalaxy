@@ -1,14 +1,27 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
+import { useSetRecoilState } from 'recoil';
+import { dateState, setDate } from '@/app/store/date';
 
-const RocketTimeMachineButton = () => {
-  const handleTimeMachineClick = () => {
-    alert('타임머신 api 연결 필요');
-    router.push("/timetravel");
-  };
+interface RocketTimeMachineButtonProps {
+  createdAt: string; // '2024-10-01 19:08:20'
+}
 
+const RocketTimeMachineButton: React.FC<RocketTimeMachineButtonProps> = ({ createdAt }) => {
   const router = useRouter();
+  const stockCodeParam = useParams().stock;
+  const stockCode = Array.isArray(stockCodeParam) ? stockCodeParam[0] : stockCodeParam;
+  const setGlobalDate = useSetRecoilState(dateState); // Recoil 상태 변경 함수
+
+  const handleTimeMachineClick = () => {
+    // createdAt에서 날짜 부분만 추출하고 'yyyymmdd' 형식으로 변환
+    const newDate = createdAt.split(' ')[0].replace(/-/g, '');
+    setDate(newDate, setGlobalDate);
+
+    const newPath = `/planet/main/${stockCode}/${newDate}`;
+    router.push(newPath);
+  };
 
   return (
     <Button onClick={handleTimeMachineClick}>

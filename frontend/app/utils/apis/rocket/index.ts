@@ -2,21 +2,19 @@ import { defaultRequest } from "../request";
 
 // 요청 Body
 // {
-//   "memberId": 1,
-//   "stockCode" : "123456", // 종목 번호
-//   "stocPrpr" : 52100, // 현재가(댓글 작성 당시 주가)
-//   "content": "응 절대 안 올라 평생 버텨봐",
+//   "memberId" : 3, // Integer
+//   "stockCode" : "005930", // String
+//   "price" : 64000, // Integer
+//   "message" : "아 내 돈 ~~~~~~~~~~~~~~~~" // String
 // }
 // 로켓 작성
-export const createRocketApi = async (memberId: Number, stockCode: string, stocPrpr: number, content: string) => {
+export const createRocketApi = async (memberId: number, stockCode: string, stockPrice: number, content: string) => {
   try {
-    const response = await defaultRequest.post('/rockets', {
-      params: {
-        memberId: memberId,
-        stockCode: stockCode,
-        stocPrpr: stocPrpr,
-        content: content,
-      }
+    const response = await defaultRequest.post('/stock/rocket', {
+      memberId: memberId,
+      stockCode: stockCode,
+      price: stockPrice,
+      message: content,
     });
     console.log(response);
     return response.data;
@@ -26,10 +24,11 @@ export const createRocketApi = async (memberId: Number, stockCode: string, stocP
   }
 }
 
+
 // 로켓 삭제
 export const deleteRocketApi = async (rocketId: Number, memberId: Number) => {
   try {
-    const response = await defaultRequest.delete(`/${rocketId}/members/${memberId}`);
+    const response = await defaultRequest.delete(`/stock/rocket/${rocketId}/member/${memberId}`);
     console.log(response);
     return response.data;
   } catch (error) {
@@ -41,7 +40,7 @@ export const deleteRocketApi = async (rocketId: Number, memberId: Number) => {
 // 로켓 최신 7개 조회
 export const getTop7RocketsApi = async (stockCode: string) => {
   try {
-    const response = await defaultRequest.get(`/rockets/${stockCode}/top7`);
+    const response = await defaultRequest.get(`/stock/rocket/${stockCode}/top7`);
     console.log(response);
     return response.data;
   } catch (error) {
@@ -53,7 +52,7 @@ export const getTop7RocketsApi = async (stockCode: string) => {
 // 로켓 전체 목록 조회
 export const getRocketListApi = async (stockCode: string) => {
   try {
-    const response = await defaultRequest.get(`/rockets/${stockCode}`);
+    const response = await defaultRequest.get(`/stock/rocket/${stockCode}`);
     console.log(response);
     return response.data;
   } catch (error) {
