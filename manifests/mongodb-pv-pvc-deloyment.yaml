@@ -63,3 +63,19 @@ spec:
       - name: mongodb-storage
         persistentVolumeClaim:
           claimName: mongodb-pv-claim
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb-service
+  namespace: backcd
+spec:
+  type: NodePort 
+  selector:
+    app: mongodb  
+  ports:
+    - protocol: TCP
+      port: 27017 
+      targetPort: 27017  
+      nodePort: 30017 
+
