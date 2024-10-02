@@ -9,10 +9,15 @@ data:
   apm-server.yml: |-
     apm-server:
       host: "0.0.0.0:8200"
+      kibana:
+        enabled: true
+        host: "http://10.108.247.129:30056"  # Kibana 호스트 설정
+      rum:
+        enabled: true
     output.elasticsearch:
       hosts: ["http://10.109.249.133:9200"]
       username: "elastic"
-      password: "ua8747ll"  # 비밀번호 설정
+      password: "ua8747ll"
     logging:
       level: "info"
     setup.template.enabled: true
