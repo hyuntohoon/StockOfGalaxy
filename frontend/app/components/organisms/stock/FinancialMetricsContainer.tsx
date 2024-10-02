@@ -2,6 +2,7 @@
 
 import styled from "@emotion/styled";
 import { useEffect } from "react";
+import { useParams } from "next/navigation";
 import FinancialMetricsChart from "../../molecules/stock/FinancialMetricsChart";
 import FinancialMetricsSubContainer from "../../molecules/stock/FinancialMetricsSubContainer";
 import { getFinancialMetricsInfo } from "@/app/utils/apis/stock/getStockInfoData";
@@ -17,8 +18,11 @@ const Container = styled.div`
 `;
 
 const FinancialMetricsContainer = () => {
+  const { stock } = useParams();
+  const stock_code = Array.isArray(stock) ? stock[0] : stock ?? "005930";
+
   useEffect(() => {
-    getFinancialMetricsInfo("005930").then((data) => {
+    getFinancialMetricsInfo(stock_code).then((data) => {
       console.log(data);
     });
   });

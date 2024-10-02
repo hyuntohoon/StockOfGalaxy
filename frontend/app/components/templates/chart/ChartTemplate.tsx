@@ -37,10 +37,12 @@ const Option = styled.div`
 `;
 
 const ChartTemplate = () => {
+  const [initDataList, setInitDataList] = useState<any>(null);
   const [chartContainerRef, setChartContainerRef] = useState(null);
   const [chart, setChart] = useState<any>(null);
   const [type, setType] = useState("minute");
-  const { stock: stock_code } = useParams();
+  const { stock } = useParams();
+  const stock_code = Array.isArray(stock) ? stock[0] : stock ?? "005930";
 
   useEffect(() => {
     if (chartContainerRef) {
@@ -76,8 +78,7 @@ const ChartTemplate = () => {
       });
 
       const initChartData = async () => {
-        const dataList = await getMinuteStockData("005930");
-        newChart?.applyNewData(dataList);
+        const dataList = await getMinuteStockData(stock_code);
         setChart(newChart);
       };
 
@@ -97,17 +98,17 @@ const ChartTemplate = () => {
     changeRate: number | null;
   }
 
-  useKRChartWebSocket("005930", chart, type);
+  useKRChartWebSocket(stock_code, chart, type);
 
   const changeType = async (type: string) => {
     chart?.clearData();
     setType(type);
 
     if (type === "minute") {
-      const dataList = await getMinuteStockData("005930");
+      const dataList = await getMinuteStockData(stock_code);
       chart?.applyNewData(dataList);
     } else {
-      const dataList = await getPastStockData("005930", type);
+      const dataList = await getPastStockData(stock_code, type);
       chart?.applyNewData(dataList);
     }
   };

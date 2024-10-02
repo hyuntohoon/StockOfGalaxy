@@ -77,6 +77,8 @@ export const getMinuteStockData = async (stock_code: string) => {
       };
     });
 
+    console.log(formattedData);
+
     formattedData.sort((a, b) => a.timestamp - b.timestamp);
 
     return formattedData;
