@@ -35,7 +35,7 @@ public class KisMinuteChartClient {
                 .queryParam("FID_COND_MRKT_DIV_CODE", "J")  // 주식 시장 코드
                 .queryParam("FID_INPUT_ISCD", stockCode)  // 종목 코드
                 .queryParam("FID_INPUT_HOUR_1", time)  // 시간 값 (예: "103000")
-                .queryParam("FID_PW_DATA_INCU_YN", "N")  // 과거 데이터 포함 여부 (기본 N)
+                .queryParam("FID_PW_DATA_INCU_YN", "Y")  // 과거 데이터 포함 여부 (기본 N)
                 .build())
             .header("content-type", "application/json; charset=utf-8")
             .header("authorization", "Bearer " + token)
