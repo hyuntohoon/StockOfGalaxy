@@ -36,4 +36,8 @@ public interface NewsService {
     ResponseEntity<?> getDailyKeywordFrequency(LocalDate startDate);
 
     NewsResponseDTO getNewsById(Long id);
+
+    List<NewsCountByDateResponseDTO> getNewsCountByDateRange(LocalDate startDate, LocalDate endDate);
+
+    List<StockNewsCountResponseDTO> getTopNewsStockCountByDate(LocalDate date);
 }

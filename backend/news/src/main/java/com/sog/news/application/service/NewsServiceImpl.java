@@ -182,4 +182,30 @@ public class NewsServiceImpl implements NewsService {
                 .map(NewsResponseDTO::fromEntity)  // News 엔티티를 DTO로 변환
                 .orElseThrow(() -> new NewsNotFoundException("ID : " + id + " 에 해당하는 뉴스가 존재하지 않습니다."));  // 커스텀 예외 사용
     }
+
+    @Override
+    public List<NewsCountByDateResponseDTO> getNewsCountByDateRange(LocalDate startDate, LocalDate endDate) {
+        LocalDateTime startOfDay = startDate.atStartOfDay();
+        LocalDateTime endOfDay = endDate.atTime(23, 59, 59);
+
+        // 뉴스 기사 수를 조회, 0번째 index는 날짜, 1번째 index는 기사 수를 담고있음
+        List<Object[]> results = newsRepository.findNewsCountByDateBetween(startOfDay, endOfDay);
+
+        // fromEntity 메서드를 사용해 DTO로 변환
+        return results.stream()
+                .map(NewsCountByDateResponseDTO::fromEntity)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<StockNewsCountResponseDTO> getTopNewsStockCountByDate(LocalDate date) {
+        Pageable pageable = PageRequest.of(0, 8);  // 상위 8개만 가져오도록 페이지 크기 설정
+        List<Object[]> results = newsRepository.findTopNewsStockCountByDate(date, pageable);
+
+        // fromEntity 메서드를 사용해 DTO로 변환
+        return results.stream()
+                .map(StockNewsCountResponseDTO::fromEntity)
+                .collect(Collectors.toList());
+    }
+
 }
