@@ -2,6 +2,8 @@ package com.sog.stock.application.service;
 
 import com.sog.stock.application.client.KisMinuteChartClient;
 import com.sog.stock.application.client.KisPresentPriceClient;
+import com.sog.stock.application.client.UserClient;
+import com.sog.stock.application.service.kis.KisTokenService;
 import com.sog.stock.domain.dto.FinancialDTO;
 import com.sog.stock.domain.dto.FinancialListDTO;
 import com.sog.stock.domain.dto.HolidayAddListRequestDTO;
@@ -19,6 +21,8 @@ import com.sog.stock.domain.dto.StockDTO;
 import com.sog.stock.domain.dto.DailyStockPriceListDTO;
 import com.sog.stock.domain.dto.DailyStockPriceDTO;
 import com.sog.stock.domain.dto.StockNameResponseDTO;
+import com.sog.stock.domain.dto.rocket.RocketResponseDTO;
+import com.sog.stock.domain.dto.rocket.RocketResponseListDTO;
 import com.sog.stock.domain.enums.QuarterType;
 import com.sog.stock.domain.model.DailyStockHistory;
 import com.sog.stock.domain.model.FinancialStatements;
@@ -32,6 +36,7 @@ import com.sog.stock.domain.repository.QuarterStockHistoryRepository;
 import com.sog.stock.domain.repository.RocketRepository;
 import com.sog.stock.domain.repository.StockHolidayRepository;
 import com.sog.stock.domain.repository.StockRepository;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -41,6 +46,8 @@ import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
@@ -56,6 +63,7 @@ public class StockServiceImpl implements StockService {
     private final KisTokenService kisTokenService;
     private final KisPresentPriceClient kisPresentPriceClient;
     private final KisMinuteChartClient kisMinuteChartClient;
+    private final UserClient userClient;
 
     @Override
     public DailyStockPriceListDTO getDailyStockHistory(String stockCode) {
@@ -71,6 +79,26 @@ public class StockServiceImpl implements StockService {
 
         // DTO 리스트를 감싸서 반환
         return new DailyStockPriceListDTO(dtoList);
+    }
+
+    @Override
+    public DailyStockPriceDTO getDailyStockPriceHistory(String stockCode, String locDate) {
+        // 요청받은 날짜가 공휴일이거나 일요일인지 확인
+        while (isHoliday(locDate)) {
+            // 공휴일 또는 일요일이면 날짜를 하루 전으로 변경
+            LocalDate localDateObj = LocalDate.parse(locDate,
+                DateTimeFormatter.ofPattern("yyyyMMdd"));
+            localDateObj = localDateObj.minusDays(1); // 하루 전 날짜로 이동
+            locDate = localDateObj.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        }
+
+        // 해당하는 영업일에 대한 주식 데이터 조회
+        DailyStockHistory dailyStockHistory = dailyStockHistoryRepository
+            .findByStock_StockCodeAndDailyStockHistoryDate(stockCode, locDate)
+            .orElseThrow(() -> new NoSuchElementException("해당 날짜에 대한 주식 데이터를 찾을 수 없습니다."));
+
+        // 조회된 데이터를 DTO로 변환하여 반환
+        return DailyStockPriceDTO.fromEntity(dailyStockHistory);
     }
 
     @Override
@@ -201,20 +229,20 @@ public class StockServiceImpl implements StockService {
         for (FinancialDTO financialDTO : financialList.getFinancialList()) {
             // stockCode가 null인지 확인
             System.out.println(financialDTO);
-            if (financialDTO.getStock_code() == null || financialDTO.getStock_code().isEmpty()) {
+            if (financialDTO.getStockCode() == null || financialDTO.getStockCode().isEmpty()) {
                 throw new IllegalArgumentException("종목 코드가 null이거나 비어있습니다.");
             }
             // Stock 조회
-            Stock stock = stockRepository.findById(financialDTO.getStock_code())
+            Stock stock = stockRepository.findById(financialDTO.getStockCode())
                 .orElseThrow(() -> new IllegalArgumentException(
-                    "해당 종목 코드가 존재하지 않습니다: " + financialDTO.getStock_code()));
+                    "해당 종목 코드가 존재하지 않습니다: " + financialDTO.getStockCode()));
 
             // DTO TO ENTITY
             FinancialStatements financialStatements = FinancialStatements.builder()
-                .stacyymm(financialDTO.getStac_yymm())
+                .stacyymm(financialDTO.getStacYymm())
                 .totalLiabilities(financialDTO.getTotal_liabilities())
                 .totalEquity(financialDTO.getTotal_equity())
-                .currentAssets(financialDTO.getCurrent_assets())
+                .currentAssets(financialDTO.getCurrentAssets())
                 .currentLiabilities(financialDTO.getCurrent_liabilities())
                 .stock(stock)
                 .build();
@@ -341,41 +369,65 @@ public class StockServiceImpl implements StockService {
 
 
     // 로켓 전체 조회 -> 같은 주식 코드로 연결된 로켓 리스트
-//    @Override
-//    public RocketResponseListDTO getAllRocketsByStockCode(String stockCode) {
-//        Stock stock = stockRepository.findById(stockCode)
-//            .orElseThrow(() -> new RuntimeException("Stock not found"));
-//
-//        // rocket에 memberId로 user서버에 사용자 정보 조회해와서 표시.
-//        List<RocketResponseDTO> rocketList = rocketRepository.findByStock(stock).stream()
-//            .map(rocket -> {
-//                return RocketResponseDTO.builder()
-//                    .nickname(rocket.getNickname())
-//                    .characterType(rocket.getCharacterType())
-//                    .createdAt(rocket.getRocketCreatedAt())
-//                    .message(rocket.getContent())
-//                    .price(rocket.getStockPrice())
-//                    .build();
-//            })
-//            .collect(Collectors.toList());
-//
-//        return new RocketResponseListDTO(rocketList);
-//    }
-//
-//    // 로켓 개별 조회
-//    @Override
-//    public RocketResponseDTO getRocketById(int rocketId) {
-//        return rocketRepository.findById(rocketId)
-//            .map(rocket -> RocketResponseDTO.builder()
-//                .nickname(rocket.getNickname())
-//                .characterType(rocket.getCharacterType())
-//                .createdAt(rocket.getRocketCreatedAt())
-//                .message(rocket.getContent())
-//                .price(rocket.getStockPrice())
-//                .build())
-//            .orElseThrow(() -> new RuntimeException("Rocket not found"));
-//    }
-//
+    @Override
+    public Mono<RocketResponseListDTO> getAllRocketsByStockCode(String stockCode) {
+        Stock stock = stockRepository.findById(stockCode)
+            .orElseThrow(() -> new RuntimeException("Stock not found"));
+
+        List<Rocket> rockets = rocketRepository.findByStockAndIsDeletedFalse(stock);
+
+        // Mono 리스트를 Flux로 변환하여 모두 처리
+        return Flux.fromIterable(rockets)
+            .flatMap(this::buildRocketResponse) // 각 rocket을 비동기적으로 처리
+            .collectList() // 처리된 RocketResponseDTO 리스트를 다시 Mono로 변환
+            .map(RocketResponseListDTO::new); // 리스트를 RocketResponseListDTO로 변환
+    }
+
+    // Rocket을 DTO로 변환하고 유저 정보를 포함하는 메서드
+    private Mono<RocketResponseDTO> buildRocketResponse(Rocket rocket) {
+        return userClient.getUserInfo(rocket.getMemberId())
+            .map(userInfo -> RocketResponseDTO.builder()
+                .nickname(userInfo.getNickname())
+                .characterType(userInfo.getCharacterType())
+                .createdAt(rocket.getRocketCreatedAt())
+                .message(rocket.getContent())
+                .price(rocket.getStockPrice())
+                .build());
+    }
+
+    // 로켓 개별 조회
+    @Override
+    public Mono<RocketResponseDTO> getRocketById(int rocketId) {
+        return Mono.justOrEmpty(rocketRepository.findById(rocketId))
+            .filter(rocket -> !rocket.getIsDeleted()) // isDeleted가 false인 경우만 처리
+            .switchIfEmpty(Mono.error(new RuntimeException("삭제되었거나 존재하지 않는 로켓입니다.")))
+            .flatMap(rocket -> userClient.getUserInfo(rocket.getMemberId())
+                .map(userInfoResponseDTO -> RocketResponseDTO.builder()
+                    .nickname(userInfoResponseDTO.getNickname())
+                    .characterType(userInfoResponseDTO.getCharacterType())
+                    .createdAt(rocket.getRocketCreatedAt())
+                    .message(rocket.getContent())
+                    .price(rocket.getStockPrice())
+                    .build()));
+    }
+
+    @Override
+    public Mono<RocketResponseListDTO> getLimitedRocketsByStockCode(String stockCode, int limit) {
+        Stock stock = stockRepository.findById(stockCode)
+            .orElseThrow(() -> new RuntimeException("Stock not found"));
+
+        List<Rocket> rockets = rocketRepository.findByStockAndIsDeletedFalse(stock).stream()
+            .limit(limit)  // 7개로 제한
+            .collect(Collectors.toList());
+
+        // Mono 리스트를 Flux로 변환하여 모두 처리
+        return Flux.fromIterable(rockets)
+            .flatMap(this::buildRocketResponse) // 각 rocket을 비동기적으로 처리
+            .collectList() // 처리된 RocketResponseDTO 리스트를 다시 Mono로 변환
+            .map(RocketResponseListDTO::new); // 리스트를 RocketResponseListDTO로 변환
+    }
+
+
     @Override
     public boolean deleteRocket(int rocketId, Long memberId) {
         // 로켓 조회 후 memberId 확인

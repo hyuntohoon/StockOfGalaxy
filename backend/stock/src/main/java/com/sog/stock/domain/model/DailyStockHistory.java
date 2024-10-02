@@ -31,22 +31,22 @@ public class DailyStockHistory {
     private String dailyStockHistoryDate;
 
     @Column(nullable = false)
-    private Integer openPrice;
+    private String openPrice;
 
     @Column(nullable = false)
-    private Integer closePrice;
+    private String closePrice;
 
     @Column(nullable = false)
-    private Integer highPrice;
+    private String highPrice;
 
     @Column(nullable = false)
-    private Integer lowPrice;
+    private String lowPrice;
 
     @Column(nullable = true)
-    private Long stockAcmlVol;
+    private String stockAcmlVol;
 
     @Column(nullable = false)
-    private Long stockAcmlTrPbmn;
+    private String stockAcmlTrPbmn;
 
     @Column(nullable = false)
     private String prdyVrss;
@@ -56,6 +56,15 @@ public class DailyStockHistory {
 
     @Column(nullable = false)
     private String prdyCtrt;
+
+    @Column(nullable = false)
+    private String yearHighPrice;
+
+    @Column(nullable = false)
+    private String yearLowPrice;
+
+    @Column(nullable = false)
+    private String marketCapitalization;
 
     // 다대일 관계
     @ManyToOne(fetch = FetchType.LAZY)

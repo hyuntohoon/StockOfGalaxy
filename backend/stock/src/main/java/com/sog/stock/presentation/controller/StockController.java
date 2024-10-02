@@ -1,6 +1,7 @@
 package com.sog.stock.presentation.controller;
 
 import com.sog.stock.application.service.StockService;
+import com.sog.stock.domain.dto.DailyStockPriceDTO;
 import com.sog.stock.domain.dto.FinancialListDTO;
 import com.sog.stock.domain.dto.HolidayAddListRequestDTO;
 import com.sog.stock.domain.dto.MinuteStockPriceListDTO;
@@ -29,11 +30,26 @@ public class StockController {
 
     private final StockService stockService;
 
-    // 주식 일별 시세 조회
+    // 주식 일별 시세리스트 조회
     @GetMapping("/{stockCode}/history")
     public DailyStockPriceListDTO getStockHistory(@PathVariable String stockCode) {
         return stockService.getDailyStockHistory(stockCode);
     }
+
+    // 주식 과거 영업일의 정보 조회
+    @GetMapping("/{stockCode}/{locDate}")
+    public ResponseEntity<DailyStockPriceDTO> getStockPriceHistory(
+        @PathVariable String stockCode,
+        @PathVariable String locDate) {
+
+        // 서비스에서 주식 정보를 가져옴
+        DailyStockPriceDTO dailyStockPriceDTO = stockService.getDailyStockPriceHistory(stockCode,
+            locDate);
+
+        // 가져온 데이터를 응답 본문에 포함시켜 반환
+        return new ResponseEntity<>(dailyStockPriceDTO, HttpStatus.OK);
+    }
+
 
     // 주식 일별 시세 등록
     @PostMapping("/history")
@@ -61,7 +77,6 @@ public class StockController {
         stockService.addQuarterStockHistory(quarterStockPriceList);
         return new ResponseEntity<>("등록이 완료되었습니다", HttpStatus.OK);
     }
-
 
     // 행성 정보 조회
     @GetMapping("/{stockCode}")
@@ -143,6 +158,4 @@ public class StockController {
             stockCode, time);
         return new ResponseEntity<>(minuteStockPriceList, HttpStatus.OK);
     }
-
-
 }

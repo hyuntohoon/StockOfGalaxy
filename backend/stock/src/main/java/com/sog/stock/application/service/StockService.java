@@ -1,5 +1,6 @@
 package com.sog.stock.application.service;
 
+import com.sog.stock.domain.dto.DailyStockPriceDTO;
 import com.sog.stock.domain.dto.FinancialListDTO;
 import com.sog.stock.domain.dto.HolidayAddListRequestDTO;
 import com.sog.stock.domain.dto.MinuteStockPriceListDTO;
@@ -11,14 +12,20 @@ import com.sog.stock.domain.dto.StockAddListRequestDTO;
 import com.sog.stock.domain.dto.StockDTO;
 import com.sog.stock.domain.dto.DailyStockPriceListDTO;
 import com.sog.stock.domain.dto.StockNameResponseDTO;
+import com.sog.stock.domain.dto.rocket.RocketResponseDTO;
+import com.sog.stock.domain.dto.rocket.RocketResponseListDTO;
 import com.sog.stock.domain.enums.QuarterType;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 @Service
 public interface StockService {
 
-    // 주식 일별 데이터 조회
+    // 주식 일별 데이터 리스트 조회
     DailyStockPriceListDTO getDailyStockHistory(String stockCode);
+
+    // 주식 과거 날짜 데이터 조회
+    DailyStockPriceDTO getDailyStockPriceHistory(String stockCode, String locDate);
 
     // 주식 일별 데이터 추가
     void addDailyStockHistory(DailyStockPriceListDTO stockDailyPriceList);
@@ -63,10 +70,13 @@ public interface StockService {
      * */
 
     // 로켓 전체 조회 -> 같은 주식에 대한 로켓 목록
-//    RocketResponseListDTO getAllRocketsByStockCode(String stockCode);
-//
-//    // 로켓 상세 조회
-//    RocketResponseDTO getRocketById(int rocketId);
+    Mono<RocketResponseListDTO> getAllRocketsByStockCode(String stockCode);
+
+    // 로켓 상세 조회
+    Mono<RocketResponseDTO> getRocketById(int rocketId);
+
+    // 로켓 횟수 제한 조회
+    public Mono<RocketResponseListDTO> getLimitedRocketsByStockCode(String stockCode, int limit);
 
     // 로켓 삭제
     boolean deleteRocket(int rocketId, Long memberId);
