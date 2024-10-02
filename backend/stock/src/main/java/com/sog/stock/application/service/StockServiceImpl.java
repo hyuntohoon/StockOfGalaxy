@@ -335,7 +335,7 @@ public class StockServiceImpl implements StockService {
         // 시간에 따른 요청 횟수 계산
         if (requestedTime.isAfter(LocalTime.of(10, 0, 0))) {
             // 100000보다 크면 3번 요청
-            requestCount = 3;
+            requestCount = 10;
         } else if (requestedTime.isAfter(LocalTime.of(9, 30, 0))) {
             // 093000보다 크고 100000보다 작으면 2번 요청
             requestCount = 2;
