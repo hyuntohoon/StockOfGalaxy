@@ -28,6 +28,7 @@ const ButtonGroup = styled.div<{ bottom: string; right: string }>`
   justify-content: center;
   width: 100px;
   z-index: 1000;
+  cursor: pointer;
 `;
 
 const Icon = styled.div`
