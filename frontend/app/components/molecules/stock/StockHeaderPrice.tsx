@@ -30,15 +30,16 @@ const ChangeContainer = styled.div`
   gap: 5px;
 `;
 
-const StockHeaderPrice = ({ price, changePrice, changeRate }) => {
+const StockHeaderPrice = ({ stock_name, price, changePrice, changeRate }) => {
   const params = useParams();
   const { stock } = params;
+  const stock_code = Array.isArray(stock) ? stock[0] : stock ?? "005930";
 
   return (
     <Container>
-      <StockIcon width={55} height={55} />
+      <StockIcon stock_code={stock_code} width={55} height={55} />
       <InnerContainer>
-        <StockName koreanName="삼성전자" fontSize={18} />
+        <StockName koreanName={stock_name} fontSize={18} />
         <ChangeContainer>
           <StockCurrentPrice currentPrice={price} fontSize={20} />
           <StockChange
