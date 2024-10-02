@@ -34,11 +34,11 @@ spec:
               value: "true"  # API 키 인증 활성화
           resources:
             requests:
-              memory: "1Gi"   # 메모리 요청량 (1기가)
-              cpu: "500m"     # CPU 요청량
+              memory: "3Gi"   # 메모리 요청량 (1기가)
+              cpu: "1"     # CPU 요청량
             limits:
-              memory: "1Gi"   # 메모리 제한량 (1기가)
-              cpu: "1"        # CPU 제한량
+              memory: "3Gi"   # 메모리 제한량 (1기가)
+              cpu: "2"        # CPU 제한량
       volumes:
         - name: elasticsearch-data
           persistentVolumeClaim:
