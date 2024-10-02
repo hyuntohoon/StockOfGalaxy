@@ -21,13 +21,13 @@ public class News {
     @Column(name = "news_id")
     private Long newsId;
 
-    @Column(name = "title", nullable = false, length = 32)
+    @Column(name = "title", nullable = false, length = 64) // 변경된 길이
     private String title;
 
     @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;
 
-    @Column(name = "thumbnail_img", length = 64)
+    @Column(name = "thumbnail_img", length = 128) // 변경된 길이
     private String thumbnailImg;
 
     @Column(name = "published_date", nullable = false)
@@ -36,7 +36,7 @@ public class News {
     @Column(name = "sentiment_index")
     private Double sentimentIndex;
 
-    @Column(name = "news_link", nullable = false, length = 64)
+    @Column(name = "news_link", nullable = false, length = 128) // 변경된 길이
     private String newsLink;
 
     @Enumerated(EnumType.STRING)
