@@ -13,7 +13,6 @@ data:
       hosts: ["http://10.109.249.133:9200"]
       username: "elastic"
       password: "ua8747ll"  # 비밀번호 설정
-      index: "apm-%{[observer.version]}-%{[processor.event]}"
     logging:
       level: "info"
     setup.template.enabled: true
