@@ -1,4 +1,4 @@
-package com.sog.stock.domain.dto;
+package com.sog.stock.domain.dto.websocket;
 
 import lombok.Data;
 

@@ -2,7 +2,7 @@ package com.sog.stock.application.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sog.stock.domain.dto.StockPriceResponseDTO;
+import com.sog.stock.domain.dto.websocket.StockPriceResponseDTO;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;

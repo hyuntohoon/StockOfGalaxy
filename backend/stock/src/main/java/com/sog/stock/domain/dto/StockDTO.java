@@ -16,8 +16,5 @@ public class StockDTO {
     private String webSite;
     private int fiscalMonth;
     private boolean isDelisted;
-    private int dividendYear;
-    private BigDecimal dividendAmount;
-    private int dividendFrequency;
 
 }

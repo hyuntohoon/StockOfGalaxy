@@ -25,49 +25,29 @@ import lombok.NoArgsConstructor;
 public class Stock {
 
     @Id
+    @Column(name = "stock_code")
     private String stockCode;
 
-    @Column(nullable = false)
-    private String companyName;
+    @Column(name = "corp_name", nullable = false)
+    private String corpName;
 
-    @Column(nullable = false)
-    private String companyDescription;
+    @Column(name = "corp_description", nullable = false)
+    private String corpDescription;
 
-    @Column(nullable = false)
-    private Integer establishedYear; // YEAR type
+    @Column(name = "est_dt", nullable = false)
+    private Integer estDt;
 
-    @Column(nullable = false)
-    private String ceo;
+    @Column(name = "ceo_nm", nullable = false)
+    private String ceoNm;
 
-    @Column(nullable = false)
-    private String webSite;
+    @Column(name = "hm_url", nullable = false)
+    private String hmUrl;
 
-    @Column(nullable = false)
-    private Integer fiscalMonth;
+    @Column(name = "acc_mt", nullable = false)
+    private Integer accMt;
 
-    @Column(nullable = false)
+    @Column(name = "is_delisted", nullable = false)
     private Boolean isDelisted = false;
-
-    @Column(nullable = false)
-    private Integer dividendYear;
-
-    @Column(nullable = false)
-    private BigDecimal dividendAmount;
-
-    @Column(nullable = false)
-    private Integer dividendFrequency;
-
-    @Column(nullable = false)
-    private BigDecimal totalLiabilities;
-
-    @Column(nullable = false)
-    private BigDecimal totalEquity;
-
-    @Column(nullable = false)
-    private BigDecimal currentAssets;
-
-    @Column(nullable = false)
-    private BigDecimal currentLiabilities;
 
     // 일대다 관계 설정
     @OneToMany(mappedBy = "stock", fetch = FetchType.LAZY)
@@ -79,20 +59,20 @@ public class Stock {
     @OneToMany(mappedBy = "stock", fetch = FetchType.LAZY)
     private List<FinancialStatements> financialStatements = new ArrayList<>();
 
+    @OneToMany(mappedBy = "stock", fetch = FetchType.LAZY)
+    private List<QuarterStockHistory> quarterStockHistories = new ArrayList<>();
+
     // Dto to entity
     public static Stock fromDTO(StockDTO dto) {
         return Stock.builder()
             .stockCode(dto.getStockCode())
-            .companyName(dto.getCompanyName())
-            .companyDescription(dto.getCompanyDescription())
-            .establishedYear(dto.getEstablishedYear())
-            .ceo(dto.getCeo())
-            .webSite(dto.getWebSite())
-            .fiscalMonth(dto.getFiscalMonth())
+            .corpName(dto.getCompanyName())
+            .corpDescription(dto.getCompanyDescription())
+            .estDt(dto.getEstablishedYear())
+            .ceoNm(dto.getCeo())
+            .hmUrl(dto.getWebSite())
+            .accMt(dto.getFiscalMonth())
             .isDelisted(dto.isDelisted())
-            .dividendYear(dto.getDividendYear())
-            .dividendAmount(dto.getDividendAmount())
-            .dividendFrequency(dto.getDividendFrequency())
             .build();
     }
 
@@ -100,17 +80,13 @@ public class Stock {
     public StockDTO toDTO() {
         return StockDTO.builder()
             .stockCode(this.stockCode)
-            .companyName(this.companyName)
-            .companyDescription(this.companyDescription)
-            .establishedYear(this.establishedYear)
-            .ceo(this.ceo)
-            .webSite(this.webSite)
-            .fiscalMonth(this.fiscalMonth)
+            .companyName(this.corpName)
+            .companyDescription(this.corpDescription)
+            .establishedYear(this.estDt)
+            .ceo(this.ceoNm)
+            .webSite(this.hmUrl)
+            .fiscalMonth(this.accMt)
             .isDelisted(this.isDelisted)
-            .dividendYear(this.dividendYear)
-            .dividendAmount(this.dividendAmount)
-            .dividendFrequency(this.dividendFrequency)
             .build();
     }
-
 }

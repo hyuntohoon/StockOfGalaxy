@@ -1,4 +1,4 @@
-package com.sog.stock.domain.dto;
+package com.sog.stock.domain.dto.rocket;
 
 import java.time.LocalDateTime;
 import lombok.Builder;
