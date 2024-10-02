@@ -7,6 +7,7 @@ spec:
   ports:
   - port: 3306
     targetPort: 3306
+    nodePort: 32000 # 원하는 포트를 설정 (옵션)
   selector:
     app: mysql
-  type: ClusterIP
+  type: NodePort
