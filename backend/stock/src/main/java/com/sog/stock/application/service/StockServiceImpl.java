@@ -36,6 +36,7 @@ import com.sog.stock.domain.repository.QuarterStockHistoryRepository;
 import com.sog.stock.domain.repository.RocketRepository;
 import com.sog.stock.domain.repository.StockHolidayRepository;
 import com.sog.stock.domain.repository.StockRepository;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -78,6 +79,26 @@ public class StockServiceImpl implements StockService {
 
         // DTO 리스트를 감싸서 반환
         return new DailyStockPriceListDTO(dtoList);
+    }
+
+    @Override
+    public DailyStockPriceDTO getDailyStockPriceHistory(String stockCode, String locDate) {
+        // 요청받은 날짜가 공휴일이거나 일요일인지 확인
+        while (isHoliday(locDate)) {
+            // 공휴일 또는 일요일이면 날짜를 하루 전으로 변경
+            LocalDate localDateObj = LocalDate.parse(locDate,
+                DateTimeFormatter.ofPattern("yyyyMMdd"));
+            localDateObj = localDateObj.minusDays(1); // 하루 전 날짜로 이동
+            locDate = localDateObj.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        }
+
+        // 해당하는 영업일에 대한 주식 데이터 조회
+        DailyStockHistory dailyStockHistory = dailyStockHistoryRepository
+            .findByStock_StockCodeAndDailyStockHistoryDate(stockCode, locDate)
+            .orElseThrow(() -> new NoSuchElementException("해당 날짜에 대한 주식 데이터를 찾을 수 없습니다."));
+
+        // 조회된 데이터를 DTO로 변환하여 반환
+        return DailyStockPriceDTO.fromEntity(dailyStockHistory);
     }
 
     @Override
@@ -405,7 +426,6 @@ public class StockServiceImpl implements StockService {
             .collectList() // 처리된 RocketResponseDTO 리스트를 다시 Mono로 변환
             .map(RocketResponseListDTO::new); // 리스트를 RocketResponseListDTO로 변환
     }
-
 
 
     @Override

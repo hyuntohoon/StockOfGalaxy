@@ -1,4 +1,4 @@
-package com.sog.stock.domain.dto;
+package com.sog.stock.domain.dto.kis;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;

@@ -1,5 +1,6 @@
 package com.sog.stock.application.service;
 
+import com.sog.stock.domain.dto.DailyStockPriceDTO;
 import com.sog.stock.domain.dto.FinancialListDTO;
 import com.sog.stock.domain.dto.HolidayAddListRequestDTO;
 import com.sog.stock.domain.dto.MinuteStockPriceListDTO;
@@ -20,8 +21,11 @@ import reactor.core.publisher.Mono;
 @Service
 public interface StockService {
 
-    // 주식 일별 데이터 조회
+    // 주식 일별 데이터 리스트 조회
     DailyStockPriceListDTO getDailyStockHistory(String stockCode);
+
+    // 주식 과거 날짜 데이터 조회
+    DailyStockPriceDTO getDailyStockPriceHistory(String stockCode, String locDate);
 
     // 주식 일별 데이터 추가
     void addDailyStockHistory(DailyStockPriceListDTO stockDailyPriceList);
