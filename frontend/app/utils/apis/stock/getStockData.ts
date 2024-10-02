@@ -47,7 +47,15 @@ export const getMinuteStockData = async (stock_code: string) => {
   const minutes = String(now.getMinutes()).padStart(2, "0"); // MM
   const seconds = String(now.getSeconds()).padStart(2, "0"); // SS
 
-  const time = `${hours}${minutes}${seconds}`;
+  let time = "";
+
+  if (parseInt(hours) > 15) {
+    time = "153000";
+  } else if (parseInt(hours) == 15 && parseInt(minutes) >= 30) {
+    time = "153000";
+  } else {
+    time = `${hours}${minutes}${seconds}`;
+  }
 
   try {
     const res = await axios({
@@ -81,10 +89,10 @@ export const getPastStockData = async (stock_code: string, type: string) => {
   try {
     const res = await axios({
       method: "GET",
-      url: `${process.env.NEXT_PUBLIC_API_BASE_URL}/stock`,
+      url: `${process.env.NEXT_PUBLIC_API_BASE_URL}/stock/${stock_code}/quarterhistory?type=${type}`,
     });
 
-    console.log(res.data);
+    return res.data;
   } catch (error) {
     console.log(error);
   }

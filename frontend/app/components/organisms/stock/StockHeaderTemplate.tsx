@@ -9,6 +9,7 @@ import useKRStockWebSocket from "@/app/hooks/useKRStockWebSocket";
 import { GoTriangleDown } from "react-icons/go";
 import { useParams, useRouter } from "next/navigation";
 import { getCurrentPrice } from "@/app/utils/apis/stock/getStockData";
+import { findStockName } from "@/app/utils/apis/stock/findStockName";
 
 const ParentContainer = styled.div`
   min-width: 950px;
@@ -62,10 +63,13 @@ interface stockState {
 }
 
 const StockHeaderTemplate = () => {
+  const { stock } = useParams();
+  const stock_code = Array.isArray(stock) ? stock[0] : stock ?? "005930";
+
   const [stockDataInfo, setStockDataInfo] = useState<stockState[]>([
     {
-      stock_name: "삼성전자",
-      stock_code: "005930",
+      stock_name: findStockName(stock_code),
+      stock_code: stock_code,
       currentPrice: 0,
       changePrice: 0,
       changeRate: 0,
@@ -120,6 +124,7 @@ const StockHeaderTemplate = () => {
         {stockDataInfo.map((stock, index) => (
           <Container key={index}>
             <StockHeaderPrice
+              stock_name={stock.stock_name}
               price={stock.currentPrice}
               changePrice={stock.changePrice}
               changeRate={stock.changeRate}

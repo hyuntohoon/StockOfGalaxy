@@ -3,8 +3,11 @@
 import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
 import { init } from "klinecharts";
-import { getMinuteStockData } from "@/app/utils/apis/stock/getStockData";
-
+import {
+  getMinuteStockData,
+  getPastStockData,
+} from "@/app/utils/apis/stock/getStockData";
+import { useParams } from "next/navigation";
 import useKRChartWebSocket from "@/app/hooks/useKRChartWebSocket";
 
 const Container = styled.div`
@@ -37,10 +40,10 @@ const ChartTemplate = () => {
   const [chartContainerRef, setChartContainerRef] = useState(null);
   const [chart, setChart] = useState<any>(null);
   const [type, setType] = useState("minute");
+  const { stock: stock_code } = useParams();
 
   useEffect(() => {
     if (chartContainerRef) {
-      const dataList = getMinuteStockData("005930");
       const newChart = init(chartContainerRef);
 
       // newChart.createIndicator("MA", false, { id: "candle_pane" });
@@ -72,7 +75,13 @@ const ChartTemplate = () => {
         },
       });
 
-      setChart(newChart);
+      const initChartData = async () => {
+        const dataList = await getMinuteStockData("005930");
+        newChart?.applyNewData(dataList);
+        setChart(newChart);
+      };
+
+      initChartData();
     }
   }, [chartContainerRef]);
 
@@ -96,10 +105,10 @@ const ChartTemplate = () => {
 
     if (type === "minute") {
       const dataList = await getMinuteStockData("005930");
-      console.log(dataList);
       chart?.applyNewData(dataList);
     } else {
-      // getPastStockData("005930", type);
+      const dataList = await getPastStockData("005930", type);
+      chart?.applyNewData(dataList);
     }
   };
 
@@ -108,9 +117,9 @@ const ChartTemplate = () => {
       <Container>
         <OptionContainer>
           <Option onClick={() => changeType("minute")}>1분</Option>
-          <Option onClick={() => changeType("day")}>일</Option>
-          <Option onClick={() => changeType("month")}>월</Option>
-          <Option onClick={() => changeType("year")}>년</Option>
+          <Option onClick={() => changeType("D")}>일</Option>
+          <Option onClick={() => changeType("M")}>월</Option>
+          <Option onClick={() => changeType("Y")}>년</Option>
         </OptionContainer>
         <ChartContainer
           ref={(el: any) => setChartContainerRef(el)}

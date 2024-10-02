@@ -7,9 +7,9 @@ const TestPage = () => {
   return (
     <>
       <FinancialMetricsContainer />
-      <ValuationMetrics />
       <CompanyInfo />
-      <DividendInfo />
+      {/* <ValuationMetrics /> */}
+      {/* <DividendInfo /> */}
     </>
   );
 };

@@ -1,9 +1,10 @@
 "use client";
 
 import styled from "@emotion/styled";
-
+import { useEffect } from "react";
 import FinancialMetricsChart from "../../molecules/stock/FinancialMetricsChart";
 import FinancialMetricsSubContainer from "../../molecules/stock/FinancialMetricsSubContainer";
+import { getFinancialMetricsInfo } from "@/app/utils/apis/stock/getStockInfoData";
 
 const Container = styled.div`
   display: flex;
@@ -16,6 +17,12 @@ const Container = styled.div`
 `;
 
 const FinancialMetricsContainer = () => {
+  useEffect(() => {
+    getFinancialMetricsInfo("005930").then((data) => {
+      console.log(data);
+    });
+  });
+
   return (
     <>
       <Container>
