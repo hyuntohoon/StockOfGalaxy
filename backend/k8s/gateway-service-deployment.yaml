@@ -19,7 +19,7 @@ spec:
         fsGroup: 1000     # 볼륨에 접근할 때 사용할 그룹 ID
       containers:
         - name: gateway-service
-          image: zlxldgus123/gateway-service:214
+          image: zlxldgus123/gateway-service:215
           ports:
             - containerPort: 8080
           env:
@@ -55,7 +55,7 @@ spec:
 #     spec:
 #       containers:
 #         - name: gateway-service
-#           image: zlxldgus123/gateway-service:214
+#           image: zlxldgus123/gateway-service:215
 #           ports:
 #             - containerPort: 8080
 #           env:
@@ -111,7 +111,7 @@ spec:
 #           command: ['cp', '-v', '/usr/agent/elastic-apm-agent.jar', '/elastic/apm/agent']
 #       containers:
 #         - name: gateway-service
-#           image: zlxldgus123/gateway-service:214
+#           image: zlxldgus123/gateway-service:215
 #           ports:
 #             - containerPort: 8080
 #           volumeMounts:
