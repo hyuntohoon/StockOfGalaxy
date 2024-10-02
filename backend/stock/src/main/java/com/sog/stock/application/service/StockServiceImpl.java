@@ -2,6 +2,7 @@ package com.sog.stock.application.service;
 
 import com.sog.stock.application.client.KisMinuteChartClient;
 import com.sog.stock.application.client.KisPresentPriceClient;
+import com.sog.stock.application.client.NewsClient;
 import com.sog.stock.application.client.UserClient;
 import com.sog.stock.application.service.kis.KisTokenService;
 import com.sog.stock.domain.dto.FinancialDTO;
@@ -12,9 +13,13 @@ import com.sog.stock.domain.dto.MinuteStockPriceDTO;
 import com.sog.stock.domain.dto.MinuteStockPriceListDTO;
 import com.sog.stock.domain.dto.QuarterStockPriceDTO;
 import com.sog.stock.domain.dto.QuarterStockPriceListDTO;
+import com.sog.stock.domain.dto.StockFrequencyByDateListDTO;
 import com.sog.stock.domain.dto.StockPresentPriceResponseDTO;
+import com.sog.stock.domain.dto.StockTop8ListResponseDTO;
+import com.sog.stock.domain.dto.StockTop8ResponseDTO;
 import com.sog.stock.domain.dto.kis.KisMinuteStockResponseDTO;
 import com.sog.stock.domain.dto.kis.KisPresentPriceResponseDTO;
+import com.sog.stock.domain.dto.news.StockNewsCountResponseDTO;
 import com.sog.stock.domain.dto.rocket.RocketAddRequestDTO;
 import com.sog.stock.domain.dto.StockAddListRequestDTO;
 import com.sog.stock.domain.dto.StockDTO;
@@ -43,6 +48,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -64,6 +70,7 @@ public class StockServiceImpl implements StockService {
     private final KisPresentPriceClient kisPresentPriceClient;
     private final KisMinuteChartClient kisMinuteChartClient;
     private final UserClient userClient;
+    private final NewsClient newsClient;
 
     @Override
     public DailyStockPriceListDTO getDailyStockHistory(String stockCode) {
@@ -427,7 +434,6 @@ public class StockServiceImpl implements StockService {
             .map(RocketResponseListDTO::new); // 리스트를 RocketResponseListDTO로 변환
     }
 
-
     @Override
     public boolean deleteRocket(int rocketId, Long memberId) {
         // 로켓 조회 후 memberId 확인
@@ -461,4 +467,48 @@ public class StockServiceImpl implements StockService {
         // 엔티티 저장
         rocketRepository.save(rocket);
     }
+
+    // 날짜별 top8 주식에 대한 기사수와 주식 데이터 -> rank, 종목번호, 종목이름을 갖고있는 객체의 리스트를 return
+    @Override
+    public Mono<StockTop8ListResponseDTO> getTop8StocksWithNews(String date) {
+        String newsDate = convertToNewsDateFormat(date);
+        return newsClient.getNewsCountResponse(newsDate)
+            .flatMap(stockNewsList -> {
+                // 기사 수(count)를 기준으로 내림차순 정렬
+                stockNewsList.sort((a, b) -> b.getCount().compareTo(a.getCount()));
+
+                List<StockTop8ResponseDTO> stockTop8ResponseList = new ArrayList<>();
+                int rank = 1;
+
+                for (StockNewsCountResponseDTO stockNews : stockNewsList) {
+                    // 종목명을 통해 종목번호를 검색
+                    Optional<Stock> stockOptional = stockRepository.findByCorpName(
+                        stockNews.getStockName());
+
+                    if (stockOptional.isPresent()) {
+                        Stock stock = stockOptional.get();
+                        stockTop8ResponseList.add(new StockTop8ResponseDTO(
+                            rank,
+                            stock.getCorpName(),
+                            stock.getStockCode()
+                        ));
+                        rank++;
+                    }
+                }
+                return Mono.just(new StockTop8ListResponseDTO(stockTop8ResponseList));
+            });
+    }
+
+    @Override
+    public Mono<StockFrequencyByDateListDTO> getStockFrequencyByDate(String startDate,
+        String endDate) {
+        return null;
+    }
+
+    // "yyyyMMdd" -> "yyyy-MM-dd"로 변환
+    public static String convertToNewsDateFormat(String date) {
+        LocalDate localDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyyMMdd"));
+        return localDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    }
+
 }

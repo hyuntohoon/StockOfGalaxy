@@ -15,7 +15,7 @@ public class NewsClient {
 
     public NewsClient(WebClient.Builder webClientBuilder) {
         this.webClient = webClientBuilder.baseUrl(
-            "http://news-service.backcd.svc.cluster.local:80").build();
+            "http://news-service.backcd.svc.cluster.local:80/api").build();
 //            "http://localhost:9000/api").build();
     }
 

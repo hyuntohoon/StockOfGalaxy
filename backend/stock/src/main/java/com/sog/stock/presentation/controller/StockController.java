@@ -11,6 +11,7 @@ import com.sog.stock.domain.dto.StockDTO;
 import com.sog.stock.domain.dto.DailyStockPriceListDTO;
 import com.sog.stock.domain.dto.StockNameResponseDTO;
 import com.sog.stock.domain.dto.StockPresentPriceResponseDTO;
+import com.sog.stock.domain.dto.StockTop8ListResponseDTO;
 import com.sog.stock.domain.enums.QuarterType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -158,4 +159,14 @@ public class StockController {
             stockCode, time);
         return new ResponseEntity<>(minuteStockPriceList, HttpStatus.OK);
     }
+
+    // 날짜별 top 8 종목에 대한 기사수와 순위 조회
+    @GetMapping("/top8/{date}")
+    public ResponseEntity<?> getTop8(@PathVariable String date) {
+        StockTop8ListResponseDTO response = stockService.getTop8StocksWithNews(date).block();
+        return ResponseEntity.ok(response);
+    }
+
+    // 지정한 날짜 기간 내에 거래량과 기사수를 조회 
+
 }
