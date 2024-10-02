@@ -18,12 +18,11 @@ export const login = async (formData, setAccessToken, setLogin) => {
       : null;
 
     console.log(loginRes);
-
+    console.log(accessToken);
     if (accessToken) {
       setAccessToken(accessToken); // 유저 정보 저장
       setLogin(true);
-
-      return true;
+      return loginRes.data.memberId;
     } else {
       alert("토큰이 존재하지 않습니다");
       throw new Error("토큰이 존재하지 않습니다.");

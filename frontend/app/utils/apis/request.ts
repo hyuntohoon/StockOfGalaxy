@@ -1,6 +1,5 @@
 import axios from "axios";
-import { jwtDecode } from "jwt-decode";
-
+import {jwtDecode} from "jwt-decode"; // import 수정: jwtDecode를 default import로 변경
 const SERVER_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 // 공통 Axios 인스턴스 생성 함수
@@ -21,7 +20,7 @@ export const setupInterceptors = (
   setAccessToken
 ) => {
   axiosInstance.interceptors.request.use(async (config) => {
-    if (accessToken) {
+    if (accessToken && typeof accessToken === "string") {
       try {
         const { exp } = jwtDecode(accessToken);
 
@@ -37,6 +36,8 @@ export const setupInterceptors = (
         console.error("토큰 디코딩 중 오류 발생:", error);
         throw error;
       }
+    } else {
+      console.warn("유효하지 않은 액세스 토큰입니다.");
     }
 
     return config;
@@ -69,6 +70,14 @@ const getNewToken = async () => {
 
 // 인증이 필요한 요청 클라이언트 생성 함수
 export const authRequest = (accessToken, setAccessToken) => {
+  // accessToken 유효성 검사
+  console.log("Access token: " + accessToken);
+  if (!accessToken || typeof accessToken !== 'string') {
+    console.warn('유효하지 않은 accessToken입니다.');
+    // 필요시 여기서 추가 처리
+    return null; // 혹은 다른 적절한 반환값을 설정
+  }
+
   const authClient = createAxiosInstance();
   setupInterceptors(authClient, accessToken, setAccessToken);
   return authClient;

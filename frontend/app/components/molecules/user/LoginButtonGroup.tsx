@@ -21,16 +21,13 @@ const LoginButtonGroup = ({ inputValue }) => {
   
   
   const handleLogin = async () => {
-    const resp = await login(inputValue);
+    const resp = await login(inputValue, setAccessToken, setIsLoggedIn);
 
-  if (resp && resp.accessToken) {
-    setAccessToken(resp.accessToken); // accessToken 설정
-    //, setAccessToken, setIsLoggedIn, useMemberId, useUse
-    setIsLoggedIn(true);
-    setMemberId(resp.loginRes.data.memberId);
-    const userInfo = await getInfo(resp.accessToken, setAccessToken);
+  if (resp) {
+   
+    setMemberId(resp);
+    const userInfo = await getInfo(accessToken, setAccessToken);
     setUser(userInfo);
-    
     router.push("/"); // 로그인 성공 시 메인 페이지로 이동
   } else {
     console.error("로그인 실패");
