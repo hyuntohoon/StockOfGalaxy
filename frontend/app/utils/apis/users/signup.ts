@@ -2,7 +2,8 @@ import { defaultRequest } from "../../apis/request";
 
 // 정규식 상수
 const userIDRegex = /^[a-zA-Z0-9]{5,20}$/;
-const passwordRegex = /^(?=.*[a-zA-Z])(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{6,}$/;
+const passwordRegex =
+  /^(?=.*[a-zA-Z])(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{6,}$/;
 const nicknameRegex = /^[a-zA-Z0-9가-힣\-_]{2,15}$/;
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
@@ -31,12 +32,16 @@ export const signUpValidation = (
   }
 
   if (!validateUserId(userId)) {
-    alert("아이디는 영문자와 숫자를 포함하여 5자 이상 20자 이하로 입력해야 합니다. ");
+    alert(
+      "아이디는 영문자와 숫자를 포함하여 5자 이상 20자 이하로 입력해야 합니다. "
+    );
     return false;
   }
 
   if (!validatePassword(password)) {
-    alert("비밀번호는 영문자와 숫자를 포함하여 5자 이상 20자 이하로 입력해야 합니다.");
+    alert(
+      "비밀번호는 영문자와 숫자를 포함하여 5자 이상 20자 이하로 입력해야 합니다."
+    );
     return false;
   }
 
@@ -55,7 +60,9 @@ export const signUpValidation = (
 
 export const userIdValidate = async (userId) => {
   try {
-    const userIdValidateRes = await defaultRequest.get(`/user/public/validate/${userId}`);
+    const userIdValidateRes = await defaultRequest.get(
+      `/user/validate/${userId}`
+    );
 
     if (userIdValidateRes.status === 200) {
       alert("사용 가능한 아이디입니다.");
@@ -72,18 +79,18 @@ export const userIdValidate = async (userId) => {
 };
 
 export const signUpApi = async (formData) => {
-    try {
-        const signUpRes = await defaultRequest.post(`/user/public/signup`, formData);
+  try {
+    const signUpRes = await defaultRequest.post(`/user/signup`, formData);
 
-        if (signUpRes.status === 201) {
-        alert("회원가입에 성공했습니다.");
-        return true;
-        } else {
-        throw new Error("회원가입 실패");
+    if (signUpRes.status === 201) {
+      alert("회원가입에 성공했습니다.");
+      return true;
+    } else {
+      throw new Error("회원가입 실패");
     }
-    }catch(error){
-        console.error("회원가입 요청 중 오류 발생:", error);
-        alert("회원가입에 실패했습니다. 다시 시도해주세요.");
-        return false;
-    }
-}
+  } catch (error) {
+    console.error("회원가입 요청 중 오류 발생:", error);
+    alert("회원가입에 실패했습니다. 다시 시도해주세요.");
+    return false;
+  }
+};

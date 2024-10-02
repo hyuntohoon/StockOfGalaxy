@@ -1,5 +1,5 @@
-import { useRouter } from 'next/navigation';
-import { defaultRequest, authRequest } from '../request';
+import { useRouter } from "next/navigation";
+import { defaultRequest, authRequest } from "../request";
 
 export const login = async (formData) => {
   if (!formData.id || !formData.password) {
@@ -8,7 +8,7 @@ export const login = async (formData) => {
   }
 
   try {
-    const loginRes = await defaultRequest.post("/user/public/login", {
+    const loginRes = await defaultRequest.post("/user/login", {
       userId: formData.id,
       password: formData.password,
     });
@@ -18,13 +18,12 @@ export const login = async (formData) => {
       ? authorizationHeader.replace(/^Bearer\s+/i, "")
       : null;
 
-    if(loginRes.status === 200){
-      return {accessToken, loginRes}
-    }else{
-         alert("토큰이 존재하지 않습니다");
+    if (loginRes.status === 200) {
+      return { accessToken, loginRes };
+    } else {
+      alert("토큰이 존재하지 않습니다");
       throw new Error("토큰이 존재하지 않습니다.");
     }
- 
   } catch (error) {
     console.error("로그인 요청 중 오류 발생:", error);
     alert("로그인에 실패했습니다. 다시 시도해주세요.");
@@ -38,11 +37,11 @@ export const logout = async (accessToken, setAccessToken) => {
     const logoutRes = await authClient.get("/user/logout");
     alert("로그아웃 api 확인 필요, utils/apis/users/index.ts");
     return true;
-  }catch (error) {
+  } catch (error) {
     alert("로그아웃 실패");
     return false;
   }
-}
+};
 
 export const getInfo = async (accessToken, setAccessToken) => {
   const authClient = authRequest(accessToken, setAccessToken);
