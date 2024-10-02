@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { wordData } from '@/app/mocks/wordData';
-import { getPlanetNews, getSpaceNews } from '@/app/utils/apis/news';
+import { getPlanetNewsWithContent, getSpaceNewsWithContent } from '@/app/utils/apis/news';
 import { getStockInfo } from '@/app/utils/apis/stock/planet';
 import { useRecoilValue } from 'recoil';
 import { dateState } from '@/app/store/date';
@@ -48,7 +48,7 @@ const NewsPage: React.FC = (props: any) => {
 
     const fetchPlanetData = async () => {
       try {
-        const res = await getPlanetNews(date, stockInfo?.companyName || '');
+        const res = await getPlanetNewsWithContent(date, stockInfo?.companyName || '');
         // planetNews가 비어있으면 dummy 데이터로 설정
         setPlanetNews(res.length > 0 ? res : dummyNewsData);
       } catch (error) {
@@ -59,7 +59,7 @@ const NewsPage: React.FC = (props: any) => {
 
     const fetchSpaceData = async () => {
       try {
-        const res = await getSpaceNews(date);
+        const res = await getSpaceNewsWithContent(date);
         // spaceNews가 비어있으면 dummy 데이터로 설정
         setSpaceNews(res.length > 0 ? res : dummyNewsData);
       } catch (error) {
@@ -71,7 +71,7 @@ const NewsPage: React.FC = (props: any) => {
     fetchStockData();
     fetchPlanetData();
     fetchSpaceData();
-  }, [todayDate, stock, date, stockInfo]);
+  }, []);
 
   return (
     <>
