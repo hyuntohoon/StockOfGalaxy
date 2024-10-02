@@ -43,8 +43,8 @@ const ChartTemplate = () => {
       const dataList = getMinuteStockData("005930");
       const newChart = init(chartContainerRef);
 
-      newChart.createIndicator("MA", false, { id: "candle_pane" });
-      newChart.createIndicator("VOL");
+      // newChart.createIndicator("MA", false, { id: "candle_pane" });
+      // newChart.createIndicator("VOL");
 
       newChart?.setStyles({
         grid: {
@@ -90,10 +90,17 @@ const ChartTemplate = () => {
 
   useKRChartWebSocket("005930", chart, type);
 
-  const changeType = (type: string) => {
+  const changeType = async (type: string) => {
     chart?.clearData();
-
     setType(type);
+
+    if (type === "minute") {
+      const dataList = await getMinuteStockData("005930");
+      console.log(dataList);
+      chart?.applyNewData(dataList);
+    } else {
+      // getPastStockData("005930", type);
+    }
   };
 
   return (

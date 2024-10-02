@@ -1,4 +1,5 @@
 import { defaultRequest } from "../request";
+import axios from "axios";
 
 interface StockDailyPriceProps {
   stockDate: string;
@@ -9,6 +10,22 @@ interface StockDailyPriceProps {
   prdyVrss: string;
   prdyVrssSign: string;
   prdyCtrt: string;
+}
+
+function toTimestamp(dateString) {
+  // yyyymmddhhmmss 형식의 문자열을 분리
+  const year = dateString.substring(0, 4);
+  const month = dateString.substring(4, 6) - 1; // 월은 0부터 시작 (0 = 1월)
+  const day = dateString.substring(6, 8);
+  const hour = dateString.substring(8, 10);
+  const minute = dateString.substring(10, 12);
+  const second = dateString.substring(12, 14);
+
+  // Date 객체 생성
+  const date = new Date(year, month, day, hour, minute, second);
+
+  // 타임스탬프 반환 (밀리초 단위이므로 1000으로 나눠서 초 단위로 반환)
+  return date.getTime();
 }
 
 export const getDailyStockData = async (
@@ -35,20 +52,24 @@ export const getMinuteStockData = async (stock_code: string) => {
   try {
     const res = await axios({
       method: "GET",
-      url: `${process.env.NEXT_PUBLIC_API_BASE_URL}/${stock_code}/minute-chart/${time}`,
+      url: `${process.env.NEXT_PUBLIC_API_BASE_URL}/stock/${stock_code}/minute-chart/${time}`,
     });
 
     const formattedData = res.data.minuteStockPrices.map((data) => {
       return {
-        timestamp: `${data.stckBsopDate} ${data.stckCntgHour}`,
-        open: data.stckOprc,
-        high: data.stckHgpr,
-        low: data.stckLwpr,
-        close: data.stckPrpr,
-        volume: data.cntgVol,
-        turnover: data.acmlTrPbmn,
+        timestamp: toTimestamp(data.stckBsopDate.concat(data.stckCntgHour)),
+        open: parseInt(data.stckOprc),
+        high: parseInt(data.stckHgpr),
+        low: parseInt(data.stckLwpr),
+        close: parseInt(data.stckPrpr),
+        volume: 0,
+        turnover: 0,
+        // volume: data.cntgVol,
+        // turnover: data.acmlTrPbmn,
       };
     });
+
+    formattedData.sort((a, b) => a.timestamp - b.timestamp);
 
     return formattedData;
   } catch (error) {
@@ -76,13 +97,21 @@ export const getCurrentPrice = async (stock_code: string) => {
       url: `${process.env.NEXT_PUBLIC_API_BASE_URL}/stock/${stock_code}/current`,
     });
 
-    // {
-    //   "stockCode": "005930",
-    //   "stckPrpr": "64200",  현재가
-    //   "prdyVrss": "-500",  전일대비
-    //   "prdyVrssSign": "5",  전일대비 부호
-    //   "prdyCtrt": "-0.77"  전일대비율
-    // }
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getHeaderStockData = async (
+  stock_code: string,
+  loc_date: string
+) => {
+  try {
+    const res = await axios({
+      method: "GET",
+      url: `${process.env.NEXT_PUBLIC_API_BASE_URL}/stock/${stock_code}/${loc_date}`,
+    });
 
     console.log(res.data);
     return res.data;
