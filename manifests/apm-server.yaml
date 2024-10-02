@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: apm-server
-          image: docker.elastic.co/apm/apm-server:8.15.1
+          image: docker.elastic.co/apm/apm-server:sha256-ffc8b96a26fa450c69801120ec8b04278f54b00e0c52dacd90a8dfc8e984b5da
           ports:
             - containerPort: 8200
           env:
