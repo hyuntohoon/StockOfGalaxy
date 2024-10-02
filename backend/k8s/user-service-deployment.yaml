@@ -13,6 +13,21 @@ spec:
       labels:
         app: user-service
     spec:
+      securityContext:
+        runAsUser: 1000  # 컨테이너에서 사용하는 사용자 ID
+        runAsGroup: 1000  # 그룹 ID
+        fsGroup: 1000     # 볼륨에 접근할 때 사용할 그룹 ID
+      initContainers:
+        - name: init-apm-agent
+          image: curlimages/curl:latest  # Curl 이미지를 사용하여 JAR 파일을 다운로드
+          command:
+            - "sh"
+            - "-c"
+            - >
+              curl -o /elastic/elastic-apm-agent.jar https://repo1.maven.org/maven2/co/elastic/apm/elastic-apm-agent/1.51.0/elastic-apm-agent-1.51.0.jar;
+          volumeMounts:
+            - name: elastic-apm-volume
+              mountPath: /elastic  # APM 에이전트 파일을 저장할 경로
       containers:
         - name: user-service
           image: zlxldgus123/user-service:219
@@ -36,6 +51,11 @@ spec:
                 secretKeyRef:
                   name: jwt-secret
                   key: secret
+            - name: JAVA_TOOL_OPTIONS
+              value: "-javaagent:/elastic/elastic-apm-agent.jar -Delastic.apm.service_name=user-service -Delastic.apm.server_urls=http://10.105.247.180:8200 -Delastic.apm.application_packages=com.sog -Delastic.apm.use_path_as_transaction_name=true -Delastic.apm.transaction_name_groups=/api/user/\\d+,/api/stock/\\d+,/api/news/\\d+"
+          volumeMounts:
+            - name: elastic-apm-volume
+              mountPath: /elastic  # APM 에이전트가 위치할 경로
           resources:  # 리소스 요청 및 제한 설정
             requests:
               memory: "512Mi"
@@ -43,3 +63,6 @@ spec:
             limits:
               memory: "1Gi"
               cpu: "500m"
+      volumes:
+        - name: elastic-apm-volume
+          emptyDir: {}  # 파드 내 임시 디렉터리 사용
