@@ -184,29 +184,29 @@ const StockTemplate = () => {
     },
   ]);
 
-  useEffect(() => {
-    stockDataInfo.map(async (stock, index) => {
-      try {
-        const res = await getCurrentPrice(stock.stock_code);
+  // useEffect(() => {
+  //   stockDataInfo.map(async (stock, index) => {
+  //     try {
+  //       const res = await getCurrentPrice(stock.stock_code);
 
-        setStockDataInfo((prevStockData: any[]) => {
-          return prevStockData.map((stock) =>
-            stock.stock_code === res.stockCode
-              ? {
-                  stock_name: stock.stock_name,
-                  stock_code: res.stock,
-                  currentPrice: res.stckPrpr,
-                  changePrice: res.prdyVrss,
-                  changeRate: res.prdyCtrt,
-                }
-              : stock
-          );
-        });
-      } catch (error) {
-        console.log(error);
-      }
-    });
-  }, []);
+  //       setStockDataInfo((prevStockData: any[]) => {
+  //         return prevStockData.map((stock) =>
+  //           stock.stock_code === res.stockCode
+  //             ? {
+  //                 stock_name: stock.stock_name,
+  //                 stock_code: res.stock,
+  //                 currentPrice: res.stckPrpr,
+  //                 changePrice: res.prdyVrss,
+  //                 changeRate: res.prdyCtrt,
+  //               }
+  //             : stock
+  //         );
+  //       });
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   });
+  // }, []);
 
   useKRStockWebSocket(stockData, setStockDataInfo);
 
