@@ -5,6 +5,7 @@ import styled from "@emotion/styled";
 import StockPrice from "../../molecules/stock/StockPrice";
 import StockInfo from "../../molecules/stock/StockInfo";
 import useKRStockWebSocket from "@/app/hooks/useKRStockWebSocket";
+import { getCurrentPrice } from "@/app/utils/apis/stock/getStockData";
 
 const ParentContainer = styled.div`
   width: 50vw;
@@ -182,6 +183,30 @@ const StockTemplate = () => {
       changeRate: null,
     },
   ]);
+
+  useEffect(() => {
+    stockDataInfo.map(async (stock, index) => {
+      try {
+        const res = await getCurrentPrice(stock.stock_code);
+
+        setStockDataInfo((prevStockData: any[]) => {
+          return prevStockData.map((stock) =>
+            stock.stock_code === res.stockCode
+              ? {
+                  stock_name: stock.stock_name,
+                  stock_code: res.stock,
+                  currentPrice: res.stckPrpr,
+                  changePrice: res.prdyVrss,
+                  changeRate: res.prdyCtrt,
+                }
+              : stock
+          );
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    });
+  }, []);
 
   useKRStockWebSocket(stockData, setStockDataInfo);
 
