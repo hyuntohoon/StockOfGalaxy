@@ -1,13 +1,12 @@
 import styled from '@emotion/styled';
 import { GoTriangleUp } from "react-icons/go";
 import { useRouter, useParams } from 'next/navigation'; // next/navigation에서 useRouter와 useParams 가져오기
-import { useRecoilValue } from 'recoil';
-import { dateState } from '@/app/store/date';
+import { useDate } from '@/app/store/date';
 
 const DetailTriangleButton = () => {
   const router = useRouter();
   const stockCode = useParams().stock;
-  const date = useRecoilValue(dateState);
+  const { date } = useDate();
   
   const handleClick = () => {
     if (stockCode && date) {
@@ -34,9 +33,12 @@ const Button = styled.div`
   font-size: 60px;
   cursor: pointer;
   z-index: 1000;
+  color: #c6b6d0; /* 호버시 색상 변경 */
+  opacity: 0.5;
+  
 
   &:hover {
-    color: #c6b6d0; /* 호버시 색상 변경 */
+    opacity: 0.8;
   }
 `;
 

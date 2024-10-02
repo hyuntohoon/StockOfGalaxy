@@ -2,8 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { useRouter } from 'next/navigation'; // useRouter 임포트
-import { useRecoilValue } from 'recoil';
-import { dateState } from '@/app/store/date';
+import { useDate } from '@/app/store/date';
 
 // 비디오 컨테이너 스타일
 const VideoContainer = styled.div`
@@ -63,7 +62,7 @@ const StartIcon = styled.img`
 export default function Home() {
   const [isButtonVisible, setButtonVisible] = useState(false);
   const router = useRouter(); // useRouter 훅 사용
-  const todayDate = useRecoilValue(dateState);
+  const {date} = useDate();
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -74,7 +73,7 @@ export default function Home() {
   }, []);
 
   const handleStartClick = () => {
-    router.push(`/main/${todayDate}`); // 버튼 클릭 시 /main으로 이동
+    router.push(`/main/${date}`); // 버튼 클릭 시 /main으로 이동
   };
 
   return (

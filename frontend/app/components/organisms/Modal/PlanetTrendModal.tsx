@@ -14,9 +14,8 @@ import {
 } from "@/app/types/main";
 import useKRStockWebSocket from "@/app/hooks/useKRStockWebSocket";
 import { getStockHistoryInfoApi } from "@/app/utils/apis/stock";
-import { useRecoilValue } from 'recoil';
 import { getTodayDate } from '@/app/utils/libs/getTodayDate';
-import { dateState } from '@/app/store/date';
+import { useDate } from "@/app/store/date";
 
 interface stockState {
   stock_name: string | null;
@@ -32,6 +31,7 @@ const PlanetTrendModal: React.FC<PlanetTrendModalProps> = ({
   position,
   camera,
   rendererDomElement,
+  date,
   onClose,
 }) => {
   const [screenPosition, setScreenPosition] = useState({ x: -9999, y: -9999 });
@@ -44,10 +44,11 @@ const PlanetTrendModal: React.FC<PlanetTrendModalProps> = ({
       changeRate: null,
     },
   ]);
-
-  const currentSetDate = useRecoilValue(dateState); // 현재 사용자가 설정한 날짜
+  const {setDate} = useDate();
+  
   const realDate = getTodayDate(); // 실제 오늘 날짜
-  const isToday = currentSetDate === realDate;
+  const isToday = (date === realDate);
+  console.log(isToday, date, realDate)
 
   // 훅을 항상 호출하고 내부에서 조건에 따라 웹소켓 연결
   useKRStockWebSocket(isToday ? stockDataInfo : [], setStockDataInfo);
@@ -57,7 +58,7 @@ const PlanetTrendModal: React.FC<PlanetTrendModalProps> = ({
       // 과거 데이터 조회 API 호출
       const fetchStockHistoryData = async () => {
         try {
-          const historicalData = await getStockHistoryInfoApi(stockCode, currentSetDate);
+          const historicalData = await getStockHistoryInfoApi(stockCode, date);
           if (historicalData) {
             setStockDataInfo([{
               stock_name: corpName || null,
@@ -74,7 +75,7 @@ const PlanetTrendModal: React.FC<PlanetTrendModalProps> = ({
 
       fetchStockHistoryData();
     }
-  }, [isToday, stockCode, currentSetDate]);
+  }, [isToday, stockCode, date]);
 
   useEffect(() => {
     if (!position || !camera || !rendererDomElement) return;

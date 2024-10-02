@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { RecoilRoot, useRecoilValue } from "recoil";
-import { dateState } from "@/app/store/date";
+import { useDate } from "@/app/store/date";
 import { HoveredPlanetData } from "@/app/types/main";
 import DateCard from "@/app/components/molecules/Card/DateCard";
 import TimeMachineButtonGroup from "@/app/components/molecules/ButtonGroup/TimeMachineButtonGroup";
@@ -24,13 +24,16 @@ interface CustomPlanet extends THREE.Mesh<THREE.SphereGeometry, THREE.MeshStanda
 
 const planetsArray: THREE.Mesh[] = [];
 
-export default function Page() {
-  const currentDate = useRecoilValue(dateState);
+export default function Page(props:any) {
+  const { date, setDate } = useDate();
+  const {date : currentDate} = props.params;
+  setDate(props.params.date);
   const mountRef = useRef<HTMLDivElement>(null);
   const [hoveredPlanet, setHoveredPlanet] = useState<HoveredPlanetData | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const camera = useRef<THREE.PerspectiveCamera | null>(null);
   const router = useRouter();
+  
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -150,7 +153,7 @@ export default function Page() {
       }}
     >
       <RecoilRoot>
-        <DateCard left="30px" />
+        <DateCard left="30px" date={date} label={"MAIN PAGE"}/>
         {isModalOpen && hoveredPlanet && (
           <PlanetTrendModal
             stockCode={hoveredPlanet.stockCode}
@@ -158,6 +161,7 @@ export default function Page() {
             position={hoveredPlanet.position}
             camera={camera.current!}
             rendererDomElement={mountRef.current?.children[0] as HTMLCanvasElement}
+            date={date}
             onClose={() => setIsModalOpen(false)}
           />
         )}

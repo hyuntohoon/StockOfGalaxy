@@ -3,16 +3,15 @@ import { AiFillHome } from 'react-icons/ai';
 import HeaderButtonGroup from '../../HeaderButtonGroup';
 import Link from 'next/link';
 import styled from '@emotion/styled';
-import {dateState} from "@/app/store/date";
-import { useRecoilValue } from 'recoil'; 
+import { useDate } from '@/app/store/date';
 
 interface HomeButtonGroupProps {
   onClick?: () => void; 
 }
 
 const HomeButtonGroup = ({ onClick }: HomeButtonGroupProps) => {
-  const date = useRecoilValue(dateState);
-  return (
+  const {date} = useDate();
+    return (
     <div
       onClick={(e) => {
         e.stopPropagation(); // 이벤트 전파 방지 (메뉴 닫힘 이벤트 방지)

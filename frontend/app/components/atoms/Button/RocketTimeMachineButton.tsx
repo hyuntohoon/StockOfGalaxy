@@ -1,8 +1,7 @@
 import React from 'react';
 import styled from '@emotion/styled';
 import { useRouter, useParams } from 'next/navigation';
-import { useSetRecoilState } from 'recoil';
-import { dateState, setDate } from '@/app/store/date';
+import { useDate } from '@/app/store/date';
 
 interface RocketTimeMachineButtonProps {
   createdAt: string; // '2024-10-01 19:08:20'
@@ -12,12 +11,12 @@ const RocketTimeMachineButton: React.FC<RocketTimeMachineButtonProps> = ({ creat
   const router = useRouter();
   const stockCodeParam = useParams().stock;
   const stockCode = Array.isArray(stockCodeParam) ? stockCodeParam[0] : stockCodeParam;
-  const setGlobalDate = useSetRecoilState(dateState); // Recoil 상태 변경 함수
+  const {date, setDate} = useDate();
 
   const handleTimeMachineClick = () => {
     // createdAt에서 날짜 부분만 추출하고 'yyyymmdd' 형식으로 변환
     const newDate = createdAt.split(' ')[0].replace(/-/g, '');
-    setDate(newDate, setGlobalDate);
+    setDate(date);
 
     const newPath = `/planet/main/${stockCode}/${newDate}`;
     router.push(newPath);

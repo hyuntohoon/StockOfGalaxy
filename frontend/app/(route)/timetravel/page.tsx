@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import AreaChart from '@/app/components/molecules/timetravel/AreaChart';
 import styled from '@emotion/styled';
-import TypeWriter from './TypeWritter'; // 방금 만든 TypeWriter 컴포넌트 가져오기
+import TypeWriter from './TypeWritter'; 
 import { wordData } from '@/app/mocks/wordData';
 
 const TimeTravelContainer = styled.div`

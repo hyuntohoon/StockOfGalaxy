@@ -7,20 +7,20 @@ import LoadingSpinner from '../../atoms/LoadingSpinner';
 import { getRocketListApi } from '@/app/utils/apis/rocket';
 import { useParams } from 'next/navigation';
 import useKRStockWebSocket from '@/app/hooks/useKRStockWebSocket'; // 웹소켓 사용
-import { useRecoilValue } from 'recoil';
 import { getTodayDate } from '@/app/utils/libs/getTodayDate';
-import { dateState } from '@/app/store/date';
+import { useDate } from '@/app/store/date';
 
 const RocketModal = ({ onClose }) => {
   const [data, setData] = useState([]); // 현재 보여주는 데이터
   const [allData, setAllData] = useState([]); // 전체 데이터를 저장할 상태
   const [loading, setLoading] = useState(false);
+  const {date} = useDate();
   const [currentPrice, setCurrentPrice] = useState<number | null>(null); // 실시간 주가 데이터 상태 추가
   const stockCodeParam = useParams().stock;
   const stockCode = Array.isArray(stockCodeParam) ? stockCodeParam[0] : stockCodeParam;
-  const currentSetDate = useRecoilValue(dateState); // 현재 사용자가 설정한 날짜
+  
   const realDate = getTodayDate(); // 실제 오늘 날짜
-  const isToday = currentSetDate === realDate;
+  const isToday = date === realDate;
 
   // 웹소켓 연결 및 실시간 주가 데이터 업데이트
   useKRStockWebSocket(

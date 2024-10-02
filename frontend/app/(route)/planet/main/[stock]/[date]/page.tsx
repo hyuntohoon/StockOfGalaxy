@@ -16,11 +16,15 @@ import { RocketData } from '@/app/types/rocket';
 import useKRStockWebSocket from '@/app/hooks/useKRStockWebSocket';
 import { getTop7RocketsApi } from '@/app/utils/apis/rocket';
 import TypeWritter from './TypeWritter';
+import { useDate } from '@/app/store/date';
 
 let renderer: THREE.WebGLRenderer;
 let camera: THREE.PerspectiveCamera;
 
-export default function Home() {
+export default function Home(props:any) {
+  const {date} = props.params;
+  const {setDate} = useDate();
+  setDate(date);
   const mountRef = useRef<HTMLDivElement>(null);
   const [isRocketModalOpen, setIsRocketModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);  // 로딩 상태
@@ -198,7 +202,7 @@ export default function Home() {
         <>
           <div ref={mountRef} id="canvas" style={{ width: '100%', height: '100vh', position: 'absolute', zIndex: 1 }}></div>
           <RecoilRoot>
-            <DateCard right='30px' />
+            <DateCard right='30px'date={date} label={"PLANET PAGE"} />
             <PlanetSimpleInfoCard />
             <TimeMachineButtonGroup />
             <RocketButtonGroup onRocketClick={() => setIsRocketModalOpen(true)} />

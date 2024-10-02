@@ -5,20 +5,19 @@ import HeaderModalButtonGroup from "../HeaderModalButtonGroup";
 import {useRouter} from 'next/navigation';
 import { useIsLoggedIn, useAccessToken } from "@/app/store/userSlice";
 import { logout } from "@/app/utils/apis/users";
-import { dateState } from "@/app/store/date";
-import { useRecoilValue } from "recoil";
+import { useDate } from "@/app/store/date";
 
 const SignOutButtonGroup = () => {
   const router = useRouter();
   const {setIsLoggedIn} = useIsLoggedIn();
   const { accessToken, setAccessToken} = useAccessToken();
-  const todayDate = useRecoilValue(dateState);
+  const {date} = useDate();
 
   const handleClickLogout = async () => {
     const res = await logout(accessToken, setAccessToken);
     setIsLoggedIn(false);
     setAccessToken("");
-    router.push(`/main/${todayDate}`);
+    router.push(`/main/${date}`);
   }
 
 
