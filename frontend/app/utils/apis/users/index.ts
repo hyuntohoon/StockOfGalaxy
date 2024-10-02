@@ -1,7 +1,7 @@
 import { useRouter } from "next/navigation";
 import { defaultRequest, authRequest } from "../request";
 
-export const login = async (formData) => {
+export const login = async (formData, setAccessToken, setLogin) => {
   if (!formData.id || !formData.password) {
     alert("아이디와 비밀번호를 입력해주세요.");
     return false;
@@ -12,14 +12,18 @@ export const login = async (formData) => {
       userId: formData.id,
       password: formData.password,
     });
-
     const authorizationHeader = loginRes.headers["authorization"];
     const accessToken = authorizationHeader
       ? authorizationHeader.replace(/^Bearer\s+/i, "")
       : null;
 
-    if (loginRes.status === 200) {
-      return { accessToken, loginRes };
+    console.log(loginRes);
+
+    if (accessToken) {
+      setAccessToken(accessToken); // 유저 정보 저장
+      setLogin(true);
+
+      return true;
     } else {
       alert("토큰이 존재하지 않습니다");
       throw new Error("토큰이 존재하지 않습니다.");

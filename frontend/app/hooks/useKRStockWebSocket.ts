@@ -6,6 +6,8 @@ const delay = (ms) => {
 
 const useKRStockWebSocket = (stockData, setStockDataInfo: any) => {
   useEffect(() => {
+    // const socket = new WebSocket("ws://localhost:8081");
+
     const socket = new WebSocket(
       `${process.env.NEXT_PUBLIC_WS_BASE_URL}/ws/stock`
     );
@@ -21,7 +23,9 @@ const useKRStockWebSocket = (stockData, setStockDataInfo: any) => {
 
     socket.onmessage = (event) => {
       const messageData = JSON.parse(event.data);
-      const updatedStockCode = messageData.stock_code;
+      // const updatedStockCode = messageData.stock_code;
+
+      const updatedStockCode = Buffer.from(messageData.stock_code).toString();
 
       setStockDataInfo((prevStockData: any[]) => {
         return prevStockData.map((stock) =>
