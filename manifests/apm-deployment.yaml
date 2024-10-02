@@ -45,9 +45,7 @@ spec:
     app.kubernetes.io/name: apmserver
   ports:
   - name: apmserver-nodeport
-    nodePort: 30880
+    nodePort: 30090  # 포트 변경
     port: 8200
     protocol: TCP
     targetPort: 8200
-
-
