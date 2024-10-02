@@ -240,10 +240,10 @@ public class StockServiceImpl implements StockService {
             // DTO TO ENTITY
             FinancialStatements financialStatements = FinancialStatements.builder()
                 .stacyymm(financialDTO.getStacYymm())
-                .totalLiabilities(financialDTO.getTotal_liabilities())
-                .totalEquity(financialDTO.getTotal_equity())
+                .totalLiabilities(financialDTO.getTotalLiabilities())
+                .totalEquity(financialDTO.getTotalEquity())
                 .currentAssets(financialDTO.getCurrentAssets())
-                .currentLiabilities(financialDTO.getCurrent_liabilities())
+                .currentLiabilities(financialDTO.getCurrentLiabilities())
                 .stock(stock)
                 .build();
 
