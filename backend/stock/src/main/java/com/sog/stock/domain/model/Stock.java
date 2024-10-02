@@ -35,7 +35,7 @@ public class Stock {
     private String corpDescription;
 
     @Column(name = "est_dt", nullable = false)
-    private Integer estDt;
+    private String estDt;
 
     @Column(name = "ceo_nm", nullable = false)
     private String ceoNm;
@@ -44,7 +44,7 @@ public class Stock {
     private String hmUrl;
 
     @Column(name = "acc_mt", nullable = false)
-    private Integer accMt;
+    private String accMt;
 
     @Column(name = "is_delisted", nullable = false)
     private Boolean isDelisted = false;
