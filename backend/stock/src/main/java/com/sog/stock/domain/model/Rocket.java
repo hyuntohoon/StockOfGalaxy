@@ -10,6 +10,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,7 +36,7 @@ public class Rocket {
     private Integer stockPrice;
 
     @Column(nullable = false)
-    private LocalDateTime rocketCreatedAt = LocalDateTime.now();
+    private LocalDateTime rocketCreatedAt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
 
     @Column(nullable = false)
     private Boolean isDeleted = false;

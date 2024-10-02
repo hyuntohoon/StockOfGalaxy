@@ -1,6 +1,7 @@
-package com.sog.stock.application.service;
+package com.sog.stock.application.service.kis;
 
-import com.sog.stock.domain.dto.KisTokenResponseDTO;
+import com.sog.stock.application.service.RedisService;
+import com.sog.stock.domain.dto.kis.KisTokenResponseDTO;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;

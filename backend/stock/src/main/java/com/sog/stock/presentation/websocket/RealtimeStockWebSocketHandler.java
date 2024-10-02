@@ -1,6 +1,6 @@
 package com.sog.stock.presentation.websocket;
 
-import com.sog.stock.application.service.RealTimeWebSocketService;
+import com.sog.stock.application.service.websocket.RealTimeWebSocketService;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
