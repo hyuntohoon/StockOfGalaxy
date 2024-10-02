@@ -52,11 +52,13 @@ public class JwtAuthenticationFilter extends AbstractGatewayFilterFactory<Object
                     .parseClaimsJws(token)
                     .getBody();
 
-                String memberId = claims.get("memberId", String.class);
+                // memberId를 Integer로 읽어온 후 String으로 변환
+                Integer memberId = claims.get("memberId", Integer.class);
+                String memberIdStr = String.valueOf(memberId);
 
                 // 요청에 "memberId" 헤더 추가
                 ServerHttpRequest modifiedRequest = exchange.getRequest().mutate()
-                    .header("memberId", memberId)
+                    .header("memberId", memberIdStr)
                     .build();
 
                 return chain.filter(exchange.mutate().request(modifiedRequest).build());
