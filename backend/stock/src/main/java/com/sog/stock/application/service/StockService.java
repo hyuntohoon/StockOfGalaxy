@@ -6,7 +6,9 @@ import com.sog.stock.domain.dto.HolidayAddListRequestDTO;
 import com.sog.stock.domain.dto.MinuteStockPriceListDTO;
 import com.sog.stock.domain.dto.QuarterStockPriceDTO;
 import com.sog.stock.domain.dto.QuarterStockPriceListDTO;
+import com.sog.stock.domain.dto.StockFrequencyByDateListDTO;
 import com.sog.stock.domain.dto.StockPresentPriceResponseDTO;
+import com.sog.stock.domain.dto.StockTop8ListResponseDTO;
 import com.sog.stock.domain.dto.rocket.RocketAddRequestDTO;
 import com.sog.stock.domain.dto.StockAddListRequestDTO;
 import com.sog.stock.domain.dto.StockDTO;
@@ -83,5 +85,16 @@ public interface StockService {
 
     // 로켓 작성
     void addRocket(RocketAddRequestDTO rocketAddRequestDTO);
+
+    /*
+     * 뉴스 관련 데이터 처리 서비스
+     *
+     * */
+
+    // 날짜별 top8 종목 response -> 종목명, 기사수를 넘겨받음 (나는 rank, 종목번호, 종목이름 줘야됨.)
+    Mono<StockTop8ListResponseDTO> getTop8StocksWithNews(String date);
+
+    // 사용자가 지정한 날짜 기간 내에 거래량과 기사수 response -> 지정한 날짜에 대해 일자와 뉴스 기사수를 넘겨받음. (나는 일자와 뉴스 기사수 그리고 top3 종목에 대해 거래량을 취합해서 보내주면 됨.)
+    Mono<StockFrequencyByDateListDTO> getStockFrequencyByDate(String startDate, String endDate);
 
 }
