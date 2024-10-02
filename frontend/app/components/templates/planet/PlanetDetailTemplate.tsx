@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useRef, useState, useEffect } from "react";
@@ -11,23 +10,26 @@ import { ContentContainer, SectionContainer } from "@/app/styles/planet";
 import ChartTemplate from "@/app/components/templates/chart/ChartTemplate";
 import StockInfoTemplate from "@/app/components/templates/stock/StockInfoTemplate";
 import styled from "@emotion/styled";
-import {useWheelScroll} from "@/app/hooks/useWheelScroll";
+import { useWheelScroll } from "@/app/hooks/useWheelScroll";
+import { News } from "@/app/types/planet";
 
 const ChartContainer = styled.div`
   width: 800px;
   height: auto;
 `;
 
-interface NewsPageHeaderTemplateProps {
-  newsData: any[]; // NewsPage에서 전달받은 뉴스 데이터 타입을 지정
-  wordData1: any[]; // 첫 번째 워드 클라우드 데이터
-  wordData2: any[]; // 두 번째 워드 클라우드 데이터
+interface PlanetDetailTemplateProps {
+  planetNews: News[]; // 행성 뉴스 데이터
+  spaceNews: News[]; // 우주 뉴스 데이터
+  planetWord: any[]; // 첫 번째 워드 클라우드 데이터 (행성 관련)
+  spaceWord: any[]; // 두 번째 워드 클라우드 데이터 (우주 관련)
 }
 
-const PlanetDetailTemplate: React.FC<NewsPageHeaderTemplateProps> = ({
-  newsData,
-  wordData1,
-  wordData2,
+const PlanetDetailTemplate: React.FC<PlanetDetailTemplateProps> = ({
+  planetNews,
+  spaceNews,
+  planetWord,
+  spaceWord,
 }) => {
   const homeRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<HTMLDivElement>(null);
@@ -47,7 +49,6 @@ const PlanetDetailTemplate: React.FC<NewsPageHeaderTemplateProps> = ({
     { name: "우주소식", ref: spaceNewsRef },
   ];
 
-
   const scrollToSection = (ref: React.RefObject<HTMLDivElement>) => {
     if (ref.current && contentRef.current) {
       const sectionLeft = ref.current.offsetLeft;
@@ -60,46 +61,55 @@ const PlanetDetailTemplate: React.FC<NewsPageHeaderTemplateProps> = ({
       });
     }
   };
-  
- // useWheelScroll 훅 사용
- useWheelScroll(contentRef, sections, scrollToSection);
 
- useEffect(() => {
-   const handleScroll = debounce(() => {
-     if (contentRef.current) {
-       const { scrollLeft, clientWidth } = contentRef.current;
-       const progress =
-         (scrollLeft / (contentRef.current.scrollWidth - clientWidth)) * 100;
-       setScrollProgress(progress);
+  useWheelScroll(contentRef, sections, scrollToSection);
 
-       const scrollPosition = scrollLeft + clientWidth / 2;
-       sections.forEach(({ name, ref }) => {
-         if (ref.current) {
-           const sectionLeft = ref.current.offsetLeft;
-           const sectionWidth = ref.current.offsetWidth;
-           if (
-             scrollPosition >= sectionLeft &&
-             scrollPosition < sectionLeft + sectionWidth
-           ) {
-             setActiveSection(name);
-           }
-         }
-       });
-     }
-   }, 50);
+  // 페이지가 마운트될 때 스크롤 위치 복원
+  useEffect(() => {
+    const savedScrollPosition = sessionStorage.getItem('scrollPosition');
+    if (savedScrollPosition && contentRef.current) {
+      contentRef.current.scrollTo({
+        left: 0, // 가로 스크롤은 0으로 설정
+        top: Number(savedScrollPosition), // 저장된 세로 스크롤 위치로 복원
+        behavior: "auto", // 애니메이션 없이 바로 스크롤
+      });
+    }
+  }, []);
 
-   if (contentRef.current) {
-     contentRef.current.addEventListener("scroll", handleScroll);
-   }
+  useEffect(() => {
+    const handleScroll = debounce(() => {
+      if (contentRef.current) {
+        const { scrollLeft, clientWidth } = contentRef.current;
+        const progress =
+          (scrollLeft / (contentRef.current.scrollWidth - clientWidth)) * 100;
+        setScrollProgress(progress);
 
-   return () => {
-     if (contentRef.current) {
-       contentRef.current.removeEventListener("scroll", handleScroll);
-     }
-   };
- }, [sections, activeSection]);
+        const scrollPosition = scrollLeft + clientWidth / 2;
+        sections.forEach(({ name, ref }) => {
+          if (ref.current) {
+            const sectionLeft = ref.current.offsetLeft;
+            const sectionWidth = ref.current.offsetWidth;
+            if (
+              scrollPosition >= sectionLeft &&
+              scrollPosition < sectionLeft + sectionWidth
+            ) {
+              setActiveSection(name);
+            }
+          }
+        });
+      }
+    }, 50);
 
+    if (contentRef.current) {
+      contentRef.current.addEventListener("scroll", handleScroll);
+    }
 
+    return () => {
+      if (contentRef.current) {
+        contentRef.current.removeEventListener("scroll", handleScroll);
+      }
+    };
+  }, [sections, activeSection]);
 
   const handleWheelScroll = (event: React.WheelEvent) => {
     if (
@@ -142,9 +152,6 @@ const PlanetDetailTemplate: React.FC<NewsPageHeaderTemplateProps> = ({
     }
   };
 
-
-
-
   return (
     <>
       <StockHeaderTemplate />
@@ -170,20 +177,21 @@ const PlanetDetailTemplate: React.FC<NewsPageHeaderTemplateProps> = ({
 
         <SectionContainer ref={planetNewsRef}>
           <div className="news-list">
-            {/* API에서 받은 데이터를 렌더링 */}
-            <NewsList news={newsData} />
+            {/* 행성 뉴스 데이터 렌더링 */}
+            <NewsList news={planetNews} />
           </div>
           <div className="word-cloud">
-            <WordCloudComponent data={wordData1} width={500} height={440} />
+            <WordCloudComponent data={planetWord} width={500} height={440} />
           </div>
         </SectionContainer>
 
         <SectionContainer ref={spaceNewsRef}>
           <div className="news-list">
-            <NewsList news={newsData} />
+            {/* 우주 뉴스 데이터 렌더링 */}
+            <NewsList news={spaceNews} />
           </div>
           <div className="word-cloud">
-            <WordCloudComponent data={wordData2} width={500} height={440} />
+            <WordCloudComponent data={spaceWord} width={500} height={440} />
           </div>
         </SectionContainer>
       </ContentContainer>

@@ -64,11 +64,22 @@ export const getPlanetNewsWithContent = async (today: string, stockName: string)
 export const getNewsDetail = async (id: number) => {
     try {
         const res = await defaultRequest.get(`/news/${id}`);
-        console.log(res);
+        console.log(res.data);
         return res.data;  // 뉴스 상세 정보 반환
     } catch (error) {
         console.error("뉴스 상세 조회 실패", error);
-        throw error;
+        return {
+            "newsId": 26,
+            "title": "삼성전자, 새로운 갤럭시 출시",
+            "content": "삼성전자가 새로운 갤럭시 시리즈를 공개하며 모바일 시장에서의 입지를 강화하고 있습니다.",
+            "category": "기술",
+            "publishedDate": "2024-04-20T10:00:00",
+            "newsLink": "https://example.com/news/1",
+            "sentimentIndex": 0.75,
+            "thumbnailImg": "/images/logo/samsung.png",
+            "newsCreatedAt": "2024-09-29T20:41:07",
+            "newsUpdatedAt": "2024-09-29T20:41:07"
+        };
     }
 };
 

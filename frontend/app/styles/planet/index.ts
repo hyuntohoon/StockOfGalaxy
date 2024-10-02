@@ -101,7 +101,6 @@ export const ModalOverlay = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.6); /* 투명도 있는 배경 */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -240,7 +239,7 @@ export const NewsTitle = styled.h3`
 
 export const NewsSummary = styled.p`
   margin: 0 0 5px 0;
-  font-size: 12px;
+  font-size: 11px;
   color: #555;
   overflow: hidden;
   text-overflow: ellipsis;

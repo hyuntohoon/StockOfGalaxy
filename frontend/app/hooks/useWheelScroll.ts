@@ -8,7 +8,7 @@ export const useWheelScroll = (
   useEffect(() => {
     const handleWheelScroll = (event: WheelEvent) => {
         contentRef.current.scrollTo({
-        left: contentRef.current.scrollLeft + event.deltaY * 300,
+        left: contentRef.current.scrollLeft + event.deltaY * 100,
         behavior: "smooth",
         });
 
