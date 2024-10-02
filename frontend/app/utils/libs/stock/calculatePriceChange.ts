@@ -1,4 +1,4 @@
-export const calculatePriceChange = (rocketPrice: string, stockPrice: string): { priceChangeSign: string, priceChange: string } => {
+export const calculatePriceChange = (rocketPrice: number, stockPrice: number): { priceChangeSign: string, priceChange: string } => {
   const parsedRocketPrice = Number(rocketPrice);
   const parsedStockPrice = Number(stockPrice);
 

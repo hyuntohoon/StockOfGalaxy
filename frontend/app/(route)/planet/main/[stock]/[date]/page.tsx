@@ -25,7 +25,7 @@ export default function Home() {
   const [isRocketModalOpen, setIsRocketModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);  // 로딩 상태
   const [rocketData, setRocketData] = useState<RocketData[]>([]); // 로켓 데이터 상태
-  const [currentPrice, setCurrentPrice] = useState<string | null>(null); // 실시간 주가 상태
+  const [currentPrice, setCurrentPrice] = useState<number | null>(null); // 실시간 주가 상태
   const planetRadius = 150; // 행성의 반지름
   const stockCodeParam = useParams().stock;
   const stockCode = Array.isArray(stockCodeParam) ? stockCodeParam[0] : stockCodeParam;

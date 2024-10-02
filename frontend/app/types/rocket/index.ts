@@ -23,5 +23,5 @@ export interface RocketCardProps {
     content: string;
     createdAt: string;
   };
-  currentPrice: string; // 실시간으로 받아오는 현재 주가
+  currentPrice: number; // 실시간으로 받아오는 현재 주가
 }

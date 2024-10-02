@@ -9,7 +9,7 @@ import { throttle } from 'lodash';
 interface RocketProps {
   scene: THREE.Scene;
   rocketData: RocketData[];
-  currentPrice: string; // currentPrice 추가
+  currentPrice: number; // currentPrice 추가
 }
 
 const fixedPositions = [
