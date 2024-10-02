@@ -2,44 +2,64 @@
 
 import React, { useEffect, useState } from 'react';
 import { wordData } from '@/app/mocks/wordData';
-import { getPlanetNews, getSpaceNews, getPlanetNewsWithContent, getSpaceNewsWithContent } from '@/app/utils/apis/news';
+import { getPlanetNews, getSpaceNews } from '@/app/utils/apis/news';
 import { getStockInfo } from '@/app/utils/apis/stock/planet';
 import { useRecoilValue } from 'recoil';
 import { dateState } from '@/app/store/date';
-import TimeMachineButtonGroup from '@/app/components/molecules/ButtonGroup/TimeMachineButtonGroup';
-import RocketButtonGroup from '@/app/components/molecules/ButtonGroup/RocketButtonGroup';
-import RocketModal from '@/app/components/organisms/Modal/RocketModal';
+import { News, Stock } from '@/app/types/planet';
+import PlanetDetailTemplate from '@/app/components/templates/planet/PlanetDetailTemplate';
 
+// 임시 뉴스 데이터
+const dummyNewsData: News[] = [
+  {
+    newsId: 26,
+    title: "삼성전자, 새로운 갤럭시 출시",
+    publishDate: "2024-04-20T10:00:00",
+    content: "삼성전자가 2일 장초반 주당 6만원선이 붕괴됐다. 반도체 고점론에 대한 우려가 가시지 않은 가운데 중동 리스크로 인해 투자심리가 위축된 영향으로 풀이된다. 삼성전자는 이날...",
+    thumbnailImg: "/images/logo/samsung.png",
+  },
+  {
+    newsId: 27,
+    title: "삼성전자, 새로운 갤럭시 출시",
+    publishDate: "2024-04-20T10:00:00",
+    content: "삼성전자가 2일 장초반 주당 6만원선이 붕괴됐다. 반도체 고점론에 대한 우려가 가시지 않은 가운데 중동 리스크로 인해 투자심리가 위축된 영향으로 풀이된다. 삼성전자는 이날...",
+    thumbnailImg: "/images/logo/samsung.png",
+  },
+];
 
 const NewsPage: React.FC = (props: any) => {
-  const {stock, date} = props.params;
+  const { stock, date } = props.params;
   const todayDate = useRecoilValue(dateState);
-  const [newsData, setNewsData] = useState<any[]>([]); // API에서 받은 뉴스를 저장할 상태
-  const [wordData1, setWordData1] = useState<any[]>([]); // res1 저장
-  const [wordData2, setWordData2] = useState<any[]>([]); // res2 저장
-  const [isRocketModalOpen, setIsRocketModalOpen] = useState(false);
-
+  const [planetNews, setPlanetNews] = useState<News[]>([]);
+  const [spaceNews, setSpaceNews] = useState<News[]>([]);
+  const [planetWord, setPlanetWord] = useState<{text: string, value: number}[]>(wordData);
+  const [spaceWord, setSpaceWord] = useState<{text: string, value: number}[]>(wordData);
+  const [stockInfo, setStockInfo] = useState<Stock>();
 
   useEffect(() => {
-    const fetchNewsData = async () => {
+    const fetchStockData = async () => {
       try {
-        const response = await todayNewsApi(date);
-        setNewsData(response); // API에서 받은 뉴스를 저장
-        console.log(response);
+        const res = await getStockInfo(stock);
+        setStockInfo(res); // API에서 받은 stock info를 저장        
+      } catch (error) {
+        console.error('Error fetching stock data:', error);
+      }
+    };
 
     const fetchPlanetData = async () => {
       try {
-        const res = await getPlanetNewsWithContent(date, stockInfo?.companyName || '');
+        const res = await getPlanetNews(date, stockInfo?.companyName || '');
         // planetNews가 비어있으면 dummy 데이터로 설정
         setPlanetNews(res.length > 0 ? res : dummyNewsData);
       } catch (error) {
         console.error('Error fetching news data:', error);
+        setPlanetNews(dummyNewsData); // 에러 발생 시 dummy 데이터로 설정
       }
     };
 
     const fetchSpaceData = async () => {
       try {
-        const res = await getSpaceNewsWithContent(date);
+        const res = await getSpaceNews(date);
         // spaceNews가 비어있으면 dummy 데이터로 설정
         setSpaceNews(res.length > 0 ? res : dummyNewsData);
       } catch (error) {
@@ -55,7 +75,12 @@ const NewsPage: React.FC = (props: any) => {
 
   return (
     <>
-      <NewsPageHeaderTemplate newsData={newsData} wordData1={wordData1} wordData2={wordData2} />
+      <PlanetDetailTemplate 
+        planetNews={planetNews} 
+        spaceNews={spaceNews} 
+        planetWord={planetWord} 
+        spaceWord={spaceWord} 
+      />
     </>
   );
 };

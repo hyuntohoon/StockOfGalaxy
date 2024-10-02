@@ -11,45 +11,60 @@ import {
     Tab, 
     SearchResultsContainer, 
     SearchItem, 
+    // StockPrice, 
     NewsDescription, 
     NoResults, 
     NewsInfo
 } from '@/app/styles/search';
+import { useRouter } from 'next/navigation';
 import { stockData } from '@/app/mocks/stockData';
 import useKRStockWebSocket from '@/app/hooks/useKRStockWebSocket';
 import formatPrice from '@/app/utils/apis/stock/formatPrice';
 import styled from '@emotion/styled';
+import { format } from 'path';
 import { News } from '@/app/types/planet'
 import { searchNewsWithTitle } from '@/app/utils/apis/news';
-import { useRouter } from 'next/navigation';
 
 const StockPriceContainer = styled.div`
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 8px; /* 각 항목 사이에 여백을 줍니다 */
 `;
 
 const StockPrice = styled.div`
   font-size: 16px;
   font-weight: bold;
-  color: white;
+  color: white; /* 기본 텍스트 색상 */
 `;
 
 const ChangePrice = styled.span<{ isPositive: boolean }>`
-  color: ${({ isPositive }) => (isPositive ? '#FF4500' : '#1E90FF')};
+  color: ${({ isPositive }) => (isPositive ? '#FF4500' : '#1E90FF')}; /* 빨간색과 파란색 */
   font-weight: bold;
 `;
 
 const ChangeRate = styled.span<{ isPositive: boolean }>`
-  color: ${({ isPositive }) => (isPositive ? '#FF4500' : '#1E90FF')};
+  color: ${({ isPositive }) => (isPositive ? '#FF4500' : '#1E90FF')}; /* 빨간색과 파란색 */
   font-weight: bold;
 `;
 
+interface stockData {
+    stock_name: string;
+    stock_code: string;
+}
+
+interface stockState {
+    stock_name: string | null;
+    stock_code: string | null;
+    currentPrice: number | null;
+    changePrice: number | null;
+    changeRate: number | null;
+}
+
 const SearchPage = () => {
-    const [activeTab, setActiveTab] = useState<'stock' | 'news'>('stock');
+    const [activeTab, setActiveTab] = useState('stock'); // 'stock' or 'news'
     const [searchTerm, setSearchTerm] = useState('');
-    const [hasSearched, setHasSearched] = useState(false);
-    const [stockDataInfo, setStockDataInfo] = useState(
+    const [hasSearched, setHasSearched] = useState(false); // 검색 버튼(엔터)을 눌렀을 때만 true
+    const [stockDataInfo, setStockDataInfo] = useState<stockState[]>(
         stockData.map(stock => ({
             stock_name: stock.stock_name,
             stock_code: stock.stock_code,
@@ -58,7 +73,6 @@ const SearchPage = () => {
             changeRate: null,
         }))
     );
-    const router = useRouter();
 
     const dummyNewsData: News[] = [
         {
@@ -111,75 +125,71 @@ const SearchPage = () => {
           month: '2-digit',
           day: '2-digit',
         });
-    };
+      };
     
+    // 뉴스 데이터 추가
+    const router = useRouter();
     const [newsResults, setNewsResults] = useState<News[]>([]);
-    const [page, setPage] = useState(0);
-    const [hasMore, setHasMore] = useState(true);
-    const [isLoading, setIsLoading] = useState(false);
+    const [page, setPage] = useState(0); // 페이지 상태
+    const [hasMore, setHasMore] = useState(true); // 추가 데이터 여부 상태
+    const [isLoading, setIsLoading] = useState(false); // 로딩 상태
     const observer = useRef<IntersectionObserver | null>(null);
-    const lastNewsElementRef = useRef<HTMLDivElement | null>(null);
-    
+    const lastNewsElementRef = useRef<HTMLDivElement | null>(null); // 마지막 뉴스 항목을 위한 ref
+    // 실시간 데이터 업데이트
     useKRStockWebSocket(stockData, setStockDataInfo);
 
     const handleSearch = (e: React.KeyboardEvent) => {
         if (e.key === 'Enter') {
             setHasSearched(true);
-            setPage(0);
-            setNewsResults([]);
-            fetchNews(); 
+            setPage(0); // 페이지 초기화
+            setNewsResults([]); // 이전 검색 결과 초기화
+            fetchNews(); // 뉴스 데이터 가져오기
         }
     };
 
     const fetchNews = useCallback(async () => {
-        if (!searchTerm.trim() || isLoading) return; // 로딩 중일 때 중복 호출 방지
-        setIsLoading(true);
+        if (!searchTerm.trim()) return;
         try {
             const response = await searchNewsWithTitle(searchTerm, page, 10);
-            if (response.length) {
-                console.log("success")
-                setNewsResults(prev => [...prev, ...response]); // 이전 데이터에 새 데이터 추가
-                setHasMore(true); // 마지막 페이지인지 여부
-            } else {
-                console.log("fail")
+            if(response.length){
+                console.log(response)
+                setNewsResults(response);
+            }else{
+                console.log(response, "ss")
 
                 setNewsResults(dummyNewsData);
-                setHasMore(false);
             }
         } catch (error) {
             console.error('뉴스 검색 실패:', error);
-        } finally {
-            setIsLoading(false);
-        }
-    }, [searchTerm, page, isLoading]);
+        } 
+    }, [searchTerm, page]);
 
+    // 스크롤 시 마지막 뉴스 항목 관찰
     useEffect(() => {
-        console.log("scroll");
-        if (observer.current) observer.current.disconnect();
-        
-        // rootMargin을 이용해 요소가 화면에 들어오기 직전에 감지되도록 설정
+        if (observer.current) observer.current.disconnect(); // 이전 observer 해제
         observer.current = new IntersectionObserver(entries => {
+            console.log("here")
             if (entries[0].isIntersecting && hasMore && !isLoading) {
-                setPage(prev => prev + 1);
+                setPage(prev => prev + 1); // 다음 페이지 요청
             }
-        }, {
-            rootMargin: '100px' // 100px 전에 미리 감지되도록 설정
         });
-    
+
         if (lastNewsElementRef.current) {
-            observer.current.observe(lastNewsElementRef.current);
+            observer.current.observe(lastNewsElementRef.current); // 마지막 뉴스 항목 관찰
         }
-    
+
         return () => {
-            if (observer.current) observer.current.disconnect();
+            if (observer.current) observer.current.disconnect(); // 컴포넌트 언마운트 시 observer 해제
         };
     }, [lastNewsElementRef, hasMore, isLoading]);
-    
 
     const filteredStocks = stockDataInfo.filter(stock => 
         stock.stock_name?.toLowerCase().includes(searchTerm.toLowerCase()) || 
         stock.stock_code?.includes(searchTerm)
     );
+
+  
+    
 
     return (
         <SearchContainer hasSearched={hasSearched}>
@@ -225,45 +235,48 @@ const SearchPage = () => {
                                 <strong>{stock.stock_name}</strong> ({stock.stock_code})
                             </div>
                             <StockPriceContainer>
-                                <StockPrice>{stock.currentPrice ? `${formatPrice(stock.currentPrice)}원` : ''}</StockPrice>
-                                
-                                {stock.changePrice !== null && (
-                                    <ChangePrice isPositive={stock.changePrice > 0}>
-                                        ({stock.changePrice > 0 ? '+' : ''}{formatPrice(stock.changePrice)?.toLocaleString()}원)
-                                    </ChangePrice>
-                                )}
+                            <StockPrice>{stock.currentPrice ? `${formatPrice(stock.currentPrice)}원` : ''}</StockPrice>
+                            
+                            {stock.changePrice !== null && (
+                                <ChangePrice isPositive={stock.changePrice > 0}>
+                                ({stock.changePrice > 0 ? '+' : ''}{formatPrice(stock.changePrice)?.toLocaleString()}원)
+                                </ChangePrice>
+                            )}
 
-                                {stock.changeRate !== null && (
-                                    <ChangeRate isPositive={stock.changeRate > 0}>
-                                        {Math.abs(stock.changeRate)}%
-                                    </ChangeRate>
-                                )}
+                            {stock.changeRate !== null && (
+                                <ChangeRate isPositive={stock.changeRate > 0}>
+                                
+                                {Math.abs(stock.changeRate)}%
+                                </ChangeRate>
+                            )}
                             </StockPriceContainer>
                         </SearchItem>
                     ))}
                 </SearchResultsContainer>
             )}
 
-            {/* 뉴스 탭 */}
-            {hasSearched && activeTab === 'news' && newsResults.length > 0 && (
+            
+           {/* 뉴스 탭 */}
+           {hasSearched && activeTab === 'news' && newsResults.length > 0 && (
                 <SearchResultsContainer>
                     {newsResults.map((news, index) => {
                         const isLastElement = index === newsResults.length - 1;
                         return (
-                            <SearchItem 
-                            onClick={()=>{router.push(`/news/${news.newsId}`)}}
+                            <SearchItem onClick={() =>{
+                                router.push(`/news/${news.newsId}`)
+                            }}
                             key={index} ref={isLastElement ? lastNewsElementRef : null}>
                                 <div>
                                     <strong>{news.title}</strong>
                                     <NewsDescription>{news.content}</NewsDescription>
-                                    <NewsInfo>{formatDate(news.publishDate)}</NewsInfo>
+                                    <NewsInfo>{formatDate(news.publishDate)}</NewsInfo> {/* 뉴스 정보 표시 */}
                                 </div>
                             </SearchItem>
                         );
                     })}
                 </SearchResultsContainer>
             )}
-
+            {/* 결과가 없을 때 */}
             {hasSearched && activeTab === 'stock' && filteredStocks.length === 0 && (
                 <NoResults>검색 결과가 없습니다.</NoResults>
             )}

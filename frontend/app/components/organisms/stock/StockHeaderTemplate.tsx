@@ -81,10 +81,13 @@ const StockHeaderTemplate = () => {
   };
 
   const handleClick = () => {
+    console.log("click");
     if (stockCode && date) {
       router.push(`/planet/main/${stockCode}/${date}`);
     }
   };
+
+
 
   return (
     <HeaderWrapper>
