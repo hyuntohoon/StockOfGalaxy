@@ -21,26 +21,26 @@ spec:
           ports:
             - containerPort: 8200
           env:
-            - name: ELASTIC_APM_USERNAME
+            - name: ELASTICSEARCH_HOSTS
+              value: "http://10.109.249.133:9200"
+            - name: ELASTIC_APM_USERNAME  # 사용자 이름 설정
               value: "elastic"
-            - name: ELASTIC_APM_PASSWORD
+            - name: ELASTIC_APM_PASSWORD  # 비밀번호 설정
               value: "ua8747ll"
-            - name: APMSERVER_CONFIG  # APM 서버 설정을 직접 환경 변수로 정의
-              value: |
-                apm-server:
-                  host: "0.0.0.0:8200"
-                output.elasticsearch:
-                  hosts: ["http://10.109.249.133:9200"]
-                logging:
-                  level: info
-                setup.template.enabled: true
-          command: ["apm-server"]  # 설정 파일 없이 기본 실행
+          volumeMounts:
+            - name: apm-config-volume
+              mountPath: /usr/share/apm-server/config
+              subPath: apm-server.yml
+      volumes:
+        - name: apm-config-volume
+          configMap:
+            name: apm-server-config
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: apm-server
-  namespace: dev
+  namespace: dev  # 네임스페이스 변경 가능
 spec:
   selector:
     app: apm-server
@@ -50,3 +50,25 @@ spec:
       port: 8200          # APM 서버의 기본 포트
       targetPort: 8200     # 컨테이너 내부의 포트
       nodePort: 30880      # NodePort로 노출할 포트 (30000-32767 범위에서 지정 가능)
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: apm-server-config
+  namespace: dev  # 네임스페이스 변경 가능
+data:
+  apm-server.yml: |
+    apm-server:
+      host: "0.0.0.0:8200"
+
+    output.elasticsearch:
+      hosts: ["http://10.109.249.133:9200"]  # Elasticsearch 서버 주소
+      # API Key 또는 Secret Token 사용 시:
+      # api_key: "T0tSeFNKSUJlUFk1cDcwVndwMDg6VEE0ektIbl9RRktxb1lyRDhIMVdMQQ==" # API Key
+      # secret_token: "your_apm_server_password" # Secret Token (API Key와 함께 사용하지 않음)
+
+    logging:
+      level: info
+
+    setup.template.enabled: true
+
