@@ -34,7 +34,7 @@ spring:
           enabled: true
       routes:
         - id: authenticated-routes
-          uri: no://op
+          uri: http://user-service.backcd.svc.cluster.local:80
           predicates:
             - Path=/api/*/auth/**
           filters:
