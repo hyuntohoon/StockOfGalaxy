@@ -78,6 +78,9 @@ export const SearchResultsContainer = styled.div`
   backdrop-filter: blur(10px);
   transition: all 0.4s ease-in-out;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  ::-webkit-scrollbar {
+  display: none;
+}
 `;
 
 export const SearchItem = styled.div`

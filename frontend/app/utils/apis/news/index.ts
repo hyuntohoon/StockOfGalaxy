@@ -1,4 +1,5 @@
 import { defaultRequest } from "../request";
+import { News } from '@/app/types/planet'
 
 const convertToApiDateFormat = (dateString: string): string => {
     // yyyy.MM.dd 형식을 yyyy-MM-dd 형식으로 변환
@@ -10,7 +11,30 @@ const convertToApiDateFormat = (dateString: string): string => {
   };
   
 
-export const todayNewsApi = async (today: string) => {
+// utils/apis/news.ts
+  export const searchNewsWithTitle = async (
+    keyword: string,
+    page: number,
+    size: number
+  ): Promise<News[]> => {
+    try {
+      const res = await defaultRequest.get(`/news/search/title/contain-preview`, {
+        params: {
+          keyword,
+          page,
+          size,
+        },
+      });
+      console.log(res);
+      return res.data; // 제목으로 검색한 뉴스
+    } catch (error) {
+      console.error("제목으로 검색한 뉴스 조회 실패", error);
+      throw error;
+    }
+  };
+  
+
+export const getSpaceNews = async(today: string) => {
     try {
         const formattedDate = convertToApiDateFormat(today);
         const res = await defaultRequest.get(`/news/today`, {

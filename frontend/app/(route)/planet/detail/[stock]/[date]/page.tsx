@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import NewsPageHeaderTemplate from '@/app/components/templates/planet/NewsPageHeaderTemplate';
-import { todayNewsApi } from '@/app/utils/apis/news';
-import { getDailyStockKeywordFrequency, getDailyKeywordFrequency } from '@/app/utils/apis/wordcloud';
+import { wordData } from '@/app/mocks/wordData';
+import { getPlanetNews, getSpaceNews, getPlanetNewsWithContent, getSpaceNewsWithContent } from '@/app/utils/apis/news';
+import { getStockInfo } from '@/app/utils/apis/stock/planet';
 import { useRecoilValue } from 'recoil';
 import { dateState } from '@/app/store/date';
 import TimeMachineButtonGroup from '@/app/components/molecules/ButtonGroup/TimeMachineButtonGroup';
@@ -27,20 +27,31 @@ const NewsPage: React.FC = (props: any) => {
         setNewsData(response); // API에서 받은 뉴스를 저장
         console.log(response);
 
-        const res1 = await getDailyKeywordFrequency(todayDate); // 첫 번째 워드 클라우드 데이터
-        setWordData1(res1); 
-        console.log(res1);
-
-        const res2 = await getDailyStockKeywordFrequency(todayDate); // 두 번째 워드 클라우드 데이터
-        setWordData2(res2);
-        console.log(res2);
+    const fetchPlanetData = async () => {
+      try {
+        const res = await getPlanetNewsWithContent(date, stockInfo?.companyName || '');
+        // planetNews가 비어있으면 dummy 데이터로 설정
+        setPlanetNews(res.length > 0 ? res : dummyNewsData);
       } catch (error) {
         console.error('Error fetching news data:', error);
       }
     };
 
-    fetchNewsData();
-  }, [todayDate]);
+    const fetchSpaceData = async () => {
+      try {
+        const res = await getSpaceNewsWithContent(date);
+        // spaceNews가 비어있으면 dummy 데이터로 설정
+        setSpaceNews(res.length > 0 ? res : dummyNewsData);
+      } catch (error) {
+        console.error('Error fetching news data:', error);
+        setSpaceNews(dummyNewsData); // 에러 발생 시 dummy 데이터로 설정
+      }
+    };
+
+    fetchStockData();
+    fetchPlanetData();
+    fetchSpaceData();
+  }, [todayDate, stock, date, stockInfo]);
 
   return (
     <>

@@ -28,7 +28,7 @@ const NewsList: React.FC<{ news: News[] }> = ({ news }) => {
           <NewsContent>
             <div>
               <NewsTitle>{item.title}</NewsTitle>
-              <NewsSummary>{item.content}</NewsSummary>
+              {item.content && <NewsSummary>{item.content}</NewsSummary>}
             </div>
             <NewsMeta>
               <span>{item.writeDate}</span>

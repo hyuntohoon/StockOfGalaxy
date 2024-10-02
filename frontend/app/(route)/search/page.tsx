@@ -1,7 +1,7 @@
 'use client'
 
 /** @jsxImportSource @emotion/react */
-import { useState } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import {
     SearchContainer, 
     SearchInputWrapper, 
@@ -11,7 +11,6 @@ import {
     Tab, 
     SearchResultsContainer, 
     SearchItem, 
-    // StockPrice, 
     NewsDescription, 
     NoResults, 
     NewsInfo
@@ -20,55 +19,37 @@ import { stockData } from '@/app/mocks/stockData';
 import useKRStockWebSocket from '@/app/hooks/useKRStockWebSocket';
 import formatPrice from '@/app/utils/apis/stock/formatPrice';
 import styled from '@emotion/styled';
-import { format } from 'path';
+import { News } from '@/app/types/planet'
+import { searchNewsWithTitle } from '@/app/utils/apis/news';
+import { useRouter } from 'next/navigation';
 
 const StockPriceContainer = styled.div`
   display: flex;
   align-items: center;
-  gap: 8px; /* 각 항목 사이에 여백을 줍니다 */
+  gap: 8px;
 `;
 
 const StockPrice = styled.div`
   font-size: 16px;
   font-weight: bold;
-  color: white; /* 기본 텍스트 색상 */
+  color: white;
 `;
 
 const ChangePrice = styled.span<{ isPositive: boolean }>`
-  color: ${({ isPositive }) => (isPositive ? '#FF4500' : '#1E90FF')}; /* 빨간색과 파란색 */
+  color: ${({ isPositive }) => (isPositive ? '#FF4500' : '#1E90FF')};
   font-weight: bold;
 `;
 
 const ChangeRate = styled.span<{ isPositive: boolean }>`
-  color: ${({ isPositive }) => (isPositive ? '#FF4500' : '#1E90FF')}; /* 빨간색과 파란색 */
+  color: ${({ isPositive }) => (isPositive ? '#FF4500' : '#1E90FF')};
   font-weight: bold;
 `;
 
-interface stockData {
-    stock_name: string;
-    stock_code: string;
-}
-
-interface stockState {
-    stock_name: string | null;
-    stock_code: string | null;
-    currentPrice: number | null;
-    changePrice: number | null;
-    changeRate: number | null;
-}
-
-interface newsData {
-    title: string;
-    description: string;
-    source: string;
-    date: string;
-}
-
 const SearchPage = () => {
-    const [activeTab, setActiveTab] = useState('stock'); // 'stock' or 'news'
+    const [activeTab, setActiveTab] = useState<'stock' | 'news'>('stock');
     const [searchTerm, setSearchTerm] = useState('');
-    const [hasSearched, setHasSearched] = useState(false); // 검색 버튼(엔터)을 눌렀을 때만 true
-    const [stockDataInfo, setStockDataInfo] = useState<stockState[]>(
+    const [hasSearched, setHasSearched] = useState(false);
+    const [stockDataInfo, setStockDataInfo] = useState(
         stockData.map(stock => ({
             stock_name: stock.stock_name,
             stock_code: stock.stock_code,
@@ -77,46 +58,127 @@ const SearchPage = () => {
             changeRate: null,
         }))
     );
+    const router = useRouter();
 
-    // 뉴스 데이터 추가
-    const [newsResults, setNewsResults] = useState<newsData[]>([
+    const dummyNewsData: News[] = [
         {
-            title: '"삼성전자 주가 계속 갈까요?"',
-            description: '고민 깊어진 개미들 [종목+]',
-            source: '한국경제',
-            date: '2024-09-28',
+          newsId: 26,
+          title: "삼성전자, 새로운 갤럭시 출시",
+          publishDate: "2024-04-20T10:00:00",
+          content: "삼성전자가 2일 장초반 주당 6만원선이 붕괴됐다. 반도체 고점론에 대한 우려가 가시지 않은 가운데 중동 리스크로 인해 투자심리가 위축된 영향으로 풀이된다. 삼성전자는 이날...",
+          thumbnailImg: "/images/logo/samsung.png",
         },
         {
-            title: 'LG에너지솔루션 주가 급등, 배경은?',
-            description: '이유 없는 급등? 전기차 시장 확대 때문!',
-            source: '머니투데이',
-            date: '2024-09-27',
+          newsId: 27,
+          title: "삼성전자, 새로운 갤럭시 출시",
+          publishDate: "2024-04-20T10:00:00",
+          content: "삼성전자가 2일 장초반 주당 6만원선이 붕괴됐다. 반도체 고점론에 대한 우려가 가시지 않은 가운데 중동 리스크로 인해 투자심리가 위축된 영향으로 풀이된다. 삼성전자는 이날...",
+          thumbnailImg: "/images/logo/samsung.png",
         },
         {
-            title: 'SK하이닉스, 반도체 시장 반등 기대',
-            description: '공급망 회복으로 인한 매출 증가 예상',
-            source: '전자신문',
-            date: '2024-09-26',
-        },
-    ]);
+            newsId: 28,
+            title: "삼성전자, 새로운 갤럭시 출시",
+            publishDate: "2024-04-20T10:00:00",
+            content: "삼성전자가 2일 장초반 주당 6만원선이 붕괴됐다. 반도체 고점론에 대한 우려가 가시지 않은 가운데 중동 리스크로 인해 투자심리가 위축된 영향으로 풀이된다. 삼성전자는 이날...",
+            thumbnailImg: "/images/logo/samsung.png",
+          },
+          {
+            newsId: 29,
+            title: "삼성전자, 새로운 갤럭시 출시",
+            publishDate: "2024-04-20T10:00:00",
+            content: "삼성전자가 2일 장초반 주당 6만원선이 붕괴됐다. 반도체 고점론에 대한 우려가 가시지 않은 가운데 중동 리스크로 인해 투자심리가 위축된 영향으로 풀이된다. 삼성전자는 이날...",
+            thumbnailImg: "/images/logo/samsung.png",
+          },
+          {
+            newsId: 30,
+            title: "삼성전자, 새로운 갤럭시 출시",
+            publishDate: "2024-04-20T10:00:00",
+            content: "삼성전자가 2일 장초반 주당 6만원선이 붕괴됐다. 반도체 고점론에 대한 우려가 가시지 않은 가운데 중동 리스크로 인해 투자심리가 위축된 영향으로 풀이된다. 삼성전자는 이날...",
+            thumbnailImg: "/images/logo/samsung.png",
+          },
+          {
+            newsId: 31,
+            title: "삼성전자, 새로운 갤럭시 출시",
+            publishDate: "2024-04-20T10:00:00",
+            content: "삼성전자가 2일 장초반 주당 6만원선이 붕괴됐다. 반도체 고점론에 대한 우려가 가시지 않은 가운데 중동 리스크로 인해 투자심리가 위축된 영향으로 풀이된다. 삼성전자는 이날...",
+            thumbnailImg: "/images/logo/samsung.png",
+          },
+      ];
 
-    // 실시간 데이터 업데이트
+    const formatDate = (dateString: string) => {
+        return new Date(dateString).toLocaleDateString('ko-KR', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+        });
+    };
+    
+    const [newsResults, setNewsResults] = useState<News[]>([]);
+    const [page, setPage] = useState(0);
+    const [hasMore, setHasMore] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
+    const observer = useRef<IntersectionObserver | null>(null);
+    const lastNewsElementRef = useRef<HTMLDivElement | null>(null);
+    
     useKRStockWebSocket(stockData, setStockDataInfo);
 
     const handleSearch = (e: React.KeyboardEvent) => {
         if (e.key === 'Enter') {
             setHasSearched(true);
+            setPage(0);
+            setNewsResults([]);
+            fetchNews(); 
         }
     };
+
+    const fetchNews = useCallback(async () => {
+        if (!searchTerm.trim() || isLoading) return; // 로딩 중일 때 중복 호출 방지
+        setIsLoading(true);
+        try {
+            const response = await searchNewsWithTitle(searchTerm, page, 10);
+            if (response.length) {
+                console.log("success")
+                setNewsResults(prev => [...prev, ...response]); // 이전 데이터에 새 데이터 추가
+                setHasMore(true); // 마지막 페이지인지 여부
+            } else {
+                console.log("fail")
+
+                setNewsResults(dummyNewsData);
+                setHasMore(false);
+            }
+        } catch (error) {
+            console.error('뉴스 검색 실패:', error);
+        } finally {
+            setIsLoading(false);
+        }
+    }, [searchTerm, page, isLoading]);
+
+    useEffect(() => {
+        console.log("scroll");
+        if (observer.current) observer.current.disconnect();
+        
+        // rootMargin을 이용해 요소가 화면에 들어오기 직전에 감지되도록 설정
+        observer.current = new IntersectionObserver(entries => {
+            if (entries[0].isIntersecting && hasMore && !isLoading) {
+                setPage(prev => prev + 1);
+            }
+        }, {
+            rootMargin: '100px' // 100px 전에 미리 감지되도록 설정
+        });
+    
+        if (lastNewsElementRef.current) {
+            observer.current.observe(lastNewsElementRef.current);
+        }
+    
+        return () => {
+            if (observer.current) observer.current.disconnect();
+        };
+    }, [lastNewsElementRef, hasMore, isLoading]);
+    
 
     const filteredStocks = stockDataInfo.filter(stock => 
         stock.stock_name?.toLowerCase().includes(searchTerm.toLowerCase()) || 
         stock.stock_code?.includes(searchTerm)
-    );
-
-    const filteredNews = newsResults.filter(news => 
-        news.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        news.description.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     return (
@@ -163,46 +225,46 @@ const SearchPage = () => {
                                 <strong>{stock.stock_name}</strong> ({stock.stock_code})
                             </div>
                             <StockPriceContainer>
-                            <StockPrice>{stock.currentPrice ? `${formatPrice(stock.currentPrice)}원` : ''}</StockPrice>
-                            
-                            {stock.changePrice !== null && (
-                                <ChangePrice isPositive={stock.changePrice > 0}>
-                                ({stock.changePrice > 0 ? '+' : ''}{formatPrice(stock.changePrice)?.toLocaleString()}원)
-                                </ChangePrice>
-                            )}
-
-                            {stock.changeRate !== null && (
-                                <ChangeRate isPositive={stock.changeRate > 0}>
+                                <StockPrice>{stock.currentPrice ? `${formatPrice(stock.currentPrice)}원` : ''}</StockPrice>
                                 
-                                {Math.abs(stock.changeRate)}%
-                                </ChangeRate>
-                            )}
+                                {stock.changePrice !== null && (
+                                    <ChangePrice isPositive={stock.changePrice > 0}>
+                                        ({stock.changePrice > 0 ? '+' : ''}{formatPrice(stock.changePrice)?.toLocaleString()}원)
+                                    </ChangePrice>
+                                )}
+
+                                {stock.changeRate !== null && (
+                                    <ChangeRate isPositive={stock.changeRate > 0}>
+                                        {Math.abs(stock.changeRate)}%
+                                    </ChangeRate>
+                                )}
                             </StockPriceContainer>
                         </SearchItem>
                     ))}
                 </SearchResultsContainer>
             )}
 
-            
-            {hasSearched && activeTab === 'news' && filteredNews.length > 0 && (
+            {/* 뉴스 탭 */}
+            {hasSearched && activeTab === 'news' && newsResults.length > 0 && (
                 <SearchResultsContainer>
-                    {filteredNews.map((news, index) => (
-                        <SearchItem key={index}>
-                            <div>
-                                <strong>{news.title}</strong>
-                                <NewsDescription>{news.description}</NewsDescription>
-                                <NewsInfo>{news.source} - {news.date}</NewsInfo> {/* 뉴스 정보 표시 */}
-                            </div>
-                        </SearchItem>
-                    ))}
+                    {newsResults.map((news, index) => {
+                        const isLastElement = index === newsResults.length - 1;
+                        return (
+                            <SearchItem 
+                            onClick={()=>{router.push(`/news/${news.newsId}`)}}
+                            key={index} ref={isLastElement ? lastNewsElementRef : null}>
+                                <div>
+                                    <strong>{news.title}</strong>
+                                    <NewsDescription>{news.content}</NewsDescription>
+                                    <NewsInfo>{formatDate(news.publishDate)}</NewsInfo>
+                                </div>
+                            </SearchItem>
+                        );
+                    })}
                 </SearchResultsContainer>
             )}
 
-            {/* 결과가 없을 때 */}
             {hasSearched && activeTab === 'stock' && filteredStocks.length === 0 && (
-                <NoResults>검색 결과가 없습니다.</NoResults>
-            )}
-            {hasSearched && activeTab === 'news' && filteredNews.length === 0 && (
                 <NoResults>검색 결과가 없습니다.</NoResults>
             )}
         </SearchContainer>
