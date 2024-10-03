@@ -16,7 +16,8 @@ const RocketTimeMachineButton: React.FC<RocketTimeMachineButtonProps> = ({ creat
   const handleTimeMachineClick = () => {
     // createdAt에서 날짜 부분만 추출하고 'yyyymmdd' 형식으로 변환
     const newDate = createdAt.split(' ')[0].replace(/-/g, '');
-    setDate(date);
+    // console.log('newDate', newDate)
+    setDate(newDate);
 
     const newPath = `/planet/main/${stockCode}/${newDate}`;
     router.push(newPath);

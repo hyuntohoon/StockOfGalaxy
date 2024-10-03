@@ -14,7 +14,7 @@ import { deleteRocketApi } from '@/app/utils/apis/rocket';
 const RocketCard: React.FC<RocketCardProps & { fetchData: () => void }> = ({ data, currentPrice, fetchData }) => {
   const { priceChange, priceChangeSign } = calculatePriceChange(data.price, currentPrice);
   const { memberId: currentMemberId } = useMemberId();
-
+  // console.log('currentMemberId:', currentMemberId)
   const handleDelete = async () => {
     const confirmDelete = window.confirm('정말로 이 로켓을 삭제하시겠습니까?');
     if (!confirmDelete) return;

@@ -7,29 +7,56 @@ import LoadingSpinner from '../../atoms/LoadingSpinner';
 import { getRocketListApi } from '@/app/utils/apis/rocket';
 import { useParams } from 'next/navigation';
 import { getTodayDate } from '@/app/utils/libs/getTodayDate';
-import { rocketListData } from '@/app/mocks/rocketListData';
+import useKRStockWebSocket from '@/app/hooks/useKRStockWebSocket';
+import { getCurrentPrice } from '@/app/utils/apis/stock/getStockData';
 import { useDate } from '@/app/store/date';
 
-const RocketModal = ({ onClose, currentPrice }) => {
+const RocketModal = ({ onClose, fetchRocketData }) => { // fetchRocketData 추가
   const [data, setData] = useState([]); // 현재 보여주는 데이터
   const [allData, setAllData] = useState([]); // 전체 데이터를 저장할 상태
   const [loading, setLoading] = useState(false);
+  const [currentPrice, setCurrentPrice] = useState<number | null>(null); // 주가 정보 상태
   const stockCodeParam = useParams().stock;
   const stockCode = Array.isArray(stockCodeParam) ? stockCodeParam[0] : stockCodeParam;
   const {date} = useDate();
   
   const realDate = getTodayDate(); // 실제 오늘 날짜
   const isToday = date === realDate;
+  console.log('isToday', isToday);
+  console.log('date', date);
+  console.log('realDate', realDate);
+
+  // 주가 데이터를 가져오는 함수
+  const fetchCurrentPrice = async () => {
+    try {
+      const priceData = await getCurrentPrice(stockCode);
+      if (priceData) {
+        setCurrentPrice(priceData.stckPrpr); // API로 받은 주가 업데이트
+      }
+    } catch (error) {
+      console.error("현재 주가 정보를 가져오는 중 오류 발생:", error);
+    }
+  };
+
+  useKRStockWebSocket([{ stock_code: stockCode }], (data) => {
+    if (data && data.currentPrice) {
+      setCurrentPrice(data.currentPrice);
+    }
+  });
+
+  useEffect(() => {
+    if (!currentPrice) {
+      fetchCurrentPrice(); // 웹소켓에서 데이터를 받지 못한 경우 API 호출
+    }
+  }, [stockCode, currentPrice]);
 
   // fetchData 함수 분리
   const fetchData = async () => {
     setLoading(true);
     try {
-      const response = await getRocketListApi(stockCode); // 전체 데이터를 불러옴
-      // const response = rocketListData.rocketList; // todo: api 연동해서 실제 데이터로 변경
-      console.log(response);
-      setAllData(response); // 전체 데이터를 상태에 저장
-      setData(response.slice(0, 8)); // 초기 8개 데이터만 보여줌
+      const response = await getRocketListApi(stockCode);
+      setAllData(response.rocketList); // 전체 데이터를 상태에 저장
+      setData(response.rocketList.slice(0, 8)); // 초기 8개 데이터만 보여줌
     } catch (err) {
       console.error('로켓 데이터를 불러오는 중 에러가 발생했습니다.', err);
     } finally {
@@ -37,7 +64,6 @@ const RocketModal = ({ onClose, currentPrice }) => {
     }
   };
 
-  // 처음에 데이터를 불러오는 useEffect
   useEffect(() => {
     fetchData();
   }, [stockCode]);
@@ -67,9 +93,14 @@ const RocketModal = ({ onClose, currentPrice }) => {
       <ModalWrapper>
         <ModalTitle>로켓 모아보기</ModalTitle>
         <ModalContent onScroll={handleScroll}>
-          <StyledCloseIcon onClick={onClose}/>
+          <StyledCloseIcon onClick={onClose} />
           <Header>
-            <RocketInputField currentPrice={currentPrice} isToday={isToday} />  {/* 실시간 주가 전달 */}
+          <RocketInputField
+            currentPrice={currentPrice}
+            isToday={isToday}
+            fetchRocketData={fetchRocketData} // getTop7RocketsApi 호출
+            fetchRocketListData={fetchData}  // getRocketListApi 호출
+          />
           </Header>
           <CardsContainer>
             {data.map((item) => (
@@ -113,7 +144,6 @@ const ModalTitle = styled.div`
   margin-bottom: 20px;
 `;
 
-
 const ModalContent = styled.div`
   background: rgba(255, 255, 255, 0.9);
   padding-inline: 50px;
@@ -146,7 +176,6 @@ const ModalContent = styled.div`
   }
 `;
 
-
 const CardsContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -159,7 +188,7 @@ const Header = styled.div`
   flex-direction: row;
   gap: 20px;
   justify-content: space-between;
-`
+`;
 
 const StyledCloseIcon = styled(IoClose)`
   position: absolute;

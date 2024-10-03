@@ -1,15 +1,17 @@
-'use client';
+"use client";
 
 import React, { useEffect, useState, useRef } from 'react';
 import * as THREE from 'three';
 import RocketCardModal from '@/app/components/organisms/Modal/RocketCardModal';
 import { RocketData } from '@/app/types/rocket';
 import { throttle } from 'lodash';
+import useKRStockWebSocket from '@/app/hooks/useKRStockWebSocket';
+import { getCurrentPrice } from '@/app/utils/apis/stock/getStockData';
 
 interface RocketProps {
   scene: THREE.Scene;
   rocketData: RocketData[];
-  currentPrice: number; // currentPrice 추가
+  stockCode: string;
 }
 
 const fixedPositions = [
@@ -22,24 +24,47 @@ const fixedPositions = [
   { x: 10, y: 10, z: 150 },
 ];
 
-export default function Rockets({ scene, rocketData, currentPrice }: RocketProps) { // currentPrice 추가
+export default function Rockets({ scene, rocketData, stockCode }: RocketProps) {
   const [selectedRocket, setSelectedRocket] = useState<RocketData | null>(null);
   const [hoveredRocket, setHoveredRocket] = useState<THREE.Mesh | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentPrice, setCurrentPrice] = useState<number | null>(null); // currentPrice 상태 추가
   const mountRef = useRef<HTMLDivElement>(null);
   const camera = useRef<THREE.PerspectiveCamera | null>(null);
+
+  // 웹소켓 연결
+  useKRStockWebSocket([{ stock_code: stockCode }], (data) => {
+    if (data && data.currentPrice) {
+      setCurrentPrice(data.currentPrice); // 웹소켓을 통해 받은 데이터로 currentPrice 업데이트
+    }
+  });
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setHoveredRocket(null);
   };
 
+  // 주가 정보를 API로 가져오는 함수
+  const fetchCurrentPrice = async () => {
+    try {
+      const priceData = await getCurrentPrice(stockCode);
+      if (priceData) {
+        setCurrentPrice(priceData.stckPrpr); // API로 받은 주가 업데이트
+      }
+    } catch (error) {
+      console.error("현재 주가 정보를 가져오는 중 오류 발생:", error);
+    }
+  };
+
+  // 웹소켓 연결 실패 시 API 호출하여 주가 정보 가져오기
   useEffect(() => {
-    console.log("Current Price in Rocket.tsx:", currentPrice); // 현재 주가 확인용
+    fetchCurrentPrice(); // API를 통해 주가 정보 가져옴
+  }, [stockCode]);
+
+  useEffect(() => {
     if (!mountRef.current) return;
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
     renderer.setSize(window.innerWidth, window.innerHeight);
     mountRef.current.appendChild(renderer.domElement);
@@ -68,7 +93,6 @@ export default function Rockets({ scene, rocketData, currentPrice }: RocketProps
       scene.add(rocket);
       return rocket;
     }) : [];
-    
 
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
