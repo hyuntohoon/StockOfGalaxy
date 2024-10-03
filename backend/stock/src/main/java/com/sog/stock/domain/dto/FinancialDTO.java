@@ -18,10 +18,10 @@ public class FinancialDTO {
     @JsonProperty("current_assets")
     private BigDecimal currentAssets;
 
-    @JsonProperty("current_liabilities")
+    @JsonProperty("current_liabilites")
     private BigDecimal currentLiabilities;
 
-    @JsonProperty("total_liabilities")
+    @JsonProperty("total_liabilites")
     private BigDecimal totalLiabilities;
 
     @JsonProperty("total_equity")
