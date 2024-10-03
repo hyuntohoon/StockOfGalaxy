@@ -8,7 +8,7 @@ interface RocketPriceChangeProps {
 const RocketPriceChange = ({ priceChange, priceChangeSign }: RocketPriceChangeProps) => {
   return (
     <PriceChangeContainer priceChangeSign={priceChangeSign}>
-      {priceChangeSign} {priceChange}%
+      {priceChangeSign} {priceChange}
     </PriceChangeContainer>
   );
 };
@@ -17,7 +17,7 @@ const RocketPriceChange = ({ priceChange, priceChangeSign }: RocketPriceChangePr
 const PriceChangeContainer = styled.div<{ priceChangeSign: string }>`
   background-color: ${({ priceChangeSign }) =>
     priceChangeSign === "+" ? "#F02C44" : "#2C6FF0"};
-  width: 60px;
+  width: 70px;
   padding-block: 4px;
   border-radius: 20px;
   text-align: center;
@@ -25,6 +25,7 @@ const PriceChangeContainer = styled.div<{ priceChangeSign: string }>`
   font-size: 12px;
   margin-right: 4px;
   color: #ffffff;
+  letter-spacing: 0.5px; /* 자간 설정 */
 `;
 
 export default RocketPriceChange;
