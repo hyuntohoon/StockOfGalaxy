@@ -14,8 +14,8 @@ import {
 import useKRStockWebSocket from "@/app/hooks/useKRStockWebSocket";
 import { getCurrentPrice } from "@/app/utils/apis/stock/getStockData";
 import { getStockHistoryInfoApi } from "@/app/utils/apis/stock";
+import { useRecoilValue } from "recoil";
 import { getTodayDate } from "@/app/utils/libs/getTodayDate";
-import { useDate } from "@/app/store/date";
 
 interface stockState {
   stock_name: string | null;
@@ -44,7 +44,6 @@ const PlanetTrendModal: React.FC<PlanetTrendModalProps> = ({
       changeRate: null,
     },
   ]);
-  const {setDate} = useDate();
   
   const realDate = getTodayDate(); // 실제 오늘 날짜
   const isToday = (date === realDate);
@@ -71,7 +70,7 @@ const PlanetTrendModal: React.FC<PlanetTrendModalProps> = ({
   // 과거 데이터를 가져오는 함수
   const fetchStockHistoryData = async () => {
     try {
-      const historicalData = await getStockHistoryInfoApi(stockCode, currentSetDate);
+      const historicalData = await getStockHistoryInfoApi(stockCode, date );
       if (historicalData) {
         setStockDataInfo([{
           stock_name: corpName || null,
