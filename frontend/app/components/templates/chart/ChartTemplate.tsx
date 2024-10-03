@@ -12,6 +12,7 @@ import useKRChartWebSocket from "@/app/hooks/useKRChartWebSocket";
 
 const Container = styled.div`
   display: flex;
+  flex: 0 0 55%;
   flex-direction: column;
   gap: 8px;
   padding: 10px;
@@ -37,12 +38,12 @@ const Option = styled.div`
 `;
 
 const ChartTemplate = () => {
-  const [initDataList, setInitDataList] = useState<any>(null);
   const [chartContainerRef, setChartContainerRef] = useState(null);
   const [chart, setChart] = useState<any>(null);
-  const [type, setType] = useState("minute");
-  const { stock } = useParams();
+  const [type, setType] = useState("Y");
+  const { stock, date } = useParams();
   const stock_code = Array.isArray(stock) ? stock[0] : stock ?? "005930";
+  const currentDate = date ?? "20241004";
 
   useEffect(() => {
     if (chartContainerRef) {
@@ -78,9 +79,9 @@ const ChartTemplate = () => {
       });
 
       const initChartData = async () => {
-        const dataList = await getMinuteStockData(stock_code);
-
+        const dataList = await getPastStockData(stock_code, type);
         if (!dataList) return;
+        newChart?.applyNewData(dataList);
         setChart(newChart);
       };
 

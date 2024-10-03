@@ -1,7 +1,7 @@
 const StockDailyPriceTitle = () => {
   return (
     <>
-      <h3>일별 시세</h3>
+      <div>일별 시세</div>
     </>
   );
 };

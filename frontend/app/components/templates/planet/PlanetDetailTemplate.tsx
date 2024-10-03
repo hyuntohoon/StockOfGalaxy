@@ -13,6 +13,7 @@ import styled from "@emotion/styled";
 import { useWheelScroll } from "@/app/hooks/useWheelScroll";
 import { News } from "@/app/types/planet";
 import FinancialMetricsChart from "../../molecules/stock/FinancialMetricsChart";
+import StockDailyPriceTemplate from "../../organisms/stock/StockDailyPriceTemplate";
 
 const ChartContainer = styled.div`
   width: 800px;
@@ -166,9 +167,8 @@ const PlanetDetailTemplate: React.FC<PlanetDetailTemplateProps> = ({
         </SectionContainer>
 
         <SectionContainer ref={chartRef}>
-          <ChartContainer>
-            <ChartTemplate />
-          </ChartContainer>
+          <ChartTemplate />
+          <StockDailyPriceTemplate />
         </SectionContainer>
 
         <SectionContainer ref={stocksRef}>

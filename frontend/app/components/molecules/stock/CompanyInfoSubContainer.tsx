@@ -36,6 +36,8 @@ const Hr = styled.hr`
 
 const Href = styled.a`
   color: #0000ff;
+  cursor: pointer;
+  text-decoration: none;
 `;
 
 const CompanyInfoSubContainer = ({
@@ -52,6 +54,13 @@ const CompanyInfoSubContainer = ({
     return `${year}.${month}.${day}`;
   };
 
+  const ensureAbsoluteUrl = (url: string) => {
+    if (!url.startsWith("http://") && !url.startsWith("https://")) {
+      return `https://${url}`;
+    }
+    return url;
+  };
+
   return (
     <>
       <Container>
@@ -62,7 +71,7 @@ const CompanyInfoSubContainer = ({
           </InnerContainer>
           <InnerContainer>
             <div>홈페이지</div>
-            <Href>{hmUrl}</Href>
+            <Href href={ensureAbsoluteUrl(hmUrl)}>{hmUrl}</Href>
           </InnerContainer>
         </SubContainer>
         <SubContainer>

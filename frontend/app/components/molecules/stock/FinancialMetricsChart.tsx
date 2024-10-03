@@ -30,7 +30,7 @@ ChartJS.register(
 
 const Container = styled.div`
   display: flex;
-  flex: 0 0 60%;
+  flex: 0 0 50%;
   width: 620px;
   height: auto;
   padding: 10px;
@@ -45,6 +45,15 @@ const FinancialMetricsChart = () => {
   const stock_code = Array.isArray(stock) ? stock[0] : stock ?? "005930";
   const [financialMetricsInfo, setFinancialMetricsInfo] = useState([]);
 
+  const formatDateString = (dateString) => {
+    if (dateString.length !== 6) {
+      throw new Error("Input string must be in the format YYYYMM");
+    }
+    const year = dateString.slice(0, 4);
+    const month = dateString.slice(4, 6);
+    return `${year}.${month}`;
+  };
+
   useEffect(() => {
     const getData = async () => {
       const dataList = await getFinancialMetricsInfo(stock_code);
@@ -57,7 +66,9 @@ const FinancialMetricsChart = () => {
 
   useEffect(() => {
     if (financialMetricsInfo) {
-      const labels = financialMetricsInfo.map((item) => item.stac_yymm);
+      const labels = financialMetricsInfo.map((item) =>
+        formatDateString(item.stac_yymm)
+      );
       const totalCapital = financialMetricsInfo.map((item) =>
         parseFloat(item.total_equity)
       );
