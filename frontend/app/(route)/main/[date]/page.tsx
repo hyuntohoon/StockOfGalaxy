@@ -172,7 +172,7 @@ export default function Page() {
 // 행성 텍스처 로딩
 async function loadTextures(planetsData, textureLoader) {
   const promises = planetsData.map((data) => {
-    const textureId = (parseInt(data.stock_code) % 12) + 1;
+    const textureId = (parseInt(data.stock_code) % 26) + 1;
     return new Promise((resolve) => {
       textureLoader.load(`/images/planetTexture/${textureId}.jpg`, resolve);
     });
