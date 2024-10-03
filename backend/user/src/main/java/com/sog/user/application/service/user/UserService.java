@@ -1,6 +1,7 @@
 package com.sog.user.application.service.user;
 
 import com.sog.user.domain.dto.user.TokenDTO;
+import com.sog.user.domain.dto.user.UserInfoForStockResponseDTO;
 import com.sog.user.domain.dto.user.UserInfoListResponseDTO;
 import com.sog.user.domain.dto.user.UserInfoResponseDTO;
 import com.sog.user.domain.dto.user.UserRegisterRequestDTO;
@@ -33,4 +34,8 @@ public interface UserService {
     public boolean quitMember(Long memberId);
 
     public String extractRefreshTokenFromCookie(HttpServletRequest request);
+
+    // 유저 정보 조회 (no token) - 백엔드 통신에서만 사용
+    UserInfoForStockResponseDTO getUserInfoForStock(Long memberId);
+
 }

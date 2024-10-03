@@ -1,6 +1,7 @@
 package com.sog.user.application.service.user;
 
 import com.sog.user.domain.dto.user.TokenDTO;
+import com.sog.user.domain.dto.user.UserInfoForStockResponseDTO;
 import com.sog.user.domain.dto.user.UserInfoListResponseDTO;
 import com.sog.user.domain.dto.user.UserInfoResponseDTO;
 import com.sog.user.domain.dto.user.UserInfoToSingleResponseDTO;
@@ -176,5 +177,15 @@ public class UserServiceImpl implements UserService {
             }
         }
         return refreshToken;
+    }
+
+    @Override
+    public UserInfoForStockResponseDTO getUserInfoForStock(Long memberId) {
+        // memberId를 통해 유저 정보 찾기
+        Member member = userRepository.findById(memberId)
+            .orElseThrow(() -> new IllegalArgumentException("해당 회원을 찾을 수 없습니다. ID: " + memberId));
+
+        // DTO에 필요한 정보 담기
+        return new UserInfoForStockResponseDTO(member.getNickname(), member.getCharacterType());
     }
 }
