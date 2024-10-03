@@ -5,6 +5,7 @@ import com.sog.news.domain.model.News;
 import com.sog.news.domain.model.NewsKeyword;
 import com.sog.news.domain.repository.NewsKeywordRepository;
 import com.sog.news.domain.repository.NewsRepository;
+import com.sog.news.global.NewsCategory;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +26,10 @@ public class NewsConsumer {
     @KafkaListener(topics = "NEWS", groupId = "News", containerFactory = "newsKafkaListenerContainerFactory")
     public void consumeNewsMessage(NewsConsumerResponseDTO newsConsumerResponseDTO, Acknowledgment ack) {
         try {
+            // NewsCategory가 null일 경우 "기타" 카테고리로 설정
+            if (newsConsumerResponseDTO.getCategory() == null) {
+                newsConsumerResponseDTO.setCategory(NewsCategory.기타);
+            }
             if (newsConsumerResponseDTO.getCategory() != null) { // category ENUM 타입 매핑 실패 대비
                 // News 객체로 변환
                 News news = newsConsumerResponseDTO.toEntity();
