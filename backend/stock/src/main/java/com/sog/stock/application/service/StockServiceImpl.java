@@ -412,6 +412,8 @@ public class StockServiceImpl implements StockService {
             .switchIfEmpty(Mono.error(new RuntimeException("삭제되었거나 존재하지 않는 로켓입니다.")))
             .flatMap(rocket -> userClient.getUserInfo(rocket.getMemberId())
                 .map(userInfoResponseDTO -> RocketResponseDTO.builder()
+                    .rocketId(rocket.getRocketId())
+                    .memberId(rocket.getMemberId())
                     .nickname(userInfoResponseDTO.getNickname())
                     .characterType(userInfoResponseDTO.getCharacterType())
                     .createdAt(rocket.getRocketCreatedAt())

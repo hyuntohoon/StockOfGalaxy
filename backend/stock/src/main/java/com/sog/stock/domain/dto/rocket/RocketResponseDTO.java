@@ -9,6 +9,8 @@ import lombok.Data;
 @Builder
 public class RocketResponseDTO {
 
+    private Integer rocketId;
+    private Long memberId;
     private String nickname;
     private int characterType;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
