@@ -8,6 +8,10 @@ import { useRecoilValue } from 'recoil';
 import { dateState } from '@/app/store/date';
 import { News, Stock } from '@/app/types/planet';
 import PlanetDetailTemplate from '@/app/components/templates/planet/PlanetDetailTemplate';
+import TimeMachineButtonGroup from '@/app/components/molecules/ButtonGroup/TimeMachineButtonGroup';
+import RocketButtonGroup from '@/app/components/molecules/ButtonGroup/RocketButtonGroup';
+import RocketModal from '@/app/components/organisms/Modal/RocketModal';
+
 
 // 임시 뉴스 데이터
 const dummyNewsData: News[] = [
@@ -35,6 +39,7 @@ const NewsPage: React.FC = (props: any) => {
   const [planetWord, setPlanetWord] = useState<{text: string, value: number}[]>(wordData);
   const [spaceWord, setSpaceWord] = useState<{text: string, value: number}[]>(wordData);
   const [stockInfo, setStockInfo] = useState<Stock>();
+  const [isRocketModalOpen, setIsRocketModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchStockData = async () => {
@@ -81,6 +86,9 @@ const NewsPage: React.FC = (props: any) => {
         planetWord={planetWord} 
         spaceWord={spaceWord} 
       />
+      <TimeMachineButtonGroup />
+      <RocketButtonGroup onRocketClick={() => setIsRocketModalOpen(true)} />
+      {isRocketModalOpen && <RocketModal onClose={() => setIsRocketModalOpen(false)} currentPrice={undefined} />}
     </>
   );
 };

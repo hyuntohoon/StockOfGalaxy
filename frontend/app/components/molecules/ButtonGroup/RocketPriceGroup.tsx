@@ -14,7 +14,7 @@ const RocketPriceGroup = ({ stockPrice, priceChange, priceChangeSign }: RocketPr
 
 const PriceContainer = styled.div`
   background-color: white;
-  width: 140px;
+  width: 150px;
   display: flex;
   flex-direction: row;
   padding-block: 4px;
