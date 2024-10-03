@@ -22,7 +22,7 @@ public class NewsConsumer {
     private final NewsKeywordRepository newsKeywordRepository;
     private static final Logger logger = LoggerFactory.getLogger(NewsConsumer.class);
 
-    @KafkaListener(topics = "NEWS-TEST-LOCAL13", groupId = "testNews", containerFactory = "newsKafkaListenerContainerFactory")
+    @KafkaListener(topics = "NEWS", groupId = "News", containerFactory = "newsKafkaListenerContainerFactory")
     public void consumeNewsMessage(NewsConsumerResponseDTO newsConsumerResponseDTO, Acknowledgment ack) {
         try {
             if (newsConsumerResponseDTO.getCategory() != null) { // category ENUM 타입 매핑 실패 대비
