@@ -1,0 +1,33 @@
+ apiVersion: apps/v1
+ kind: Deployment
+ metadata:
+   name: gateway-service
+   namespace: backcd
+ spec:
+   replicas: 2
+   selector:
+     matchLabels:
+       app: gateway-service
+   template:
+     metadata:
+       labels:
+         app: gateway-service
+     spec:
+       containers:
+         - name: gateway-service
+           image: zlxldgus123/gateway-service:122
+           ports:
+             - containerPort: 8080
+           env:
+             - name: JWT_SECRET
+               valueFrom:
+                 secretKeyRef:
+                   name: jwt-secret
+                   key: secret  # jwt-secret의 secret 필드를 환경 변수로 사용
+           resources:
+             requests:
+               memory: "512Mi"
+               cpu: "250m"
+             limits:
+               memory: "1Gi"
+               cpu: "500m"
