@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -24,9 +25,10 @@ public class NewsResponseDTO {
     private String thumbnailImg;
     private LocalDateTime newsCreatedAt;
     private LocalDateTime newsUpdatedAt;
+    private List<String> keywords;  // 키워드 리스트 추가
 
     // News 엔티티 -> DTO 변환
-    public static NewsResponseDTO fromEntity(News news) {
+    public static NewsResponseDTO fromEntity(News news, List<String> keywords) {
         return NewsResponseDTO.builder()
                 .newsId(news.getNewsId())
                 .title(news.getTitle())
@@ -38,6 +40,7 @@ public class NewsResponseDTO {
                 .thumbnailImg(news.getThumbnailImg())
                 .newsCreatedAt(news.getNewsCreatedAt())
                 .newsUpdatedAt(news.getNewsUpdatedAt())
+                .keywords(keywords)  // 키워드 리스트 포함
                 .build();
     }
 }
