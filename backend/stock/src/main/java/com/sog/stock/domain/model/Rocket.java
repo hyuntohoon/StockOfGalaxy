@@ -27,6 +27,7 @@ public class Rocket {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "rocket_id")
     private Integer rocketId;
 
     @Column(nullable = false)
@@ -41,7 +42,7 @@ public class Rocket {
     @Column(nullable = false)
     private Boolean isDeleted = false;
 
-    @Column(nullable = false)
+    @Column(name = "member_id", nullable = false)
     private Long memberId;
 
     // 다대일 관계

@@ -53,12 +53,14 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class StockServiceImpl implements StockService {
 
     private final DailyStockHistoryRepository dailyStockHistoryRepository;
@@ -396,6 +398,8 @@ public class StockServiceImpl implements StockService {
     private Mono<RocketResponseDTO> buildRocketResponse(Rocket rocket) {
         return userClient.getUserInfo(rocket.getMemberId())
             .map(userInfo -> RocketResponseDTO.builder()
+                .rocketId(rocket.getRocketId())
+                .memberId(rocket.getMemberId())
                 .nickname(userInfo.getNickname())
                 .characterType(userInfo.getCharacterType())
                 .createdAt(rocket.getRocketCreatedAt())
@@ -407,20 +411,36 @@ public class StockServiceImpl implements StockService {
     // 로켓 개별 조회
     @Override
     public Mono<RocketResponseDTO> getRocketById(int rocketId) {
+        log.info("Called getRocketById with rocketId: " + rocketId); // 메서드 호출 확인
+
         return Mono.justOrEmpty(rocketRepository.findById(rocketId))
-            .filter(rocket -> !rocket.getIsDeleted()) // isDeleted가 false인 경우만 처리
+            .doOnNext(rocket -> {
+                log.info("Rocket Entity: " + rocket);
+            })
+            .filter(rocket -> !rocket.getIsDeleted())
             .switchIfEmpty(Mono.error(new RuntimeException("삭제되었거나 존재하지 않는 로켓입니다.")))
-            .flatMap(rocket -> userClient.getUserInfo(rocket.getMemberId())
-                .map(userInfoResponseDTO -> RocketResponseDTO.builder()
-                    .rocketId(rocket.getRocketId())
-                    .memberId(rocket.getMemberId())
-                    .nickname(userInfoResponseDTO.getNickname())
-                    .characterType(userInfoResponseDTO.getCharacterType())
-                    .createdAt(rocket.getRocketCreatedAt())
-                    .message(rocket.getContent())
-                    .price(rocket.getStockPrice())
-                    .build()));
+            .flatMap(rocket -> {
+                log.info("Fetching user info for memberId: " + rocket.getMemberId());
+                return userClient.getUserInfo(rocket.getMemberId())
+                    .doOnNext(userInfoResponseDTO -> {
+                        log.info("User Info Response: " + userInfoResponseDTO);
+                    })
+                    .map(userInfoResponseDTO -> {
+                        log.info("Mapping RocketResponseDTO");
+                        return RocketResponseDTO.builder()
+                            .rocketId(rocket.getRocketId())
+                            .memberId(rocket.getMemberId())
+                            .nickname(userInfoResponseDTO.getNickname())
+                            .characterType(userInfoResponseDTO.getCharacterType())
+                            .createdAt(rocket.getRocketCreatedAt())
+                            .message(rocket.getContent())
+                            .price(rocket.getStockPrice())
+                            .build();
+                    });
+            });
     }
+
+
 
     @Override
     public Mono<RocketResponseListDTO> getLimitedRocketsByStockCode(String stockCode, int limit) {
