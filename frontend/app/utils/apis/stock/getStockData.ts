@@ -48,8 +48,9 @@ export const getMinuteStockData = async (stock_code: string) => {
   const seconds = String(now.getSeconds()).padStart(2, "0"); // SS
 
   let time = "";
-
-  if (parseInt(hours) > 15) {
+  if (parseInt(hours) < 9) {
+    time = "090000";
+  } else if (parseInt(hours) > 15) {
     time = "153000";
   } else if (parseInt(hours) == 15 && parseInt(minutes) >= 30) {
     time = "153000";
@@ -62,6 +63,9 @@ export const getMinuteStockData = async (stock_code: string) => {
       method: "GET",
       url: `${process.env.NEXT_PUBLIC_API_BASE_URL}/stock/${stock_code}/minute-chart/${time}`,
     });
+
+    console.log(time, stock_code);
+    console.log(res.data);
 
     const formattedData = res.data.minuteStockPrices.map((data) => {
       return {
@@ -76,8 +80,6 @@ export const getMinuteStockData = async (stock_code: string) => {
         // turnover: data.acmlTrPbmn,
       };
     });
-
-    console.log(formattedData);
 
     formattedData.sort((a, b) => a.timestamp - b.timestamp);
 

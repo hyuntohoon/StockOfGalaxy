@@ -8,11 +8,11 @@ import CompanyInfoSubContainer from "../../molecules/stock/CompanyInfoSubContain
 import { getCompanyInfo } from "@/app/utils/apis/stock/getStockInfoData";
 
 const Container = styled.div`
-  width: 500px;
+  width: 90%;
   padding: 10px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 20px;
   background-color: white;
   border-radius: 20px;
 `;

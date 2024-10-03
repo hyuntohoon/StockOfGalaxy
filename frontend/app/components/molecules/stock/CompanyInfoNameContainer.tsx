@@ -6,7 +6,28 @@ interface CompanyInfoNameContainerProps {
   corpDetail: string;
 }
 
-const Container = styled.div``;
+const Container = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+`;
+
+const StockName = styled.div`
+  font-size: 1.2rem;
+  font-weight: bold;
+  align-self: center;
+`;
+
+const StockCode = styled.div`
+  color: #9e9ea4;
+  font-size: 0.8rem;
+  align-self: center;
+`;
+
+const CorpDetail = styled.div`
+  font-size: 0.8rem;
+  color: gray;
+`;
 
 const CompanyInfoNameContainer = ({
   stockName,
@@ -15,9 +36,11 @@ const CompanyInfoNameContainer = ({
 }: CompanyInfoNameContainerProps) => {
   return (
     <>
-      <div>{stockName}</div>
-      <div>{stockCode}</div>
-      <div>{corpDetail}</div>
+      <Container>
+        <StockName>{stockName}</StockName>
+        <StockCode>{stockCode}</StockCode>
+      </Container>
+      <CorpDetail>{corpDetail}</CorpDetail>
     </>
   );
 };

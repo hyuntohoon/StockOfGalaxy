@@ -79,6 +79,8 @@ const ChartTemplate = () => {
 
       const initChartData = async () => {
         const dataList = await getMinuteStockData(stock_code);
+
+        if (!dataList) return;
         setChart(newChart);
       };
 

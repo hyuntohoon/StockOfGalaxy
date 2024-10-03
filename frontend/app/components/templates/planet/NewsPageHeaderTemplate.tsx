@@ -12,6 +12,7 @@ import ChartTemplate from "@/app/components/templates/chart/ChartTemplate";
 import StockInfoTemplate from "@/app/components/templates/stock/StockInfoTemplate";
 import StockDailyPriceTemplate from "@/app/components/organisms/stock/StockDailyPriceTeplate";
 import styled from "@emotion/styled";
+import StockInfo from "../../molecules/stock/StockInfo";
 
 const ChartContainer = styled.div`
   min-width: 100%;
