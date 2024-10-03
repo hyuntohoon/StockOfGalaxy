@@ -10,9 +10,9 @@ import TimeMachineButtonGroup from "@/app/components/molecules/ButtonGroup/TimeM
 import PlanetTrendModal from "@/app/components/organisms/Modal/PlanetTrendModal";
 import { throttle } from "lodash";
 import { useRouter } from "next/navigation";
-import { planetTrendData } from "@/app/mocks/planetTrendData";
 import { getValueFromRank } from "@/app/utils/libs/getValueFromRank";
 import AlienGuideButton from "@/app/components/atoms/Button/AlienGuideButton";
+import { getPlanetTrendApi } from "@/app/utils/apis/stock";
 
 // 커스텀 행성 타입 정의
 interface CustomPlanet extends THREE.Mesh<THREE.SphereGeometry, THREE.MeshStandardMaterial> {
@@ -30,11 +30,13 @@ export default function Page(props:any) {
   const {date : currentDate} = props.params;
   setDate(props.params.date);
   const mountRef = useRef<HTMLDivElement>(null);
-  const [hoveredPlanet, setHoveredPlanet] = useState<HoveredPlanetData | null>(null);
+  const [hoveredPlanet, setHoveredPlanet] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const camera = useRef<THREE.PerspectiveCamera | null>(null);
   const router = useRouter();
   
+
+  const [planetTrendData, setPlanetTrendData] = useState([]); // 행성 데이터를 위한 상태 추가
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -58,21 +60,29 @@ export default function Page(props:any) {
     createParticles(scene); // 입자 생성
 
     const textureLoader = new THREE.TextureLoader();
-    loadTextures(planetTrendData, textureLoader).then((textures) => {
-      createPlanets(planetTrendData, scene, textures, camera.current!);
+
+    getPlanetTrendApi('20240307') // todo: currentDate 로 바꿔야
+    .then((data) => {
+      const trendData = data.stockTop8ResponseList;
+      return loadTextures(trendData, textureLoader).then((textures) => ({
+        trendData,
+        textures,
+      }));
+    })
+    .then(({ trendData, textures }) => {
+      createPlanets(trendData, scene, textures, camera.current!);
+    })
+    .catch((error) => {
+      console.error("행성 트렌드 데이터를 불러오는 중 오류 발생:", error);
     });
 
     let frameId: number;
 
     function animate() {
       frameId = requestAnimationFrame(animate);
-    
-      // 행성 회전 적용
       animatePlanets();
-    
       renderer.render(scene, camera.current!);
     }
-    
 
     function onWindowResize() {
       camera.current!.aspect = window.innerWidth / window.innerHeight;
@@ -81,20 +91,28 @@ export default function Page(props:any) {
     }
 
     window.addEventListener("resize", onWindowResize, false);
-    window.addEventListener("mousemove", (event) => onMouseMove(event, planetsArray, renderer)); // planetsArray를 사용
-    window.addEventListener("click", (event) => onPlanetClick(event, planetsArray, renderer)); // planetsArray를 사용
+    window.addEventListener("mousemove", (event) =>
+      onMouseMove(event, planetsArray, renderer)
+    );
+    window.addEventListener("click", (event) =>
+      onPlanetClick(event, planetsArray, renderer)
+    );
     animate();
 
     return () => {
       cancelAnimationFrame(frameId);
       window.removeEventListener("resize", onWindowResize);
-      window.removeEventListener("mousemove", (event) => onMouseMove(event, planetsArray, renderer));
-      window.removeEventListener("click", (event) => onPlanetClick(event, planetsArray, renderer));
+      window.removeEventListener("mousemove", (event) =>
+        onMouseMove(event, planetsArray, renderer)
+      );
+      window.removeEventListener("click", (event) =>
+        onPlanetClick(event, planetsArray, renderer)
+      );
       mountRef.current?.removeChild(renderer.domElement);
     };
-  }, []);
+  }, [currentDate]);
 
-  // 마우스 움직임 처리 함수 (행성 배열만 검사)
+  // 마우스 움직임 처리 함수
   const onMouseMove = (event, planets, renderer) => {
     const throttledMouseMove = throttle((event: MouseEvent) => {
       const raycaster = new THREE.Raycaster();
@@ -104,7 +122,7 @@ export default function Page(props:any) {
       );
 
       raycaster.setFromCamera(mouse, camera.current!);
-      const intersects = raycaster.intersectObjects(planets); // 행성 배열만 검사
+      const intersects = raycaster.intersectObjects(planets);
 
       if (intersects.length > 0) {
         const intersected = intersects[0].object;
@@ -125,7 +143,7 @@ export default function Page(props:any) {
     throttledMouseMove(event);
   };
 
-  // 행성 클릭 처리 함수 (행성 배열만 검사)
+  // 행성 클릭 처리 함수
   const onPlanetClick = (event, planets, renderer) => {
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2(
@@ -134,7 +152,7 @@ export default function Page(props:any) {
     );
 
     raycaster.setFromCamera(mouse, camera.current!);
-    const intersects = raycaster.intersectObjects(planets); // 행성 배열만 검사
+    const intersects = raycaster.intersectObjects(planets);
 
     if (intersects.length > 0) {
       const clickedPlanet = intersects[0].object;
@@ -176,7 +194,7 @@ export default function Page(props:any) {
 // 행성 텍스처 로딩
 async function loadTextures(planetsData, textureLoader) {
   const promises = planetsData.map((data) => {
-    const textureId = (parseInt(data.stock_code) % 26) + 1;
+    const textureId = (parseInt(data.stockCode.slice(0, -1)) % 25) + 1;
     return new Promise((resolve) => {
       textureLoader.load(`/images/planetTexture/${textureId}.jpg`, resolve);
     });
@@ -188,7 +206,7 @@ async function loadTextures(planetsData, textureLoader) {
 function createPlanets(planetsData, scene, textures, camera) {
   const centerPositions = [
     { x: 0, y: 60, z: 0 },
-    { x: -300, y: 120, z: 0 },
+    { x: -300, y: 120, z: -10 },
     { x: 180, y: -170, z: 0 },
     { x: -100, y: -220, z: 0 },
     { x: 250, y: 50, z: 0 },
@@ -199,12 +217,13 @@ function createPlanets(planetsData, scene, textures, camera) {
 
   planetsData.forEach((data, index) => {
     const planetSize = getValueFromRank(data.rank) * 0.7; // rank 기반으로 planet 크기 설정
-    const geometry = new THREE.SphereGeometry(planetSize, 32, 32);
+    const geometry = new THREE.SphereGeometry(planetSize || 50, 32, 32); // 크기를 적당히 설정
     const material = new THREE.MeshStandardMaterial({ map: textures[index] });
 
     // 커스텀 행성 타입으로 캐스팅
     const planet: CustomPlanet = new THREE.Mesh(geometry, material) as CustomPlanet;
 
+    // 행성 위치 설정
     planet.position.set(
       centerPositions[index % centerPositions.length].x,
       centerPositions[index % centerPositions.length].y,
@@ -217,17 +236,16 @@ function createPlanets(planetsData, scene, textures, camera) {
     // 행성 배열에 추가
     planetsArray.push(planet);
 
-    planet.userData = { stockCode: data.stock_code, corpName: data.stock_name };
+    planet.userData = { stockCode: data.stockCode, corpName: data.stockName };
 
     // 회전 속도를 랜덤으로 설정하여 각 행성이 다르게 회전하게 만듦
     planet.rotationSpeed = {
       x: Math.random() * 0.001,
-      y: Math.random() * 0.007,
+      y: Math.random() * 0.007 + 0.0005,
       z: Math.random() * 0.002,
     };
   });
 }
-
 
 function animatePlanets() {
   planetsArray.forEach((planet: CustomPlanet) => {
@@ -271,7 +289,7 @@ function createParticles(scene: THREE.Scene) {
   // 입자 그룹에 애니메이션 효과 추가 (천천히 회전)
   function animateParticles() {
     requestAnimationFrame(animateParticles);
-    particleGroup.rotation.y += 0.001;
+    particleGroup.rotation.y -= 0.001;
     particleGroup.rotation.x += 0.0005; // 입자가 더 다채롭게 회전
   }
   animateParticles();
@@ -287,12 +305,11 @@ function setupLights(scene: THREE.Scene) {
   directionalLight1.position.set(100, 200, 100);
   scene.add(directionalLight1);
 
-  const directionalLight2 = new THREE.DirectionalLight(0xffcc66, 0.5);
+  const directionalLight2 = new THREE.DirectionalLight(0xffffff, 0.3);
   directionalLight2.position.set(75, 100, 10);
   scene.add(directionalLight2);
 
-  const directionalLight3 = new THREE.DirectionalLight(0x33ccff, 0.3);
+  const directionalLight3 = new THREE.DirectionalLight(0x122486, 0.5);
   directionalLight3.position.set(0, 0, 300);
   scene.add(directionalLight3);
 }
-
