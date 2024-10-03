@@ -14,6 +14,7 @@ import java.util.List;
 @Entity
 @Table(name = "NEWS")
 @Getter @NoArgsConstructor
+@ToString
 public class News {
 
     @Id
@@ -21,7 +22,7 @@ public class News {
     @Column(name = "news_id")
     private Long newsId;
 
-    @Column(name = "title", nullable = false, length = 64) // 변경된 길이
+    @Column(name = "title", nullable = false, length = 128) // 변경된 길이
     private String title;
 
     @Column(name = "content", nullable = false, columnDefinition = "TEXT")
