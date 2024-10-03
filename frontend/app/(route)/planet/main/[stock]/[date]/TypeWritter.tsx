@@ -49,6 +49,7 @@ const TypeWritterText = styled.div<TypeWriterTextProps>`
   font-size: 1.2em;
 `;
 
+// todo: 시연 전에는 5개 정도로 줄이기
 const messages = [
   "우주에서는 아무도 소리를 들을 수 없어요, 왜냐하면 소리가 전달될 공기가 없거든요.",
   "지구에서 밤하늘에 보이는 별들은 이미 수백, 수천 년 전에 빛을 발한 것들이에요.",

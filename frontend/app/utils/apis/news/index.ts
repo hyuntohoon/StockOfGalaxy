@@ -34,7 +34,7 @@ export const getSpaceNews = async(today: string) => {
 export const getSpaceNewsWithContent = async(today:string) => {
     try {
         const formattedDate = convertToApiDateFormat(today);
-        const res = await defaultRequest.get(`/news/today/space/contain-preview/${formattedDate}`);
+        const res = await defaultRequest.get(`/news/today/contain-preview/${formattedDate}`);
         console.log(res);
         return res.data;  // 우주 소식(내용) 조회
     } catch (error) {
@@ -68,6 +68,7 @@ export const getPlanetNewsWithContent = async (today: string, stockName: string)
         throw error;
     }
 }
+
 
 // 뉴스 상세 조회
 export const getNewsDetail = async (id: number) => {

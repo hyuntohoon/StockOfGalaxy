@@ -9,13 +9,14 @@ import {
 } from "@/app/styles/planet-trend";
 import StockIcon from "../../atoms/stock/StockIcon";
 import {
-  SelectedPlanetTrendData,
   PlanetTrendModalProps,
 } from "@/app/types/main";
 import useKRStockWebSocket from "@/app/hooks/useKRStockWebSocket";
+import { getCurrentPrice } from "@/app/utils/apis/stock/getStockData";
 import { getStockHistoryInfoApi } from "@/app/utils/apis/stock";
-import { getTodayDate } from '@/app/utils/libs/getTodayDate';
-import { useDate } from "@/app/store/date";
+import { useRecoilValue } from "recoil";
+import { getTodayDate } from "@/app/utils/libs/getTodayDate";
+import { dateState } from "@/app/store/date";
 
 interface stockState {
   stock_name: string | null;
@@ -50,32 +51,53 @@ const PlanetTrendModal: React.FC<PlanetTrendModalProps> = ({
   const isToday = (date === realDate);
   console.log(isToday, date, realDate)
 
-  // 훅을 항상 호출하고 내부에서 조건에 따라 웹소켓 연결
-  useKRStockWebSocket(isToday ? stockDataInfo : [], setStockDataInfo);
+  // 주식 데이터를 가져오는 함수
+  const fetchCurrentPrice = async () => {
+    try {
+      const currentPriceData = await getCurrentPrice(stockCode);
+      if (currentPriceData) {
+        setStockDataInfo([{
+          stock_name: corpName || null,
+          stock_code: stockCode || null,
+          currentPrice: currentPriceData.stckPrpr,
+          changePrice: currentPriceData.prdyVrss,
+          changeRate: currentPriceData.prdyCtrt,
+        }]);
+      }
+    } catch (error) {
+      console.error("현재 주가 데이터를 가져오는 중 오류 발생:", error);
+    }
+  };
+
+  // 과거 데이터를 가져오는 함수
+  const fetchStockHistoryData = async () => {
+    try {
+      const historicalData = await getStockHistoryInfoApi(stockCode, currentSetDate);
+      if (historicalData) {
+        setStockDataInfo([{
+          stock_name: corpName || null,
+          stock_code: stockCode || null,
+          currentPrice: historicalData.endPrice, // 과거 데이터의 종가 사용
+          changePrice: historicalData.changePrice,
+          changeRate: historicalData.changeRate,
+        }]);
+      }
+    } catch (error) {
+      console.error("과거 주식 데이터를 가져오는 중 오류 발생:", error);
+    }
+  };
+
+  useKRStockWebSocket(stockDataInfo, setStockDataInfo);
 
   useEffect(() => {
-    if (!isToday) {
-      // 과거 데이터 조회 API 호출
-      const fetchStockHistoryData = async () => {
-        try {
-          const historicalData = await getStockHistoryInfoApi(stockCode, date);
-          if (historicalData) {
-            setStockDataInfo([{
-              stock_name: corpName || null,
-              stock_code: stockCode || null,
-              currentPrice: historicalData.endPrice, // 과거 데이터의 종가 사용
-              changePrice: historicalData.changePrice,
-              changeRate: historicalData.changeRate,
-            }]);
-          }
-        } catch (error) {
-          console.error("과거 주식 데이터를 가져오는 중 오류 발생:", error);
-        }
-      };
-
+    if (isToday) {
+      // 오늘일 때는 현재 주가 API를 호출
+      fetchCurrentPrice();
+    } else {
+      // 과거일 때는 과거 주가 데이터만 가져옴
       fetchStockHistoryData();
     }
-  }, [isToday, stockCode, date]);
+  }, [isToday, stockCode]);
 
   useEffect(() => {
     if (!position || !camera || !rendererDomElement) return;

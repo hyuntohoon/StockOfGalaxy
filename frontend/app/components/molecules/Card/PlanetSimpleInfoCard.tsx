@@ -1,20 +1,29 @@
+import { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import PlanetCardTitle from '../../atoms/Text/PlanetCardTitle';
 import { Icon } from '../../atoms/myplanet/Icon';
 import { useParams } from 'next/navigation';
-
-// todo: 실제 데이터로 변경
-const tempData = {
-  iconSrc: '/images/logo/samsung.png',
-};
+import { getStockName } from '@/app/utils/apis/stock/planet';
 
 const PlanetSimpleInfoCard = () => {
-  const stockCode = useParams().stock;
+  const stockCodeParam = useParams().stock;
+  const stockCode = Array.isArray(stockCodeParam) ? stockCodeParam[0] : stockCodeParam; // 배열일 경우 첫 번째 요소 사용
+  const [corpName, setCorpName] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchStockName = async () => {
+      if (stockCode) {
+        const name = await getStockName(stockCode);
+        setCorpName(name);
+      }
+    };
+    fetchStockName();
+  }, [stockCode]);
   return (
     <CardContainer>
       <CardTitle>
-        <Icon src={tempData.iconSrc} size="40px" width={20} />
-        <PlanetCardTitle title="삼성전자" />
+        <Icon src={`/stock_logos/Stock${stockCode}.svg`} size="40px" width={20} />
+        <PlanetCardTitle title={corpName} />
       </CardTitle>
       <StockCode>{stockCode}</StockCode> {/* 회색 글씨로 stockCode 추가 */}
     </CardContainer>

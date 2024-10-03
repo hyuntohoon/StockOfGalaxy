@@ -1,8 +1,11 @@
 "use client";
 
+import { useState, useEffect } from "react";
+import { useParams } from "next/navigation";
 import styled from "@emotion/styled";
 import CompanyInfoNameContainer from "../../molecules/stock/CompanyInfoNameContainer";
 import CompanyInfoSubContainer from "../../molecules/stock/CompanyInfoSubContainer";
+import { getCompanyInfo } from "@/app/utils/apis/stock/getStockInfoData";
 
 const Container = styled.div`
   width: 500px;
@@ -15,32 +18,48 @@ const Container = styled.div`
 `;
 
 const CompanyInfoContainer = () => {
-  const dummyData = {
-    corpNameEng: "SAMSUNG ELECTRONICS CO,.LTD",
-    corpDetail:
-      "한국 및 DX부문 해외 9개 지역총괄과 DS부문 해외 5개 지역총괄, SDC, Harman 등 226개의 종속기업으로 구성된 글로벌 전자기업임.",
-    stockName: "삼성전자",
-    stockCode: "005930",
-    ceoName: "한종희",
-    hmUrl: "www.samsung.com/sec",
-    estDate: "19690113",
-    accMonth: "12",
-  };
+  const { stock } = useParams();
+  const stock_code: string = Array.isArray(stock)
+    ? stock[0]
+    : stock ?? "005930";
+
+  const [companyInfo, setCompanyInfo] = useState({
+    corpDetail: "",
+    stockName: "",
+    stockCode: "",
+    ceoName: "",
+    hmUrl: "",
+    estDate: "",
+    accMonth: "",
+  });
+
+  useEffect(() => {
+    getCompanyInfo(stock_code).then((data) => {
+      setCompanyInfo({
+        corpDetail: data.corp_description,
+        stockName: data.corp_name,
+        stockCode: data.stock_code,
+        ceoName: data.ceo_nm,
+        hmUrl: data.hm_url,
+        estDate: data.est_dt,
+        accMonth: data.acc_mt,
+      });
+    });
+  }, []);
 
   return (
     <>
       <Container>
         <CompanyInfoNameContainer
-          stockName={dummyData.stockName}
-          stockCode={dummyData.stockCode}
-          corpNameEng={dummyData.corpNameEng}
-          corpDetail={dummyData.corpDetail}
+          stockName={companyInfo.stockName}
+          stockCode={companyInfo.stockCode}
+          corpDetail={companyInfo.corpDetail}
         />
         <CompanyInfoSubContainer
-          ceoName={dummyData.ceoName}
-          hmUrl={dummyData.hmUrl}
-          estDate={dummyData.estDate}
-          accMonth={dummyData.accMonth}
+          ceoName={companyInfo.ceoName}
+          hmUrl={companyInfo.hmUrl}
+          estDate={companyInfo.estDate}
+          accMonth={companyInfo.accMonth}
         />
       </Container>
     </>

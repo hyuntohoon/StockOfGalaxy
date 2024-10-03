@@ -2,12 +2,16 @@
 
 import React, { useEffect, useState } from 'react';
 import { wordData } from '@/app/mocks/wordData';
-import { getPlanetNews, getSpaceNews } from '@/app/utils/apis/news';
+import { getPlanetNewsWithContent, getSpaceNewsWithContent } from '@/app/utils/apis/news';
 import { getStockInfo } from '@/app/utils/apis/stock/planet';
 import { useRecoilValue } from 'recoil';
 import { useDate } from '@/app/store/date';
 import { News, Stock } from '@/app/types/planet';
 import PlanetDetailTemplate from '@/app/components/templates/planet/PlanetDetailTemplate';
+import TimeMachineButtonGroup from '@/app/components/molecules/ButtonGroup/TimeMachineButtonGroup';
+import RocketButtonGroup from '@/app/components/molecules/ButtonGroup/RocketButtonGroup';
+import RocketModal from '@/app/components/organisms/Modal/RocketModal';
+
 
 // 임시 뉴스 데이터
 const dummyNewsData: News[] = [
@@ -36,6 +40,7 @@ const NewsPage: React.FC = (props: any) => {
   const [planetWord, setPlanetWord] = useState<{text: string, value: number}[]>(wordData);
   const [spaceWord, setSpaceWord] = useState<{text: string, value: number}[]>(wordData);
   const [stockInfo, setStockInfo] = useState<Stock>();
+  const [isRocketModalOpen, setIsRocketModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchStockData = async () => {
@@ -49,7 +54,7 @@ const NewsPage: React.FC = (props: any) => {
 
     const fetchPlanetData = async () => {
       try {
-        const res = await getPlanetNews(date, stockInfo?.companyName || '');
+        const res = await getPlanetNewsWithContent(date, stockInfo?.companyName || '');
         // planetNews가 비어있으면 dummy 데이터로 설정
         setPlanetNews(res.length > 0 ? res : dummyNewsData);
       } catch (error) {
@@ -60,7 +65,7 @@ const NewsPage: React.FC = (props: any) => {
 
     const fetchSpaceData = async () => {
       try {
-        const res = await getSpaceNews(date);
+        const res = await getSpaceNewsWithContent(date);
         // spaceNews가 비어있으면 dummy 데이터로 설정
         setSpaceNews(res.length > 0 ? res : dummyNewsData);
       } catch (error) {
@@ -72,7 +77,7 @@ const NewsPage: React.FC = (props: any) => {
     fetchStockData();
     fetchPlanetData();
     fetchSpaceData();
-  }, [ stock, date, stockInfo]);
+  }, []);
 
   return (
     <>
@@ -82,6 +87,9 @@ const NewsPage: React.FC = (props: any) => {
         planetWord={planetWord} 
         spaceWord={spaceWord} 
       />
+      <TimeMachineButtonGroup />
+      <RocketButtonGroup onRocketClick={() => setIsRocketModalOpen(true)} />
+      {isRocketModalOpen && <RocketModal onClose={() => setIsRocketModalOpen(false)} currentPrice={undefined} />}
     </>
   );
 };

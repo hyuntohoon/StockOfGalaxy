@@ -6,43 +6,28 @@ import RocketCard from '../RocketCard';
 import LoadingSpinner from '../../atoms/LoadingSpinner';
 import { getRocketListApi } from '@/app/utils/apis/rocket';
 import { useParams } from 'next/navigation';
-import useKRStockWebSocket from '@/app/hooks/useKRStockWebSocket'; // 웹소켓 사용
+import { useRecoilValue } from 'recoil';
 import { getTodayDate } from '@/app/utils/libs/getTodayDate';
-import { useDate } from '@/app/store/date';
+import { dateState } from '@/app/store/date';
+import { rocketListData } from '@/app/mocks/rocketListData';
 
-const RocketModal = ({ onClose }) => {
+const RocketModal = ({ onClose, currentPrice }) => {
   const [data, setData] = useState([]); // 현재 보여주는 데이터
   const [allData, setAllData] = useState([]); // 전체 데이터를 저장할 상태
   const [loading, setLoading] = useState(false);
-  const {date} = useDate();
-  const [currentPrice, setCurrentPrice] = useState<number | null>(null); // 실시간 주가 데이터 상태 추가
   const stockCodeParam = useParams().stock;
   const stockCode = Array.isArray(stockCodeParam) ? stockCodeParam[0] : stockCodeParam;
   
   const realDate = getTodayDate(); // 실제 오늘 날짜
   const isToday = date === realDate;
 
-  // 웹소켓 연결 및 실시간 주가 데이터 업데이트
-  useKRStockWebSocket(
-    [{ stock_code: stockCode, stock_name: "삼성전자" }],  // todo: 주식 코드와 주식 이름을 전달(실제로)
-    (updatedStockData) => {
-      // updatedStockData가 배열인지 확인
-      if (Array.isArray(updatedStockData)) {
-        const stock = updatedStockData.find((s) => s.stock_code === stockCode);
-        if (stock) {
-          setCurrentPrice(stock.currentPrice); // 실시간 주가 업데이트
-        }
-      } else {
-        console.error('updatedStockData가 배열이 아닙니다:', updatedStockData);
-      }
-    }
-  );
-
   // fetchData 함수 분리
   const fetchData = async () => {
     setLoading(true);
     try {
       const response = await getRocketListApi(stockCode); // 전체 데이터를 불러옴
+      // const response = rocketListData.rocketList; // todo: api 연동해서 실제 데이터로 변경
+      console.log(response);
       setAllData(response); // 전체 데이터를 상태에 저장
       setData(response.slice(0, 8)); // 초기 8개 데이터만 보여줌
     } catch (err) {

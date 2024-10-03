@@ -12,7 +12,7 @@ import { RocketCardProps } from '@/app/types/rocket';
 import { deleteRocketApi } from '@/app/utils/apis/rocket';
 
 const RocketCard: React.FC<RocketCardProps & { fetchData: () => void }> = ({ data, currentPrice, fetchData }) => {
-  const { priceChange, priceChangeSign } = calculatePriceChange(data.stockPrice, currentPrice);
+  const { priceChange, priceChangeSign } = calculatePriceChange(data.price, currentPrice);
   const { memberId: currentMemberId } = useMemberId();
 
   const handleDelete = async () => {
@@ -46,13 +46,13 @@ const RocketCard: React.FC<RocketCardProps & { fetchData: () => void }> = ({ dat
             />
           </NameAndDelete>
           <RocketPriceGroup
-            stockPrice={data.stockPrice}
+            stockPrice={data.price}
             priceChange={priceChange} // 변동률
             priceChangeSign={priceChangeSign} // 변동률 부호
           />
         </NamePriceWrapper>
       </Header>
-      <StyledRocketContent message={data.content} />
+      <StyledRocketContent message={data.message} />
       <TimeStampTimeMachineWrapper>
         <RocketTimeStamp createdAt={data.createdAt} />
         <RocketTimeMachineButton createdAt={data.createdAt}/>

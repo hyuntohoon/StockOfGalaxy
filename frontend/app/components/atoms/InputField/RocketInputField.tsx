@@ -23,7 +23,7 @@ const RocketInputField: React.FC<RocketInputFieldProps> = ({ currentPrice, isTod
   };
 
   const handleSubmit = async () => {
-    if (isLoggedIn && currentPrice !== null) {
+    if (isLoggedIn) {
       try {
         const response = await createRocketApi(
           memberId,
