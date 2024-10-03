@@ -14,9 +14,8 @@ import {
 import useKRStockWebSocket from "@/app/hooks/useKRStockWebSocket";
 import { getCurrentPrice } from "@/app/utils/apis/stock/getStockData";
 import { getStockHistoryInfoApi } from "@/app/utils/apis/stock";
-import { useRecoilValue } from "recoil";
 import { getTodayDate } from "@/app/utils/libs/getTodayDate";
-import { dateState } from "@/app/store/date";
+import { useDate } from "@/app/store/date";
 
 interface stockState {
   stock_name: string | null;
