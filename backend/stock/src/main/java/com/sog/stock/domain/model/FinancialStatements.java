@@ -34,7 +34,7 @@ public class FinancialStatements {
     private String stacyymm;
 
     @Column(nullable = true)
-    private BigDecimal totalLiabilities;
+    private BigDecimal totalLiabilites;
 
     @Column(nullable = false)
     private BigDecimal totalEquity;
@@ -43,7 +43,7 @@ public class FinancialStatements {
     private BigDecimal currentAssets;
 
     @Column(nullable = true)
-    private BigDecimal currentLiabilities;
+    private BigDecimal currentLiabilites;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "stock_code", nullable = false)
