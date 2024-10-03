@@ -12,6 +12,7 @@ import { throttle } from "lodash";
 import { useRouter } from "next/navigation";
 import { planetTrendData } from "@/app/mocks/planetTrendData";
 import { getValueFromRank } from "@/app/utils/libs/getValueFromRank";
+import AlienGuideButton from "@/app/components/atoms/Button/AlienGuideButton";
 
 // 커스텀 행성 타입 정의
 interface CustomPlanet extends THREE.Mesh<THREE.SphereGeometry, THREE.MeshStandardMaterial> {
@@ -162,6 +163,7 @@ export default function Page() {
           />
         )}
       </RecoilRoot>
+      <AlienGuideButton />
       <TimeMachineButtonGroup bottom="30px" right="20px" />
     </div>
   );
