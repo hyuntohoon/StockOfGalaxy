@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import SignUpInputGroup from "../../molecules/user/SignUpInputGroup";
 import LoginButton from "../../atoms/user/LoginButton";
 import styled from "styled-components";
@@ -9,6 +10,7 @@ import Title from "../../atoms/common/Title";
 import { FormContainer } from "@/app/styles/user";
 
 const SignUpTemplate = () => {
+  const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
@@ -19,7 +21,7 @@ const SignUpTemplate = () => {
   return (
     <>
       <FormContainer>
-      <Title text="sign up" size={45} color="white" weight={700} />
+        <Title text="sign up" size={45} color="white" weight={700} />
         <SignUpInputGroup
           setUserId={setUserId}
           setPassword={setPassword}
@@ -30,7 +32,7 @@ const SignUpTemplate = () => {
         />
         <LoginButton
           value="회원가입"
-          onClickProps={() => {
+          onClickProps={async () => {
             const res = signUpValidation(
               isAuthenticated,
               userId,
@@ -44,12 +46,16 @@ const SignUpTemplate = () => {
               return;
             }
 
-            signUpApi({
+            const response = await signUpApi({
               userId,
               password,
               nickname,
               email,
             });
+
+            if (response === true) {
+              router.push("/"); // 회원가입 성공 시 메인으로 이동
+            }
           }}
         />
       </FormContainer>
