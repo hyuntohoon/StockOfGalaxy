@@ -24,10 +24,11 @@ const LoginButtonGroup = ({ inputValue }) => {
     const resp = await login(inputValue, setAccessToken, setIsLoggedIn);
 
   if (resp) {
-   
+    
     setMemberId(resp);
     const userInfo = await getInfo(accessToken, setAccessToken);
     setUser(userInfo);
+    console.log(userInfo);
     router.push("/"); // 로그인 성공 시 메인 페이지로 이동
   } else {
     console.error("로그인 실패");

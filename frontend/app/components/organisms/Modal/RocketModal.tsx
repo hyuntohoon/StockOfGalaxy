@@ -17,9 +17,9 @@ const RocketModal = ({ onClose, currentPrice }) => {
   const [loading, setLoading] = useState(false);
   const stockCodeParam = useParams().stock;
   const stockCode = Array.isArray(stockCodeParam) ? stockCodeParam[0] : stockCodeParam;
-  const currentSetDate = useRecoilValue(dateState); // 현재 사용자가 설정한 날짜
+  
   const realDate = getTodayDate(); // 실제 오늘 날짜
-  const isToday = currentSetDate === realDate;
+  const isToday = date === realDate;
 
   // fetchData 함수 분리
   const fetchData = async () => {

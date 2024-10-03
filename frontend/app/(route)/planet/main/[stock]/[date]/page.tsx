@@ -29,7 +29,10 @@ interface stockState {
 let renderer: THREE.WebGLRenderer;
 let camera: THREE.PerspectiveCamera;
 
-export default function Home() {
+export default function Home(props:any) {
+  const {date} = props.params;
+  const {setDate} = useDate();
+  setDate(date);
   const mountRef = useRef<HTMLDivElement>(null);
   const [isRocketModalOpen, setIsRocketModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -201,7 +204,7 @@ export default function Home() {
         <>
           <div ref={mountRef} id="canvas" style={{ width: '100%', height: '100vh', position: 'absolute', zIndex: 1 }}></div>
           <RecoilRoot>
-            <DateCard right='30px' />
+            <DateCard right='30px'date={date} label={"PLANET PAGE"} />
             <PlanetSimpleInfoCard />
             <TimeMachineButtonGroup />
             <RocketButtonGroup onRocketClick={() => setIsRocketModalOpen(true)} />

@@ -1,11 +1,11 @@
 import styled from '@emotion/styled';
-import { useRecoilValue } from 'recoil';
-import { dateState } from '@/app/store/date';
 import { IoCalendarSharp } from "react-icons/io5";
 
 interface DateCardProps {
   right?: string; // 선택적 속성
   left?: string;  // 선택적 속성
+  date: string;
+  label?: string;
 }
 
 const formatDate = (dateString: string): string => {
@@ -15,23 +15,27 @@ const formatDate = (dateString: string): string => {
   return `${year}.${month}.${day}`;
 };
 
-const DateCard = ({ right, left }: DateCardProps) => {
-  const currentDate = formatDate(useRecoilValue(dateState));
-
+const DateCard = ({ right, left, date, label }: DateCardProps) => {
   return (
     <DateCardContainer right={right} left={left}>
-      <StyledCalendarIcon />
-      <span>{currentDate}</span>
+      {label && <Label>{label}</Label>}
+      <Separator />
+      <DateContent>
+        <StyledCalendarIcon />
+        <span>{formatDate(date)}</span>
+      </DateContent>
     </DateCardContainer>
   );
 };
 
+// 스타일링 적용
 const DateCardContainer = styled.div<{ right?: string; left?: string }>`
   display: flex;
+  flex-direction: column;  // 상하로 정렬
   align-items: center;
   justify-content: center;
   background-color: rgba(255, 255, 255, 0.4);
-  padding: 14px 20px;
+  padding: 20px;
   border-radius: 15px;
   color: #ffffff;
   font-weight: 600;
@@ -42,6 +46,26 @@ const DateCardContainer = styled.div<{ right?: string; left?: string }>`
   ${({ right }) => right && `right: ${right};`}  // right가 있으면 적용
   ${({ left }) => left && `left: ${left};`}    // left가 있으면 적용
   z-index: 1000;
+  width: 200px;  // 가로 크기 조정
+`;
+
+const Label = styled.span`
+  font-size: 20px;
+  color: #ffffff;
+  margin-bottom: 10px;
+`;
+
+const Separator = styled.hr`
+  width: 100%;
+  border: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.5);
+  margin: 10px 0;
+`;
+
+const DateContent = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 const StyledCalendarIcon = styled(IoCalendarSharp)`

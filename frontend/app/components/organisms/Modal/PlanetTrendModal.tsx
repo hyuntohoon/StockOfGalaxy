@@ -32,6 +32,7 @@ const PlanetTrendModal: React.FC<PlanetTrendModalProps> = ({
   position,
   camera,
   rendererDomElement,
+  date,
   onClose,
 }) => {
   const [screenPosition, setScreenPosition] = useState({ x: -9999, y: -9999 });
@@ -44,10 +45,11 @@ const PlanetTrendModal: React.FC<PlanetTrendModalProps> = ({
       changeRate: null,
     },
   ]);
-
-  const currentSetDate = useRecoilValue(dateState); // 현재 사용자가 설정한 날짜
+  const {setDate} = useDate();
+  
   const realDate = getTodayDate(); // 실제 오늘 날짜
-  const isToday = currentSetDate === realDate;
+  const isToday = (date === realDate);
+  console.log(isToday, date, realDate)
 
   // 주식 데이터를 가져오는 함수
   const fetchCurrentPrice = async () => {

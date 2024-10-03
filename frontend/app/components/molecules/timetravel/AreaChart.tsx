@@ -4,28 +4,9 @@ import styled from '@emotion/styled';
 import { keyframes } from '@emotion/react';
 import { wordData } from '@/app/mocks/wordData';
 import WordCloudComponent from '../common/WordCloudComponent';
-
-// Keyframes for overlay fade-in
-const fadeIn = keyframes`
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-`;
-
-// Keyframes for modal content slide-up
-const slideUp = keyframes`
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-`;
+import {ModalContent, ModalOverlay, ConfirmButton, CancelButton} from "./style";
+import { useDate } from '@/app/store/date';
+import { useRouter } from 'next/navigation';
 
 // 서버 사이드 렌더링 없이 클라이언트에서 동적으로 불러와 화면 렌더링
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
@@ -71,87 +52,9 @@ const ButtonContainer = styled.div`
   }
 `;
 
-// Modal Overlay 스타일
-const ModalOverlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.6);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 999;
-  animation: ${fadeIn} 0.4s ease forwards;
-`;
 
-// Modal Content 스타일
-const ModalContent = styled.div`
-  background-color: #fff;
-  padding: 30px;
-  border-radius: 12px;
-  width: 600px;
-  max-width: 95%;
-  box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.2);
-  animation: ${slideUp} 0.4s ease forwards;
-  position: relative;
-  color: #333;
-  display: flex; /* Flex 레이아웃 적용 */
-  justify-content: space-between;
-  gap: 20px;
 
-  /* 닫기 버튼 */
-  button.close-button {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: transparent;
-    border: none;
-    font-size: 20px;
-    font-weight: bold;
-    cursor: pointer;
-    color: #333;
-    transition: color 0.3s ease;
-
-    &:hover {
-      color: #555;
-    }
-  }
-
-  /* 왼쪽 섹션 (텍스트 정보) */
-  .modal-text-section {
-    flex: 1; /* 텍스트 섹션이 좌측에 고정 */
-    p, h4 {
-      margin: 10px 0;
-      font-size: 1rem;
-      line-height: 1.5;
-    }
-
-    ul {
-      list-style-type: none;
-      padding-left: 0;
-      margin-bottom: 20px;
-
-      li {
-        font-size: 0.95rem;
-        margin-bottom: 5px;
-        color: #444;
-      }
-    }
-  }
-
-  /* 오른쪽 섹션 (워드 클라우드) */
-  .word-cloud-container {
-    flex: 1; /* 워드 클라우드가 우측에 배치됨 */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-`;
-
-// Modal Component
-const Modal = ({ onClose, modalData }: { onClose: () => void, modalData: any }) => {
+const Modal = ({ onClose, onConfirm, date }: { onClose: () => void, onConfirm: () => void, date: string }) => {
   // 모달 바깥을 클릭했을 때 닫기
   const handleOverlayClick = (event: React.MouseEvent) => {
     if (event.target === event.currentTarget) {
@@ -163,24 +66,14 @@ const Modal = ({ onClose, modalData }: { onClose: () => void, modalData: any }) 
     <ModalOverlay onClick={handleOverlayClick}>
       <ModalContent>
         <button className="close-button" onClick={onClose}>×</button>
-        
-        {/* 왼쪽 텍스트 정보 */}
-        <div className="modal-text-section">
-          <h3>{modalData.date}</h3>
-          <p>뉴스 수: {modalData.newsCount}</p>
-          <p>트래픽: {modalData.traffic}</p>
-          <h4>Top 3 주식</h4>
-          <ul>
-            {modalData.topStocks.map((stock: string, index: number) => (
-              <li key={index}>{stock}</li>
-            ))}
-          </ul>
-          
-        </div>
 
-        {/* 오른쪽 워드 클라우드 */}
-        <div className="word-cloud-container">
-          <WordCloudComponent data={modalData.wordCloudData} width={300} height={300} />
+        {/* 모달 텍스트 안내 */}
+        <div className="modal-text-section">
+          <h3>{date}로 이동하시겠습니까?</h3>
+          <div className="modal-buttons">
+            <ConfirmButton onClick={onConfirm}>확인</ConfirmButton>
+            <CancelButton onClick={onClose}>취소</CancelButton>
+          </div>
         </div>
       </ModalContent>
     </ModalOverlay>
@@ -209,6 +102,15 @@ const AreaChart: React.FC<AreaChartProps> = ({ data, detail }) => {
     { date: string; newsCount: number; traffic: number; topStocks: string[] }[]
   >([]);
   const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태
+  const {date, setDate} = useDate();
+  const router = useRouter();
+
+
+  const handleConfirm = (date: string) => {
+    const newDate = date.split(' ')[0].replace(/-/g, '');
+    setDate(newDate);
+    router.push(`/main/${newDate}`)
+  }
 
   // 필터된 데이터로 시리즈 업데이트
   useEffect(() => {
@@ -220,7 +122,7 @@ const AreaChart: React.FC<AreaChartProps> = ({ data, detail }) => {
         data: newFilteredData.map((d) => d.newsCount),
       },
       {
-        name: '트래픽',
+        name: '거래량',
         data: newFilteredData.map((d) => d.traffic),
       },
     ]);
@@ -376,7 +278,7 @@ const AreaChart: React.FC<AreaChartProps> = ({ data, detail }) => {
       <Chart options={options} series={series} type="area" height={350} width={650} />
 
       {/* 모달이 열려 있을 경우 모달 표시 */}
-      {isModalOpen && modalData && <Modal onClose={() => setIsModalOpen(false)} modalData={modalData} />}
+      {isModalOpen && modalData && <Modal onClose={() => setIsModalOpen(false)} date={modalData.date} onConfirm={()=>handleConfirm(modalData.date)} />}
     </ChartContainer>
   );
 };

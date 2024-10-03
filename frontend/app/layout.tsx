@@ -16,6 +16,9 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Stock of Galaxy",
   description: "우주 주식 시간여행 플랫폼",
+  icons: {
+		icon: "/images/character/5.png",
+	},
 };
 
 export default function RootLayout({

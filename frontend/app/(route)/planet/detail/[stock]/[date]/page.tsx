@@ -5,7 +5,7 @@ import { wordData } from '@/app/mocks/wordData';
 import { getPlanetNewsWithContent, getSpaceNewsWithContent } from '@/app/utils/apis/news';
 import { getStockInfo } from '@/app/utils/apis/stock/planet';
 import { useRecoilValue } from 'recoil';
-import { dateState } from '@/app/store/date';
+import { useDate } from '@/app/store/date';
 import { News, Stock } from '@/app/types/planet';
 import PlanetDetailTemplate from '@/app/components/templates/planet/PlanetDetailTemplate';
 import TimeMachineButtonGroup from '@/app/components/molecules/ButtonGroup/TimeMachineButtonGroup';
@@ -32,8 +32,9 @@ const dummyNewsData: News[] = [
 ];
 
 const NewsPage: React.FC = (props: any) => {
+  const {setDate} = useDate();
   const { stock, date } = props.params;
-  const todayDate = useRecoilValue(dateState);
+  setDate(props.params.date);
   const [planetNews, setPlanetNews] = useState<News[]>([]);
   const [spaceNews, setSpaceNews] = useState<News[]>([]);
   const [planetWord, setPlanetWord] = useState<{text: string, value: number}[]>(wordData);
