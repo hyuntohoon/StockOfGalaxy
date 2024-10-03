@@ -47,7 +47,7 @@ const PlanetTrendModal: React.FC<PlanetTrendModalProps> = ({
   
   const realDate = getTodayDate(); // 실제 오늘 날짜
   const isToday = (date === realDate);
-  console.log(isToday, date, realDate)
+  // console.log(isToday, date, realDate)
 
   // 주식 데이터를 가져오는 함수
   const fetchCurrentPrice = async () => {
