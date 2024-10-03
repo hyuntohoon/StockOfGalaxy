@@ -10,7 +10,8 @@ public enum NewsCategory {
     세계("WORLD"),
     날씨("WEATHER"),
     건강("HEALTH"),
-    생활("LIFE");
+    생활("LIFE"),
+    기타("OTHER");
 
     private final String englishName;
 
