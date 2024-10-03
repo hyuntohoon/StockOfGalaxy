@@ -25,7 +25,7 @@ public class News {
     @Column(name = "title", nullable = false, length = 128) // 변경된 길이
     private String title;
 
-    @Column(name = "content", nullable = false, columnDefinition = "TEXT")
+    @Column(name = "content", nullable = false, columnDefinition = "MEDIUMTEXT")
     private String content;
 
     @Column(name = "thumbnail_img", length = 128) // 변경된 길이
