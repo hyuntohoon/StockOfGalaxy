@@ -1,6 +1,9 @@
 package com.sog.news.application.consumer;
 
+import com.sog.news.domain.dto.NewsConsumerResponseDTO;
 import com.sog.news.domain.model.News;
+import com.sog.news.domain.model.NewsKeyword;
+import com.sog.news.domain.repository.NewsKeywordRepository;
 import com.sog.news.domain.repository.NewsRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -9,18 +12,35 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class NewsConsumer {
 
     private final NewsRepository newsRepository;
+    private final NewsKeywordRepository newsKeywordRepository;
     private static final Logger logger = LoggerFactory.getLogger(NewsConsumer.class);
 
-    @KafkaListener(topics = "NEWS-TEST-LOCAL7", groupId = "testNews", containerFactory = "newsKafkaListenerContainerFactory")
-    public void consumeNewsMessage(News news, Acknowledgment ack) {
+    @KafkaListener(topics = "NEWS-TEST-LOCAL13", groupId = "testNews", containerFactory = "newsKafkaListenerContainerFactory")
+    public void consumeNewsMessage(NewsConsumerResponseDTO newsConsumerResponseDTO, Acknowledgment ack) {
         try {
-            if (news.getCategory() != null) { // category ENUM 타입 매핑 실패 대비
-                newsRepository.save(news);
+            if (newsConsumerResponseDTO.getCategory() != null) { // category ENUM 타입 매핑 실패 대비
+                // News 객체로 변환
+                News news = newsConsumerResponseDTO.toEntity();
+
+                // News 엔티티 저장
+                News savedNews = newsRepository.save(news);
+
+                // 키워드 저장
+                List<String> keywords = newsConsumerResponseDTO.getKeywords();
+                if (keywords != null) {
+                    for (String keyword : keywords) {
+                        NewsKeyword newsKeyword = NewsKeyword.fromDTO(savedNews, keyword);
+                        newsKeywordRepository.save(newsKeyword);
+                    }
+                }
+
                 ack.acknowledge(); // 성공적으로 INSERT되면 ACK 전송
             }
         } catch (Exception e) {
