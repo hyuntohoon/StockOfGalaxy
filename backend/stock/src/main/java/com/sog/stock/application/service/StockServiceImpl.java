@@ -46,6 +46,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -482,13 +484,22 @@ public class StockServiceImpl implements StockService {
                 List<StockTop8ResponseDTO> stockTop8ResponseList = new ArrayList<>();
                 int rank = 1;
 
-                for (StockNewsCountResponseDTO stockNews : stockNewsList) {
-                    // 종목명을 통해 종목번호를 검색
-                    Optional<Stock> stockOptional = stockRepository.findByCorpName(
-                        stockNews.getStockName());
+                List<String> priorityList = Arrays.asList("LG", "LG전자", "LG화학");
 
-                    if (stockOptional.isPresent()) {
-                        Stock stock = stockOptional.get();
+                for (StockNewsCountResponseDTO stockNews : stockNewsList) {
+                    // 종목명을 통해 종목번호를 부분 일치 검색
+                    List<Stock> stocks = stockRepository.findAllByPartialCorpName(stockNews.getStockName());
+
+                    // 여러 종목이 검색되었을 때 우선순위에 따른 필터링 로직 적용
+                    Optional<Stock> selectedStock = stocks.stream()
+                        .sorted(Comparator.comparingInt(stock -> {
+                            int index = priorityList.indexOf(stock.getCorpName());
+                            return index == -1 ? Integer.MAX_VALUE : index; // 우선순위가 없으면 마지막 순위로
+                        }))
+                        .findFirst(); // 우선순위가 높은 종목을 선택
+
+                    if (selectedStock.isPresent()) {
+                        Stock stock = selectedStock.get();
                         stockTop8ResponseList.add(new StockTop8ResponseDTO(
                             rank,
                             stock.getCorpName(),

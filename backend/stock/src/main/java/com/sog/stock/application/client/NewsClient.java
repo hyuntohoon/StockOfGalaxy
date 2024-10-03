@@ -4,11 +4,15 @@ import com.sog.stock.domain.dto.news.NewsCountByDateResponseDTO;
 import com.sog.stock.domain.dto.news.StockNewsCountResponseDTO;
 import com.sog.stock.domain.dto.user.UserInfoResponseDTO;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 @Service
+@Slf4j
 public class NewsClient {
 
     private final WebClient webClient;
