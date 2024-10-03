@@ -6,10 +6,9 @@ import RocketCard from '../RocketCard';
 import LoadingSpinner from '../../atoms/LoadingSpinner';
 import { getRocketListApi } from '@/app/utils/apis/rocket';
 import { useParams } from 'next/navigation';
-import { useRecoilValue } from 'recoil';
 import { getTodayDate } from '@/app/utils/libs/getTodayDate';
-import { dateState } from '@/app/store/date';
 import { rocketListData } from '@/app/mocks/rocketListData';
+import { useDate } from '@/app/store/date';
 
 const RocketModal = ({ onClose, currentPrice }) => {
   const [data, setData] = useState([]); // 현재 보여주는 데이터
@@ -17,6 +16,7 @@ const RocketModal = ({ onClose, currentPrice }) => {
   const [loading, setLoading] = useState(false);
   const stockCodeParam = useParams().stock;
   const stockCode = Array.isArray(stockCodeParam) ? stockCodeParam[0] : stockCodeParam;
+  const {date} = useDate();
   
   const realDate = getTodayDate(); // 실제 오늘 날짜
   const isToday = date === realDate;

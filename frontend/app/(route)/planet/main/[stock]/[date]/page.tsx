@@ -17,6 +17,7 @@ import useKRStockWebSocket from '@/app/hooks/useKRStockWebSocket';
 import { getTop7RocketsApi } from '@/app/utils/apis/rocket';
 import TypeWritter from './TypeWritter';
 import { rocketTop7ListData } from '@/app/mocks/rocketTop7ListData';
+import { useDate } from '@/app/store/date';
 
 interface stockState {
   stock_name: string | null;
