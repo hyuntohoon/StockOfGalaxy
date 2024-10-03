@@ -35,6 +35,7 @@ export default function Rockets({ scene, rocketData, currentPrice }: RocketProps
   };
 
   useEffect(() => {
+    console.log("Current Price in Rocket.tsx:", currentPrice); // 현재 주가 확인용
     if (!mountRef.current) return;
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -55,8 +56,9 @@ export default function Rockets({ scene, rocketData, currentPrice }: RocketProps
       side: THREE.DoubleSide,
     });
 
-    const rockets = fixedPositions.map((pos, index) => {
-      const data = rocketData[index];
+    // 총 로켓이 7개가 안된다면 그 수만큼이라도 보여줌
+    const rockets = Array.isArray(rocketData) ? rocketData.slice(0, fixedPositions.length).map((data, index) => {
+      const pos = fixedPositions[index]; // fixedPositions에서 위치를 가져옴
       const scaleWidth = Math.random() * 30 + 60;
       const scaleHeight = (scaleWidth / 7) * 4;
       const planeGeometry = new THREE.PlaneGeometry(scaleWidth, scaleHeight);
@@ -65,7 +67,8 @@ export default function Rockets({ scene, rocketData, currentPrice }: RocketProps
       rocket.userData = data;
       scene.add(rocket);
       return rocket;
-    });
+    }) : [];
+    
 
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
