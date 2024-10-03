@@ -1,13 +1,20 @@
 import styled from '@emotion/styled';
 
-const AlienGuideInfoBox = () => {
+interface InfoBoxProps {
+  info: string[];
+}
+
+const AlienGuideInfoBox: React.FC<InfoBoxProps> = ({ info }) => {
   return (
     <ContentBox>
-      <div>오늘은 어떤 주식이 인기 있었을까요? 🌟 <br />
-      주식이 뉴스에서 언급된 횟수에 따라 <br />주요 주식들을 행성 크기로 표현해보았어요!</div>
+      {info.map((line, index) => (
+        <div key={index}>{line}<br /></div>
+      ))}
     </ContentBox>
   );
 };
+
+export default AlienGuideInfoBox;
 
 const ContentBox = styled.div`
   color: #e6e6e6;
@@ -20,4 +27,3 @@ const ContentBox = styled.div`
   line-height: 1.6; /* 행간 조절 */
 `
 
-export default AlienGuideInfoBox;
