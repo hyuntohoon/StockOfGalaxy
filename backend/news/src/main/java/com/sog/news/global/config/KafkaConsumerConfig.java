@@ -23,7 +23,7 @@ import org.springframework.kafka.core.ConsumerFactory;
 public class KafkaConsumerConfig {
 
     private final String bootstrapServers = "3.38.183.146:30092";
-    private final String groupId = "testNews";
+    private final String groupId = "News";
 
     @Bean
     public ConsumerFactory<String, NewsConsumerResponseDTO> newsConsumerFactory() {
