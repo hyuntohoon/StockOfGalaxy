@@ -1,40 +1,30 @@
-import { useRouter } from 'next/navigation';
-import { defaultRequest, authRequest } from '../request';
+import { useRouter } from "next/navigation";
+import { defaultRequest, authRequest } from "../request";
 
-export const login = async (formData, setAccessToken, setLogin, setMemberId, setUser) => {
+export const login = async (formData, setAccessToken, setLogin) => {
   if (!formData.id || !formData.password) {
     alert("아이디와 비밀번호를 입력해주세요.");
     return false;
   }
 
   try {
-    // 기본 Axios 인스턴스를 사용하여 로그인 요청
-    const loginRes = await defaultRequest.post("/user/public/login", {
+    const loginRes = await defaultRequest.post("/user/login", {
       userId: formData.id,
       password: formData.password,
     });
-    console.log(loginRes.headers["authorization"]);
-    console.log(loginRes.data);
-    console.log(loginRes.headers.common.authorization);
-   
     const authorizationHeader = loginRes.headers["authorization"];
     const accessToken = authorizationHeader
       ? authorizationHeader.replace(/^Bearer\s+/i, "")
       : null;
-    const memberId = loginRes.data.memberId;
+
+    console.log(loginRes);
     console.log(accessToken);
-    alert(accessToken)
     if (accessToken) {
       setAccessToken(accessToken); // 유저 정보 저장
       setLogin(true);
-      setMemberId(memberId); // memberId 저장
-
-      // 로그인에 성공했을 때 getInfo 호출
-      const userInfo = await getInfo(accessToken, setAccessToken);
-      setUser(userInfo); // 유저 정보 저장
-
-      return true;
+      return loginRes.data.memberId;
     } else {
+      alert("토큰이 존재하지 않습니다");
       throw new Error("토큰이 존재하지 않습니다.");
     }
   } catch (error) {
@@ -50,17 +40,17 @@ export const logout = async (accessToken, setAccessToken) => {
     const logoutRes = await authClient.get("/user/logout");
     alert("로그아웃 api 확인 필요, utils/apis/users/index.ts");
     return true;
-  }catch (error) {
+  } catch (error) {
     alert("로그아웃 실패");
     return false;
   }
-}
+};
 
 export const getInfo = async (accessToken, setAccessToken) => {
   const authClient = authRequest(accessToken, setAccessToken);
 
   try {
-    const getInfoRes = await authClient.get("/user");
+    const getInfoRes = await authClient.get("/user/auth/info");
     console.log(getInfoRes.data);
     return getInfoRes.data;
   } catch (error) {

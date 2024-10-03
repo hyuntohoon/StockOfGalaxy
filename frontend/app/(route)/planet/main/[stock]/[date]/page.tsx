@@ -25,7 +25,7 @@ export default function Home() {
   const [isRocketModalOpen, setIsRocketModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);  // 로딩 상태
   const [rocketData, setRocketData] = useState<RocketData[]>([]); // 로켓 데이터 상태
-  const [currentPrice, setCurrentPrice] = useState<string | null>(null); // 실시간 주가 상태
+  const [currentPrice, setCurrentPrice] = useState<number | null>(null); // 실시간 주가 상태
   const planetRadius = 150; // 행성의 반지름
   const stockCodeParam = useParams().stock;
   const stockCode = Array.isArray(stockCodeParam) ? stockCodeParam[0] : stockCodeParam;
@@ -108,7 +108,7 @@ export default function Home() {
 
       // 행성 생성
       const planetGeometry = new THREE.SphereGeometry(planetRadius, 48, 48);
-      const planetTexture = new THREE.TextureLoader().load('/images/planetTexture/15.jpg'); // 텍스처 경로 설정
+      const planetTexture = new THREE.TextureLoader().load('/images/planetTexture/1.jpg'); // todo: stockCode 로 텍스처 경로 설정
       const planetMaterial = new THREE.MeshStandardMaterial({
         map: planetTexture, // 텍스처 추가
       });
@@ -116,7 +116,7 @@ export default function Home() {
       circle.add(planet);
 
       // 조명 설정
-      const ambientLight = new THREE.AmbientLight(0x999999);
+      const ambientLight = new THREE.AmbientLight(0xBEBEBE);
       newScene.add(ambientLight);
 
       const lights: THREE.DirectionalLight[] = [];
@@ -168,7 +168,7 @@ export default function Home() {
         requestAnimationFrame(animate);
 
         stars.rotation.y -= 0.001; // 별들이 천천히 회전
-        circle.rotation.y -= 0.004; // 행성 회전
+        circle.rotation.y += 0.004; // 행성 회전
 
         renderer.clear();
         renderer.render(newScene, camera);

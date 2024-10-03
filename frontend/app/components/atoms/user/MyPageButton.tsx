@@ -1,7 +1,7 @@
 "use client";
 
 import styled from "@emotion/styled";
-import {useAccessToken} from "@/app/utils/libs/user/useAccessToken";
+import { useAccessToken } from "@/app/store/userSlice";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { FormButton } from "@/app/styles/user";

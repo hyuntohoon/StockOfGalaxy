@@ -1,7 +1,5 @@
-import axios from 'axios';
-import {jwtDecode} from 'jwt-decode';
-
-
+import axios from "axios";
+import {jwtDecode} from "jwt-decode"; // import 수정: jwtDecode를 default import로 변경
 const SERVER_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 // 공통 Axios 인스턴스 생성 함수
@@ -9,19 +7,23 @@ const createAxiosInstance = () => {
   return axios.create({
     baseURL: SERVER_URL,
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     withCredentials: true,
   });
 };
 
 // Interceptor 설정
-export const setupInterceptors = (axiosInstance, accessToken, setAccessToken) => {
+export const setupInterceptors = (
+  axiosInstance,
+  accessToken,
+  setAccessToken
+) => {
   axiosInstance.interceptors.request.use(async (config) => {
-    if (accessToken) {
+    if (accessToken && typeof accessToken === "string") {
       try {
         const { exp } = jwtDecode(accessToken);
-        
+
         // 토큰 만료 확인 후 갱신
         if (exp && Date.now() >= exp * 1000) {
           const newToken = await getNewToken();
@@ -31,9 +33,11 @@ export const setupInterceptors = (axiosInstance, accessToken, setAccessToken) =>
           config.headers.Authorization = `Bearer ${accessToken}`;
         }
       } catch (error) {
-        console.error('토큰 디코딩 중 오류 발생:', error);
+        console.error("토큰 디코딩 중 오류 발생:", error);
         throw error;
       }
+    } else {
+      console.warn("유효하지 않은 액세스 토큰입니다.");
     }
 
     return config;
@@ -43,7 +47,7 @@ export const setupInterceptors = (axiosInstance, accessToken, setAccessToken) =>
   axiosInstance.interceptors.response.use(
     (response) => response,
     (error) => {
-      console.error('API 요청 오류:', error);
+      console.error("API 요청 오류:", error);
       return Promise.reject(error);
     }
   );
@@ -52,20 +56,28 @@ export const setupInterceptors = (axiosInstance, accessToken, setAccessToken) =>
 // 새로운 토큰 가져오는 함수
 const getNewToken = async () => {
   try {
-    const res = await defaultRequest.post(`/user/public/reissue`);
-    const authorizationHeader = res.headers['authorization'];
+    const res = await defaultRequest.post(`/user/reissue`);
+    const authorizationHeader = res.headers["authorization"];
     const accessToken = authorizationHeader
-      ? authorizationHeader.replace(/^Bearer\s+/i, '')
+      ? authorizationHeader.replace(/^Bearer\s+/i, "")
       : null;
     return accessToken;
   } catch (error) {
-    console.error('토큰 갱신 중 오류 발생:', error);
+    console.error("토큰 갱신 중 오류 발생:", error);
     throw error;
   }
 };
 
 // 인증이 필요한 요청 클라이언트 생성 함수
 export const authRequest = (accessToken, setAccessToken) => {
+  // accessToken 유효성 검사
+  console.log("Access token: " + accessToken);
+  if (!accessToken || typeof accessToken !== 'string') {
+    console.warn('유효하지 않은 accessToken입니다.');
+    // 필요시 여기서 추가 처리
+    return null; // 혹은 다른 적절한 반환값을 설정
+  }
+
   const authClient = createAxiosInstance();
   setupInterceptors(authClient, accessToken, setAccessToken);
   return authClient;

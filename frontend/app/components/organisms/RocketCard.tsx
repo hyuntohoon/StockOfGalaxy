@@ -55,7 +55,7 @@ const RocketCard: React.FC<RocketCardProps & { fetchData: () => void }> = ({ dat
       <StyledRocketContent message={data.message} />
       <TimeStampTimeMachineWrapper>
         <RocketTimeStamp createdAt={data.createdAt} />
-        <RocketTimeMachineButton />
+        <RocketTimeMachineButton createdAt={data.createdAt}/>
       </TimeStampTimeMachineWrapper>
     </Content>
   );

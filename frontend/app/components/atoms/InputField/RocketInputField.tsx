@@ -7,7 +7,7 @@ import { useParams } from 'next/navigation';
 import { useMemberId } from '@/app/store/userSlice';
 
 interface RocketInputFieldProps {
-  currentPrice: string | null; // 실시간 주가 데이터
+  currentPrice: number | null; // 실시간 주가 데이터
   isToday: boolean;
 }
 
