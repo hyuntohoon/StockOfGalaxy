@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.sog.news.domain.model.News;
+import com.sog.news.domain.model.NewsKeyword;
 import com.sog.news.domain.repository.NewsRepository;
 import com.sog.news.global.exception.exceptions.NewsNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -178,9 +179,16 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     public NewsResponseDTO getNewsById(Long id) {
-        return newsRepository.findById(id)
-                .map(NewsResponseDTO::fromEntity)  // News 엔티티를 DTO로 변환
-                .orElseThrow(() -> new NewsNotFoundException("ID : " + id + " 에 해당하는 뉴스가 존재하지 않습니다."));  // 커스텀 예외 사용
+        News news = newsRepository.findById(id)
+                .orElseThrow(() -> new NewsNotFoundException("ID : " + id + "에 해당하는 뉴스가 존재하지 않습니다."));  // 커스텀 예외 사용
+
+        // 해당 뉴스의 키워드 리스트 조회
+        List<String> keywords = news.getKeywords().stream()
+                .map(NewsKeyword::getNewsStockName)  // NewsKeyword에서 키워드 추출
+                .collect(Collectors.toList());
+
+        // DTO로 변환 후 반환
+        return NewsResponseDTO.fromEntity(news, keywords);  // News와 키워드를 함께 전달
     }
 
     @Override
