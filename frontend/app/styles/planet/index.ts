@@ -21,6 +21,7 @@ export const SectionContainer = styled.div`
   gap: 20px;
   padding: 10px 5%; /* 좌우 패딩을 추가하여 화면의 5% 여유 공간 */
   align-items: stretch; /* 높이를 맞추기 위한 설정 */
+  justify-content: center;
 
   & > div {
     background-color: #f0f0f0;

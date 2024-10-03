@@ -12,6 +12,8 @@ import StockInfoTemplate from "@/app/components/templates/stock/StockInfoTemplat
 import styled from "@emotion/styled";
 import { useWheelScroll } from "@/app/hooks/useWheelScroll";
 import { News } from "@/app/types/planet";
+import FinancialMetricsChart from "../../molecules/stock/FinancialMetricsChart";
+import StockDailyPriceTemplate from "../../organisms/stock/StockDailyPriceTemplate";
 
 const ChartContainer = styled.div`
   width: 800px;
@@ -66,7 +68,7 @@ const PlanetDetailTemplate: React.FC<PlanetDetailTemplateProps> = ({
 
   // 페이지가 마운트될 때 가로 스크롤 위치 복원
   useEffect(() => {
-    const savedScrollPositionX = sessionStorage.getItem('scrollPositionX');
+    const savedScrollPositionX = sessionStorage.getItem("scrollPositionX");
     if (savedScrollPositionX && contentRef.current) {
       contentRef.current.scrollTo({
         left: Number(savedScrollPositionX), // 저장된 가로 스크롤 위치로 복원
@@ -165,13 +167,13 @@ const PlanetDetailTemplate: React.FC<PlanetDetailTemplateProps> = ({
         </SectionContainer>
 
         <SectionContainer ref={chartRef}>
-          <ChartContainer>
-            <ChartTemplate />
-          </ChartContainer>
+          <ChartTemplate />
+          <StockDailyPriceTemplate />
         </SectionContainer>
 
         <SectionContainer ref={stocksRef}>
           <StockInfoTemplate />
+          <FinancialMetricsChart />
         </SectionContainer>
 
         <SectionContainer ref={planetNewsRef}>
