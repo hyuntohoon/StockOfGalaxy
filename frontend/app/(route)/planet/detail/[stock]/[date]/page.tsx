@@ -11,6 +11,8 @@ import PlanetDetailTemplate from '@/app/components/templates/planet/PlanetDetail
 import TimeMachineButtonGroup from '@/app/components/molecules/ButtonGroup/TimeMachineButtonGroup';
 import RocketButtonGroup from '@/app/components/molecules/ButtonGroup/RocketButtonGroup';
 import RocketModal from '@/app/components/organisms/Modal/RocketModal';
+import { getTop7RocketsApi } from '@/app/utils/apis/rocket';
+import { RocketData } from '@/app/types/rocket';
 
 
 // 임시 뉴스 데이터
@@ -41,6 +43,21 @@ const NewsPage: React.FC = (props: any) => {
   const [spaceWord, setSpaceWord] = useState<{text: string, value: number}[]>(wordData);
   const [stockInfo, setStockInfo] = useState<Stock>();
   const [isRocketModalOpen, setIsRocketModalOpen] = useState(false);
+  const [rocketData, setRocketData] = useState<RocketData[]>([]);
+
+  const fetchRocketData = async () => {
+    try {
+      const response = await getTop7RocketsApi(stock);
+      // const response = rocketTop7ListData.rocketList; // toto: api 연동해서 실제 데이터로 변경
+      setRocketData(response.rocketList);
+    } catch (error) {
+      console.error('로켓 데이터를 불러오는 중 에러가 발생했습니다.', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchRocketData();
+  }, [stock]);
 
   useEffect(() => {
     const fetchStockData = async () => {
@@ -89,7 +106,7 @@ const NewsPage: React.FC = (props: any) => {
       />
       <TimeMachineButtonGroup />
       <RocketButtonGroup onRocketClick={() => setIsRocketModalOpen(true)} />
-      {isRocketModalOpen && <RocketModal onClose={() => setIsRocketModalOpen(false)} currentPrice={undefined} />}
+      {isRocketModalOpen && <RocketModal onClose={() => setIsRocketModalOpen(false)} fetchRocketData={fetchRocketData} />}
     </>
   );
 };

@@ -2,7 +2,6 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { RecoilRoot } from 'recoil';
 import { useParams } from 'next/navigation';
 import DateCard from '@/app/components/molecules/Card/DateCard';
 import TimeMachineButtonGroup from '@/app/components/molecules/ButtonGroup/TimeMachineButtonGroup';
@@ -13,10 +12,8 @@ import DetailTriangleButtonGuide from '@/app/components/atoms/Text/DetailTriangl
 import Rocket from '@/app/components/atoms/Button/Rocket';
 import RocketModal from '@/app/components/organisms/Modal/RocketModal';
 import { RocketData } from '@/app/types/rocket';
-import useKRStockWebSocket from '@/app/hooks/useKRStockWebSocket';
 import { getTop7RocketsApi } from '@/app/utils/apis/rocket';
 import TypeWritter from './TypeWritter';
-import { rocketTop7ListData } from '@/app/mocks/rocketTop7ListData';
 import { useDate } from '@/app/store/date';
 
 interface stockState {
@@ -30,9 +27,9 @@ interface stockState {
 let renderer: THREE.WebGLRenderer;
 let camera: THREE.PerspectiveCamera;
 
-export default function Home(props:any) {
-  const {date} = props.params;
-  const {setDate} = useDate();
+export default function Home(props: any) {
+  const { date } = props.params;
+  const { setDate } = useDate();
   setDate(date);
   const mountRef = useRef<HTMLDivElement>(null);
   const [isRocketModalOpen, setIsRocketModalOpen] = useState(false);
@@ -41,40 +38,22 @@ export default function Home(props:any) {
   const planetRadius = 150;
   const stockCodeParam = useParams().stock;
   const stockCode = Array.isArray(stockCodeParam) ? stockCodeParam[0] : stockCodeParam;
-  const textureId = (parseInt(stockCode.slice(0, -1)) % 26) + 1;
-
-  const [stockDataInfo, setStockDataInfo] = useState<stockState[]>([
-    {
-      stock_name: null,
-      stock_code: stockCode || null,
-      currentPrice: null,
-      changePrice: null,
-      changeRate: null,
-    },
-  ]);
+  const textureId = (parseInt(stockCode.slice(0, -1)) % 25) + 1;
 
   const [scene, setScene] = useState<THREE.Scene | null>(null);
 
   const fetchRocketData = async () => {
     try {
       const response = await getTop7RocketsApi(stockCode);
-      // const response = rocketTop7ListData.rocketList; // toto: api 연동해서 실제 데이터로 변경
-      setRocketData(response);
+      setRocketData(response.rocketList);
     } catch (error) {
       console.error('로켓 데이터를 불러오는 중 에러가 발생했습니다.', error);
     }
   };
 
-  // 확인용
-  useEffect(() => {
-    console.log('stockDataInfo 업데이트됨:', stockDataInfo);
-  }, [stockDataInfo]);
-
   useEffect(() => {
     fetchRocketData();
   }, [stockCode]);
-
-  useKRStockWebSocket([{ stock_code: stockCode }], setStockDataInfo);
 
   useEffect(() => {
     let circle: THREE.Object3D;
@@ -99,23 +78,10 @@ export default function Home(props:any) {
       newScene.add(camera);
 
       circle = new THREE.Object3D();
-      stars = new THREE.Group();
+      stars = createStars();
 
       newScene.add(circle);
       newScene.add(stars);
-
-      const starGeometry = new THREE.SphereGeometry(0.5, 8, 8);
-      const starMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
-
-      for (let i = 0; i < 2000; i++) {
-        const starMesh = new THREE.Mesh(starGeometry, starMaterial);
-        starMesh.position.set(
-          (Math.random() - 0.5) * 2000,
-          (Math.random() - 0.5) * 2000,
-          (Math.random() - 0.5) * 2000
-        );
-        stars.add(starMesh);
-      }
 
       const planetGeometry = new THREE.SphereGeometry(planetRadius, 48, 48);
       const planetTexture = new THREE.TextureLoader().load(`/images/planetTexture/${textureId}.jpg`);
@@ -129,7 +95,7 @@ export default function Home(props:any) {
       newScene.add(ambientLight);
 
       const lights: THREE.DirectionalLight[] = [];
-      lights[0] = new THREE.DirectionalLight(0xffffff, 0.5);
+      lights[0] = new THREE.DirectionalLight(0xffffff, 0.3);
       lights[1] = new THREE.DirectionalLight(0xffffff, 0.3);
       lights[2] = new THREE.DirectionalLight(0x122486, 0.5);
       lights[0].position.set(1, 0, 0);
@@ -139,7 +105,6 @@ export default function Home(props:any) {
       newScene.add(lights[1]);
       newScene.add(lights[2]);
 
-      // 글로우 효과 추가
       const glowMaterial = new THREE.ShaderMaterial({
         vertexShader: `
           varying vec3 vNormal;
@@ -162,7 +127,7 @@ export default function Home(props:any) {
       });
 
       const glowMesh = new THREE.Mesh(planetGeometry.clone(), glowMaterial);
-      glowMesh.scale.multiplyScalar(1.2); // 행성보다 더 크게 설정하여 외곽에 글로우
+      glowMesh.scale.multiplyScalar(1.2);
       circle.add(glowMesh);
 
       window.addEventListener('resize', onWindowResize, false);
@@ -176,6 +141,7 @@ export default function Home(props:any) {
       function animate() {
         requestAnimationFrame(animate);
         stars.rotation.y -= 0.001;
+        stars.rotation.x += 0.0005;
         circle.rotation.y += 0.004;
         renderer.clear();
         renderer.render(newScene, camera);
@@ -194,8 +160,39 @@ export default function Home(props:any) {
         renderer.dispose();
       }
     };
-
   }, [isLoading]);
+
+  const createStars = () => {
+    const starsGroup = new THREE.Group();
+    const starGeometry = new THREE.TetrahedronGeometry(1.5, 0);
+    const colors = [0xe0e0e0, 0xA4A8FF, 0xFFA4DF, 0xb0e0e6]; // 색상 추가
+    const starMaterials = colors.map(
+      (color) =>
+        new THREE.MeshPhongMaterial({
+          color: color,
+          shininess: 80, // 광택
+          specular: 0xffffff, // 반사광
+          flatShading: true,
+        })
+    );
+
+    for (let i = 0; i < 1200; i++) {
+      const material = starMaterials[Math.floor(Math.random() * starMaterials.length)];
+      const starMesh = new THREE.Mesh(starGeometry, material);
+      starMesh.position
+        .set(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5)
+        .normalize();
+      starMesh.position.multiplyScalar(150 + Math.random() * 800);
+      starMesh.rotation.set(
+        Math.random() * 2,
+        Math.random() * 2,
+        Math.random() * 2
+      );
+      starsGroup.add(starMesh);
+    }
+
+    return starsGroup;
+  };
 
   return (
     <div style={{ position: 'relative' }}>
@@ -204,14 +201,16 @@ export default function Home(props:any) {
       ) : (
         <>
           <div ref={mountRef} id="canvas" style={{ width: '100%', height: '100vh', position: 'absolute', zIndex: 1 }}></div>
-          <RecoilRoot>
             <DateCard right='30px'date={date} label={"PLANET PAGE"} />
             <PlanetSimpleInfoCard />
             <TimeMachineButtonGroup />
             <RocketButtonGroup onRocketClick={() => setIsRocketModalOpen(true)} />
-            {scene && <Rocket scene={scene} rocketData={rocketData} currentPrice={stockDataInfo[0]?.currentPrice || 0} />}
-            {isRocketModalOpen && <RocketModal onClose={() => setIsRocketModalOpen(false)} currentPrice={stockDataInfo[0]?.currentPrice || 0} />}
-          </RecoilRoot>
+            {scene && <Rocket scene={scene} rocketData={rocketData} stockCode={stockCode} />}
+            {isRocketModalOpen &&
+              <RocketModal
+                onClose={() => setIsRocketModalOpen(false)}
+                fetchRocketData={fetchRocketData} // 로켓 탑7 API 호출 함수
+            />}
           <DetailTriangleButton />
           <DetailTriangleButtonGuide />
         </>
@@ -219,7 +218,6 @@ export default function Home(props:any) {
     </div>
   );
 }
-
 
 function onWindowResize(this: Window, ev: UIEvent) {
   throw new Error('Function not implemented.');

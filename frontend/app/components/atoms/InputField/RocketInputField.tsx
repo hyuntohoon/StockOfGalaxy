@@ -9,9 +9,11 @@ import { useMemberId } from '@/app/store/userSlice';
 interface RocketInputFieldProps {
   currentPrice: number | null; // 실시간 주가 데이터
   isToday: boolean;
+  fetchRocketData: () => void; // getTop7RocketsApi 함수
+  fetchRocketListData: () => void; // getRocketListApi 함수
 }
 
-const RocketInputField: React.FC<RocketInputFieldProps> = ({ currentPrice, isToday }) => {
+const RocketInputField: React.FC<RocketInputFieldProps> = ({ currentPrice, isToday, fetchRocketData, fetchRocketListData }) => {
   const [inputValue, setInputValue] = useState<string>('');
   const { isLoggedIn } = useIsLoggedIn();
   const { memberId } = useMemberId();
@@ -34,6 +36,8 @@ const RocketInputField: React.FC<RocketInputFieldProps> = ({ currentPrice, isTod
         console.log('로켓 작성 성공:', response);
         alert('로켓이 작성되었습니다.');
         setInputValue(''); // 입력 필드 초기화
+        fetchRocketData(); // 작성 후 로켓 데이터 갱신 (getTop7RocketsApi)
+        fetchRocketListData(); // 작성 후 리스트 데이터 갱신 (getRocketListApi)
       } catch (error) {
         alert('로켓 작성에 실패했습니다.');
       }
@@ -59,6 +63,7 @@ const RocketInputField: React.FC<RocketInputFieldProps> = ({ currentPrice, isTod
         placeholder={getPlaceholderText()}
         value={inputValue}
         onChange={handleInputChange}
+        onKeyPress={(event) => event.key === 'Enter' && handleSubmit()} // 엔터 키 이벤트
         disabled={!isLoggedIn || !isToday}
       />
       <CreateRocketButton onClick={handleSubmit} />
