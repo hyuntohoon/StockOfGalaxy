@@ -37,7 +37,7 @@ export default function Home() {
   const planetRadius = 150;
   const stockCodeParam = useParams().stock;
   const stockCode = Array.isArray(stockCodeParam) ? stockCodeParam[0] : stockCodeParam;
-  const textureId = (parseInt(stockCode.slice(0, -1)) % 15) + 1;
+  const textureId = (parseInt(stockCode.slice(0, -1)) % 26) + 1;
 
   const [stockDataInfo, setStockDataInfo] = useState<stockState[]>([
     {
