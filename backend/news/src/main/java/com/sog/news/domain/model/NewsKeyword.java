@@ -23,6 +23,14 @@ public class NewsKeyword {
     @Column(name = "news_stock_name", nullable = false, length = 16)
     private String newsStockName;
 
+    // DTO에서 엔티티로 변환하는 메서드 추가
+    public static NewsKeyword fromDTO(News news, String keyword) {
+        return NewsKeyword.builder()
+                .news(news)
+                .newsStockName(keyword)
+                .build();
+    }
+
     // 생성자에 @Builder 적용
     @Builder
     public NewsKeyword(News news, String newsStockName) {
