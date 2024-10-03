@@ -499,13 +499,12 @@ public class StockServiceImpl implements StockService {
         return newsClient.getNewsCountResponse(newsDate)
             .flatMap(stockNewsList -> {
                 // 기사 수(count)를 기준으로 내림차순 정렬
-                // 뉴스 데이터 확인을 위한 로그
-                System.out.println("Received news data: " + stockNewsList);
                 stockNewsList.sort((a, b) -> b.getCount().compareTo(a.getCount()));
 
                 List<StockTop8ResponseDTO> stockTop8ResponseList = new ArrayList<>();
                 int rank = 1;
 
+                // 우선순위 리스트
                 List<String> priorityList = Arrays.asList("LG", "LG전자", "LG화학");
 
                 for (StockNewsCountResponseDTO stockNews : stockNewsList) {
@@ -527,12 +526,24 @@ public class StockServiceImpl implements StockService {
                             stock.getCorpName(),
                             stock.getStockCode()
                         ));
-                        rank++;
+                    } else {
+                        // 매칭되지 않은 경우 기본값 추가
+                        stockTop8ResponseList.add(new StockTop8ResponseDTO(
+                            rank,
+                            stockNews.getStockName(), // 뉴스에서 받은 종목명 사용
+                            "Unknown" // 매칭되지 않은 경우 기본 종목 코드
+                        ));
                     }
+
+                    rank++;
+                    // 8개의 종목만 추가
+                    if (rank > 8) break;
                 }
+
                 return Mono.just(new StockTop8ListResponseDTO(stockTop8ResponseList));
             });
     }
+
 
     @Override
     public Mono<StockFrequencyByDateListDTO> getStockFrequencyByDate(String startDate,
