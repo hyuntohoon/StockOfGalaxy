@@ -247,10 +247,10 @@ public class StockServiceImpl implements StockService {
             // DTO TO ENTITY
             FinancialStatements financialStatements = FinancialStatements.builder()
                 .stacyymm(financialDTO.getStacYymm())
-                .totalLiabilities(financialDTO.getTotalLiabilities())
+                .totalLiabilites(financialDTO.getTotalLiabilities())
                 .totalEquity(financialDTO.getTotalEquity())
                 .currentAssets(financialDTO.getCurrentAssets())
-                .currentLiabilities(financialDTO.getCurrentLiabilities())
+                .currentLiabilites(financialDTO.getCurrentLiabilities())
                 .stock(stock)
                 .build();
 
@@ -276,8 +276,8 @@ public class StockServiceImpl implements StockService {
                 fs.getStock().getStockCode(),
                 fs.getStacyymm(),
                 fs.getCurrentAssets(),
-                fs.getCurrentLiabilities(),
-                fs.getTotalLiabilities(),
+                fs.getCurrentLiabilites(),
+                fs.getTotalLiabilites(),
                 fs.getTotalEquity()
             ))
             .collect(Collectors.toList());
@@ -475,6 +475,8 @@ public class StockServiceImpl implements StockService {
         return newsClient.getNewsCountResponse(newsDate)
             .flatMap(stockNewsList -> {
                 // 기사 수(count)를 기준으로 내림차순 정렬
+                // 뉴스 데이터 확인을 위한 로그
+                System.out.println("Received news data: " + stockNewsList);
                 stockNewsList.sort((a, b) -> b.getCount().compareTo(a.getCount()));
 
                 List<StockTop8ResponseDTO> stockTop8ResponseList = new ArrayList<>();
