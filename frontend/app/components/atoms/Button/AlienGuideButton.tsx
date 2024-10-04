@@ -19,7 +19,7 @@ const AlienGuideButton : React.FC<InfoBoxProps> = ({ info })=> {
         onMouseLeave={() => setIsHovered(false)}
       >
         <Icon>
-          <Image src={alien} alt="플래닛 트랜드 가이드" width={40} />
+          <Image src={alien} alt="플래닛 트랜드 가이드" width={35} />
         </Icon>
       </StyledButton>
       {isHovered && (
@@ -55,7 +55,6 @@ const InfoBox = styled.div`
   top: 94px; /* 버튼 아래에 표시되도록 위치 조정 */
   right: 50px;
   width: 290px;
-
   background-color: #000000c4;
   padding: 10px;
   border-radius: 16px;
