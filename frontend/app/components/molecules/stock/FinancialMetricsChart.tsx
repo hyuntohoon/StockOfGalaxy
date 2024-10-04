@@ -15,6 +15,7 @@ import {
   Tooltip,
   Legend,
   PointElement,
+  ChartOptions,
 } from "chart.js";
 
 ChartJS.register(
@@ -114,7 +115,7 @@ const FinancialMetricsChart = () => {
     }
   }, [financialMetricsInfo]);
 
-  const options = {
+  const options: ChartOptions<"bar" | "line"> = {
     responsive: true,
     plugins: {
       legend: {
@@ -131,14 +132,14 @@ const FinancialMetricsChart = () => {
     scales: {
       x: {
         grid: {
-          display: false, // 세로선(격자선)을 숨김
+          display: false,
         },
       },
       y: {
         type: "linear",
         position: "left",
         grid: {
-          display: true, // 가로선만 표시
+          display: true,
         },
         ticks: {
           callback: function (value) {
@@ -150,7 +151,7 @@ const FinancialMetricsChart = () => {
         type: "linear",
         position: "right",
         grid: {
-          drawOnChartArea: false, // y1에 대해 그리드 숨기기
+          drawOnChartArea: false,
         },
         ticks: {
           callback: function (value) {
