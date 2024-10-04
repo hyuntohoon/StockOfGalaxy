@@ -226,9 +226,9 @@ const FinancialMetricsChart = () => {
   };
 
   return (
-    <Container>
-      <Bar data={chartData} options={options} />
-    </Container>
+    // <Container>
+    <Bar data={chartData} options={options} />
+    // {/* </Container> */}
   );
 };
 
