@@ -10,7 +10,7 @@ import { debounce } from "@/app/utils/libs/debounce";
 import { ContentContainer, SectionContainer } from "@/app/styles/planet";
 import ChartTemplate from "@/app/components/templates/chart/ChartTemplate";
 import StockInfoTemplate from "@/app/components/templates/stock/StockInfoTemplate";
-import StockDailyPriceTemplate from "@/app/components/organisms/stock/StockDailyPriceTeplate";
+import StockDailyPriceTemplate from "@/app/components/organisms/stock/StockDailyPriceTemplate";
 import styled from "@emotion/styled";
 import StockInfo from "../../molecules/stock/StockInfo";
 
