@@ -40,6 +40,11 @@ const nextConfig = {
         hostname: "wimg.mk.co.kr",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "imgnews.pstatic.net", // 추가된 도메인
+        pathname: "/**",
+      },
     ],
   },
 };
