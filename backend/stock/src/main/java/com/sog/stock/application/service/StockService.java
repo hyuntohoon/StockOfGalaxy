@@ -9,6 +9,7 @@ import com.sog.stock.domain.dto.QuarterStockPriceListDTO;
 import com.sog.stock.domain.dto.StockFrequencyByDateListDTO;
 import com.sog.stock.domain.dto.StockPresentPriceResponseDTO;
 import com.sog.stock.domain.dto.StockTop8ListResponseDTO;
+import com.sog.stock.domain.dto.TimeMachineListResponseDTO;
 import com.sog.stock.domain.dto.rocket.RocketAddRequestDTO;
 import com.sog.stock.domain.dto.StockAddListRequestDTO;
 import com.sog.stock.domain.dto.StockDTO;
@@ -95,6 +96,6 @@ public interface StockService {
     Mono<StockTop8ListResponseDTO> getTop8StocksWithNews(String date);
 
     // 사용자가 지정한 날짜 기간 내에 거래량과 기사수 response -> 지정한 날짜에 대해 일자와 뉴스 기사수를 넘겨받음. (나는 일자와 뉴스 기사수 그리고 top3 종목에 대해 거래량을 취합해서 보내주면 됨.)
-    Mono<StockFrequencyByDateListDTO> getStockFrequencyByDate(String startDate, String endDate);
+    Mono<TimeMachineListResponseDTO> getStockFrequencyByDate(String startDate, String endDate);
 
 }
