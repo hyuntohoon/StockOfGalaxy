@@ -73,7 +73,7 @@ const PlanetDetailTemplate: React.FC<PlanetDetailTemplateProps> = ({
     }
   };
 
-  useWheelScroll(contentRef, sections, scrollToSection);
+  // useWheelScroll(contentRef, sections, scrollToSection);
 
   // 페이지가 마운트될 때 가로 스크롤 위치 복원
   useEffect(() => {

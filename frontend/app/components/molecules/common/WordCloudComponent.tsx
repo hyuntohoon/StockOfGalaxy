@@ -37,11 +37,13 @@ const WordCloudContainer = styled.div`
   position: relative;
 `;
 
-// Word 인터페이스 정의
+// Word 인터페이스 정의 (x, y, rotate 속성 추가)
 interface Word {
   text: string;
   value: number;
-  size?: number; // size 속성을 추가
+  x: number;      // x 좌표 추가
+  y: number;      // y 좌표 추가
+  rotate: number; // 회전 각도 추가
 }
 
 // WordCloudComponent Props 인터페이스
@@ -57,7 +59,7 @@ const WordCloudComponent: React.FC<WordCloudProps> = ({
   height,
 }) => {
   const svgRef = useRef<SVGSVGElement>(null);
-  const [words, setWords] = useState<{ text: string; x: number; y: number; size: number; rotate: number }[]>([]);
+  const [words, setWords] = useState<Word[]>([]); // 변경된 Word 타입으로 설정
   const [tooltip, setTooltip] = useState<{ x: number; y: number; text: string } | null>(null);
 
   useEffect(() => {
@@ -65,7 +67,7 @@ const WordCloudComponent: React.FC<WordCloudProps> = ({
       .size([width, height]) // props로 전달된 가로 및 세로 사이즈 설정
       .words(data.map((d) => ({
         text: d.text,
-        value: d.value, // value 속성 추가
+        value: d.value,
         size: d.value * 10, // value에 기반하여 size 계산
       })))
       .padding(5)
@@ -73,7 +75,8 @@ const WordCloudComponent: React.FC<WordCloudProps> = ({
       .font("Impact")
       .fontSize((d) => d.size)
       .on("end", (words) => {
-        setWords(words);
+        // 'words'는 { text, x, y, rotate } 속성을 가지도록 설정됩니다.
+        setWords(words as Word[]); // 타입 변환
       });
 
     layout.start();
@@ -81,7 +84,7 @@ const WordCloudComponent: React.FC<WordCloudProps> = ({
 
   const handleMouseEnter = (
     event: React.MouseEvent<SVGTextElement, MouseEvent>,
-    word: (typeof words)[0]
+    word: Word
   ) => {
     const { clientX, clientY } = event;
     setTooltip({
@@ -102,7 +105,7 @@ const WordCloudComponent: React.FC<WordCloudProps> = ({
           {words.map((word, index) => (
             <text
               key={index}
-              fontSize={word.size}
+              fontSize={word.value * 10} // size를 value에 기반하여 설정
               fontFamily="Impact"
               fill="#61dafb"
               textAnchor="middle"
