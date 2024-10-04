@@ -39,21 +39,21 @@ spring:
           predicates:
             - Path=/api/user/**
           filters:
-            - CachingGatewayFilterFactory # 캐싱 필터 적용
+            - Caching # 필터 이름 수정
 
         - id: stock-service
           uri: http://stock-service.backcd.svc.cluster.local:80
           predicates:
             - Path=/api/stock/**
           filters:
-            - CachingGatewayFilterFactory # 캐싱 필터 적용
+            - Caching # 필터 이름 수정
 
         - id: news-service
           uri: http://news-service.backcd.svc.cluster.local:80
           predicates:
             - Path=/api/news/**
           filters:
-            - CachingGatewayFilterFactory # 캐싱 필터 적용
+            - Caching # 필터 이름 수정
 
 jwt:
   secret: ${JWT_SECRET:default-secret}
