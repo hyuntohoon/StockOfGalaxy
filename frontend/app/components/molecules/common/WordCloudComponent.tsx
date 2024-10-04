@@ -1,6 +1,6 @@
-import React, { useRef, useEffect, useState } from "react";
-import styled from "@emotion/styled";
-import cloud from "d3-cloud";
+import React, { useEffect, useState, useRef } from 'react';
+import styled from '@emotion/styled';
+import cloud from 'd3-cloud';
 
 const TooltipContainer = styled.div<{ x: number; y: number }>`
   position: fixed;
@@ -65,6 +65,7 @@ const WordCloudComponent: React.FC<WordCloudProps> = ({
       .size([width, height]) // props로 전달된 가로 및 세로 사이즈 설정
       .words(data.map((d) => ({
         text: d.text,
+        value: d.value, // value 속성 추가
         size: d.value * 10, // value에 기반하여 size 계산
       })))
       .padding(5)
