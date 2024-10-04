@@ -82,7 +82,7 @@ export const signUpApi = async (formData) => {
   try {
     const signUpRes = await defaultRequest.post(`/user/join`, formData);
 
-    if (signUpRes.status === 201) {
+    if (signUpRes.status === 200) {
       alert("회원가입에 성공했습니다.");
       return true;
     } else {
