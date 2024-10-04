@@ -49,7 +49,7 @@ const StockHeaderInfo: React.FC<StockHeaderInfoProps> = () => {
   ];
 
   useEffect(() => {
-    getHeaderStockData(stock_code, "20241004").then((data) => {
+    getHeaderStockData(stock_code, "20240902").then((data) => {
       dividends[0].targetPrice = 0;
       dividends[1].targetPrice = 0;
       dividends[2].targetPrice = 0;
