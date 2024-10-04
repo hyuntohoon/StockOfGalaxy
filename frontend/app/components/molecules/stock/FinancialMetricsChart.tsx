@@ -205,7 +205,7 @@ const FinancialMetricsChart = () => {
           display: true,
         },
         ticks: {
-          callback: function (value: number) {
+          callback: function (value: any) {
             return value / 10000 + "조";
           },
         },
@@ -217,7 +217,7 @@ const FinancialMetricsChart = () => {
           drawOnChartArea: false,
         },
         ticks: {
-          callback: function (value) {
+          callback: function (value: any) {
             return value + "%";
           },
         },
@@ -227,8 +227,7 @@ const FinancialMetricsChart = () => {
 
   return (
     <Container>
-      <div>asdkasdjkasjdk</div>
-      {/* <Bar data={chartData} options={options} /> */}
+      <Bar data={chartData} options={options} />
     </Container>
   );
 };

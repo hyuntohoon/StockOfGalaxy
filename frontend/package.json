@@ -19,6 +19,7 @@
     "animejs": "^3.2.2",
     "axios": "^1.7.7",
     "chart.js": "^4.4.4",
+    "chartjs": "^0.3.24",
     "chartjs-adapter-date-fns": "^3.0.0",
     "chartjs-chart-wordcloud": "^4.4.1",
     "chartjs-plugin-zoom": "^2.0.1",
