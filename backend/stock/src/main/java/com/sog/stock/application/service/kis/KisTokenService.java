@@ -75,7 +75,7 @@ public class KisTokenService {
                 if (response.getAccessToken() == null) {
                     return Mono.error(new NullPointerException("AccessToken is null"));
                 }
-                redisService.setValues(TOKEN_KEY, response.getAccessToken(), Duration.ofHours(6));
+                redisService.setValues(TOKEN_KEY, response.getAccessToken(), Duration.ofHours(24));
                 return Mono.just(response.getAccessToken());
             });
 
