@@ -160,6 +160,11 @@ export default function Page(props:any) {
       router.push(`/planet/main/${stockCode}/${currentDate}`);
     }
   };
+  const info = [
+    '오늘은 어떤 주식이 인기 있었을까요?🌟',
+    '주식이 뉴스에서 언급된 횟수에 따라',
+    '주요 주식들을 행성 크기로 표현해보았어요!',
+  ];
 
   return (
     <div
@@ -185,7 +190,7 @@ export default function Page(props:any) {
           />
         )}
       </RecoilRoot>
-      <AlienGuideButton />
+      <AlienGuideButton info={info}/>
       <TimeMachineButtonGroup bottom="30px" right="20px" />
     </div>
   );

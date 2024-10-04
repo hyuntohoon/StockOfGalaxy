@@ -60,7 +60,8 @@ export const getPlanetNews = async (today: string, stockName: string) => {
 export const getPlanetNewsWithContent = async (today: string, stockName: string) => {
     try {
         const formattedDate = convertToApiDateFormat(today);
-        const res = await defaultRequest.get(`/news/today/planet/contain-preview/${formattedDate}/${stockName}`);
+        const encodedName = stockName ? encodeURIComponent(stockName) : encodeURIComponent("삼성전자");
+        const res = await defaultRequest.get(`/news/today/planet/contain-preview/${formattedDate}/${encodedName}`);
         console.log(res);
         return res.data;  // ��성별 소식(내용) 조회
     } catch (error) {

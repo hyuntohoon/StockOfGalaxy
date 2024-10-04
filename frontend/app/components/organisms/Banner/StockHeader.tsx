@@ -22,6 +22,7 @@ const MenuHeaderWrapper = styled.div<{ isOpen: boolean }>`
   top: 5%;  /* 상단에서 5% 떨어진 위치 */
   right: 0;
   height: 90%;  /* 전체 높이의 90%를 차지 */
+  z-index: 10000000;
 
   transform: translate(100%, -50%) translateX(${props => (props.isOpen ? '-101%' : '0')}) translateY(55%);
   display: flex;

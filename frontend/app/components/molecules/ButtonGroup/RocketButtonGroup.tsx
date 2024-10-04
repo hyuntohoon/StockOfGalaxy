@@ -1,15 +1,34 @@
+"use client"
+import {useState} from "react";
+import AlienGuideInfoBox from "@/app/components/atoms/Text/AlienGuideInfoBox";
 import styled from '@emotion/styled';
 import Image from 'next/image';
 import rocketIcon from '@/public/images/planet/rocketIcon.png'
 
 const RocketButtonGroup = ({ onRocketClick }) => {
+
+  const [isHovered, setIsHovered] = useState(false); // 마우스 호버 상태 관리
+
+  const info = [
+    '행성을 맴도는 로켓은',
+    '과거의 유저들이 주식에 대한','의견을 날려보낸 것이랍니다!'
+  ]
+
   return (
-    <ButtonGroup onClick={onRocketClick}>
+    <>
+    <ButtonGroup onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)} onClick={onRocketClick}>
       <Icon>
         <Image src={rocketIcon} alt="로켓" width={50} height={50} />
       </Icon>
       <Text>로켓</Text>
     </ButtonGroup>
+    {isHovered && (
+      <InfoBox>
+        <AlienGuideInfoBox info={info}/>
+      </InfoBox>
+    )}
+    </>
   );
 };
 
@@ -42,6 +61,18 @@ const Text = styled.div`
   font-size: 12px;
   font-weight: bold;
   text-align: center;
+`;
+
+const InfoBox = styled.div`
+  position: absolute;
+  right: 30px;
+  bottom: 125px;
+  width: 290px;
+
+  background-color: #000000c4;
+  padding: 10px;
+  border-radius: 16px;
+  box-shadow: 0px 0px 12px rgba(75, 75, 75, 0.217);
 `;
 
 export default RocketButtonGroup;

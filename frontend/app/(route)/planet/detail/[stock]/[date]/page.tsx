@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { wordData } from '@/app/mocks/wordData';
 import { getPlanetNewsWithContent, getSpaceNewsWithContent } from '@/app/utils/apis/news';
-import { getStockInfo } from '@/app/utils/apis/stock/planet';
+import { getStockInfo, getStockName } from '@/app/utils/apis/stock/planet';
 import { useRecoilValue } from 'recoil';
 import { useDate } from '@/app/store/date';
 import { News, Stock } from '@/app/types/planet';
@@ -69,9 +69,19 @@ const NewsPage: React.FC = (props: any) => {
       }
     };
 
-    const fetchPlanetData = async () => {
+    const getName = async () => {
       try {
-        const res = await getPlanetNewsWithContent(date, stockInfo?.companyName || '');
+        const name = await getStockName(stock);
+        return name;
+      } catch (error) {
+        console.error('Error fetching stock name:', error);
+      }
+    };
+
+    const fetchPlanetData = async (stockName: string) => {
+      try {
+        console.log("요청", stockName, date);
+        const res = await getPlanetNewsWithContent(date, stockName);
         // planetNews가 비어있으면 dummy 데이터로 설정
         setPlanetNews(res.length > 0 ? res : dummyNewsData);
       } catch (error) {
@@ -91,9 +101,15 @@ const NewsPage: React.FC = (props: any) => {
       }
     };
 
-    fetchStockData();
-    fetchPlanetData();
-    fetchSpaceData();
+    // 비동기 호출을 감싸는 함수
+    const fetchData = async () => {
+      await fetchStockData();
+      const response = await getName(); // `await` 추가
+      await fetchPlanetData(response);
+      await fetchSpaceData();
+    };
+
+    fetchData(); // 데이터 가져오기 호출
   }, []);
 
   return (

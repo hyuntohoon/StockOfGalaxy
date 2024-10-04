@@ -4,7 +4,12 @@ import Image from 'next/image';
 import alien from '@/public/images/alien/1.png';
 import AlienGuideInfoBox from '../Text/AlienGuideInfoBox'; // InfoBox 컴포넌트
 
-const AlienGuideButton = () => {
+
+interface InfoBoxProps {
+  info: string[];
+}
+
+const AlienGuideButton : React.FC<InfoBoxProps> = ({ info })=> {
   const [isHovered, setIsHovered] = useState(false); // 마우스 호버 상태 관리
 
   return (
@@ -19,7 +24,7 @@ const AlienGuideButton = () => {
       </StyledButton>
       {isHovered && (
         <InfoBox>
-          <AlienGuideInfoBox />
+          <AlienGuideInfoBox info={info}/>
         </InfoBox>
       )}
     </div>

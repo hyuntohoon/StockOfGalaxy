@@ -57,7 +57,7 @@ export default function Home(props: any) {
 
   useEffect(() => {
     let circle: THREE.Object3D;
-    let stars: THREE.Group;
+    let particle: THREE.Object3D;
 
     function init() {
       renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -78,10 +78,32 @@ export default function Home(props: any) {
       newScene.add(camera);
 
       circle = new THREE.Object3D();
-      stars = createStars();
+      particle = new THREE.Object3D();
+      newScene.add(particle);
 
       newScene.add(circle);
-      newScene.add(stars);
+
+      
+
+      const geometry = new THREE.TetrahedronGeometry(1, 0);
+      const material = new THREE.MeshPhongMaterial({
+        color: 0xffffff,
+        flatShading: true,
+      });
+
+      for (let i = 0; i < 1000; i++) {
+        const mesh = new THREE.Mesh(geometry, material);
+        mesh.position
+          .set(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5)
+          .normalize();
+        mesh.position.multiplyScalar(180 + Math.random() * 700);
+        mesh.rotation.set(
+          Math.random() * 2,
+          Math.random() * 2,
+          Math.random() * 2
+        );
+        particle.add(mesh);
+      }
 
       const planetGeometry = new THREE.SphereGeometry(planetRadius, 48, 48);
       const planetTexture = new THREE.TextureLoader().load(`/images/planetTexture/${textureId}.jpg`);
@@ -140,8 +162,8 @@ export default function Home(props: any) {
 
       function animate() {
         requestAnimationFrame(animate);
-        stars.rotation.y -= 0.001;
-        stars.rotation.x += 0.0005;
+        particle.rotation.x -= 0.0001;
+        particle.rotation.y -= 0.002;
         circle.rotation.y += 0.004;
         renderer.clear();
         renderer.render(newScene, camera);
