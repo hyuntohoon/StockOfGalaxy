@@ -17,6 +17,8 @@ import com.sog.stock.domain.dto.StockFrequencyByDateListDTO;
 import com.sog.stock.domain.dto.StockPresentPriceResponseDTO;
 import com.sog.stock.domain.dto.StockTop8ListResponseDTO;
 import com.sog.stock.domain.dto.StockTop8ResponseDTO;
+import com.sog.stock.domain.dto.TimeMachineListResponseDTO;
+import com.sog.stock.domain.dto.TimeMachineResponseDTO;
 import com.sog.stock.domain.dto.kis.KisMinuteStockResponseDTO;
 import com.sog.stock.domain.dto.kis.KisPresentPriceResponseDTO;
 import com.sog.stock.domain.dto.news.StockNewsCountResponseDTO;
@@ -546,9 +548,43 @@ public class StockServiceImpl implements StockService {
 
 
     @Override
-    public Mono<StockFrequencyByDateListDTO> getStockFrequencyByDate(String startDate,
+    public Mono<TimeMachineListResponseDTO> getStockFrequencyByDate(String startDate,
         String endDate) {
-        return null;
+        // 1. 날짜 형식을 YYYY-MM-DD로 변환
+        String startFormatted = convertToNewsDateFormat(startDate);
+        String endFormatted = convertToNewsDateFormat(endDate);
+
+        // 2. 뉴스 기사 수 데이터 요청
+        return newsClient.getNewsCountByDate(startFormatted, endFormatted)
+            .flatMapMany(Flux::fromIterable)
+            .map(newsData -> {
+                // 3. 더미 데이터를 생성하여 사용
+                String totalStockVolume = generateDummyStockVolume();  // 임시로 거래량을 생성
+                List<String> top3Stocks = generateDummyTop3Stocks();  // 임시로 상위 3개 주식명을 생성
+
+                // 4. DTO 생성
+                TimeMachineResponseDTO dto = new TimeMachineResponseDTO(
+                    newsData.getDate().toString(),  // 날짜 (String 형식으로 변환)
+                    newsData.getCount(),  // 기사 수
+                    totalStockVolume,  // 총 거래량 (더미)
+                    top3Stocks  // 상위 3개 주식명 (더미)
+                );
+
+                return dto;
+            })
+            .collectList() // 리스트로 수집
+            .map(timeMachineResponseList -> new TimeMachineListResponseDTO(timeMachineResponseList));  // List로부터 DTO 생성
+
+    }
+
+    // 더미 데이터 생성 메서드 - 거래량
+    private String generateDummyStockVolume() {
+        return String.valueOf((int) (Math.random() * 1000000) + 1000000); // 임시로 100만 ~ 200만 사이의 값
+    }
+
+    // 더미 데이터 생성 메서드 - 상위 3개 주식명
+    private List<String> generateDummyTop3Stocks() {
+        return Arrays.asList("삼성전자", "LG전자", "현대차");  // 임시로 고정된 주식 종목명 리스트
     }
 
     // "yyyyMMdd" -> "yyyy-MM-dd"로 변환

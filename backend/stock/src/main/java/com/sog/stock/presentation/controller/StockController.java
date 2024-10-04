@@ -9,9 +9,11 @@ import com.sog.stock.domain.dto.QuarterStockPriceListDTO;
 import com.sog.stock.domain.dto.StockAddListRequestDTO;
 import com.sog.stock.domain.dto.StockDTO;
 import com.sog.stock.domain.dto.DailyStockPriceListDTO;
+import com.sog.stock.domain.dto.StockFrequencyByDateListDTO;
 import com.sog.stock.domain.dto.StockNameResponseDTO;
 import com.sog.stock.domain.dto.StockPresentPriceResponseDTO;
 import com.sog.stock.domain.dto.StockTop8ListResponseDTO;
+import com.sog.stock.domain.dto.TimeMachineListResponseDTO;
 import com.sog.stock.domain.enums.QuarterType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequiredArgsConstructor
@@ -167,6 +170,16 @@ public class StockController {
         return ResponseEntity.ok(response);
     }
 
-    // 지정한 날짜 기간 내에 거래량과 기사수를 조회 
+    // 지정한 날짜 기간 내에 거래량과 기사수를 조회하는 엔드포인트
+    @GetMapping("/timemachine")
+    public Mono<ResponseEntity<TimeMachineListResponseDTO>> getStockFrequencyByDate(
+        @RequestParam("startDate") String startDate,
+        @RequestParam("endDate") String endDate) {
+
+        // 서비스 로직 호출하여 데이터 조회
+        return stockService.getStockFrequencyByDate(startDate, endDate)
+            .map(stockFrequencyByDateListDTO -> ResponseEntity.ok(stockFrequencyByDateListDTO))
+            .defaultIfEmpty(ResponseEntity.notFound().build());
+    }
 
 }
