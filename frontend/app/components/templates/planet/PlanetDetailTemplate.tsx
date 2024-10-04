@@ -12,7 +12,7 @@ import StockInfoTemplate from "@/app/components/templates/stock/StockInfoTemplat
 import styled from "@emotion/styled";
 import { useWheelScroll } from "@/app/hooks/useWheelScroll";
 import { News } from "@/app/types/planet";
-// import FinancialMetricsChart from "../../molecules/stock/FinancialMetricsChart";
+import FinancialMetricsChart from "../../molecules/stock/FinancialMetricsChart";
 import StockDailyPriceTemplate from "../../organisms/stock/StockDailyPriceTemplate";
 import NewsModal from "./NewsModal";
 
@@ -182,7 +182,7 @@ const PlanetDetailTemplate: React.FC<PlanetDetailTemplateProps> = ({
 
         <SectionContainer ref={stocksRef}>
           <StockInfoTemplate />
-          {/* <FinancialMetricsChart /> */}
+          <FinancialMetricsChart />
         </SectionContainer>
 
         <SectionContainer ref={planetNewsRef}>
