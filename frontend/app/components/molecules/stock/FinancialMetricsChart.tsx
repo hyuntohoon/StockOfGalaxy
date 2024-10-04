@@ -135,16 +135,14 @@ const FinancialMetricsChart = () => {
       const labels = financialMetricsInfo.map((item) =>
         formatDateString(item.stac_yymm)
       );
-      const totalCapital = financialMetricsInfo.map((item) =>
-        parseFloat(item.total_equity)
+      const totalCapital = financialMetricsInfo.map(
+        (item) => item.total_equity
       );
-      const totalLiabilities = financialMetricsInfo.map((item) =>
-        parseFloat(item.total_liabilites)
+      const totalLiabilities = financialMetricsInfo.map(
+        (item) => item.total_liabilites
       );
       const debtRatio = financialMetricsInfo.map(
-        (item) =>
-          (parseFloat(item.total_liabilites) / parseFloat(item.total_equity)) *
-          100
+        (item) => (item.total_liabilites / item.total_equity) * 100
       ); // 부채비율 계산
 
       const data = {
