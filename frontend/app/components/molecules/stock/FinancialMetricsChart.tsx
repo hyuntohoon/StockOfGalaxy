@@ -142,7 +142,7 @@ const FinancialMetricsChart = () => {
           display: true,
         },
         ticks: {
-          callback: function (value) {
+          callback: function (value: number) {
             return value / 10000 + "조";
           },
         },
