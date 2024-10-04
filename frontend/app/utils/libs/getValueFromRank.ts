@@ -4,7 +4,7 @@ export const getValueFromRank = (rank: number) => {
     case 1:
       return 180;
     case 2:
-      return 165;
+      return 160;
     case 3:
       return 150;
     case 4:

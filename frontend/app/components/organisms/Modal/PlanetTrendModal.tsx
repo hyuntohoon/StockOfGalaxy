@@ -47,7 +47,7 @@ const PlanetTrendModal: React.FC<PlanetTrendModalProps> = ({
   
   const realDate = getTodayDate(); // 실제 오늘 날짜
   const isToday = (date === realDate);
-  // console.log(isToday, date, realDate)
+  // console.log('설정날짜 / 실제 날짜', date, realDate, isToday);
 
   // 주식 데이터를 가져오는 함수
   const fetchCurrentPrice = async () => {
@@ -70,7 +70,7 @@ const PlanetTrendModal: React.FC<PlanetTrendModalProps> = ({
   // 과거 데이터를 가져오는 함수
   const fetchStockHistoryData = async () => {
     try {
-      const historicalData = await getStockHistoryInfoApi(stockCode, date );
+      const historicalData = await getStockHistoryInfoApi(stockCode, date);
       if (historicalData) {
         setStockDataInfo([{
           stock_name: corpName || null,
@@ -85,7 +85,13 @@ const PlanetTrendModal: React.FC<PlanetTrendModalProps> = ({
     }
   };
 
-  useKRStockWebSocket(stockDataInfo, setStockDataInfo);
+  useKRStockWebSocket(stockDataInfo, setStockDataInfo); // -> todo: 나중에 데이터 넣고 아래로 바꿔라
+  // 웹소켓에서 받은 데이터는 isToday일 때만 상태 업데이트
+  // useKRStockWebSocket(stockDataInfo, (newStockDataInfo) => {
+  //   if (isToday) {
+  //     setStockDataInfo(newStockDataInfo);
+  //   }
+  // });
 
   useEffect(() => {
     if (isToday) {
