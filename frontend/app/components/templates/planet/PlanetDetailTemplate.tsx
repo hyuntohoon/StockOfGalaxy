@@ -182,7 +182,7 @@ const PlanetDetailTemplate: React.FC<PlanetDetailTemplateProps> = ({
 
         <SectionContainer ref={stocksRef}>
           <StockInfoTemplate />
-          {/* <FinancialMetricsChart /> */}
+          <FinancialMetricsChart />
         </SectionContainer>
 
         <SectionContainer ref={planetNewsRef}>
