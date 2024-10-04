@@ -49,21 +49,21 @@ spring:
           predicates:
             - Path=/api/user/**
           filters:
-            - CachingGatewayFilterFactory  # 캐싱 필터 적용
+            - name: CachingGatewayFilterFactory  # 필터 이름 명시
 
         - id: stock-service
           uri: http://stock-service.backcd.svc.cluster.local:80
           predicates:
             - Path=/api/stock/**
           filters:
-            - CachingGatewayFilterFactory  # 캐싱 필터 적용
+            - name: CachingGatewayFilterFactory  # 캐싱 필터 적용
 
         - id: news-service
           uri: http://news-service.backcd.svc.cluster.local:80
           predicates:
             - Path=/api/news/**
           filters:
-            - CachingGatewayFilterFactory  # 캐싱 필터 적용
+            - name: CachingGatewayFilterFactory  # 캐싱 필터 적용
 
 jwt:
   secret: ${JWT_SECRET:default-secret}  # JWT 시크릿 키 설정
@@ -80,5 +80,3 @@ management:
 logging:
   level:
     org.springframework.cloud.gateway: DEBUG  # 게이트웨이 디버그 로그 설정
-
-# 필요한 경우 Redis에 캐시 데이터 저장 관련 추가 설정을 여기에 배치할 수 있습니다.
