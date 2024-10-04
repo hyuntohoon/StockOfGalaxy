@@ -1,8 +1,8 @@
 spring:
   data:
     redis:
-      host: redis
-      port: 6379      # Redis 서버의 포트 번호
+      host: redis  # Redis 서버의 호스트명
+      port: 6379   # Redis 서버의 포트 번호
   cloud:
     gateway:
       filter:
@@ -33,30 +33,40 @@ spring:
               - "Accept"
             allowCredentials: true
             maxAge: 3600
+      discovery:
+        locator:
+          enabled: true  # Discovery Locator 활성화
       routes:
+        - id: authenticated-routes
+          uri: http://user-service.backcd.svc.cluster.local:80
+          predicates:
+            - Path=/api/*/auth/**
+          filters:
+            - JwtAuthenticationFilter  # JWT 인증 필터 적용
+
         - id: user-service
           uri: http://user-service.backcd.svc.cluster.local:80
           predicates:
             - Path=/api/user/**
           filters:
-            - Caching # 필터 이름 수정
+            - CachingGatewayFilterFactory  # 캐싱 필터 적용
 
         - id: stock-service
           uri: http://stock-service.backcd.svc.cluster.local:80
           predicates:
             - Path=/api/stock/**
           filters:
-            - Caching # 필터 이름 수정
+            - CachingGatewayFilterFactory  # 캐싱 필터 적용
 
         - id: news-service
           uri: http://news-service.backcd.svc.cluster.local:80
           predicates:
             - Path=/api/news/**
           filters:
-            - Caching # 필터 이름 수정
+            - CachingGatewayFilterFactory  # 캐싱 필터 적용
 
 jwt:
-  secret: ${JWT_SECRET:default-secret}
+  secret: ${JWT_SECRET:default-secret}  # JWT 시크릿 키 설정
 
 management:
   endpoints:
@@ -69,4 +79,6 @@ management:
 
 logging:
   level:
-    org.springframework.cloud.gateway: DEBUG
+    org.springframework.cloud.gateway: DEBUG  # 게이트웨이 디버그 로그 설정
+
+# 필요한 경우 Redis에 캐시 데이터 저장 관련 추가 설정을 여기에 배치할 수 있습니다.
