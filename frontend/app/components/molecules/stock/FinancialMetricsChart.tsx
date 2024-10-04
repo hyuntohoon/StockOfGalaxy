@@ -227,13 +227,8 @@ const FinancialMetricsChart = () => {
 
   return (
     <Container>
-      {financialMetricsInfo.length > 0 ? (
-        <>
-          <Bar data={chartData} options={options} />
-        </>
-      ) : (
-        ""
-      )}
+      <div>asdkasdjkasjdk</div>
+      {/* <Bar data={chartData} options={options} /> */}
     </Container>
   );
 };
