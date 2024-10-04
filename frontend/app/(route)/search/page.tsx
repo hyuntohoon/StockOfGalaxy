@@ -22,7 +22,8 @@ import useKRStockWebSocket from '@/app/hooks/useKRStockWebSocket';
 import formatPrice from '@/app/utils/apis/stock/formatPrice';
 import styled from '@emotion/styled';
 import { format } from 'path';
-import { News } from '@/app/types/planet'
+import { News } from '@/app/types/planet';
+import NewsModal from '@/app/components/templates/planet/NewsModal';
 import { searchNewsWithTitle } from '@/app/utils/apis/news';
 
 const StockPriceContainer = styled.div`
@@ -135,6 +136,13 @@ const SearchPage = () => {
     const [isLoading, setIsLoading] = useState(false); // 로딩 상태
     const observer = useRef<IntersectionObserver | null>(null);
     const lastNewsElementRef = useRef<HTMLDivElement | null>(null); // 마지막 뉴스 항목을 위한 ref
+    const [selectedNews, setSelectedNews] = useState<News | null>(null); // 선택된 뉴스 상태
+    const [modalOpen, setModalOpen] = useState(false); // 모달 열기 상태
+
+    const handleNewsClick = (news: News) => {
+        setSelectedNews(news); // 선택된 뉴스 설정
+        setModalOpen(true); // 모달 열기
+    };
     // 실시간 데이터 업데이트
     useKRStockWebSocket(stockData, setStockDataInfo);
 
@@ -262,16 +270,13 @@ const SearchPage = () => {
                     {newsResults.map((news, index) => {
                         const isLastElement = index === newsResults.length - 1;
                         return (
-                            <SearchItem onClick={() =>{
-                                router.push(`/news/${news.newsId}`)
-                            }}
-                            key={index} ref={isLastElement ? lastNewsElementRef : null}>
-                                <div>
-                                    <strong>{news.title}</strong>
-                                    <NewsDescription>{news.content}</NewsDescription>
-                                    <NewsInfo>{formatDate(news.publishDate)}</NewsInfo> {/* 뉴스 정보 표시 */}
-                                </div>
-                            </SearchItem>
+                            <SearchItem key={index} onClick={() => handleNewsClick(news)}> {/* 뉴스 클릭 핸들러 추가 */}
+                            <div>
+                                <strong>{news.title}</strong>
+                                <NewsDescription>{news.content}</NewsDescription>
+                                <NewsInfo>{formatDate(news.publishDate)}</NewsInfo> {/* 뉴스 정보 표시 */}
+                            </div>
+                        </SearchItem>
                         );
                     })}
                 </SearchResultsContainer>
@@ -279,6 +284,13 @@ const SearchPage = () => {
             {/* 결과가 없을 때 */}
             {hasSearched && activeTab === 'stock' && filteredStocks.length === 0 && (
                 <NoResults>검색 결과가 없습니다.</NoResults>
+            )}
+            {/* 뉴스 모달 컴포넌트 추가 */}
+            {modalOpen && selectedNews && (
+                <NewsModal
+                    news={selectedNews}
+                    onClose={() => setModalOpen(false)} // 모달 닫기 핸들러
+                />
             )}
         </SearchContainer>
     );
