@@ -47,7 +47,7 @@ const RocketCardModal: React.FC<RocketCardModalProps> = ({
     >
       <RocketContainer>
         <UserInfoWrapper>
-          <ProfileImage src={`/images/profile/${data.characterType}.png`} alt={`${data.nickname}의 프로필 이미지`} />
+          <ProfileImage characterType={data.characterType} alt={`${data.nickname}의 프로필 이미지`} />
           <Nickname>{data.nickname}</Nickname>
         </UserInfoWrapper>
         <ContentContainer>
