@@ -4,7 +4,7 @@ import ProfileImage from '../../atoms/ProfileImage';
 import LikedStockButtonGroup from '../../molecules/ButtonGroup/LikedStockButtonGroup';
 import MypageButtonGroup from '../../molecules/ButtonGroup/MypageButtonGroup';
 import SignOutButtonGroup from '../../molecules/ButtonGroup/SignOutButtonGroup';
-import { useUser, useMemberId } from '@/app/store/userSlice';
+import { useUser } from '@/app/store/userSlice';
 
 interface MenuHeaderModalProps {
   position: { top: number; left: number }; 
