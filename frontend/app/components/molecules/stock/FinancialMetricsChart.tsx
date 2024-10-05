@@ -44,7 +44,7 @@ const Container = styled.div`
 const FinancialMetricsChart = () => {
   const { stock } = useParams();
   const stock_code = Array.isArray(stock) ? stock[0] : stock ?? "005930";
-  const [financialMetricsInfo, setFinancialMetricsInfo] = useState([
+  const [financialMetricsInfo, setFinancialMetricsInfo] = useState<any[]>([
     {
       stock_code: "005930",
       stac_yymm: "201703",
@@ -53,68 +53,9 @@ const FinancialMetricsChart = () => {
       total_liabilites: 743994,
       total_equity: 1898180,
     },
-    {
-      stock_code: "005930",
-      stac_yymm: "201803",
-      current_assets: 1549420,
-      current_liabilites: 682986,
-      total_liabilites: 892132,
-      total_equity: 2232599,
-    },
-    {
-      stock_code: "005930",
-      stac_yymm: "201903",
-      current_assets: 1773885,
-      current_liabilites: 673541,
-      total_liabilites: 918527,
-      total_equity: 2532152,
-    },
-    {
-      stock_code: "005930",
-      stac_yymm: "202003",
-      current_assets: 1867397,
-      current_liabilites: 647633,
-      total_liabilites: 910698,
-      total_equity: 2663877,
-    },
-    {
-      stock_code: "005930",
-      stac_yymm: "202103",
-      current_assets: 2091554,
-      current_liabilites: 901095,
-      total_liabilites: 1185577,
-      total_equity: 2742686,
-    },
-    {
-      stock_code: "005930",
-      stac_yymm: "202203",
-      current_assets: 2323691,
-      current_liabilites: 904637,
-      total_liabilites: 1240360,
-      total_equity: 3152909,
-    },
-    {
-      stock_code: "005930",
-      stac_yymm: "202303",
-      current_assets: 2144421,
-      current_liabilites: 760574,
-      total_liabilites: 942924,
-      total_equity: 3597994,
-    },
-    {
-      stock_code: "005930",
-      stac_yymm: "202403",
-      current_assets: 2085443,
-      current_liabilites: 817704,
-      total_liabilites: 989837,
-      total_equity: 3719161,
-    },
   ]);
 
-  const formatDateString = (dateString) => {
-    if (dateString.length !== 6) {
-      throw new Error("Input string must be in the format YYYYMM");
-    }
+  const formatDateString = (dateString: string) => {
     const year = dateString.slice(0, 4);
     const month = dateString.slice(4, 6);
     return `${year}.${month}`;
@@ -132,6 +73,8 @@ const FinancialMetricsChart = () => {
 
   useEffect(() => {
     if (financialMetricsInfo) {
+      console.log(financialMetricsInfo);
+
       const labels = financialMetricsInfo.map((item) =>
         formatDateString(item.stac_yymm)
       );

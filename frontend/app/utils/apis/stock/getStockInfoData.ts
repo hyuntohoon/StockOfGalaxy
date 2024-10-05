@@ -36,10 +36,9 @@ export const getFinancialMetricsInfo = async (stock_code: string) => {
         )
     );
 
-    console.log("asdsadasdasdasjdhasjdh");
-    console.log(uniqueByYear);
     return uniqueByYear;
   } catch (error) {
     console.log(error);
+    return [];
   }
 };
