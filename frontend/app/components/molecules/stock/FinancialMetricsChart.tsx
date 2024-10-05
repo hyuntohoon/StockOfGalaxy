@@ -226,9 +226,11 @@ const FinancialMetricsChart = () => {
   };
 
   return (
-    // <Container>
-    <Bar data={chartData} options={options} />
-    // {/* </Container> */}
+    <Container>
+      {chartData.labels.length > 0 && chartData.datasets.length > 0 && (
+        <Bar data={chartData} options={options} />
+      )}
+    </Container>
   );
 };
 
