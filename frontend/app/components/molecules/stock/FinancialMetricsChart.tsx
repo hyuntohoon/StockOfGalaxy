@@ -16,6 +16,8 @@ import {
   Legend,
   PointElement,
   ChartOptions,
+  LineController,
+  BarController,
 } from "chart.js";
 
 ChartJS.register(
@@ -26,7 +28,9 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
-  PointElement
+  PointElement,
+  LineController,
+  BarController
 );
 
 const Container = styled.div`
