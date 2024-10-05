@@ -1,176 +1,17 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import * as THREE from 'three';
+
 import { IoArrowBack } from 'react-icons/io5';
 import AreaChart from '@/app/components/molecules/timetravel/AreaChart';
 import styled from '@emotion/styled';
-import TypeWriter from './TypeWritter'; 
 import { wordData } from '@/app/mocks/wordData';
 import { useDate } from '@/app/store/date';
-import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io'; 
-
-const TimeTravelContainer = styled.div`
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  color: #fff;
-  position: relative;  
-  padding: 20px;
-`;
-
-const Title = styled.h1`
-  font-size: 2rem;
-  color: #ffffff;
-  margin-bottom: 20px;
-`;
-
-const BackButton = styled.button`
-  position: absolute;
-  top: 25px;
-  left: 25px;
-  background: none;
-  border: none;
-  color: white;
-  font-size: 1.8rem;
-  cursor: pointer;
-
-  &:hover {
-    color: #ddd;
-  }
-`;
-
-const DateInputContainer = styled.div<{ isChartVisible: boolean }>`
-  margin-top: ${({ isChartVisible }) => (isChartVisible ? '0px' : '40px')};
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  opacity: ${({ isChartVisible }) => (isChartVisible ? 0 : 1)};
-  display: ${({ isChartVisible }) => (isChartVisible ? "none" : "auto")};
-  transition: opacity 1s ease, height 0.5s ease, margin-top 0.5s ease;
-  overflow: hidden;
-`;
-
-const StyledDatePicker = styled(DatePicker)<{ isChartVisible: boolean }>`
-  padding: ${({ isChartVisible }) => (isChartVisible ? '0px' : '12px')};
-  border: 2px solid #0070f3;
-  border-radius: 10px;
-  font-size: ${({ isChartVisible }) => (isChartVisible ? '0px' : '16px')};
-  width: 200px;
-  text-align: center;
-  background-color: #ffffff;
-  transition: all 1s ease;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  display: ${({ isChartVisible }) => (isChartVisible ? "none" : "auto")};
-
-
-  &:focus {
-    outline: none;
-    border-color: #005bb5;
-  }
-
-  &:hover {
-    border-color: #005bb5;
-  }
-  
-  .react-datepicker__input-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .react-datepicker__day--selected {
-    background-color: #0070f3;
-    color: white;
-  }
-
-  .react-datepicker__day--keyboard-selected {
-    background-color: #0070f3;
-    color: white;
-  }
-`;
-
-const ConfirmButton = styled.button<{ isChartVisible: boolean }>`
-  padding: ${({ isChartVisible }) => (isChartVisible ? '10px' : '10px 20px')};
-  background-color: rgba(128, 128, 128, 0.4);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: ${({ isChartVisible }) => (isChartVisible ? '0px' : '16px')};
-  transition: all 1s ease;
-
-  &:hover {
-    background-color: rgba(128, 128, 128, 0.9);
-  }
-  display: ${({ isChartVisible }) => (isChartVisible ? "none" : "block")};
-  height: ${({ isChartVisible }) => (isChartVisible ? '0px' : 'auto')};
-  overflow: hidden;
-`;
-
-const InfoText = styled.p<{ isChartVisible: boolean }>`
-  color: #fff;
-  margin-top: 100px;
-  font-size: 0.9rem;
-  text-align: center;
-  display: ${({ isChartVisible }) => (isChartVisible ? "none" : "auto")};
-
-  
-  animation: float 2s ease-in-out infinite; // 둥실둥실 애니메이션
-  
-
-  @keyframes float {
-    0% {
-      transform: translate(0,0) translateY(0);
-    }
-    50% {
-      transform: translate(0,0) translateY(-5px); // 위로 5px 이동
-    }
-    100% {
-      transform: translate(0,0) translateY(0);
-    }
-  }
-`;
-
-const ToggleButton = styled.button`
-  background-color: rgba(128, 128, 128, 0.1);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 10px 20px;
-  margin-top: 0px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 1rem;
-  transition: background-color 1.5s;
-
-  &:hover {
-    background-color: rgba(128, 128, 128, 0.5);
-  }
-
-  animation: float 2s ease-in-out infinite; // 둥실둥실 애니메이션
-  
-
-  @keyframes float {
-    0% {
-      transform: translate(0,0) translateY(0);
-    }
-    50% {
-      transform: translate(0,0) translateY(-5px); // 위로 5px 이동
-    }
-    100% {
-      transform: translate(0,0) translateY(0);
-    }
-  }
-
-  
-`;
+import { TimeTravelContainer, Title, BackButton, DateInputContainer, StyledDatePicker, ConfirmButton, InfoText, ToggleButton } from './style';
+import { getTimeChart } from '@/app/utils/apis/timetravel';
 
 const ChartContainer = styled.div`
   width: 100%;
@@ -181,11 +22,18 @@ const ChartContainer = styled.div`
   align-items: center;
 `;
 
+const formatDate = (date: Date) => {
+  return date.toISOString().slice(0, 10).replace(/-/g, '');
+}
+
 const TimeTravel = () => {
   const { date: dateString, setDate } = useDate();
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [isChartVisible, setIsChartVisible] = useState(false);
   const router = useRouter();
+  const today = new Date();
+  const [chartData, setChartData] = useState([]);
+  const mountRef = useRef<HTMLDivElement>(null);
 
   const handleConfirm = () => {
     if (selectedDate) {
@@ -198,31 +46,105 @@ const TimeTravel = () => {
 
   const toggleChartVisibility = () => setIsChartVisible((prev) => !prev);
 
-  const data = Array.from({ length: 365 }, (_, i) => {
-    const date = new Date();
-    date.setDate(date.getDate() - i);
-    return {
-      date: date.toISOString().split('T')[0],
-      newsCount: Math.floor(Math.random() * 100),
-      traffic: Math.floor(Math.random() * 200),
-      topStocks: ['Samsung', 'Apple', 'Tesla'],
-    };
-  }).reverse();
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      const initialData = await getTimeChart("20240101", "20240501");
+      const formattedInitialData = initialData.stockVolumeAndNewsList.map(item => ({
+        date: item.date,
+        newsCount: item.articleCount * 10,
+        traffic: parseInt(item.totalStockVolume, 10) % 10000,
+        topStocks: item.top3Stocks,
+      }));
+      setChartData(formattedInitialData.reverse());
+    }
+    fetchInitialData();
 
-  const modalData = Array.from({ length: 365 }, (_, i) => {
-    const date = new Date();
-    date.setDate(date.getDate() - i);
-    return {
-      date: date.toISOString().split('T')[0],
-      newsCount: Math.floor(Math.random() * 100),
-      traffic: Math.floor(Math.random() * 200),
-      topStocks: ['Samsung', 'Apple', 'Tesla'],
-      wordCloudData: wordData,
-    };
-  });
+    let renderer: THREE.WebGLRenderer;
+    let scene: THREE.Scene;
+    let camera: THREE.PerspectiveCamera;
+    let particle: THREE.Object3D;
 
-  return (
-    <TimeTravelContainer>
+    async function init() {
+      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      renderer.setPixelRatio(window.devicePixelRatio || 1);
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.autoClear = false;
+      renderer.setClearColor(0x000000, 0.0); // 배경 투명
+
+      if (mountRef.current) {
+        mountRef.current.appendChild(renderer.domElement);
+      }
+
+      scene = new THREE.Scene();
+      camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 10000);
+      camera.position.set(0, 500, 800);
+      camera.lookAt(new THREE.Vector3(0, 0, 0));
+      scene.add(camera);
+
+      particle = new THREE.Object3D();
+      scene.add(particle);
+      const geometry = new THREE.TetrahedronGeometry(1, 0);
+      const material = new THREE.MeshPhongMaterial({
+        color: 0xffffff,
+        flatShading: true,
+      });
+
+      for (let i = 0; i < 1000; i++) {
+        const mesh = new THREE.Mesh(geometry, material);
+        mesh.position
+          .set(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5)
+          .normalize();
+        mesh.position.multiplyScalar(180 + Math.random() * 700);
+        mesh.rotation.set(
+          Math.random() * 2,
+          Math.random() * 2,
+          Math.random() * 2
+        );
+        particle.add(mesh);
+      }
+
+      addLights(scene);
+      animate();
+      window.addEventListener('resize', onWindowResize, false);
+    }
+
+    function addLights(scene: THREE.Scene) {
+      const ambientLight = new THREE.AmbientLight(0xaaaaaa);
+      scene.add(ambientLight);
+  
+      const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+      directionalLight.position.set(1, 1, 1);
+      scene.add(directionalLight);
+    }
+
+    function onWindowResize() {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+      particle.rotation.y += 0.001;
+      renderer.clear();
+      renderer.render(scene, camera);
+    }
+
+    init();
+
+    return () => {
+      window.removeEventListener('resize', onWindowResize);
+      if (mountRef.current) {
+        mountRef.current.removeChild(renderer.domElement);
+      }
+      renderer.dispose();
+    };
+
+  }, []);
+
+  return (<>
+    <div ref={mountRef} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }} />
+    <TimeTravelContainer style={{ position: 'relative' }}>
       <BackButton onClick={() => router.back()}>
         <IoArrowBack />
       </BackButton>
@@ -253,10 +175,13 @@ const TimeTravel = () => {
 
       {isChartVisible && (
         <ChartContainer>
-          <AreaChart data={data} detail={modalData} />
+          <AreaChart data={chartData} detail={chartData} />
         </ChartContainer>
       )}
+
+      
     </TimeTravelContainer>
+    </>
   );
 };
 
