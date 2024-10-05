@@ -10,6 +10,7 @@ import { GoTriangleDown } from "react-icons/go";
 import { useParams, useRouter } from "next/navigation";
 import { getCurrentPrice } from "@/app/utils/apis/stock/getStockData";
 import { findStockName } from "@/app/utils/apis/stock/findStockName";
+import { ToggleButton } from "@/app/styles/myplanet";
 
 const ParentContainer = styled.div`
   min-width: 950px;
@@ -115,8 +116,6 @@ const StockHeaderTemplate = () => {
       router.push(`/planet/main/${stockCode}/${date}`);
     }
   };
-
-
 
   return (
     <HeaderWrapper>

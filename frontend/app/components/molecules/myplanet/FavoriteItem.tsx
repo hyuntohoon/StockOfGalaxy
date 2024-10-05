@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { Icon } from "@/app/components/atoms/myplanet/Icon";
 import Image from "next/image";
@@ -36,7 +36,7 @@ export const FavoriteItem: React.FC<FavoriteItemProps> = ({
 
   // 가격을 포맷하는 함수
   const formatPrice = (price: number | string) => {
-    if (typeof price === 'number') {
+    if (typeof price === "number") {
       return price.toLocaleString();
     }
     return price; // 숫자 형식이 아닐 경우 그대로 반환
@@ -44,8 +44,11 @@ export const FavoriteItem: React.FC<FavoriteItemProps> = ({
 
   // 가격 변동을 포맷하는 함수
   const formatChange = (change: number | string) => {
-    const numericChange = typeof change === 'string' ? parseFloat(change) : change;
-    return numericChange > 0 ? `+${numericChange.toFixed(2)}` : numericChange.toFixed(2);
+    const numericChange =
+      typeof change === "string" ? parseFloat(change) : change;
+    return numericChange > 0
+      ? `+${numericChange.toFixed(2)}`
+      : numericChange.toFixed(2);
   };
 
   return (
@@ -97,7 +100,9 @@ export const FavoriteItem: React.FC<FavoriteItemProps> = ({
         </Text>
         <Text
           size="14px"
-          color={typeof change === 'string' || change > 0 ? "#FF4500" : "#1E90FF"}
+          color={
+            typeof change === "string" || change > 0 ? "#FF4500" : "#1E90FF"
+          }
         >
           {formatChange(change)}
         </Text>
