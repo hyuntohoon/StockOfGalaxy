@@ -47,42 +47,70 @@ export const DateInputContainer = styled.div<{ isChartVisible: boolean }>`
   overflow: hidden;
 `;
 
-export const StyledDatePicker = styled(DatePicker)<{ isChartVisible: boolean }>`
-  padding: ${({ isChartVisible }) => (isChartVisible ? '0px' : '12px')};
-  border: 2px solid #0070f3;
-  border-radius: 10px;
-  font-size: ${({ isChartVisible }) => (isChartVisible ? '0px' : '16px')};
-  width: 200px;
-  text-align: center;
-  background-color: #ffffff;
-  transition: all 1s ease;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  display: ${({ isChartVisible }) => (isChartVisible ? "none" : "auto")};
+// StyledDatePicker 스타일 추가
+export const StyledDatePicker = styled(DatePicker)`
+  background: rgba(255, 255, 255, 0.1); /* 반투명 흰색 배경 */
+  color: white; /* 텍스트 색상 흰색 */
+  border: 1px solid rgba(255, 255, 255, 0.3); /* 테두리 색상 */
+  border-radius: 5px; /* 둥근 모서리 */
+  padding: 10px; /* 내부 여백 */
+  width: 200px; /* 너비 설정 */
+  font-size: 16px; /* 글자 크기 */
+  font-family: 'Arial', sans-serif; /* 글꼴 설정 */
 
-
+  /* 포커스 시 테두리 색상 변경 */
   &:focus {
-    outline: none;
-    border-color: #005bb5;
+    outline: none; /* 기본 포커스 아웃라인 제거 */
+    border: 1px solid rgba(255, 255, 255, 0.7); /* 밝은 색으로 포커스 테두리 설정 */
   }
 
-  &:hover {
-    border-color: #005bb5;
-  }
-  
+  /* 커스텀 드롭다운 스타일 */
   .react-datepicker__input-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    position: relative;
   }
 
-  .react-datepicker__day--selected {
-    background-color: #0070f3;
-    color: white;
+  .react-datepicker__triangle {
+    display: none; /* 기본 삼각형 표시 제거 */
   }
 
-  .react-datepicker__day--keyboard-selected {
-    background-color: #0070f3;
-    color: white;
+  /* 달력 스타일 */
+  .react-datepicker {
+    background: rgba(50, 50, 70, 0.9); /* 달력 배경 */
+    border: 1px solid rgba(255, 255, 255, 0.5); /* 달력 테두리 */
+    border-radius: 10px; /* 둥근 모서리 */
+    color: white; /* 텍스트 색상 흰색 */
+    font-family: 'Arial', sans-serif; /* 글꼴 설정 */
+  }
+
+  /* 날짜 버튼 스타일 */
+  .react-datepicker__day {
+    color: white; /* 날짜 텍스트 색상 */
+    &:hover {
+      background: rgba(255, 255, 255, 0.2); /* 호버 시 배경 색상 */
+      border-radius: 5px; /* 호버 시 둥근 모서리 */
+    }
+  }
+
+  /* 오늘 날짜 스타일 */
+  .react-datepicker__day--today {
+    font-weight: bold; /* 오늘 날짜 강조 */
+    color: #ffcc00; /* 노란색으로 강조 */
+  }
+
+  /* 주말 날짜 스타일 */
+  .react-datepicker__day--weekend {
+    color: #ff4500; /* 빨간색으로 설정 */
+  }
+
+  /* 이전 및 다음 달 버튼 스타일 */
+  .react-datepicker__navigation {
+    background: transparent; /* 기본 배경 제거 */
+    border: none; /* 기본 테두리 제거 */
+    color: white; /* 화살표 색상 흰색 */
+    cursor: pointer; /* 포인터 커서 변경 */
+    &:hover {
+      background: rgba(255, 255, 255, 0.1); /* 호버 시 배경 색상 */
+    }
   }
 `;
 

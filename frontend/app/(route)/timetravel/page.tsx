@@ -1,13 +1,12 @@
 'use client';
 import React, { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-
+import CustomDatePicker from "@/app/components/molecules/timetravel/CustomDatePicker"
 import { IoArrowBack } from 'react-icons/io5';
 import AreaChart from '@/app/components/molecules/timetravel/AreaChart';
 import styled from '@emotion/styled';
 import { wordData } from '@/app/mocks/wordData';
 import { useDate } from '@/app/store/date';
-import 'react-datepicker/dist/react-datepicker.css';
 import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io'; 
 import { TimeTravelContainer, Title, BackButton, DateInputContainer, StyledDatePicker, ConfirmButton, InfoText, ToggleButton } from './style';
 import { getTimeChart } from '@/app/utils/apis/timetravel';
@@ -73,15 +72,8 @@ const TimeTravel = () => {
       <Title>시간 여행</Title>
 
       <DateInputContainer isChartVisible={isChartVisible}>
-        <StyledDatePicker
-          selected={selectedDate}
-          onChange={(date: Date) => setSelectedDate(date)}
-          dateFormat="yyyy-MM-dd"
-          placeholderText="YYYY-MM-DD"
-          showYearDropdown
-          scrollableMonthYearDropdown
-          isChartVisible={isChartVisible}
-        />
+        <CustomDatePicker date={selectedDate} setDate= {(date: Date) => setSelectedDate(date)}/>
+        
         <ConfirmButton onClick={handleConfirm} isChartVisible={isChartVisible}>
           이동
         </ConfirmButton>

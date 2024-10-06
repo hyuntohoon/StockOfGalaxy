@@ -1,5 +1,7 @@
 import styled from "@emotion/styled";
 import { keyframes } from "@emotion/react";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+
 
 // Fade in 애니메이션
 const fadeIn = keyframes`
@@ -23,6 +25,62 @@ const fadeOut = keyframes`
     opacity: 0;
     transform: translateY(-10px);
   }
+`;
+// Style.js
+
+export const Wrapper = styled.div<{ float?: string; marginBottom?: number; width?: number; height?: number }>`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0px;
+  float: ${({ float }) => float || 'none'}; // float 속성 처리
+  margin-bottom: ${({ marginBottom }) => (marginBottom ? `${marginBottom}px` : '15px')}; // marginBottom 속성 처리
+  width: 'auto'; // width 속성 처리
+  height: 'auto'; // height 속성 처리
+`;
+
+
+interface ButtonProps {
+  width?: number; // Optional width
+  height?: number; // Optional height
+  backgroundColor?: string; // Optional background color
+  position?: string; // Optional position property
+  onClick?: () => void; // Optional click handler
+  disabled?: boolean; // Optional disabled state
+}
+
+// Button styled component
+export const Button = styled.button<ButtonProps>`
+  background-color: ${({ backgroundColor }) => backgroundColor || '#007bff'}; /* 기본 색상 */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  width: ${({ width }) => (width ? `${width}px` : 'auto')}; /* width */
+  height: ${({ height }) => (height ? `${height}px` : 'auto')}; /* height */
+  position: ${({ position }) => position || 'static'}; /* position */
+
+  &:hover {
+    background-color: #0056b3; /* hover 시 색상 변경 */
+  }
+
+  &:disabled {
+    background-color: #ccc; /* 비활성화 시 색상 변경 */
+    cursor: not-allowed; /* 비활성화 시 커서 변경 */
+  }
+`;
+
+export const ArrowLeft = styled(IoIosArrowBack)`
+  font-size: 14px;
+  background-color: transparent;
+  color: black; /* 아이콘 색상 변경 */
+`;
+
+export const ArrowRight = styled(IoIosArrowForward)`
+  font-size: 14px;
+  background-color: transparent;
+  color: black; /* 아이콘 색상 변경 */
 `;
 
 // 스타일링

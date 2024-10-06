@@ -295,7 +295,8 @@ const SearchPage = () => {
                     onClose={() => setModalOpen(false)} // 모달 닫기 핸들러
                 />
             )}
-        </SearchContainer></>
+        </SearchContainer>
+        </>
     );
 };
 
