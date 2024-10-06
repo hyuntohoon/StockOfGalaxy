@@ -33,9 +33,9 @@ public class RealtimeStockWebSocketHandler extends TextWebSocketHandler {
         log.info("--------Message---------");
         log.info("Received stockCode : {}", stockCode);
         log.info("--------Message---------");
-//        synchronized (sessionMap) {
-//            sessionStockCodeMap.put(session, stockCode);
-//        }
+        synchronized (sessionMap) {
+            sessionStockCodeMap.put(session, stockCode);
+        }
 
         // kis에 주식 구독 요청을 보냅니다. -> 중복 요청을 방지하는 예외처리 추가.
         realTimeWebSocketService.subscribeToStock(stockCode, session, false); // 실시간 데이터 구독 요청
@@ -47,9 +47,9 @@ public class RealtimeStockWebSocketHandler extends TextWebSocketHandler {
         log.info("Web Socket Connected");
         log.info("session id : {}", session.getId());
         super.afterConnectionEstablished(session);
-//        synchronized (sessionMap) {
-//            sessionMap.put(session.getId(), session);
-//        }
+        synchronized (sessionMap) {
+            sessionMap.put(session.getId(), session);
+        }
         System.out.println("sessionMap :" + sessionMap.toString());
 
         JSONObject jsonObject = new JSONObject();

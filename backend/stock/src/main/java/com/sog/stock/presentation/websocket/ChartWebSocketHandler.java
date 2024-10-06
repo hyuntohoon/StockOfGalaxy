@@ -32,9 +32,9 @@ public class ChartWebSocketHandler extends TextWebSocketHandler {
         log.info("Web Socket Connected");
         log.info("session id : {}", session.getId());
         super.afterConnectionEstablished(session);
-//        synchronized (sessionMap) {
-//            sessionMap.put(session.getId(), session);
-//        }
+        synchronized (sessionMap) {
+            sessionMap.put(session.getId(), session);
+        }
         System.out.println("chart sessionMap :" + sessionMap.toString());
 
         JSONObject jsonObject = new JSONObject();
@@ -50,9 +50,9 @@ public class ChartWebSocketHandler extends TextWebSocketHandler {
         log.info("--------Message---------");
         log.info("Received stockCode : {}", stockCode);
         log.info("--------Message---------");
-//        synchronized (sessionMap) {
-//            sessionStockCodeMap.put(session, stockCode);
-//        }
+        synchronized (sessionMap) {
+            sessionStockCodeMap.put(session, stockCode);
+        }
 
         // kis에 주식 구독 요청을 보냅니다.
         chartWebSocketService.subscribeToStock(stockCode, session, false);
