@@ -24,7 +24,7 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   storageClassName: standard
   hostPath:
-    path: "/mnt/data/mongodb"  # MongoDB 데이터를 저장할 로컬 경로
+    path: "/mnt/data/mongodb"  # MongoDB 데이터를 저장할 로컬 경로 (실제 환경에서는 다른 스토리지 솔루션 고려)
   nodeAffinity:  # 특정 노드에 바인딩
     required:
       nodeSelectorTerms:
@@ -42,7 +42,7 @@ metadata:
   labels:
     app: mongodb
 spec:
-  replicas: 1
+  replicas: 1  # 복제본이 1개로 설정되어 있지만 필요시 복제본을 늘릴 수 있음
   selector:
     matchLabels:
       app: mongodb
@@ -53,12 +53,19 @@ spec:
     spec:
       containers:
       - name: mongodb
-        image: mongo:5.0  # MongoDB 5.0 이미지
+        image: mongo:5.0  # MongoDB 5.0 이미지 사용
         ports:
         - containerPort: 27017
         volumeMounts:
         - name: mongodb-storage
           mountPath: /data/db  # MongoDB의 데이터 저장 경로
+        resources:  # 리소스 요청과 제한을 설정하여 안정적인 자원 할당 보장
+          requests:
+            memory: "512Mi"
+            cpu: "0.5"
+          limits:
+            memory: "1Gi"
+            cpu: "1"
       volumes:
       - name: mongodb-storage
         persistentVolumeClaim:
@@ -70,12 +77,10 @@ metadata:
   name: mongodb-service
   namespace: backcd
 spec:
-  type: NodePort 
+  type: ClusterIP  # NodePort 대신 ClusterIP로 설정하여 클러스터 내부에서 접근 가능하도록 변경 (외부 접근이 필요할 경우 NodePort 유지 가능)
   selector:
     app: mongodb  
   ports:
     - protocol: TCP
-      port: 27017 
+      port: 27017  # MongoDB 기본 포트
       targetPort: 27017  
-      nodePort: 30017 
-
