@@ -61,7 +61,7 @@ spec:
               memory: "256Mi"
               cpu: "125m"
             limits:
-              memory: "500Gi"
+              memory: "500Mi"
               cpu: "250m"
       volumes:
         - name: elastic-apm-volume
