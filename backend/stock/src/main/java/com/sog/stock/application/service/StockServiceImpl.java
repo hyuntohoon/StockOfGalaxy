@@ -82,7 +82,7 @@ public class StockServiceImpl implements StockService {
     public DailyStockPriceListDTO getDailyStockHistory(String stockCode) {
 
         // 종목번호로 모든 데이터 조회
-        List<DailyStockHistory> historyList = dailyStockHistoryRepository.findByStock_StockCodeOrderByDailyStockHistoryDateDesc(
+        List<DailyStockHistory> historyList = dailyStockHistoryRepository.findTop90ByStock_StockCodeOrderByDailyStockHistoryDateDesc(
             stockCode);
 
         // entity 리스트 -> dto리스트 변환
