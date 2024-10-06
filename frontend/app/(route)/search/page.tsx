@@ -25,6 +25,7 @@ import { format } from 'path';
 import { News } from '@/app/types/planet';
 import NewsModal from '@/app/components/templates/planet/NewsModal';
 import { searchNewsWithTitle } from '@/app/utils/apis/news';
+import SpaceBackGround from '@/app/components/organisms/\bSpaceBackground';
 
 const StockPriceContainer = styled.div`
   display: flex;
@@ -200,6 +201,8 @@ const SearchPage = () => {
     
 
     return (
+        <>
+        <SpaceBackGround />
         <SearchContainer hasSearched={hasSearched}>
             {!hasSearched && (
                 <TabsContainer hasSearched={hasSearched}>
@@ -292,7 +295,7 @@ const SearchPage = () => {
                     onClose={() => setModalOpen(false)} // 모달 닫기 핸들러
                 />
             )}
-        </SearchContainer>
+        </SearchContainer></>
     );
 };
 
