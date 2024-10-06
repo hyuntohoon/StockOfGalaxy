@@ -31,7 +31,7 @@ function toTimestamp(dateString) {
 export const getDailyStockData = async (stockCode: string) => {
   try {
     const res = await defaultRequest.get(`/stock/${stockCode}/history`);
-    return res.data ? res.data : [];
+    return res.data.stockDailyPriceList ? res.data.stockDailyPriceList : [];
   } catch (error) {
     console.log(error);
     return [];
