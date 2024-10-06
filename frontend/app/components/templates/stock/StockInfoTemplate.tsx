@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import CompanyInfo from "@/app/components/organisms/stock/CompanyInfoContainer";
 import Image from "next/image";
-import thumbnail from "@/public/news_thumbnail/news_005930.jpg";
+import { useParams } from "next/navigation";
 
 const Container = styled.div`
   display: flex;
@@ -22,11 +22,15 @@ const SubContainer = styled.div`
 `;
 
 const StockInfoTemplate = () => {
+  const { stock } = useParams();
+  const stock_code = Array.isArray(stock) ? stock[0] : stock ?? "005930";
+  const thumbnail = `/company_images/image_${stock_code}.png`;
+
   return (
     <>
       <Container>
         <SubContainer>
-          <Image src={thumbnail} alt="samsung" width={470} height={250} />
+          <Image src={thumbnail} alt="company_image" width={470} height={250} />
         </SubContainer>
         <SubContainer>
           <CompanyInfo />
