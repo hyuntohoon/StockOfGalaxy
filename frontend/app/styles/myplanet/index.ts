@@ -133,7 +133,7 @@ position: absolute;
 .front
 {
     color: #fff;
-    background: #2196f3;
+    /* background: #2196f3; */
 }
 
 .back

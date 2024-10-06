@@ -15,8 +15,9 @@ interface MenuHeaderModalProps {
 // forwardRef 사용
 const MenuHeaderModal = forwardRef<HTMLDivElement, MenuHeaderModalProps>(
   ({ position, onMouseEnter, onMouseLeave }, ref) => {
-    const nickname = useUser().user.nickname;
-    const characterType = useUser().user.characterType;
+    const { user } = useUser();
+    const nickname = user?.nickname ?? "Guest";
+    const characterType = user?.characterType ?? 1;
     return (
       <ModalContainer
         ref={ref}

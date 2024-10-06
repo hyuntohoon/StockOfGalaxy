@@ -6,17 +6,23 @@ import {useRouter} from 'next/navigation';
 import { useIsLoggedIn, useAccessToken } from "@/app/store/userSlice";
 import { logout } from "@/app/utils/apis/users";
 import { useDate } from "@/app/store/date";
+import { useMemberId } from "@/app/store/userSlice";
+import { useUser } from "@/app/store/userSlice";
 
 const SignOutButtonGroup = () => {
   const router = useRouter();
   const {setIsLoggedIn} = useIsLoggedIn();
   const { accessToken, setAccessToken} = useAccessToken();
+  const { user, setUser } = useUser();
   const {date} = useDate();
+  const { memberId, setMemberId } = useMemberId();
 
   const handleClickLogout = async () => {
-    const res = await logout(accessToken, setAccessToken);
+    const res = await logout(memberId);
     setIsLoggedIn(false);
     setAccessToken("");
+    setMemberId(null);
+    setUser(null);
     router.push(`/main/${date}`);
   }
 

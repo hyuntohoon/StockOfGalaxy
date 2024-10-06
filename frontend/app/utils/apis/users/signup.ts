@@ -73,7 +73,7 @@ export const userIdValidate = async (userId) => {
     }
   } catch (error) {
     console.log(error);
-    alert("아이디 중복 확인에 실패했습니다.");
+    alert("사용할 수 없는 아이디입니다.");
     return false;
   }
 };
