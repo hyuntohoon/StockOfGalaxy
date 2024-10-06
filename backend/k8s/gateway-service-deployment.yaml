@@ -30,7 +30,7 @@ spec:
               mountPath: /elastic  # APM 에이전트 파일을 저장할 경로
       containers:
         - name: gateway-service
-          image: zlxldgus123/gateway-service:248
+          image: zlxldgus123/gateway-service:249
           ports:
             - containerPort: 8080
           env:
