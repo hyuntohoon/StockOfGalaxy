@@ -10,5 +10,9 @@ import org.springframework.stereotype.Repository;
 public interface RocketRepository extends JpaRepository<Rocket, Integer> {
 
     // 주어진 Stock 엔티티와 연결된 모든 로켓 조회
-    List<Rocket> findByStockAndIsDeletedFalse(Stock stock);
+    List<Rocket> findByStockAndIsDeletedFalseOrderByRocketIdDesc(Stock stock);
+
+    // StockCode에 해당하는 로켓을 PK 내림차순으로 상위 7개 조회
+    List<Rocket> findTop7ByStockAndIsDeletedFalseOrderByRocketIdDesc(Stock stock);
+
 }

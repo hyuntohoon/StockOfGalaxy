@@ -43,6 +43,7 @@ import com.sog.stock.domain.repository.QuarterStockHistoryRepository;
 import com.sog.stock.domain.repository.RocketRepository;
 import com.sog.stock.domain.repository.StockHolidayRepository;
 import com.sog.stock.domain.repository.StockRepository;
+import jakarta.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -387,10 +388,11 @@ public class StockServiceImpl implements StockService {
         Stock stock = stockRepository.findById(stockCode)
             .orElseThrow(() -> new RuntimeException("Stock not found"));
 
-        List<Rocket> rockets = rocketRepository.findByStockAndIsDeletedFalse(stock);
+        List<Rocket> rockets = rocketRepository.findByStockAndIsDeletedFalseOrderByRocketIdDesc(stock);
 
         // Mono 리스트를 Flux로 변환하여 모두 처리
         return Flux.fromIterable(rockets)
+            .sort(Comparator.comparingLong(Rocket::getRocketId).reversed()) // 추가적인 정렬 확인
             .flatMap(this::buildRocketResponse) // 각 rocket을 비동기적으로 처리
             .collectList() // 처리된 RocketResponseDTO 리스트를 다시 Mono로 변환
             .map(RocketResponseListDTO::new); // 리스트를 RocketResponseListDTO로 변환
@@ -449,16 +451,17 @@ public class StockServiceImpl implements StockService {
         Stock stock = stockRepository.findById(stockCode)
             .orElseThrow(() -> new RuntimeException("Stock not found"));
 
-        List<Rocket> rockets = rocketRepository.findByStockAndIsDeletedFalse(stock).stream()
-            .limit(limit)  // 7개로 제한
-            .collect(Collectors.toList());
+        // 삭제되지 않은 로켓을 rocketId가 큰 순서로 조회
+        List<Rocket> rockets = rocketRepository.findTop7ByStockAndIsDeletedFalseOrderByRocketIdDesc(stock);
 
         // Mono 리스트를 Flux로 변환하여 모두 처리
         return Flux.fromIterable(rockets)
+            .sort(Comparator.comparingLong(Rocket::getRocketId).reversed()) // 추가적인 정렬 확인
             .flatMap(this::buildRocketResponse) // 각 rocket을 비동기적으로 처리
             .collectList() // 처리된 RocketResponseDTO 리스트를 다시 Mono로 변환
             .map(RocketResponseListDTO::new); // 리스트를 RocketResponseListDTO로 변환
     }
+
 
     @Override
     public boolean deleteRocket(int rocketId, Long memberId) {
