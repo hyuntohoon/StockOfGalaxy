@@ -19,6 +19,7 @@ import {
   LineController,
   BarController,
 } from "chart.js";
+import Dividend from "@/app/components/atoms/stock/Dividend";
 
 ChartJS.register(
   CategoryScale,
@@ -33,8 +34,16 @@ ChartJS.register(
   BarController
 );
 
+const SubTitle = styled.div`
+  font-size: 20px;
+  font-weight: bold;
+  font-family: "Noto Sans KR", sans-serif;
+  color: black;
+`;
+
 const Container = styled.div`
   display: flex;
+  flex-direction: column;
   flex: 0 0 50%;
   width: 620px;
   height: auto;
@@ -43,6 +52,14 @@ const Container = styled.div`
   border-radius: 20px;
   align-items: center;
   justify-content: center;
+  gap: 20px;
+`;
+
+const SubContainer = styled.div`
+  display: flex;
+  width: 95%;
+  flex-direction: row;
+  justify-content: space-between;
 `;
 
 const FinancialMetricsChart = () => {
@@ -129,15 +146,18 @@ const FinancialMetricsChart = () => {
     responsive: true,
     plugins: {
       legend: {
-        position: "center",
-      },
-      title: {
         display: true,
-        text: "부채비율",
-        font: {
-          size: 20,
-        },
+        position: "top",
       },
+      // title: {
+      //   display: true,
+      //   text: "부채비율",
+      //   font: {
+      //     size: 20,
+      //     weight: 1000,
+      //   },
+      //   color: "black",
+      // },
     },
     scales: {
       x: {
@@ -172,8 +192,56 @@ const FinancialMetricsChart = () => {
     },
   };
 
+  console.log("sdsd", financialMetricsInfo);
+
   return (
     <Container>
+      <SubTitle>재무 안정성</SubTitle>
+      <SubContainer>
+        <Dividend
+          title="부채비율"
+          content={(
+            (100 *
+              financialMetricsInfo[financialMetricsInfo.length - 1][
+                "total_liabilites"
+              ]) /
+            financialMetricsInfo[financialMetricsInfo.length - 1][
+              "total_equity"
+            ]
+          ).toFixed(2)}
+        />
+        <Dividend
+          title="유동비율"
+          content={(
+            (100 *
+              financialMetricsInfo[financialMetricsInfo.length - 1][
+                "current_assets"
+              ]) /
+            financialMetricsInfo[financialMetricsInfo.length - 1][
+              "current_liabilites"
+            ]
+          ).toFixed(2)}
+        />
+        <Dividend
+          title="부채 증가율"
+          content={
+            financialMetricsInfo.length > 1
+              ? (
+                  (100 *
+                    (financialMetricsInfo[financialMetricsInfo.length - 1][
+                      "total_liabilites"
+                    ] -
+                      financialMetricsInfo[financialMetricsInfo.length - 2][
+                        "total_liabilites"
+                      ])) /
+                  financialMetricsInfo[financialMetricsInfo.length - 2][
+                    "total_liabilites"
+                  ]
+                ).toFixed(2)
+              : "0.00"
+          }
+        />
+      </SubContainer>
       {chartData.labels.length > 0 && chartData.datasets.length > 0 && (
         <Bar data={chartData} options={options} />
       )}
