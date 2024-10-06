@@ -4,7 +4,7 @@ metadata:
   name: user-service
   namespace: backcd
 spec:
-  replicas: 2  # 기본 레플리카 수, HPA 사용 시 동적으로 조정 가능
+  replicas: 1  # 기본 레플리카 수, HPA 사용 시 동적으로 조정 가능
   selector:
     matchLabels:
       app: user-service
@@ -58,11 +58,11 @@ spec:
               mountPath: /elastic  # APM 에이전트가 위치할 경로
           resources:  # 리소스 요청 및 제한 설정
             requests:
-              memory: "512Mi"
-              cpu: "250m"
+              memory: "256Mi"
+              cpu: "125m"
             limits:
-              memory: "1Gi"
-              cpu: "500m"
+              memory: "500Gi"
+              cpu: "250m"
       volumes:
         - name: elastic-apm-volume
           emptyDir: {}  # 파드 내 임시 디렉터리 사용
