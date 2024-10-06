@@ -23,6 +23,7 @@ const ButtonGroup = styled.div`
   align-items: center;
   justify-content: center;
   width: 100px;
+  cursor: pointer;
 `;
 
 const ButtonContainer = styled.div`
