@@ -14,6 +14,7 @@ import {
   getMyPlanet,
 } from "@/app/utils/apis/myplanet";
 import anime from "animejs";
+import { useIsLoggedIn } from "@/app/store/userSlice";
 
 interface FontSize {
   $fontSize: number;
@@ -37,6 +38,7 @@ const StyledImage = styled(Image)`
 `;
 
 const StockName = ({ koreanName, fontSize = 15 }: StockNameProps) => {
+  const { isLoggedIn } = useIsLoggedIn();
   const { accessToken, setAccessToken } = useAccessToken();
   const { stock } = useParams();
   const stock_code = Array.isArray(stock) ? stock[0] : stock ?? "005930";
@@ -84,7 +86,7 @@ const StockName = ({ koreanName, fontSize = 15 }: StockNameProps) => {
   return (
     <Container $fontSize={fontSize}>
       {koreanName}
-      {fontSize !== 15 && (
+      {fontSize !== 15 && isLoggedIn === true && (
         <FavoriteButton
           onClick={(e) => {
             e.stopPropagation();
