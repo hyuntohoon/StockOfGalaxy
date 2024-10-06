@@ -36,17 +36,18 @@ public interface NewsRepository extends JpaRepository<News, Long> {
     @Query(value = "SELECT * FROM news WHERE MATCH(title) AGAINST(?1 IN NATURAL LANGUAGE MODE) ORDER BY id LIMIT ?#{#pageable.pageSize} OFFSET ?#{#pageable.offset}",
             countQuery = "SELECT count(*) FROM news WHERE MATCH(title) AGAINST(?1 IN NATURAL LANGUAGE MODE)",
             nativeQuery = true)
-    Page<News> findByTitleContainingFullText(String titleKeyword, Pageable pageable);
+    Page<News> findByTitleContaining(String titleKeyword, Pageable pageable);
     // 뉴스의 내용에서 키워드로 검색하며, 페이징 처리
     @Query(value = "SELECT * FROM news WHERE MATCH(content) AGAINST(?1 IN NATURAL LANGUAGE MODE) ORDER BY id LIMIT ?#{#pageable.pageSize} OFFSET ?#{#pageable.offset}",
             countQuery = "SELECT count(*) FROM news WHERE MATCH(content) AGAINST(?1 IN NATURAL LANGUAGE MODE)",
             nativeQuery = true)
-    Page<News> findByContentContainingFullText(String contentKeyword, Pageable pageable);
+    Page<News> findByContentContaining(String contentKeyword, Pageable pageable);
     // 제목 또는 본문에서 키워드를 검색하며, 페이징 처리
     @Query(value = "SELECT * FROM news WHERE MATCH(title, content) AGAINST(?1 IN NATURAL LANGUAGE MODE) ORDER BY id LIMIT ?#{#pageable.pageSize} OFFSET ?#{#pageable.offset}",
             countQuery = "SELECT count(*) FROM news WHERE MATCH(title, content) AGAINST(?1 IN NATURAL LANGUAGE MODE)",
             nativeQuery = true)
-    Page<News> findByTitleOrContentContainingFullText(String keyword, Pageable pageable);
+    Page<News> findByTitleContainingOrContentContaining(String keyword, Pageable pageable);
+
     // 일자별로 기사 수를 조회, 0번째 인덱스는 날짜, 1번째 인덱스는 기사 수를 담고있음
     @Query("SELECT DATE(n.publishedDate) as date, COUNT(n) as count " +
             "FROM News n " +
