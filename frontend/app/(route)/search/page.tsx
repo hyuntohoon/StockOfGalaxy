@@ -16,7 +16,6 @@ import {
     NoResults, 
     NewsInfo
 } from '@/app/styles/search';
-import { useRouter } from 'next/navigation';
 import { stockData } from '@/app/mocks/stockData';
 import useKRStockWebSocket from '@/app/hooks/useKRStockWebSocket';
 import formatPrice from '@/app/utils/apis/stock/formatPrice';
@@ -130,7 +129,6 @@ const SearchPage = () => {
       };
     
     // 뉴스 데이터 추가
-    const router = useRouter();
     const [newsResults, setNewsResults] = useState<News[]>([]);
     const [page, setPage] = useState(0); // 페이지 상태
     const [hasMore, setHasMore] = useState(true); // 추가 데이터 여부 상태
@@ -150,55 +148,67 @@ const SearchPage = () => {
     const handleSearch = (e: React.KeyboardEvent) => {
         if (e.key === 'Enter') {
             setHasSearched(true);
+            setHasMore(true);
             setPage(0); // 페이지 초기화
             setNewsResults([]); // 이전 검색 결과 초기화
-            fetchNews(); // 뉴스 데이터 가져오기
+            fetchNews(0); // 뉴스 데이터 가져오기
         }
     };
 
-    const fetchNews = useCallback(async () => {
+    const fetchNews = useCallback(async (currentPage: number) => {
         if (!searchTerm.trim()) return;
         try {
-            const response = await searchNewsWithTitle(searchTerm, page, 10);
-            if(response.length){
-                console.log(response)
-                setNewsResults(response);
-            }else{
-                console.log(response, "ss")
-
-                setNewsResults(dummyNewsData);
+            setIsLoading(true);
+            const response = await searchNewsWithTitle(searchTerm, currentPage, 10);
+            if (response.length < 10) {
+                setHasMore(false); 
             }
+            setNewsResults(prev => [...prev, ...response]);
+            setIsLoading(false);
         } catch (error) {
             console.error('뉴스 검색 실패:', error);
-        } 
-    }, [searchTerm, page]);
+            setIsLoading(false);
+        }
+    }, [searchTerm]);
 
-    // 스크롤 시 마지막 뉴스 항목 관찰
+    // 스크롤 시 마지막 뉴스 항목 감지
     useEffect(() => {
-        if (observer.current) observer.current.disconnect(); // 이전 observer 해제
-        observer.current = new IntersectionObserver(entries => {
-            console.log("here")
-            if (entries[0].isIntersecting && hasMore && !isLoading) {
-                setPage(prev => prev + 1); // 다음 페이지 요청
+        if (observer.current) observer.current.disconnect();
+
+        observer.current = new IntersectionObserver((entries) => {
+            const target = entries[0];
+            if (target.isIntersecting && hasMore && !isLoading) {
+                setPage(prev => prev + 1);
             }
+        }, {
+            root: null, // 뷰포트 기준으로 설정
+            rootMargin: '0px',
+            threshold: 1.0 // 요소의 100%가 화면에 나타날 때만 trigger
         });
 
         if (lastNewsElementRef.current) {
-            observer.current.observe(lastNewsElementRef.current); // 마지막 뉴스 항목 관찰
+            observer.current.observe(lastNewsElementRef.current);
         }
 
         return () => {
-            if (observer.current) observer.current.disconnect(); // 컴포넌트 언마운트 시 observer 해제
+            if (observer.current) observer.current.disconnect();
         };
     }, [lastNewsElementRef, hasMore, isLoading]);
 
+    // 페이지 변경 시 새로운 데이터를 가져옵니다.
+    useEffect(() => {
+        if (page > 0) {
+            fetchNews(page);
+        }
+    }, [page, fetchNews]);
+
+    
+    // 검색된 주식 필터링
     const filteredStocks = stockDataInfo.filter(stock => 
         stock.stock_name?.toLowerCase().includes(searchTerm.toLowerCase()) || 
         stock.stock_code?.includes(searchTerm)
     );
 
-  
-    
 
     return (
         <>
@@ -267,21 +277,21 @@ const SearchPage = () => {
             )}
 
             
-           {/* 뉴스 탭 */}
-           {hasSearched && activeTab === 'news' && newsResults.length > 0 && (
+{hasSearched && activeTab === 'news' && newsResults.length > 0 && (
                 <SearchResultsContainer>
                     {newsResults.map((news, index) => {
                         const isLastElement = index === newsResults.length - 1;
                         return (
-                            <SearchItem key={index} onClick={() => handleNewsClick(news)}> {/* 뉴스 클릭 핸들러 추가 */}
+                            <SearchItem key={index} ref={isLastElement ? lastNewsElementRef : null} onClick={() => handleNewsClick(news)}>
                             <div>
                                 <strong>{news.title}</strong>
                                 <NewsDescription>{news.content}</NewsDescription>
-                                <NewsInfo>{formatDate(news.publishDate)}</NewsInfo> {/* 뉴스 정보 표시 */}
+                                <NewsInfo>{formatDate(news.publishDate)}</NewsInfo>
                             </div>
                         </SearchItem>
                         );
                     })}
+                    <div id="observer" style={{ height: '10px' }} ref={lastNewsElementRef}></div>
                 </SearchResultsContainer>
             )}
             {/* 결과가 없을 때 */}
