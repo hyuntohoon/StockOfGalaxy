@@ -18,6 +18,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import java.time.Duration;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -64,13 +65,16 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException("Invalid nickname format");
         }
 
+        Random random = new Random();
+        int characterType = random.nextInt(25) + 1; // 1~25 사이의 숫자
+
         Member member = Member.builder()
             .userId(userRegisterRequestDTO.getUserId())
             .password(authenticationProviderService.passwordEncoder()
                 .encode(userRegisterRequestDTO.getPassword()))
             .nickname(userRegisterRequestDTO.getNickname())
             .email(userRegisterRequestDTO.getEmail())
-            .characterType(userRegisterRequestDTO.getCharacterType())
+            .characterType(characterType)
             .isQuit(false)
             .build();
 
