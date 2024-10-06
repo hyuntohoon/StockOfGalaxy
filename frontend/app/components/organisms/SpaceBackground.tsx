@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import {useRef, useEffect} from 'react';
 
 
-const SpaceBackGround = () => {
+const SpaceBackGround = ({speed} : {speed?: number}) => {
     const mountRef = useRef<HTMLDivElement>(null);
     useEffect(() => {
         let renderer: THREE.WebGLRenderer;
@@ -97,7 +97,7 @@ const SpaceBackGround = () => {
       
           function animate() {
             requestAnimationFrame(animate);
-            particle.rotation.y -= 0.007;
+            particle.rotation.y -= speed ? speed : 0.007;
             particle.rotation.x += 0.0005;
             renderer.clear();
             renderer.render(scene, camera);
