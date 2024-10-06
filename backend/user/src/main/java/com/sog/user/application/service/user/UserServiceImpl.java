@@ -64,13 +64,16 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException("Invalid nickname format");
         }
 
+        Random random = new Random();
+        int characterType = random.nextInt(25) + 1; // 1~25 사이의 숫자
+
         Member member = Member.builder()
             .userId(userRegisterRequestDTO.getUserId())
             .password(authenticationProviderService.passwordEncoder()
                 .encode(userRegisterRequestDTO.getPassword()))
             .nickname(userRegisterRequestDTO.getNickname())
             .email(userRegisterRequestDTO.getEmail())
-            .characterType(userRegisterRequestDTO.getCharacterType())
+            .characterType(characterType)
             .isQuit(false)
             .build();
 
