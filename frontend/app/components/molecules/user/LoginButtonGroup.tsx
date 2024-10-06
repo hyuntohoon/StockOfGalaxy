@@ -3,7 +3,12 @@
 import { useRouter } from "next/navigation";
 import LoginButton from "../../atoms/user/LoginButton";
 import { login, getInfo } from "@/app/utils/apis/users";
-import { useAccessToken, useIsLoggedIn, useMemberId, useUser } from "@/app/store/userSlice";
+import {
+  useAccessToken,
+  useIsLoggedIn,
+  useMemberId,
+  useUser,
+} from "@/app/store/userSlice";
 import { useEffect } from "react";
 import styled from "@emotion/styled"; // Emotion styled import
 
@@ -37,12 +42,14 @@ const LoginButtonGroup = ({ inputValue }) => {
   };
 
   useEffect(() => {
+    const currentDate = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+
     if (accessToken) {
       const fetchUserInfo = async () => {
         try {
           const userInfo = await getInfo(accessToken, setAccessToken);
           setUser(userInfo);
-          router.push("/"); // 로그인 성공 시 메인 페이지로 이동
+          router.push(`/main/${currentDate}`); // 로그인 성공 시 메인 페이지로 이동
         } catch (error) {
           console.error("사용자 정보 가져오기 중 오류 발생:", error);
         }

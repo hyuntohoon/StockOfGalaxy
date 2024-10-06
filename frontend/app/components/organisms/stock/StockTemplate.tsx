@@ -74,7 +74,8 @@ interface stockState {
 const StockTemplate = () => {
   const router = useRouter();
   const { date } = useParams();
-  const currentDate = date ?? "2024-10-05";
+  const currentDate =
+    date ?? new Date().toISOString().slice(0, 10).replace(/-/g, "");
   const stockData: stockData[] = stock_list;
 
   const [stockDataInfo, setStockDataInfo] = useState<stockState[]>(

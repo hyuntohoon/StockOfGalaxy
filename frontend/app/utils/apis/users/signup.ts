@@ -64,17 +64,17 @@ export const userIdValidate = async (userId) => {
       `/user/validate/${userId}`
     );
 
-    if (userIdValidateRes.status === 200) {
-      alert("사용 가능한 아이디입니다.");
-      return true;
-    } else {
+    alert("사용 가능한 아이디입니다.");
+    return true;
+  } catch (error) {
+    if (error.response.status === 409) {
       alert("이미 사용중인 아이디입니다.");
       return false;
+    } else {
+      console.error("아이디 중복 확인 요청 중 오류 발생:", error);
+      alert("아이디 중복 확인에 실패했습니다. 다시 시도해주세요.");
+      return false;
     }
-  } catch (error) {
-    console.log(error);
-    alert("사용할 수 없는 아이디입니다.");
-    return false;
   }
 };
 

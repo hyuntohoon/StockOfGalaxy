@@ -54,7 +54,7 @@ const SignUpTemplate = () => {
             });
 
             if (response === true) {
-              router.push("/"); // 회원가입 성공 시 메인으로 이동
+              router.push("/login"); // 회원가입 성공 시 메인으로 이동
             }
           }}
         />
