@@ -25,7 +25,7 @@ const useKRStockWebSocket = (stockData, setStockDataInfo: any) => {
       const messageData = JSON.parse(event.data);
       // const updatedStockCode = messageData.stock_code;
 
-      const updatedStockCode = Buffer.from(messageData.stock_code).toString();
+      const updatedStockCode = messageData.stock_code;
 
       setStockDataInfo((prevStockData: any[]) => {
         return prevStockData.map((stock) =>

@@ -16,6 +16,8 @@ import {
   Legend,
   PointElement,
   ChartOptions,
+  LineController,
+  BarController,
 } from "chart.js";
 
 ChartJS.register(
@@ -26,7 +28,9 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
-  PointElement
+  PointElement,
+  LineController,
+  BarController
 );
 
 const Container = styled.div`
@@ -44,12 +48,18 @@ const Container = styled.div`
 const FinancialMetricsChart = () => {
   const { stock } = useParams();
   const stock_code = Array.isArray(stock) ? stock[0] : stock ?? "005930";
-  const [financialMetricsInfo, setFinancialMetricsInfo] = useState([]);
+  const [financialMetricsInfo, setFinancialMetricsInfo] = useState<any[]>([
+    {
+      stock_code: "005930",
+      stac_yymm: "201703",
+      current_assets: 1292842,
+      current_liabilites: 568431,
+      total_liabilites: 743994,
+      total_equity: 1898180,
+    },
+  ]);
 
-  const formatDateString = (dateString) => {
-    if (dateString.length !== 6) {
-      throw new Error("Input string must be in the format YYYYMM");
-    }
+  const formatDateString = (dateString: string) => {
     const year = dateString.slice(0, 4);
     const month = dateString.slice(4, 6);
     return `${year}.${month}`;
@@ -67,19 +77,19 @@ const FinancialMetricsChart = () => {
 
   useEffect(() => {
     if (financialMetricsInfo) {
+      console.log(financialMetricsInfo);
+
       const labels = financialMetricsInfo.map((item) =>
         formatDateString(item.stac_yymm)
       );
-      const totalCapital = financialMetricsInfo.map((item) =>
-        parseFloat(item.total_equity)
+      const totalCapital = financialMetricsInfo.map(
+        (item) => item.total_equity
       );
-      const totalLiabilities = financialMetricsInfo.map((item) =>
-        parseFloat(item.total_liabilites)
+      const totalLiabilities = financialMetricsInfo.map(
+        (item) => item.total_liabilites
       );
       const debtRatio = financialMetricsInfo.map(
-        (item) =>
-          (parseFloat(item.total_liabilites) / parseFloat(item.total_equity)) *
-          100
+        (item) => (item.total_liabilites / item.total_equity) * 100
       ); // 부채비율 계산
 
       const data = {
@@ -142,7 +152,7 @@ const FinancialMetricsChart = () => {
           display: true,
         },
         ticks: {
-          callback: function (value: number) {
+          callback: function (value: any) {
             return value / 10000 + "조";
           },
         },
@@ -154,7 +164,7 @@ const FinancialMetricsChart = () => {
           drawOnChartArea: false,
         },
         ticks: {
-          callback: function (value) {
+          callback: function (value: any) {
             return value + "%";
           },
         },
@@ -164,7 +174,9 @@ const FinancialMetricsChart = () => {
 
   return (
     <Container>
-      <Bar data={chartData} options={options} />
+      {chartData.labels.length > 0 && chartData.datasets.length > 0 && (
+        <Bar data={chartData} options={options} />
+      )}
     </Container>
   );
 };

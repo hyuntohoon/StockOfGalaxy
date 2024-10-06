@@ -14,7 +14,7 @@ import { useWheelScroll } from "@/app/hooks/useWheelScroll";
 import { News } from "@/app/types/planet";
 import FinancialMetricsChart from "../../molecules/stock/FinancialMetricsChart";
 import StockDailyPriceTemplate from "../../organisms/stock/StockDailyPriceTemplate";
-import NewsModal from "./NewsModal"
+import NewsModal from "./NewsModal";
 
 const ChartContainer = styled.div`
   width: 800px;
@@ -188,7 +188,7 @@ const PlanetDetailTemplate: React.FC<PlanetDetailTemplateProps> = ({
         <SectionContainer ref={planetNewsRef}>
           <div className="news-list">
             {/* 행성 뉴스 데이터 렌더링 */}
-            <NewsList news={planetNews}  onClick={handleNewsClick}/>
+            <NewsList news={planetNews} onClick={handleNewsClick} />
           </div>
           <div className="word-cloud">
             <WordCloudComponent data={planetWord} width={500} height={440} />
@@ -208,10 +208,7 @@ const PlanetDetailTemplate: React.FC<PlanetDetailTemplateProps> = ({
 
       {/* 모달 컴포넌트 추가 */}
       {modalOpen && selectedNews && (
-        <NewsModal
-          news={selectedNews}
-          onClose={() => setModalOpen(false)}
-        />
+        <NewsModal news={selectedNews} onClose={() => setModalOpen(false)} />
       )}
     </>
   );

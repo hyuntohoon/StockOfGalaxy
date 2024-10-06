@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
 import CompanyInfo from "@/app/components/organisms/stock/CompanyInfoContainer";
 import Image from "next/image";
+import thumbnail from "@/public/news_thumbnail/news_005930.jpg";
 
 const Container = styled.div`
   display: flex;
@@ -25,12 +26,7 @@ const StockInfoTemplate = () => {
     <>
       <Container>
         <SubContainer>
-          <Image
-            src="https://wimg.mk.co.kr/news/cms/202410/03/news-p.v1.20241003.7afb8c22b6d445ab886722334cd898be_P1.jpg"
-            alt="samsung"
-            width={470}
-            height={250}
-          />
+          <Image src={thumbnail} alt="samsung" width={470} height={250} />
         </SubContainer>
         <SubContainer>
           <CompanyInfo />

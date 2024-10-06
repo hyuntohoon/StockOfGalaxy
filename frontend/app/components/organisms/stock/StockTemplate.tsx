@@ -7,6 +7,7 @@ import StockInfo from "../../molecules/stock/StockInfo";
 import useKRStockWebSocket from "@/app/hooks/useKRStockWebSocket";
 import { getCurrentPrice } from "@/app/utils/apis/stock/getStockData";
 import { stock_list } from "@/app/utils/apis/stock/findStockName";
+import { useRouter, useParams } from "next/navigation";
 
 const ParentContainer = styled.div`
   width: 50vw;
@@ -41,6 +42,7 @@ const Container = styled.div`
   flex-direction: row;
   align-items: center;
   border-radius: 20px;
+  cursor: pointer;
 `;
 
 const Header = styled.div`
@@ -69,6 +71,9 @@ interface stockState {
 }
 
 const StockTemplate = () => {
+  const router = useRouter();
+  const { date } = useParams();
+  const currentDate = date ?? "2024-10-05";
   const stockData: stockData[] = stock_list;
 
   const [stockDataInfo, setStockDataInfo] = useState<stockState[]>(
@@ -107,13 +112,22 @@ const StockTemplate = () => {
 
   useKRStockWebSocket(stockData, setStockDataInfo);
 
+  const moveDetailPage = (stock_code: string) => {
+    router.push(
+      `https://ssafy11s.com/planet/detail/${stock_code}/${currentDate}`
+    );
+  };
+
   return (
     <ParentContainer>
       <Header>
         <span>실시간 차트</span>
       </Header>
       {stockDataInfo.map((stock, index) => (
-        <Container key={stock.stock_code}>
+        <Container
+          key={stock.stock_code}
+          onClick={() => moveDetailPage(stock.stock_code)}
+        >
           <StockInfo
             index={index}
             stock_code={stock.stock_code}
