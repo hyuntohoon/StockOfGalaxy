@@ -120,7 +120,7 @@ const MenuHeader: React.FC = () => {
           <HomeButtonGroup />
           <SearchIconButtonGroup />
           {isLoggedIn ? (
-            <div ref={myIconRef}>
+            <div ref={myIconRef} style={{ marginBottom: 0 }}>
               <MyIconButtonGroup onClick={toggleModal} />
             </div>
           ) : (

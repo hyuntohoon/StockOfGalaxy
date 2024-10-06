@@ -1,11 +1,16 @@
 import Image from 'next/image';
 import styled from '@emotion/styled';
 
-const ProfileImage = ({ src, alt }) => {
+const ProfileImage = ({ characterType = 1, width = 30, height = 30, alt }) => {
   return (
     <StyledProfileImage>
       <StyledImageWrapper>
-        <Image src={src} alt={alt || 'Profile'} width={34} height={34} />
+      <Image
+        src={`/images/profile/${characterType}.png`}
+        alt={alt || 'Profile'}
+        width={width}
+        height={height}
+      />
       </StyledImageWrapper>
     </StyledProfileImage>
   );
