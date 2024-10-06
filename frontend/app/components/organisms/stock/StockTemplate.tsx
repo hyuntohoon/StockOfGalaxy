@@ -74,7 +74,8 @@ interface stockState {
 const StockTemplate = () => {
   const router = useRouter();
   const { date } = useParams();
-  const currentDate = date ?? "2024-10-05";
+  const currentDate =
+    date ?? new Date().toISOString().slice(0, 10).replace(/-/g, "");
   const stockData: stockData[] = stock_list;
 
   const [stockDataInfo, setStockDataInfo] = useState<stockState[]>(
@@ -114,9 +115,7 @@ const StockTemplate = () => {
   useKRStockWebSocket(stockData, setStockDataInfo);
 
   const moveDetailPage = (stock_code: string) => {
-    router.push(
-      `https://ssafy11s.com/planet/detail/${stock_code}/${currentDate}`
-    );
+    router.push(`/planet/main/${stock_code}/${currentDate}`);
   };
 
   return (

@@ -29,6 +29,8 @@ const SignUpTemplate = () => {
           setNickname={setNickname}
           setEmail={setEmail}
           setIsAuthenticated={setIsAuthenticated}
+          password={password}
+          passwordCheck={passwordCheck}
         />
         <LoginButton
           value="회원가입"
@@ -54,7 +56,7 @@ const SignUpTemplate = () => {
             });
 
             if (response === true) {
-              router.push("/"); // 회원가입 성공 시 메인으로 이동
+              router.push("/login"); // 회원가입 성공 시 메인으로 이동
             }
           }}
         />

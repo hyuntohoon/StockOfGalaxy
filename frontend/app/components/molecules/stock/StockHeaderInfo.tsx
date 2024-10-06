@@ -28,7 +28,7 @@ const Container = styled.div`
 
 const Separator = styled.span`
   margin: 0 5px;
-  color: #d9d9d9;
+  color: #0e224d9e;
 
   @media (max-width: 600px) {
     margin: 0 3px;

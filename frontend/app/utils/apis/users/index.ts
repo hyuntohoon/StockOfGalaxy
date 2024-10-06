@@ -17,8 +17,6 @@ export const login = async (formData, setAccessToken, setLogin) => {
       ? authorizationHeader.replace(/^Bearer\s+/i, "")
       : null;
 
-    console.log(loginRes);
-    console.log(accessToken);
     if (accessToken) {
       setAccessToken(accessToken); // 유저 정보 저장
       setLogin(true);
@@ -37,9 +35,9 @@ export const login = async (formData, setAccessToken, setLogin) => {
 export const logout = async (memberId: number) => {
   try {
     const response = await defaultRequest.post(`/user/logout`, {
-      memberId: memberId
+      memberId: memberId,
     });
-    console.log('로그아웃 response', response);
+
     return response.data;
   } catch (error) {
     console.error("로그아웃 실패", error);
@@ -52,7 +50,7 @@ export const getInfo = async (accessToken, setAccessToken) => {
 
   try {
     const getInfoRes = await authClient.get("/user/auth/info");
-    console.log(getInfoRes.data);
+
     return getInfoRes.data;
   } catch (error) {
     console.error("유저 정보 조회 실패:", error);
@@ -65,7 +63,7 @@ export const deleteAccount = async (accessToken, setAccessToken) => {
 
   try {
     const deleteAccountRes = await authClient.delete("/user/quit");
-    console.log(deleteAccountRes);
+
     alert("회원 탈퇴가 완료되었습니다.");
     return true;
   } catch (error) {
