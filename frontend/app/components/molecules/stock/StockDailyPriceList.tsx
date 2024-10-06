@@ -44,7 +44,7 @@ const StockDailyPriceList = () => {
 
   const [dummyData, setDummyData] = useState<StockDailyPriceProps[]>([
     {
-      daily_stock_history_date: "2024-09-26",
+      daily_stock_history_date: "20240926",
       low_price: 1000,
       high_price: 2000,
       open_price: 1500,

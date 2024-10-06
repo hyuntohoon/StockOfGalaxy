@@ -47,15 +47,15 @@ const StockDailyPrice = ({
   prdyVrssSign,
   prdyCtrt,
 }: StockDailyPriceProps) => {
-  const formattedCtrt = parseFloat(prdyVrssSign.concat(prdyCtrt)).toFixed(2);
-  const isPositive = parseFloat(formattedCtrt) >= 0;
+  const formattedCtrt = parseFloat(prdyCtrt).toFixed(2);
+  const isPositive = prdyVrssSign == "5" ? false : true;
 
   return (
     <Container>
       <Column>{formatStockDate(stockDate)}</Column>
       <Column>{formatPrice(endPrice)}원</Column>
       <PriceChangeColumn isPositive={isPositive}>
-        {prdyVrssSign == "-" ? "" : "+"}
+        {prdyVrssSign == "5" ? "-" : "+"}
         {formattedCtrt}%
       </PriceChangeColumn>
       <Column>{formatPrice(startPrice)}원</Column>

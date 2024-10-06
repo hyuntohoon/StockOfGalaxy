@@ -105,8 +105,6 @@ export const getPastStockData = async (stock_code: string, type: string) => {
       };
     });
 
-    console.log(formattedData);
-
     formattedData.sort((a, b) => a.timestamp - b.timestamp);
 
     return formattedData;

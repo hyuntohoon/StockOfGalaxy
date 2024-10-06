@@ -14,7 +14,6 @@ export const subscribeStock = () => {
     });
 
     alert("즐겨찾기 완료");
-    console.log(res);
   } catch (error) {
     alert("즐겨찾기 실패");
     console.log(error);
