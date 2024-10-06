@@ -88,7 +88,7 @@ public class KisRealTimeWebSocketKeyService {
 
             String approvalKey = extractApprovalKeyFromResponse(response);
             if (approvalKey != null) {
-                redisService.setValues("kisRealTimeKey", approvalKey, Duration.ofHours(6));
+                redisService.setValues("kisRealTimeKey", approvalKey, Duration.ofHours(24));
                 log.info("New WebSocket approval_key successfully saved to Redis: {}", approvalKey);
             } else {
                 log.error("Failed to extract approval_key from KIS response: {}", response);

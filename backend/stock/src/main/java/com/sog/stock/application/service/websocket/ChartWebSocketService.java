@@ -90,6 +90,14 @@ public class ChartWebSocketService {
             // PINGPONG 메시지 처리
             if (jsonResponse.getJSONObject("header").getString("tr_id").equals("PINGPONG")) {
                 log.info("PINGPONG 메시지 수신, 연결 유지 중...");
+                // 모든 구독자에게 PINGPONG 메시지를 전송
+                for (List<WebSocketSession> subscribers : stockCodeSubscribers.values()) {
+                    for (WebSocketSession clientSession : subscribers) {
+                        if (clientSession.isOpen()) {
+                            clientSession.sendMessage(new TextMessage(payload));
+                        }
+                    }
+                }
                 return; // 연결 상태 유지 메시지이므로 여기서 처리 끝
             }
 
