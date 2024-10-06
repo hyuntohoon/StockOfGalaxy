@@ -1,6 +1,9 @@
 import React from 'react';
 import styled from '@emotion/styled';
 import { useRouter } from 'next/navigation';
+import { IBM_Plex_Sans_KR } from 'next/font/google';
+
+const ibm = IBM_Plex_Sans_KR({ weight: '400', subsets: ['latin'] })
 
 const PlanetTrendErrorModal = ({ onClose }) => {
   const router = useRouter(); // useRouter 호출
@@ -15,7 +18,7 @@ const PlanetTrendErrorModal = ({ onClose }) => {
 
     // 오늘 날짜로 이동
     router.push(`/main/${formattedDate}`);
-    onClose(); // 모달 닫기
+    onClose();
   };
 
   return (
@@ -23,7 +26,7 @@ const PlanetTrendErrorModal = ({ onClose }) => {
       <ModalContent>
         <ModalTitle>데이터 오류</ModalTitle>
         <p>데이터가 비어 있습니다. <br /> 다시 시도하거나 오늘 날짜로 이동하세요.</p>
-        <CloseButton onClick={handleTodayRedirect}>확인</CloseButton> {/* 확인 버튼 클릭 시 오늘 날짜로 이동 */}
+        <CloseButton className={ibm.className} onClick={handleTodayRedirect}>확인</CloseButton> {/* 확인 버튼 클릭 시 오늘 날짜로 이동 */}
       </ModalContent>
     </Overlay>
   );

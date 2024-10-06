@@ -1,5 +1,9 @@
 import NavButton from '@/app/components/atoms/planet/NavButton';
 import {NavBarWrapper} from "@/app/styles/planet"
+import { IBM_Plex_Sans_KR } from 'next/font/google';
+
+const ibm = IBM_Plex_Sans_KR({ weight: '500', subsets: ['latin'] })
+
 interface NavBarProps {
   activeSection: string;
   scrollToSection: (ref: React.RefObject<HTMLDivElement>) => void;
@@ -10,7 +14,7 @@ const NavBar: React.FC<NavBarProps> = ({ activeSection, scrollToSection, section
   return (
     <NavBarWrapper>
       {sections.map(({ name, ref }) => (
-        <NavButton key={name} active={activeSection === name} onClick={() => scrollToSection(ref)}>
+        <NavButton className={ibm.className} key={name} active={activeSection === name} onClick={() => scrollToSection(ref)}>
           {name}
         </NavButton>
       ))}
