@@ -29,6 +29,8 @@ const SignUpTemplate = () => {
           setNickname={setNickname}
           setEmail={setEmail}
           setIsAuthenticated={setIsAuthenticated}
+          password={password}
+          passwordCheck={passwordCheck}
         />
         <LoginButton
           value="회원가입"

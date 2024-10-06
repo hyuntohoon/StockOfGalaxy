@@ -2,9 +2,8 @@ import { defaultRequest } from "../../apis/request";
 
 // 정규식 상수
 const userIDRegex = /^[a-zA-Z0-9]{5,20}$/;
-const passwordRegex =
-  /^(?=.*[a-zA-Z])(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{6,}$/;
-const nicknameRegex = /^[a-zA-Z0-9가-힣\-_]{2,15}$/;
+const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d).{6,}$/;
+const nicknameRegex = /^[a-zA-Z0-9가-힣]{2,15}$/;
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 // 유효성 검사 함수
