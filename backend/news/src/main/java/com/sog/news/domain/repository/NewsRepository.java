@@ -33,21 +33,21 @@ public interface NewsRepository extends JpaRepository<News, Long> {
                                                @Param("stockName") String stockName);
 
     // 뉴스의 제목에서 키워드로 검색하며, 최신순으로 페이징 처리
-    @Query(value = "SELECT * FROM news WHERE MATCH(title) AGAINST(?1 IN NATURAL LANGUAGE MODE) ORDER BY published_date DESC LIMIT ?#{#pageable.pageSize} OFFSET ?#{#pageable.offset}",
-            countQuery = "SELECT count(*) FROM news WHERE MATCH(title) AGAINST(?1 IN NATURAL LANGUAGE MODE)",
+    @Query(value = "SELECT * FROM news WHERE MATCH(title) AGAINST(?1 IN BOOLEAN MODE) ORDER BY published_date DESC LIMIT ?#{#pageable.pageSize} OFFSET ?#{#pageable.offset}",
+            countQuery = "SELECT count(*) FROM news WHERE MATCH(title) AGAINST(?1 IN BOOLEAN MODE)",
             nativeQuery = true)
     Page<News> findByTitleContaining(String titleKeyword, Pageable pageable);
 
     // 뉴스의 내용에서 키워드로 검색하며, 최신순으로 페이징 처리
-    @Query(value = "SELECT * FROM news WHERE MATCH(content) AGAINST(?1 IN NATURAL LANGUAGE MODE) ORDER BY published_date DESC LIMIT ?#{#pageable.pageSize} OFFSET ?#{#pageable.offset}",
-            countQuery = "SELECT count(*) FROM news WHERE MATCH(content) AGAINST(?1 IN NATURAL LANGUAGE MODE)",
+    @Query(value = "SELECT * FROM news WHERE MATCH(content) AGAINST(?1 IN BOOLEAN MODE) ORDER BY published_date DESC LIMIT ?#{#pageable.pageSize} OFFSET ?#{#pageable.offset}",
+            countQuery = "SELECT count(*) FROM news WHERE MATCH(content) AGAINST(?1 IN BOOLEAN MODE)",
             nativeQuery = true)
     Page<News> findByContentContaining(String contentKeyword, Pageable pageable);
 
     // 제목 또는 본문에서 키워드를 검색하며, 최신순으로 페이징 처리
-    @Query(value = "SELECT * FROM news WHERE MATCH(title) AGAINST(?1 IN NATURAL LANGUAGE MODE) OR MATCH(content) AGAINST(?2 IN NATURAL LANGUAGE MODE) " +
+    @Query(value = "SELECT * FROM news WHERE MATCH(title) AGAINST(?1 IN BOOLEAN MODE) OR MATCH(content) AGAINST(?2 IN BOOLEAN MODE) " +
             "ORDER BY published_date DESC LIMIT ?#{#pageable.pageSize} OFFSET ?#{#pageable.offset}",
-            countQuery = "SELECT count(*) FROM news WHERE MATCH(title) AGAINST(?1 IN NATURAL LANGUAGE MODE) OR MATCH(content) AGAINST(?2 IN NATURAL LANGUAGE MODE)",
+            countQuery = "SELECT count(*) FROM news WHERE MATCH(title) AGAINST(?1 IN BOOLEAN MODE) OR MATCH(content) AGAINST(?2 IN BOOLEAN MODE)",
             nativeQuery = true)
     Page<News> findByTitleContainingOrContentContaining(String titleKeyword, String contentKeyword, Pageable pageable);
 
