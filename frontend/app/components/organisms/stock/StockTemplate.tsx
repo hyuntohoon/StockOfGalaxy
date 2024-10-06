@@ -40,6 +40,7 @@ const Container = styled.div`
   text-align: center;
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
   align-items: center;
   border-radius: 20px;
   cursor: pointer;
