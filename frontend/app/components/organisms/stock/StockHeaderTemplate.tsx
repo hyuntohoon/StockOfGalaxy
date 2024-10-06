@@ -10,7 +10,7 @@ import { GoTriangleDown } from "react-icons/go";
 import { useParams, useRouter } from "next/navigation";
 import { getCurrentPrice } from "@/app/utils/apis/stock/getStockData";
 import { findStockName } from "@/app/utils/apis/stock/findStockName";
-import { ToggleButton } from "@/app/styles/myplanet";
+import { getHeaderStockData } from "@/app/utils/apis/stock/getStockData";
 
 const ParentContainer = styled.div`
   min-width: 950px;
@@ -63,9 +63,27 @@ interface stockState {
   changeRate: number;
 }
 
+const CustomHook = (stockDataInfo, setStockDataInfo) => {
+  useKRStockWebSocket(stockDataInfo, setStockDataInfo);
+  return <></>;
+};
+
 const StockHeaderTemplate = () => {
-  const { stock } = useParams();
+  const { stock, date } = useParams();
+
+  const isDifferentDate = () => {
+    const currentDate = new Date();
+    const formattedCurrentDate = `${currentDate.getFullYear()}${(
+      currentDate.getMonth() + 1
+    )
+      .toString()
+      .padStart(2, "0")}${currentDate.getDate().toString().padStart(2, "0")}`;
+
+    return formattedCurrentDate !== date;
+  };
+
   const stock_code = Array.isArray(stock) ? stock[0] : stock ?? "005930";
+  const current_date = Array.isArray(date) ? date[0] : date;
 
   const [stockDataInfo, setStockDataInfo] = useState<stockState[]>([
     {
@@ -78,40 +96,55 @@ const StockHeaderTemplate = () => {
   ]);
 
   const router = useRouter();
-  const { stock: stockCode, date } = useParams(); // useParams로 stockCode와 date 가져오기
-
-  useKRStockWebSocket(stockDataInfo, setStockDataInfo);
+  const { stock: stockCode } = useParams(); // useParams로 stockCode와 date 가져오기
 
   useEffect(() => {
     stockDataInfo.map(async (stock, index) => {
-      try {
-        const res = await getCurrentPrice(stock.stock_code);
+      if (isDifferentDate() == true) {
+        try {
+          const res = await getHeaderStockData(stock.stock_code, current_date);
 
-        setStockDataInfo((prevStockData: any[]) => {
-          return prevStockData.map((stock) =>
-            res && res.stockCode && stock.stock_code === res.stockCode
-              ? {
-                  stock_name: stock.stock_name,
-                  stock_code: res.stockCode,
-                  currentPrice: res.stckPrpr,
-                  changePrice: res.prdyVrss,
-                  changeRate: res.prdyCtrt,
-                }
-              : stock
-          );
-        });
-      } catch (error) {
-        console.log(error);
+          setStockDataInfo((prevStockData: any[]) => {
+            return prevStockData.map((stock) =>
+              res && res.stock_code && stock.stock_code === res.stock_code
+                ? {
+                    stock_name: stock.stock_name,
+                    stock_code: res.stock_code,
+                    currentPrice: res.close_price,
+                    changePrice: res.prdy_vrss,
+                    changeRate: res.prdy_ctrt,
+                  }
+                : stock
+            );
+          });
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        try {
+          const res = await getCurrentPrice(stock.stock_code);
+
+          setStockDataInfo((prevStockData: any[]) => {
+            return prevStockData.map((stock) =>
+              res && res.stockCode && stock.stock_code === res.stockCode
+                ? {
+                    stock_name: stock.stock_name,
+                    stock_code: res.stockCode,
+                    currentPrice: res.stckPrpr,
+                    changePrice: res.prdyVrss,
+                    changeRate: res.prdyCtrt,
+                  }
+                : stock
+            );
+          });
+        } catch (error) {
+          console.log(error);
+        }
       }
     });
   }, []);
 
-  const formatPrice = (price: number) => {
-    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  };
-
   const handleClick = () => {
-    console.log("click");
     if (stockCode && date) {
       router.push(`/planet/main/${stockCode}/${date}`);
     }
@@ -119,6 +152,7 @@ const StockHeaderTemplate = () => {
 
   return (
     <HeaderWrapper>
+      <>{isDifferentDate() == false ? <CustomHook /> : ""}</>
       <Button onClick={handleClick}>
         <GoTriangleDown />
       </Button>
