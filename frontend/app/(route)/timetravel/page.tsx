@@ -83,7 +83,7 @@ const TimeTravel = () => {
 
       particle = new THREE.Object3D();
       scene.add(particle);
-      const geometry = new THREE.TetrahedronGeometry(1, 0);
+      const geometry = new THREE.TetrahedronGeometry(2, 0);
       const material = new THREE.MeshPhongMaterial({
         color: 0xffffff,
         flatShading: true,
@@ -125,7 +125,8 @@ const TimeTravel = () => {
 
     function animate() {
       requestAnimationFrame(animate);
-      particle.rotation.y += 0.001;
+      particle.rotation.y -= 0.007;
+      particle.rotation.x += 0.0005;
       renderer.clear();
       renderer.render(scene, camera);
     }
