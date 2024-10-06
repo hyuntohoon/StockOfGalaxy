@@ -15,6 +15,8 @@ import useKRStockWebSocket from '@/app/hooks/useKRStockWebSocket';
 import formatPrice from '@/app/utils/apis/stock/formatPrice';
 import { addMyPlanet, deleteMyPlanet, getMyPlanet } from '@/app/utils/apis/myplanet'
 import { useAccessToken } from '@/app/store/userSlice';
+import { useRouter } from 'next/navigation';
+import { useDate } from '@/app/store/date';
 
 const ModalContainer = styled.div<{ isOpen: boolean }>`
   ${({ isOpen }) => css`
@@ -55,6 +57,8 @@ interface favoriteItem {
 
 
 export default function Planet() {
+  const router = useRouter();
+  const {date} = useDate();
   const mountRef = useRef<HTMLDivElement>(null);
   const {accessToken, setAccessToken} = useAccessToken();
   const [stock, setStock] = useState<{stockName: string; stockCode: string;}[]>(
@@ -140,12 +144,9 @@ export default function Planet() {
   };
 
   const handleItemClick = (item: FavoriteItemProps) => {
-    setSelectedItem(item);
+    router.push(`/planet/main/${item.stockCode}/${date}`);
   };
 
-  const handleCloseModal = () => {
-    setSelectedItem(null);
-  };
 
   // THREE.js 초기화 및 애니메이션 처리
   useEffect(() => {
@@ -157,6 +158,7 @@ export default function Planet() {
           stockName: stock.stockName,
           stockCode: stock.stockCode,
         })));
+        
       
       }catch(error) {
         console.error('getMyPlanet API error:', error);
@@ -242,7 +244,7 @@ export default function Planet() {
       const textures = await loadTextures(items, textureLoader); // 주변 행성 텍스처 로드
   
       surroundingPlanets = items.map((data, index) => {
-        const planetMesh = createPlanetMesh(index); // 행성 메쉬 생성
+        const planetMesh = createPlanetMesh(parseInt(data.stockCode.slice(0, -1)) % 25); // 행성 메쉬 생성
         const radius = centralPlanetRadius * 20 + 180; // 거리 조정
         const speed = 0.01 + Math.random() * 0.002;
         const angle = (index * (2 * Math.PI / numSurroundingPlanets)); // 원형 배치
@@ -268,15 +270,26 @@ export default function Planet() {
       return new THREE.Mesh(geom, material);
     }
   
-    async function loadTextures(items: any[], textureLoader: THREE.TextureLoader): Promise<THREE.Texture[]> {
-      const promises: Promise<THREE.Texture>[] = [];
-      for (let i = 0; i < items.length; i++) {
-        const stockCode = Number(items[i].stockCode.slice(0, -1)) % 18 + 1;
-        promises.push(new Promise((resolve) => {
-          textureLoader.load(`/images/planetTexture/${stockCode}.jpg`, (texture) => resolve(texture)); 
-        }));
+    async function loadTextures(items, textureLoader) {
+      const promises = items.map((item, i) => {
+        const stockCode = Number(item.stockCode.slice(0, -1)) % 18 + 1;
+        return new Promise((resolve, reject) => {
+          textureLoader.load(
+            `/images/planetTexture/${stockCode}.jpg`,
+            resolve, // 성공 시 resolve
+            undefined, // 로딩 중에는 아무 작업도 하지 않음
+            reject // 실패 시 reject
+          );
+        });
+      });
+    
+      try {
+        const textures = await Promise.all(promises);
+        return textures;
+      } catch (error) {
+        console.error("텍스처 로드 중 에러 발생:", error);
+        return [];
       }
-      return await Promise.all(promises);
     }
   
     function addLights(scene: THREE.Scene) {
@@ -347,26 +360,14 @@ export default function Planet() {
         <FavoritesList
           items={items}
           onToggleFavorite={handleToggleFavorite}
-          setSelectedItem={setSelectedItem}
+          setSelectedItem={handleItemClick}
         />
-        <ToggleButton onClick={toggleFavorites}>
+        <ToggleButton onClick={toggleFavorites} isOpen={isOpen}>
           <MdKeyboardArrowUp />
         </ToggleButton>
       </FavoritesContainer>
 
-      {/* 모달 */}
-      {selectedItem && (
-        <ModalContainer isOpen={!!selectedItem}>
-          <ModalContent>
-            <h2>{selectedItem.name}</h2>
-            <p>Price: {selectedItem.price}</p>
-            <p>Change: {selectedItem.change}</p>
-            <p>Icon:</p>
-            <Image src={selectedItem.iconSrc} alt={selectedItem.name} width={100} height={100} />
-            <button onClick={handleCloseModal}>Close</button>
-          </ModalContent>
-        </ModalContainer>
-      )}
+      
     </PageContainer>
   );
 }

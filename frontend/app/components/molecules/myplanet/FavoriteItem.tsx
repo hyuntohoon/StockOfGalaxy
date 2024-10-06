@@ -59,7 +59,6 @@ export const FavoriteItem: React.FC<FavoriteItemProps> = ({
           <StyledText
             size="15px"
             weight="bold"
-            onClick={() => router.push("/planet/main/005930/20240927")} // 예시 URL
           >
             {name}
           </StyledText>
