@@ -138,7 +138,6 @@ export const getHeaderStockData = async (
       url: `${process.env.NEXT_PUBLIC_API_BASE_URL}/stock/${stock_code}/${loc_date}`,
     });
 
-    console.log(res.data);
     return res.data;
   } catch (error) {
     console.log(error);
