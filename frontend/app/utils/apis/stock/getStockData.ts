@@ -31,7 +31,7 @@ function toTimestamp(dateString) {
 export const getDailyStockData = async (stockCode: string) => {
   try {
     const res = await defaultRequest.get(`/stock/${stockCode}/history`);
-    return res.data ? res.data : [];
+    return res.data.stockDailyPriceList ? res.data.stockDailyPriceList : [];
   } catch (error) {
     console.log(error);
     return [];
@@ -105,8 +105,6 @@ export const getPastStockData = async (stock_code: string, type: string) => {
       };
     });
 
-    console.log(formattedData);
-
     formattedData.sort((a, b) => a.timestamp - b.timestamp);
 
     return formattedData;
@@ -138,7 +136,6 @@ export const getHeaderStockData = async (
       url: `${process.env.NEXT_PUBLIC_API_BASE_URL}/stock/${stock_code}/${loc_date}`,
     });
 
-    console.log(res.data);
     return res.data;
   } catch (error) {
     console.log(error);

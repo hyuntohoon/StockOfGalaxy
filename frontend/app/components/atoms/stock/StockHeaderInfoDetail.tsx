@@ -5,7 +5,7 @@ import formatPrice from "@/app/utils/libs/stock/formatPrice";
 
 interface StockHeaderInfoDetailProps {
   target: string;
-  targetPrice: number;
+  targetPrice: number | string;
 }
 
 const Container = styled.div`
@@ -20,7 +20,12 @@ const StockHeaderInfoDetail = ({
   return (
     <Container>
       <span>{target}</span>
-      <span>{formatPrice(targetPrice)}원</span>
+      <span>
+        {typeof targetPrice === "number"
+          ? targetPrice.toLocaleString()
+          : targetPrice}
+        원
+      </span>
     </Container>
   );
 };

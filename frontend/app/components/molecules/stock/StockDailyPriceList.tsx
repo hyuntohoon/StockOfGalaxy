@@ -28,14 +28,14 @@ const StyledHr = styled.hr`
 `;
 
 interface StockDailyPriceProps {
-  stockDate: string;
-  lowPrice: number;
-  highPrice: number;
-  startPrice: number;
-  endPrice: number;
-  prdyVrss: string;
-  prdyVrssSign: string;
-  prdyCtrt: string;
+  daily_stock_history_date: string;
+  low_price: number;
+  high_price: number;
+  open_price: number;
+  close_price: number;
+  prdy_vrss: string;
+  prdy_vrss_sign: string;
+  prdy_ctrt: string;
 }
 
 const StockDailyPriceList = () => {
@@ -44,51 +44,21 @@ const StockDailyPriceList = () => {
 
   const [dummyData, setDummyData] = useState<StockDailyPriceProps[]>([
     {
-      stockDate: "2024-09-26",
-      lowPrice: 1000,
-      highPrice: 2000,
-      startPrice: 1500,
-      endPrice: 1800,
-      prdyVrss: "900",
-      prdyVrssSign: "+",
-      prdyCtrt: "200",
-    },
-    {
-      stockDate: "2024-09-25",
-      lowPrice: 1000,
-      highPrice: 2000,
-      startPrice: 1500,
-      endPrice: 1800,
-      prdyVrss: "900",
-      prdyVrssSign: "-",
-      prdyCtrt: "200",
-    },
-    {
-      stockDate: "2024-09-24",
-      lowPrice: 1000,
-      highPrice: 2000,
-      startPrice: 1500,
-      endPrice: 1800,
-      prdyVrss: "900",
-      prdyVrssSign: "+",
-      prdyCtrt: "200",
-    },
-    {
-      stockDate: "2024-09-23",
-      lowPrice: 1000,
-      highPrice: 2000,
-      startPrice: 1500,
-      endPrice: 1800,
-      prdyVrss: "900",
-      prdyVrssSign: "-",
-      prdyCtrt: "200",
+      daily_stock_history_date: "20240926",
+      low_price: 1000,
+      high_price: 2000,
+      open_price: 1500,
+      close_price: 1800,
+      prdy_vrss: "900",
+      prdy_vrss_sign: "+",
+      prdy_ctrt: "200",
     },
   ]);
 
   useEffect(() => {
     const getData = async () => {
       const dataList = await getDailyStockData(stock_code);
-      // setDummyData(dataList);
+      setDummyData(dataList.slice(0, 90));
     };
 
     getData();
@@ -103,14 +73,14 @@ const StockDailyPriceList = () => {
           {dummyData.map((data, index) => (
             <StockDailyPrice
               key={index}
-              stockDate={data.stockDate}
-              lowPrice={data.lowPrice}
-              highPrice={data.highPrice}
-              startPrice={data.startPrice}
-              endPrice={data.endPrice}
-              prdyVrss={data.prdyVrss}
-              prdyVrssSign={data.prdyVrssSign}
-              prdyCtrt={data.prdyCtrt}
+              stockDate={data.daily_stock_history_date}
+              lowPrice={data.low_price}
+              highPrice={data.high_price}
+              startPrice={data.open_price}
+              endPrice={data.close_price}
+              prdyVrss={data.prdy_vrss}
+              prdyVrssSign={data.prdy_vrss_sign}
+              prdyCtrt={data.prdy_ctrt}
             />
           ))}
         </Container>
