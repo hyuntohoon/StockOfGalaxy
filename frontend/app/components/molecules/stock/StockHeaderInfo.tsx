@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import styled from "@emotion/styled";
 import StockHeaderInfoDetail from "../../atoms/stock/StockHeaderInfoDetail";
@@ -37,25 +37,39 @@ const Separator = styled.span`
 
 const StockHeaderInfo: React.FC<StockHeaderInfoProps> = () => {
   const { stock, date } = useParams();
-  const stock_code = Array.isArray(stock) ? stock[0] : stock ?? "005930";
-  const current_date = date ?? "20241004";
+  const stock_code: string = Array.isArray(stock)
+    ? stock[0]
+    : stock ?? "005930";
 
-  const dividends = [
+  const current_date: string = Array.isArray(date) ? date[0] : date;
+  const [dividends, setDividends] = useState<any[]>([
     { target: "시가총액", targetPrice: 0 },
     { target: "1일 최저", targetPrice: 0 },
     { target: "1일 최고", targetPrice: 0 },
     { target: "1년 최저", targetPrice: 0 },
     { target: "1년 최고", targetPrice: 0 },
-  ];
+  ]);
 
   useEffect(() => {
-    getHeaderStockData(stock_code, "20240902").then((data) => {
-      dividends[0].targetPrice = 0;
-      dividends[1].targetPrice = 0;
-      dividends[2].targetPrice = 0;
-      dividends[3].targetPrice = 0;
-      dividends[4].targetPrice = 0;
-    });
+    const getStockData = async () => {
+      const res = await getHeaderStockData(stock_code, current_date);
+
+      setDividends([
+        {
+          target: "시가총액",
+          targetPrice:
+            (parseInt(res.market_capitalization) / 10000)
+              .toFixed(2)
+              .toString() + "조",
+        },
+        { target: "1일 최저", targetPrice: parseInt(res.low_price) },
+        { target: "1일 최고", targetPrice: parseInt(res.high_price) },
+        { target: "1년 최저", targetPrice: parseInt(res.year_low_price) },
+        { target: "1년 최고", targetPrice: parseInt(res.year_high_price) },
+      ]);
+    };
+
+    getStockData();
   }, []);
 
   return (
