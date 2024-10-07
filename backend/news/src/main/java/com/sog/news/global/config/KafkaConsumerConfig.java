@@ -2,6 +2,8 @@ package com.sog.news.global.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.sog.news.domain.dto.DailyKeywordFrequencyResponseDTO;
+import com.sog.news.domain.dto.DailyStockFrequencyResponseDTO;
 import com.sog.news.domain.dto.NewsConsumerResponseDTO;
 import com.sog.news.domain.model.News;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -42,6 +44,48 @@ public class KafkaConsumerConfig {
     public ConcurrentKafkaListenerContainerFactory<String, NewsConsumerResponseDTO> newsKafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, NewsConsumerResponseDTO> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(newsConsumerFactory());
+        factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL); // 수동 ACK 모드 설정
+        return factory;
+    }
+
+    @Bean
+    public ConsumerFactory<String, DailyKeywordFrequencyResponseDTO> dailyKeywordFrequencyConsumerFactory() {
+        Map<String, Object> configProps = new HashMap<>();
+        configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        configProps.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
+        configProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
+        configProps.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
+        configProps.put(JsonDeserializer.VALUE_DEFAULT_TYPE, "com.sog.news.domain.dto.DailyKeywordFrequencyResponseDTO");
+        configProps.put(JsonDeserializer.USE_TYPE_INFO_HEADERS, false);
+        return new DefaultKafkaConsumerFactory<>(configProps);
+    }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, DailyKeywordFrequencyResponseDTO> dailyKeywordFrequencyKafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, DailyKeywordFrequencyResponseDTO> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(dailyKeywordFrequencyConsumerFactory());
+        factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL); // 수동 ACK 모드 설정
+        return factory;
+    }
+
+    @Bean
+    public ConsumerFactory<String, DailyStockFrequencyResponseDTO> dailyStockFrequencyConsumerFactory() {
+        Map<String, Object> configProps = new HashMap<>();
+        configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        configProps.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
+        configProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
+        configProps.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
+        configProps.put(JsonDeserializer.VALUE_DEFAULT_TYPE, "com.sog.news.domain.dto.DailyStockFrequencyResponseDTO");
+        configProps.put(JsonDeserializer.USE_TYPE_INFO_HEADERS, false);
+        return new DefaultKafkaConsumerFactory<>(configProps);
+    }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, DailyStockFrequencyResponseDTO> dailyStockFrequencyKafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, DailyStockFrequencyResponseDTO> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(dailyStockFrequencyConsumerFactory());
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL); // 수동 ACK 모드 설정
         return factory;
     }
