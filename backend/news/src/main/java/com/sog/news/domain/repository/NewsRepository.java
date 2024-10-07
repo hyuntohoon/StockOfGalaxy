@@ -32,13 +32,11 @@ public interface NewsRepository extends JpaRepository<News, Long> {
                                                @Param("endOfDay") LocalDateTime endOfDay,
                                                @Param("stockName") String stockName);
 
-
-
     // 뉴스의 제목에서 키워드로 검색하며, 최신순으로 페이징 처리
-    @Query(value = "SELECT * FROM news WHERE news_id IN (SELECT nk.news_keyword_id FROM news_keyword nk WHERE nk.news_stock_name = ?1) AND DATE(published_date) = ?2 ORDER BY published_date DESC LIMIT ?#{#pageable.pageSize} OFFSET ?#{#pageable.offset}",
-        countQuery = "SELECT count(*) FROM news WHERE news_id IN (SELECT nk.news_keyword_id FROM news_keyword nk WHERE nk.news_stock_name = ?1) AND DATE(published_date) = ?2",
-        nativeQuery = true)
-    Page<News> findByTitleContaining(String stockName, String publishedDate, Pageable pageable);
+    @Query(value = "SELECT * FROM news WHERE MATCH(title) AGAINST(?1 IN BOOLEAN MODE) ORDER BY published_date DESC LIMIT ?#{#pageable.pageSize} OFFSET ?#{#pageable.offset}",
+            countQuery = "SELECT count(*) FROM news WHERE MATCH(title) AGAINST(?1 IN BOOLEAN MODE)",
+            nativeQuery = true)
+    Page<News> findByTitleContaining(String titleKeyword, Pageable pageable);
 
     // 뉴스의 내용에서 키워드로 검색하며, 최신순으로 페이징 처리
     @Query(value = "SELECT * FROM news WHERE MATCH(content) AGAINST(?1 IN BOOLEAN MODE) ORDER BY published_date DESC LIMIT ?#{#pageable.pageSize} OFFSET ?#{#pageable.offset}",
