@@ -10,21 +10,21 @@ import { getTodayDate } from '@/app/utils/libs/getTodayDate';
 import useKRStockWebSocket from '@/app/hooks/useKRStockWebSocket';
 import { getCurrentPrice } from '@/app/utils/apis/stock/getStockData';
 import { useDate } from '@/app/store/date';
+import { calculatePriceChange } from '@/app/utils/libs/stock/calculatePriceChange';
 
 const RocketModal = ({ onClose, fetchRocketData }) => { // fetchRocketData 추가
   const [data, setData] = useState([]); // 현재 보여주는 데이터
   const [allData, setAllData] = useState([]); // 전체 데이터를 저장할 상태
   const [loading, setLoading] = useState(false);
   const [currentPrice, setCurrentPrice] = useState<number | null>(null); // 주가 정보 상태
+  const [maxPositiveRocket, setMaxPositiveRocket] = useState(null); // 양수 중 가장 큰 값
+  const [maxNegativeRocket, setMaxNegativeRocket] = useState(null); // 음수 중 가장 큰 값
+
   const stockCodeParam = useParams().stock;
   const stockCode = Array.isArray(stockCodeParam) ? stockCodeParam[0] : stockCodeParam;
-  const {date} = useDate();
-  
-  const realDate = getTodayDate(); // 실제 오늘 날짜
+  const { date } = useDate();
+  const realDate = getTodayDate();
   const isToday = date === realDate;
-  console.log('isToday', isToday);
-  console.log('date', date);
-  console.log('realDate', realDate);
 
   // 주가 데이터를 가져오는 함수
   const fetchCurrentPrice = async () => {
@@ -50,19 +50,47 @@ const RocketModal = ({ onClose, fetchRocketData }) => { // fetchRocketData 추�
     }
   }, [stockCode, currentPrice]);
 
-  // fetchData 함수 분리
+  // 로켓 데이터를 가져오는 함수
   const fetchData = async () => {
     setLoading(true);
     try {
       const response = await getRocketListApi(stockCode);
-      setAllData(response.rocketList); // 전체 데이터를 상태에 저장
-      setData(response.rocketList.slice(0, 8)); // 초기 8개 데이터만 보여줌
+      const rocketList = response.rocketList;
+  
+      // 양수 중 가장 큰 값 찾기
+      const maxPositive = rocketList.reduce((prev, curr) => {
+        const { priceChangeSign, priceChange } = calculatePriceChange(curr.price, currentPrice);
+        const numericPriceChange = parseFloat(priceChange); // priceChange 문자열을 숫자로 변환
+        if (priceChangeSign === '+' && (!prev || numericPriceChange > parseFloat(prev.priceChange))) {
+          return { ...curr, priceChange: numericPriceChange }; // 양수 중 가장 큰 값
+        }
+        return prev;
+      }, null);
+  
+      // 음수 중 가장 큰 값 찾기
+      const maxNegative = rocketList.reduce((prev, curr) => {
+        const { priceChangeSign, priceChange } = calculatePriceChange(curr.price, currentPrice);
+        const numericPriceChange = parseFloat(priceChange); // priceChange 문자열을 숫자로 변환
+        if (priceChangeSign === '-' && (!prev || numericPriceChange > parseFloat(prev.priceChange))) {
+          return { ...curr, priceChange: numericPriceChange }; // 음수 중 가장 큰 값
+        }
+        return prev;
+      }, null);
+  
+      // console.log("가장 큰 양수:", maxPositive);
+      // console.log("가장 큰 음수:", maxNegative);
+  
+      setMaxPositiveRocket(maxPositive);
+      setMaxNegativeRocket(maxNegative);
+  
+      setAllData(rocketList);
+      setData(rocketList.slice(0, 8)); // 초기 8개 데이터만 보여줌
     } catch (err) {
       console.error('로켓 데이터를 불러오는 중 에러가 발생했습니다.', err);
     } finally {
       setLoading(false);
     }
-  };
+  };  
 
   useEffect(() => {
     fetchData();
@@ -104,7 +132,14 @@ const RocketModal = ({ onClose, fetchRocketData }) => { // fetchRocketData 추�
           </Header>
           <CardsContainer>
             {data.map((item) => (
-              <RocketCard key={item.rocketId} data={item} currentPrice={currentPrice} fetchData={fetchData} />
+              <RocketCard
+                key={item.rocketId}
+                data={item}
+                currentPrice={currentPrice}
+                fetchData={fetchData}
+                isMaxPositive={item.rocketId === maxPositiveRocket?.rocketId}
+                isMaxNegative={item.rocketId === maxNegativeRocket?.rocketId}
+              />
             ))}
           </CardsContainer>
           {loading && <LoadingSpinner />}
