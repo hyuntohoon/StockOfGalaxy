@@ -7,6 +7,9 @@ import WordCloudComponent from '../common/WordCloudComponent';
 import {ModalContent, ModalOverlay, ConfirmButton, CancelButton} from "./style";
 import { useDate } from '@/app/store/date';
 import { useRouter } from 'next/navigation';
+import { IBM_Plex_Sans_KR } from 'next/font/google';
+
+const ibm = IBM_Plex_Sans_KR({ weight: '500', subsets: ['latin'] })
 
 // 서버 사이드 렌더링 없이 클라이언트에서 동적으로 불러와 화면 렌더링
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
@@ -71,8 +74,8 @@ const Modal = ({ onClose, onConfirm, date }: { onClose: () => void, onConfirm: (
         <div className="modal-text-section">
           <h3>{date}로 이동하시겠습니까?</h3>
           <div className="modal-buttons">
-            <ConfirmButton onClick={onConfirm}>확인</ConfirmButton>
-            <CancelButton onClick={onClose}>취소</CancelButton>
+            <ConfirmButton className={ibm.className} onClick={onConfirm}>확인</ConfirmButton>
+            <CancelButton className={ibm.className} onClick={onClose}>취소</CancelButton>
           </div>
         </div>
       </ModalContent>
