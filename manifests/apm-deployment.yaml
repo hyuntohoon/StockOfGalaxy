@@ -1,51 +1,51 @@
-# apiVersion: apps/v1
-# kind: Deployment
-# metadata:
-#   name: apm-server
-#   namespace: dev
-#   labels:
-#     app.kubernetes.io/name: apmserver
-# spec:
-#   replicas: 1
-#   selector:
-#     matchLabels:
-#       app.kubernetes.io/name: apmserver
-#   template:
-#     metadata:
-#       labels:
-#         app.kubernetes.io/name: apmserver
-#     spec:
-#       containers:
-#       - name: apmserver
-#         image: docker.elastic.co/apm/apm-server:7.15.0
-#         ports:
-#         - containerPort: 8200
-#           name: http
-#           protocol: TCP
-#         resources: {}
-#         volumeMounts:
-#         - mountPath: /usr/share/apm-server/apm-server.yml
-#           name: apmserver-config
-#           readOnly: true
-#           subPath: apm-server.yml
-#       volumes:
-#       - configMap:
-#           defaultMode: 420
-#           name: apmserver-config
-#         name: apmserver-config
-# ---
-# apiVersion: v1
-# kind: Service
-# metadata:
-#   name: apmserver-nodeport
-#   namespace: dev
-# spec:
-#   type: NodePort
-#   selector:
-#     app.kubernetes.io/name: apmserver
-#   ports:
-#   - name: apmserver-nodeport
-#     nodePort: 30190  # 포트 변경
-#     port: 8200
-#     protocol: TCP
-#     targetPort: 8200
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apm-server
+  namespace: dev
+  labels:
+    app.kubernetes.io/name: apmserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: apmserver
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: apmserver
+    spec:
+      containers:
+      - name: apmserver
+        image: docker.elastic.co/apm/apm-server:7.15.0
+        ports:
+        - containerPort: 8200
+          name: http
+          protocol: TCP
+        resources: {}
+        volumeMounts:
+        - mountPath: /usr/share/apm-server/apm-server.yml
+          name: apmserver-config
+          readOnly: true
+          subPath: apm-server.yml
+      volumes:
+      - configMap:
+          defaultMode: 420
+          name: apmserver-config
+        name: apmserver-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: apmserver-nodeport
+  namespace: dev
+spec:
+  type: NodePort
+  selector:
+    app.kubernetes.io/name: apmserver
+  ports:
+  - name: apmserver-nodeport
+    nodePort: 30190  # 포트 변경
+    port: 8200
+    protocol: TCP
+    targetPort: 8200
