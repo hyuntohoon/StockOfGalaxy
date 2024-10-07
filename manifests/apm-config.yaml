@@ -9,9 +9,9 @@ data:
   apm-server.yml: |-
     apm-server:
       host: "0.0.0.0:8200"
-      kibana:
-        enabled: true
-        host: "http://10.108.247.129:5601"  # Kibana 호스트 설정
+      # kibana:
+      #   enabled: true
+      #   host: "http://10.108.247.129:5601"  # Kibana 호스트 설정
       rum:
         enabled: true
     output.elasticsearch:
