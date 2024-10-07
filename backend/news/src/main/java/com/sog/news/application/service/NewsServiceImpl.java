@@ -8,8 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.sog.news.domain.model.DailyKeywordFrequency;
+import com.sog.news.domain.model.DailyStockFrequency;
 import com.sog.news.domain.model.News;
 import com.sog.news.domain.model.NewsKeyword;
+import com.sog.news.domain.repository.DailyKeywordFrequencyRepository;
+import com.sog.news.domain.repository.DailyStockFrequencyRepository;
 import com.sog.news.domain.repository.NewsRepository;
 import com.sog.news.global.exception.exceptions.NewsNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +28,12 @@ public class NewsServiceImpl implements NewsService {
 
     @Autowired
     private NewsRepository newsRepository;
+
+    @Autowired
+    private DailyStockFrequencyRepository dailyStockFrequencyRepository;
+
+    @Autowired
+    private DailyKeywordFrequencyRepository dailyKeywordFrequencyRepository;
 
     @Override
     public List<TodayNewsResponseDTO> getTodayNews(LocalDate date) {
@@ -150,31 +160,14 @@ public class NewsServiceImpl implements NewsService {
     }
 
     @Override
-    public ResponseEntity<?> getDailyKeywordFrequency(LocalDate startDate) {
-        // 더미 데이터 생성
-        List<TodayKeywordCloudResponseDTO> keywordFrequency = new ArrayList<>();
+    public List<DailyKeywordFrequencyResponseDTO>  getDailyKeywordFrequency(LocalDate date) {
+        // 해당 날짜의 키워드 빈도수 조회
+        List<DailyKeywordFrequency> frequencies = dailyKeywordFrequencyRepository.findByNewsPublishedDate(date);
 
-        // 더미 키워드 데이터 추가
-        keywordFrequency.add(TodayKeywordCloudResponseDTO.builder().text("개발").value(6).build());
-        keywordFrequency.add(TodayKeywordCloudResponseDTO.builder().text("자바스크립트").value(8).build());
-        keywordFrequency.add(TodayKeywordCloudResponseDTO.builder().text("리액트").value(4).build());
-        keywordFrequency.add(TodayKeywordCloudResponseDTO.builder().text("프로그래밍").value(5).build());
-        keywordFrequency.add(TodayKeywordCloudResponseDTO.builder().text("코딩").value(4).build());
-        keywordFrequency.add(TodayKeywordCloudResponseDTO.builder().text("디자인").value(4).build());
-        keywordFrequency.add(TodayKeywordCloudResponseDTO.builder().text("배우기").value(4).build());
-        keywordFrequency.add(TodayKeywordCloudResponseDTO.builder().text("웹").value(3).build());
-        keywordFrequency.add(TodayKeywordCloudResponseDTO.builder().text("앱").value(3).build());
-        keywordFrequency.add(TodayKeywordCloudResponseDTO.builder().text("기술").value(3).build());
-        keywordFrequency.add(TodayKeywordCloudResponseDTO.builder().text("HTML").value(3).build());
-        keywordFrequency.add(TodayKeywordCloudResponseDTO.builder().text("CSS").value(3).build());
-        keywordFrequency.add(TodayKeywordCloudResponseDTO.builder().text("알고리즘").value(3).build());
-        keywordFrequency.add(TodayKeywordCloudResponseDTO.builder().text("문제해결").value(2).build());
-        keywordFrequency.add(TodayKeywordCloudResponseDTO.builder().text("도전").value(2).build());
-        keywordFrequency.add(TodayKeywordCloudResponseDTO.builder().text("창의성").value(2).build());
-        keywordFrequency.add(TodayKeywordCloudResponseDTO.builder().text("열정").value(2).build());
-
-        // ResponseEntity로 더미 데이터 리스트 반환
-        return ResponseEntity.ok(keywordFrequency);
+        // Entity를 DTO로 변환하여 반환
+        return frequencies.stream()
+                .map(DailyKeywordFrequencyResponseDTO::fromEntity)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -206,14 +199,15 @@ public class NewsServiceImpl implements NewsService {
     }
 
     @Override
-    public List<StockNewsCountResponseDTO> getTopNewsStockCountByDate(LocalDate date) {
-        Pageable pageable = PageRequest.of(0, 8);  // 상위 8개만 가져오도록 페이지 크기 설정
-        List<Object[]> results = newsRepository.findTopNewsStockCountByDate(date, pageable);
+    public List<DailyStockFrequencyResponseDTO> getTopNewsStockCountByDate(LocalDate date) {
+        Pageable pageable = PageRequest.of(0, 8);
 
-        // fromEntity 메서드를 사용해 DTO로 변환
+        // MongoDB에서 상위 8개 데이터를 가져오기
+        List<DailyStockFrequency> results = dailyStockFrequencyRepository.findTop8ByNewsPublishedDate(date, pageable);
+
+        // Entity를 DTO로 변환
         return results.stream()
-                .map(StockNewsCountResponseDTO::fromEntity)
+                .map(DailyStockFrequencyResponseDTO::fromEntity)
                 .collect(Collectors.toList());
     }
-
 }

@@ -40,8 +40,10 @@ dependencies {
 
 	// kafka
 	implementation 'org.springframework.kafka:spring-kafka'
-	//jackson jsr310
+	// jackson jsr310
 	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+	// mongodb
+	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
 }
 
 tasks.named('test') {
