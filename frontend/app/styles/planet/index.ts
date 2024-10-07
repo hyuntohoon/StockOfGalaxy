@@ -24,7 +24,9 @@ export const SectionContainer = styled.div`
   justify-content: center;
 
   & > div {
-    background-color: #f0f0f0;
+    background-color:  rgba(255, 255, 255, 0.8);
+    // border: 1px solid;
+    // border-color: rgba(255, 255, 255, 0.4);
     border-radius: 15px;
     height: 500px;
     overflow: hidden;
@@ -47,11 +49,11 @@ export const NavBarWrapper = styled.nav`
   display: flex;
   justify-content: center;
   gap: 20px;
-  padding: 10px 0;
+  padding:5px 0;
   position: relative;
   left: 0;
   right: 0;
-  height: 50px;
+  height: 40px;
   z-index: 1001;
 `;
 

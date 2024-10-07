@@ -1,11 +1,11 @@
-import React from 'react';
-import { useRouter } from 'next/navigation'; // Next.js의 useRouter 사용
+import React, {useState} from 'react';
 import { News } from '@/app/types/planet';
+import ImgWithFallback from './ImgWithFallback';
 import { NewsContent, NewsImage, NewsItem, NewsTitle, NewsMeta, NewsSummary, NewsListWrapper } from '@/app/styles/planet';
 
 const NewsList: React.FC<{ news: News[]; onClick: (item: News) => void }> = ({ news, onClick }) => {
-  const router = useRouter();
-
+  
+  
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('ko-KR', {
       year: 'numeric',
@@ -14,12 +14,13 @@ const NewsList: React.FC<{ news: News[]; onClick: (item: News) => void }> = ({ n
     });
   };
 
+  
 
   return (
     <NewsListWrapper>
       {news && news.map((item) => (
         <NewsItem key={item.newsId} onClick={() => onClick(item)}>
-          <NewsImage src={item.thumbnailImg} alt={item.title} />
+          <ImgWithFallback src={item.thumbnailImg} alt={item.title} width={60} height={60} />
           <NewsContent>
             <div>
               <NewsTitle>{item.title}</NewsTitle>

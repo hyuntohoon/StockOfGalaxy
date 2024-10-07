@@ -12,8 +12,9 @@ const Container = styled.div`
   padding: 10px;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: 20px;
-  background-color: white;
+  background-color: rgba(0, 0, 0, 0);
   border-radius: 20px;
 `;
 

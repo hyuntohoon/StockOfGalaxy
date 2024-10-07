@@ -5,6 +5,7 @@ import "./globals.css";
 import RecoilRootWrapper from "./components/atoms/RecoilRootWrapper";
 import { ibm } from '@/public/fonts';
 import ChartToggleButton from "./components/atoms/Button/ChartToggleButton"; // ChartToggleButton 불러오기
+import ConditionalBackground from "./components/organisms/background/ConditionalBackground";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,6 +25,7 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className={ibm.className}>
+        <ConditionalBackground />
         <RecoilRootWrapper>
           <MenuHeader />
           <ChartToggleButton />
