@@ -9,7 +9,10 @@ const ReturnTodayButtonGroup = () => {
 
   const handleClick = () => {
     const today = new Date(); // 로컬 시간으로 오늘 날짜 가져오기
-    const formattedDate = today.toLocaleDateString('ko-KR').replace(/\./g, '').replace(/\s/g, ''); // 'YYYYMMDD' 형식으로 변환
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    const formattedDate = `${year}${month}${day}`;
     setDate(formattedDate); // 날짜 설정
     alert("오늘 날짜로 이동합니다");
     router.push(`/main/${formattedDate}`); // 오늘 날짜로 이동
