@@ -134,6 +134,7 @@ const MenuHeader: React.FC = () => {
           position={modalPosition} 
           onMouseEnter={() => setIsMenuOpen(true)}  // 모달에 마우스가 올라가면 메뉴를 열어둠
           onMouseLeave={handleMouseLeave} // 모달에서 마우스가 벗어나면 닫음
+          setIsModalOpen={setIsModalOpen}
         />
       )}
     </>

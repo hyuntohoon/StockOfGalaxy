@@ -9,7 +9,11 @@ import { useDate } from "@/app/store/date";
 import { useMemberId } from "@/app/store/userSlice";
 import { useUser } from "@/app/store/userSlice";
 
-const SignOutButtonGroup = () => {
+interface SignOutButtonGroupProps {
+  setIsModalOpen?: (state: boolean) => void; // onClick을 선택적으로 받음
+}
+
+const SignOutButtonGroup = ({ setIsModalOpen }: SignOutButtonGroupProps) => {
   const router = useRouter();
   const {setIsLoggedIn} = useIsLoggedIn();
   const { accessToken, setAccessToken} = useAccessToken();
@@ -23,9 +27,13 @@ const SignOutButtonGroup = () => {
     setAccessToken("");
     setMemberId(null);
     setUser(null);
+    if (setIsModalOpen) {
+      setIsModalOpen(false); // 전달된 onClick 함수가 있을 때 실행
+    }
     router.push(`/main/${date}`);
-  }
 
+    
+  }
 
   return (
     <div onClick={handleClickLogout}>
@@ -36,5 +44,5 @@ const SignOutButtonGroup = () => {
     </div>
   );
 };
- 
+
 export default SignOutButtonGroup;

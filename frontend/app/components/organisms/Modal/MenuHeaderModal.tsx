@@ -10,11 +10,12 @@ interface MenuHeaderModalProps {
   position: { top: number; left: number }; 
   onMouseEnter: () => void; // 모달에 마우스가 올라갈 때
   onMouseLeave: React.MouseEventHandler<HTMLDivElement>; // 모달에서 마우스가 벗어날 때
+  setIsModalOpen: (state: boolean) => void;
 }
 
 // forwardRef 사용
 const MenuHeaderModal = forwardRef<HTMLDivElement, MenuHeaderModalProps>(
-  ({ position, onMouseEnter, onMouseLeave }, ref) => {
+  ({ position, onMouseEnter, onMouseLeave, setIsModalOpen }, ref) => {
     const { user } = useUser();
     const nickname = user?.nickname ?? "Guest";
     const characterType = user?.characterType ?? 1;
@@ -34,7 +35,7 @@ const MenuHeaderModal = forwardRef<HTMLDivElement, MenuHeaderModalProps>(
           <MypageButtonGroup />
           <LikedStockButtonGroup />
           <hr />
-          <SignOutButtonGroup />
+          <SignOutButtonGroup setIsModalOpen={setIsModalOpen} />
         </ModalContent>
       </ModalContainer>
     );
