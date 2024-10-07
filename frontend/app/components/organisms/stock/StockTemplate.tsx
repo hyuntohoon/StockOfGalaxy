@@ -87,27 +87,39 @@ const StockTemplate = () => {
   );
 
   useEffect(() => {
-    stockDataInfo.map(async (stock, index) => {
-      try {
-        const res = await getCurrentPrice(stock.stock_code);
+    const fetchStockData = async () => {
+      for (const stock of stockDataInfo) {
+        try {
+          const res = await getCurrentPrice(stock.stock_code);
 
-        setStockDataInfo((prevStockData: any[]) => {
-          return prevStockData.map((stock) =>
-            res && res.stockCode && stock.stock_code === res.stockCode
-              ? {
-                  stock_name: stock.stock_name,
-                  stock_code: res.stockCode,
-                  currentPrice: res.stckPrpr,
-                  changePrice: res.prdyVrss,
-                  changeRate: res.prdyCtrt,
-                }
-              : stock
-          );
-        });
-      } catch (error) {
-        console.log(error);
+          if (res && res.stockCode) {
+            setStockDataInfo((prevStockData: stockState[]) => {
+              const stockIndex = prevStockData.findIndex(
+                (item) => item.stock_code === res.stockCode
+              );
+
+              if (stockIndex === -1) {
+                return prevStockData;
+              }
+
+              const updatedStockData = [...prevStockData];
+              updatedStockData[stockIndex] = {
+                ...updatedStockData[stockIndex],
+                currentPrice: res.stckPrpr,
+                changePrice: res.prdyVrss,
+                changeRate: res.prdyCtrt,
+              };
+
+              return updatedStockData;
+            });
+          }
+        } catch (error) {
+          console.log(error);
+        }
       }
-    });
+    };
+
+    fetchStockData();
   }, []);
 
   useKRStockWebSocket(stockData, setStockDataInfo);

@@ -1,19 +1,19 @@
 import dynamic from 'next/dynamic';
 import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
-import { keyframes } from '@emotion/react';
-import { wordData } from '@/app/mocks/wordData';
-import WordCloudComponent from '../common/WordCloudComponent';
 import {ModalContent, ModalOverlay, ConfirmButton, CancelButton} from "./style";
 import { useDate } from '@/app/store/date';
 import { useRouter } from 'next/navigation';
+import { IBM_Plex_Sans_KR } from 'next/font/google';
+
+const ibm = IBM_Plex_Sans_KR({ weight: '500', subsets: ['latin'] })
 
 // 서버 사이드 렌더링 없이 클라이언트에서 동적으로 불러와 화면 렌더링
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 interface AreaChartProps {
   data: { date: string; newsCount: number; traffic: number; topStocks: string[] }[];
-  detail: { date: string; newsCount: number; traffic: number; topStocks: string[]; wordCloudData: {text: string; value: number}[] }[];
+  detail: { date: string; newsCount: number; traffic: number; topStocks: string[]}[];
 }
 
 const ChartContainer = styled.div`
@@ -25,7 +25,7 @@ const ChartContainer = styled.div`
   padding: 40px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   border-radius: 20px;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(255, 255, 255, 0.4);
 `;
 
 const ButtonContainer = styled.div`
@@ -71,8 +71,8 @@ const Modal = ({ onClose, onConfirm, date }: { onClose: () => void, onConfirm: (
         <div className="modal-text-section">
           <h3>{date}로 이동하시겠습니까?</h3>
           <div className="modal-buttons">
-            <ConfirmButton onClick={onConfirm}>확인</ConfirmButton>
-            <CancelButton onClick={onClose}>취소</CancelButton>
+            <ConfirmButton className={ibm.className} onClick={onConfirm}>확인</ConfirmButton>
+            <CancelButton className={ibm.className} onClick={onClose}>취소</CancelButton>
           </div>
         </div>
       </ModalContent>
@@ -201,7 +201,9 @@ const AreaChart: React.FC<AreaChartProps> = ({ data, detail }) => {
     },
     dataLabels: {
       enabled: false,
+      
     },
+  
     stroke: {
       curve: 'smooth' as const,
     },
@@ -211,7 +213,7 @@ const AreaChart: React.FC<AreaChartProps> = ({ data, detail }) => {
       labels: {
         formatter:         (value: string) => formatDate(value),
         style: {
-          colors: '#FFFFFF',
+          colors: 'black',
         },
       },
     },
@@ -219,6 +221,7 @@ const AreaChart: React.FC<AreaChartProps> = ({ data, detail }) => {
       show: true, // Y축 수치 표시
       min: yMin,
       max: yMax,
+      
     },
     tooltip: {
       custom: function ({

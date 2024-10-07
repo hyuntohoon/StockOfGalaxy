@@ -62,10 +62,29 @@ const SubContainer = styled.div`
   justify-content: space-between;
 `;
 
+interface FinancialMetrics {
+  stock_code: string;
+  stac_yymm: string;
+  current_assets: number;
+  current_liabilites: number;
+  total_liabilites: number;
+  total_equity: number;
+}
+
 const FinancialMetricsChart = () => {
   const { stock } = useParams();
   const stock_code = Array.isArray(stock) ? stock[0] : stock ?? "005930";
-  const [financialMetricsInfo, setFinancialMetricsInfo] = useState<any[]>([
+  const [financialMetricsInfo, setFinancialMetricsInfo] = useState<
+    FinancialMetrics[]
+  >([
+    {
+      stock_code: "005930",
+      stac_yymm: "201703",
+      current_assets: 1292842,
+      current_liabilites: 568431,
+      total_liabilites: 743994,
+      total_equity: 1898180,
+    },
     {
       stock_code: "005930",
       stac_yymm: "201703",
@@ -90,7 +109,10 @@ const FinancialMetricsChart = () => {
     getData();
   }, []);
 
-  const [chartData, setChartData] = useState({ labels: [], datasets: [] });
+  const [chartData, setChartData] = useState({
+    labels: [],
+    datasets: [],
+  });
 
   useEffect(() => {
     if (financialMetricsInfo) {
@@ -198,34 +220,38 @@ const FinancialMetricsChart = () => {
     <Container>
       <SubTitle>재무 안정성</SubTitle>
       <SubContainer>
-        <Dividend
-          title="부채비율"
-          content={(
-            (100 *
+        {financialMetricsInfo && financialMetricsInfo.length > 0 && (
+          <Dividend
+            title="부채비율"
+            content={(
+              (100 *
+                financialMetricsInfo[financialMetricsInfo.length - 1][
+                  "total_liabilites"
+                ]) /
               financialMetricsInfo[financialMetricsInfo.length - 1][
-                "total_liabilites"
-              ]) /
-            financialMetricsInfo[financialMetricsInfo.length - 1][
-              "total_equity"
-            ]
-          ).toFixed(2)}
-        />
-        <Dividend
-          title="유동비율"
-          content={(
-            (100 *
+                "total_equity"
+              ]
+            ).toFixed(2)}
+          />
+        )}
+        {financialMetricsInfo && financialMetricsInfo.length > 0 && (
+          <Dividend
+            title="유동비율"
+            content={(
+              (100 *
+                financialMetricsInfo[financialMetricsInfo.length - 1][
+                  "current_assets"
+                ]) /
               financialMetricsInfo[financialMetricsInfo.length - 1][
-                "current_assets"
-              ]) /
-            financialMetricsInfo[financialMetricsInfo.length - 1][
-              "current_liabilites"
-            ]
-          ).toFixed(2)}
-        />
+                "current_liabilites"
+              ]
+            ).toFixed(2)}
+          />
+        )}
         <Dividend
           title="부채 증가율"
           content={
-            financialMetricsInfo.length > 1
+            financialMetricsInfo && financialMetricsInfo.length > 1
               ? (
                   (100 *
                     (financialMetricsInfo[financialMetricsInfo.length - 1][
