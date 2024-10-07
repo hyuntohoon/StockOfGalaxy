@@ -7,9 +7,28 @@ export const getCompanyInfo = async (stock_code: string) => {
       url: `${process.env.NEXT_PUBLIC_API_BASE_URL}/stock/${stock_code}`,
     });
 
-    return res.data;
+    return res.data
+      ? res.data
+      : {
+          copr_description: "",
+          corp_name: "",
+          stock_code: "",
+          ceo_nm: "",
+          hm_url: "",
+          est_dt: "",
+          acc_mt: "",
+        };
   } catch (error) {
     console.log(error);
+    return {
+      copr_description: "",
+      corp_name: "",
+      stock_code: "",
+      ceo_nm: "",
+      hm_url: "",
+      est_dt: "",
+      acc_mt: "",
+    };
   }
 };
 

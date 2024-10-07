@@ -14,6 +14,7 @@ const formatNumber = (number) => {
 };
 
 const useKRChartWebSocket = (tr_key: string, chart: any, type: string) => {
+  console.log(tr_key, chart, type, "chart");
   useEffect(() => {
     if (!chart) {
       return;

@@ -58,9 +58,11 @@ const StockHeaderInfo: React.FC<StockHeaderInfoProps> = () => {
         {
           target: "시가총액",
           targetPrice:
-            (parseInt(res.market_capitalization) / 10000)
-              .toFixed(2)
-              .toString() + "조",
+            res && res.market_capitalization
+              ? (parseInt(res.market_capitalization) / 10000)
+                  .toFixed(2)
+                  .toString() + "조"
+              : "0.00조",
         },
         { target: "1일 최저", targetPrice: parseInt(res.low_price) },
         { target: "1일 최고", targetPrice: parseInt(res.high_price) },
