@@ -10,19 +10,17 @@ import { stock_list } from "@/app/utils/apis/stock/findStockName";
 import { useRouter, useParams } from "next/navigation";
 
 const ParentContainer = styled.div`
-  width: 50vw;
-  overflow-y: auto;
-  background-color: #111;
-  color: white;
   width: 300px;
-  max-height: 80%;
-  background-color: #d9d9d9;
-  border-radius: 20px;
+  height: 92%; /* 높이를 줄여서 StockHeader와 맞춤 */
+  max-height: 95vh; /* 최대 높이 설정 */
+  overflow-y: auto; /* 스크롤 가능하게 설정 */
+  background-color: #dbdbdbf9;
+  border-radius: 26px;
   padding: 20px;
   display: flex;
   flex-direction: column;
+  box-shadow: 0px 0px 20px rgba(115, 115, 115, 0.224);
   align-items: center;
-
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE and Edge */
   ::-webkit-scrollbar {
