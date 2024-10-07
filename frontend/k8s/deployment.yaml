@@ -49,6 +49,11 @@ spec:
         image: zlxldgus123/frontend:699
         ports:
         - containerPort: 80
+        resources:
+          requests:
+            memory: "512Mi"  # 최소 512Mi 메모리 요청
+          limits:
+            memory: "1Gi"    # 최대 1Gi 메모리 제한
 
 ---
 apiVersion: v1
