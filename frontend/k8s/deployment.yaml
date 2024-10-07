@@ -1,67 +1,67 @@
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: frontend-ingress
-  namespace: backcd
-  annotations:
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/proxy-body-size: 50m
-    kubernetes.io/ingress.class: nginx
-spec:
-  tls:
-  - hosts:
-    - ssafy11s.com
-    secretName: argocd-server-tls
-  rules:
-  - host: ssafy11s.com
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: frontend-service
-            port:
-              number: 80
+# ---
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: frontend-ingress
+#   namespace: backcd
+#   annotations:
+#     cert-manager.io/cluster-issuer: "letsencrypt-prod"
+#     nginx.ingress.kubernetes.io/ssl-redirect: "true"
+#     nginx.ingress.kubernetes.io/proxy-body-size: 50m
+#     kubernetes.io/ingress.class: nginx
+# spec:
+#   tls:
+#   - hosts:
+#     - ssafy11s.com
+#     secretName: argocd-server-tls
+#   rules:
+#   - host: ssafy11s.com
+#     http:
+#       paths:
+#       - path: /
+#         pathType: Prefix
+#         backend:
+#           service:
+#             name: frontend-service
+#             port:
+#               number: 80
 
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: frontend-deployment
-  namespace: backcd
-  labels:
-    app: frontend
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: frontend
-  template:
-    metadata:
-      labels:
-        app: frontend
-    spec:
-      containers:
-      - name: frontend
-        image: zlxldgus123/frontend:699
-        ports:
-        - containerPort: 80
+# ---
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: frontend-deployment
+#   namespace: backcd
+#   labels:
+#     app: frontend
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: frontend
+#   template:
+#     metadata:
+#       labels:
+#         app: frontend
+#     spec:
+#       containers:
+#       - name: frontend
+#         image: zlxldgus123/frontend:699
+#         ports:
+#         - containerPort: 80
 
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: frontend-service
-  namespace: backcd
-spec:
-  type: NodePort
-  selector:
-    app: frontend
-  ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 80
-      nodePort: 30082  # 필요에 따라 변경 가능
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: frontend-service
+#   namespace: backcd
+# spec:
+#   type: NodePort
+#   selector:
+#     app: frontend
+#   ports:
+#     - protocol: TCP
+#       port: 80
+#       targetPort: 80
+#       nodePort: 30082  # 필요에 따라 변경 가능
