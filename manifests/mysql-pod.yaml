@@ -40,6 +40,11 @@ spec:
           mountPath: /var/lib/mysql
         - name: mysql-init-script
           mountPath: /docker-entrypoint-initdb.d
+        resources:
+          limits:
+            memory: "4Gi"  # 메모리 제한 4Gi
+          requests:
+            memory: "2Gi"  # 최소 요청 메모리 2Gi (조정 가능)
       volumes:
       - name: mysql-storage
         persistentVolumeClaim:
