@@ -18,6 +18,8 @@ const TimeMachineButtonGroup = ({ bottom = '30px', right = '100px' }) => {
     '타임머신을 타고','다른 날짜의 주식 정보를 여행할 수 있어요!'
   ];
 
+  const infoBoxRight = `${parseInt(right, 10) + 10}px`; // ButtonGroup의 right 값 + 10
+
   return (
     <>
       <ButtonGroup 
@@ -32,7 +34,7 @@ const TimeMachineButtonGroup = ({ bottom = '30px', right = '100px' }) => {
         </Icon>
         <Text>타임머신</Text>
       </ButtonGroup>
-      <InfoBox isVisible={isHovered}>
+      <InfoBox isVisible={isHovered} right={infoBoxRight}>
         <AlienGuideInfoBox info={info} />
       </InfoBox>
     </>
@@ -70,9 +72,9 @@ const Text = styled.div`
   text-align: center;
 `;
 
-const InfoBox = styled.div<{ isVisible: boolean }>`
+const InfoBox = styled.div<{ isVisible: boolean; right: string }>`
   position: absolute;
-  right: 50px;
+  right: ${({ right }) => right}; // ButtonGroup의 right 값 + 10px
   bottom: 125px;
   width: 290px;
   background-color: #000000c4;
