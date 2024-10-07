@@ -1,11 +1,14 @@
 import styled from '@emotion/styled';
 import Image from 'next/image';
 import rocket from '@/public/images/rocket/rockett.png'
+import { IBM_Plex_Sans_KR } from 'next/font/google';
+
+const ibm = IBM_Plex_Sans_KR({ weight: '400', subsets: ['latin'] })
 
 
 const CreateRocketButton = ({ onClick }) => {
   return (
-    <Button onClick={onClick}>
+    <Button className={ibm.className} onClick={onClick}>
       <Text>로켓 쏘기</Text>
       <Icon>
         <Image src={rocket} alt="로켓쏘기" width={25} height={20} />
@@ -40,7 +43,6 @@ const Text = styled.div`
   color: #fff;
   margin-top: 8px;
   font-size: 12px;
-  font-weight: bold;
   text-align: center;
 `;
 

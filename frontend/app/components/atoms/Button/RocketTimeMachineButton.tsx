@@ -2,6 +2,9 @@ import React from 'react';
 import styled from '@emotion/styled';
 import { useRouter, useParams } from 'next/navigation';
 import { useDate } from '@/app/store/date';
+import { IBM_Plex_Sans_KR } from 'next/font/google';
+
+const ibm = IBM_Plex_Sans_KR({ weight: '400', subsets: ['latin'] })
 
 interface RocketTimeMachineButtonProps {
   createdAt: string; // '2024-10-01 19:08:20'
@@ -24,7 +27,7 @@ const RocketTimeMachineButton: React.FC<RocketTimeMachineButtonProps> = ({ creat
   };
 
   return (
-    <Button onClick={handleTimeMachineClick}>
+    <Button className={ibm.className} onClick={handleTimeMachineClick}>
       <Text>타임머신</Text>
     </Button>
   );
