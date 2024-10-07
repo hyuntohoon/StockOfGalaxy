@@ -296,9 +296,6 @@ export default function Planet() {
     function animate() {
       requestAnimationFrame(animate);
       circle.rotation.y += 0.001;
-  
-      // 별 그룹을 천천히 회전시킴
-      // starGroup.rotation.y += 0.0005;
 
       surroundingPlanets.forEach(({ mesh, radius, angle, speed }) => {
         const newAngle = angle + speed;
@@ -325,9 +322,9 @@ export default function Planet() {
       }
       renderer.dispose();
     };
-  }, []);
-  
+  }, [items]);
 
+  
   return (
     <PageContainer>
      <CanvasContainer ref={mountRef} id="canvas" />
