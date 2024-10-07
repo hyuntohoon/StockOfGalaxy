@@ -99,20 +99,18 @@ export const ModalOverlay = styled.div`
 `;
 
 export const ModalContent = styled.div`
-  background-color: rgba(255, 255, 255, 0.95); /* 약간 투명한 배경 */
-  padding: 20px;
-  border-radius: 10px;
-  width: 300px;
-  max-width: 90%;
+  background-color: #ffffffe8;
+  padding: 20px 50px;
+  border-radius: 25px;
   text-align: center;
-  position: relative;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  animation: ${fadeIn} 0.5s ease-out; /* 애니메이션 적용 */
+  position: relative;
+  animation: ${fadeIn} 0.5s ease-out;
 
   .close-button {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 12px;
+    right: 14px;
     background: none;
     border: none;
     font-size: 24px;
@@ -132,27 +130,28 @@ export const ModalContent = styled.div`
   }
 `;
 
+
 export const ConfirmButton = styled.button`
-  padding: 10px 20px;
+  padding: 10px 30px;
   border: none;
-  border-radius: 5px;
+  border-radius: 20px;
   cursor: pointer;
-  background-color: #0070f3;
+  background-color: #0e224d;
   color: #fff;
   font-size: 14px;
   transition: background-color 0.3s ease;
 
   &:hover {
-    background-color: #005bb5;
+    background-color: #3B4C6E;
   }
 `;
 
 export const CancelButton = styled.button`
-  padding: 10px 20px;
+  padding: 10px 30px;
   border: none;
-  border-radius: 5px;
+  border-radius: 20px;
   cursor: pointer;
-  background-color: #e0e0e0;
+  background-color: #DBDBDB;
   color: #333;
   font-size: 14px;
   transition: background-color 0.3s ease;

@@ -30,6 +30,12 @@ const Column = styled.span`
 const PriceChangeColumn = styled(Column)<{ isPositive: boolean }>`
   color: ${(props) => (props.isPositive ? "red" : "blue")};
 `;
+const formatStockDate = (date: string): string => {
+  const year = date.slice(0, 4);
+  const month = date.slice(4, 6);
+  const day = date.slice(6, 8);
+  return `${year}.${month}.${day}`;
+};
 
 const StockDailyPrice = ({
   stockDate,
@@ -41,15 +47,15 @@ const StockDailyPrice = ({
   prdyVrssSign,
   prdyCtrt,
 }: StockDailyPriceProps) => {
-  const formattedCtrt = parseFloat(prdyVrssSign.concat(prdyCtrt)).toFixed(2);
-  const isPositive = parseFloat(formattedCtrt) >= 0;
+  const formattedCtrt = parseFloat(prdyCtrt).toFixed(2);
+  const isPositive = prdyVrssSign == "5" ? false : true;
 
   return (
     <Container>
-      <Column>{stockDate}</Column>
+      <Column>{formatStockDate(stockDate)}</Column>
       <Column>{formatPrice(endPrice)}원</Column>
       <PriceChangeColumn isPositive={isPositive}>
-        {prdyVrssSign == "-" ? "" : "+"}
+        {prdyVrssSign == "5" ? "-" : "+"}
         {formattedCtrt}%
       </PriceChangeColumn>
       <Column>{formatPrice(startPrice)}원</Column>

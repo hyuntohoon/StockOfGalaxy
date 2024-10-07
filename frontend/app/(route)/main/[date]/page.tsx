@@ -2,19 +2,19 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
-import { RecoilRoot, useRecoilValue } from "recoil";
+import { RecoilRoot } from "recoil";
 import { useDate } from "@/app/store/date";
-import { HoveredPlanetData } from "@/app/types/main";
 import DateCard from "@/app/components/molecules/Card/DateCard";
 import TimeMachineButtonGroup from "@/app/components/molecules/ButtonGroup/TimeMachineButtonGroup";
 import PlanetTrendModal from "@/app/components/organisms/Modal/PlanetTrendModal";
+import PlanetTrendErrorModal from "@/app/components/organisms/Modal/PlanetTrendErrorModal";
 import { throttle } from "lodash";
 import { useRouter } from "next/navigation";
 import { getValueFromRank } from "@/app/utils/libs/getValueFromRank";
 import AlienGuideButton from "@/app/components/atoms/Button/AlienGuideButton";
 import { getPlanetTrendApi } from "@/app/utils/apis/stock";
+import ViewAllButton from "@/app/components/atoms/Button/ViewAllButton";
 
-// 커스텀 행성 타입 정의
 interface CustomPlanet extends THREE.Mesh<THREE.SphereGeometry, THREE.MeshStandardMaterial> {
   rotationSpeed: {
     x: number;
@@ -25,18 +25,19 @@ interface CustomPlanet extends THREE.Mesh<THREE.SphereGeometry, THREE.MeshStanda
 
 const planetsArray: THREE.Mesh[] = [];
 
-export default function Page(props:any) {
+export default function Page(props: any) {
   const { date, setDate } = useDate();
-  const {date : currentDate} = props.params;
+  const { date: currentDate } = props.params;
   setDate(props.params.date);
   const mountRef = useRef<HTMLDivElement>(null);
   const [hoveredPlanet, setHoveredPlanet] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState(false); // 에러 모달 상태
+  const [isViewAllHover, setIsViewAllHover] = useState(false); // ViewAllButton hover 상태
+  const [trendData, setTrendData] = useState([]);
+  const [textures, setTextures] = useState([]);
   const camera = useRef<THREE.PerspectiveCamera | null>(null);
   const router = useRouter();
-  
-
-  const [planetTrendData, setPlanetTrendData] = useState([]); // 행성 데이터를 위한 상태 추가
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -57,24 +58,39 @@ export default function Page(props:any) {
     camera.current.position.z = 550;
 
     setupLights(scene);
-    createParticles(scene); // 입자 생성
+    createParticles(scene);
 
     const textureLoader = new THREE.TextureLoader();
 
-    getPlanetTrendApi('20240307') // todo: currentDate 로 바꿔야
-    .then((data) => {
-      const trendData = data.stockTop8ResponseList;
-      return loadTextures(trendData, textureLoader).then((textures) => ({
-        trendData,
-        textures,
-      }));
-    })
-    .then(({ trendData, textures }) => {
-      createPlanets(trendData, scene, textures, camera.current!);
-    })
-    .catch((error) => {
-      console.error("행성 트렌드 데이터를 불러오는 중 오류 발생:", error);
-    });
+    // 빈 배열일 경우 오늘 날짜로 이동
+    function handleEmptyDataError() {
+      setIsErrorModalOpen(true); // 에러 모달을 열기
+    }
+
+    getPlanetTrendApi(date)
+      .then((data) => {
+        const trendData = data.stockTop8ResponseList;
+
+        if (!trendData || trendData.length === 0) {
+          // 빈 배열일 경우 모달을 열기
+          handleEmptyDataError();
+          return;
+        }
+
+        return loadTextures(trendData, textureLoader).then((textures) => ({
+          trendData,
+          textures,
+        }));
+      })
+      .then(({ trendData, textures }) => {
+        createPlanets(trendData, scene, textures, camera.current!);
+        setTrendData(trendData); // 행성 데이터를 상태에 저장
+        setTextures(textures); // 텍스처 데이터를 상태에 저장
+      })
+      .catch((error) => {
+        console.error("행성 트렌드 데이터를 불러오는 중 오류 발생:", error);
+        handleEmptyDataError(); // API 오류 시 모달을 열기
+      });
 
     let frameId: number;
 
@@ -160,10 +176,11 @@ export default function Page(props:any) {
       router.push(`/planet/main/${stockCode}/${currentDate}`);
     }
   };
+
   const info = [
-    '오늘은 어떤 주식이 인기 있었을까요?🌟',
-    '주식이 뉴스에서 언급된 횟수에 따라',
-    '주요 주식들을 행성 크기로 표현해보았어요!',
+    "오늘은 어떤 주식이 인기 있었을까요?🌟",
+    "주식이 뉴스에서 언급된 횟수에 따라",
+    "주요 주식들을 행성 크기로 표현해보았어요!",
   ];
 
   return (
@@ -177,7 +194,8 @@ export default function Page(props:any) {
       }}
     >
       <RecoilRoot>
-        <DateCard left="30px" date={date} label={"MAIN PAGE"}/>
+        <DateCard left="20px" date={date} label={"MAIN PAGE"} />
+        {/* 개별 행성에 대한 모달 */}
         {isModalOpen && hoveredPlanet && (
           <PlanetTrendModal
             stockCode={hoveredPlanet.stockCode}
@@ -189,8 +207,29 @@ export default function Page(props:any) {
             onClose={() => setIsModalOpen(false)}
           />
         )}
+        {/* 모든 행성에 대한 모달 */}
+        {isViewAllHover &&
+          trendData.map((data, index) => (
+            <PlanetTrendModal
+              key={data.stockCode}
+              stockCode={data.stockCode}
+              corpName={data.stockName}
+              position={planetsArray[index].position}
+              camera={camera.current!}
+              rendererDomElement={mountRef.current?.children[0] as HTMLCanvasElement}
+              date={date}
+              onClose={() => setIsViewAllHover(false)}
+            />
+          ))}
+        {isErrorModalOpen && (
+          <PlanetTrendErrorModal onClose={() => setIsErrorModalOpen(false)} />
+        )}
       </RecoilRoot>
-      <AlienGuideButton info={info}/>
+      <AlienGuideButton info={info} />
+      {/* <ViewAllButton
+        onMouseEnter={() => setIsViewAllHover(true)} // ViewAllButton에 마우스 호버시
+        onMouseLeave={() => setIsViewAllHover(false)} // 마우스가 버튼에서 벗어날 때
+      /> */}
       <TimeMachineButtonGroup bottom="30px" right="20px" />
     </div>
   );
@@ -254,7 +293,6 @@ function createPlanets(planetsData, scene, textures, camera) {
 
 function animatePlanets() {
   planetsArray.forEach((planet: CustomPlanet) => {
-    // planet.rotation.x += planet.rotationSpeed.x;
     planet.rotation.y += planet.rotationSpeed.y;
   });
 }

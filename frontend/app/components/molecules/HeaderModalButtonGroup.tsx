@@ -21,6 +21,7 @@ const ButtonGroup = styled.div`
   flex-direction: row;
   align-items: center;
   width: 140px;
+  cursor: pointer;
 `;
 
 const ButtonContainer = styled.div`

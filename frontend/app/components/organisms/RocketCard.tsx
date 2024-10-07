@@ -34,7 +34,7 @@ const RocketCard: React.FC<RocketCardProps & { fetchData: () => void }> = ({ dat
     <Content>
       <Header>
         <ProfileImageWrapper>
-          <ProfileImage src={`/images/profile/${data.characterType}.png`} alt="프로필" />
+          <ProfileImage characterType={data.characterType} alt="프로필" />
         </ProfileImageWrapper>
         <NamePriceWrapper>
           <NameAndDelete>

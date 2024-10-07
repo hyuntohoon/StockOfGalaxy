@@ -7,9 +7,28 @@ export const getCompanyInfo = async (stock_code: string) => {
       url: `${process.env.NEXT_PUBLIC_API_BASE_URL}/stock/${stock_code}`,
     });
 
-    return res.data;
+    return res.data
+      ? res.data
+      : {
+          copr_description: "",
+          corp_name: "",
+          stock_code: "",
+          ceo_nm: "",
+          hm_url: "",
+          est_dt: "",
+          acc_mt: "",
+        };
   } catch (error) {
     console.log(error);
+    return {
+      copr_description: "",
+      corp_name: "",
+      stock_code: "",
+      ceo_nm: "",
+      hm_url: "",
+      est_dt: "",
+      acc_mt: "",
+    };
   }
 };
 
@@ -19,6 +38,7 @@ export const getFinancialMetricsInfo = async (stock_code: string) => {
       method: "GET",
       url: `${process.env.NEXT_PUBLIC_API_BASE_URL}/stock/financial-statements/${stock_code}`,
     });
+
     // financialList를 yyyymm으로 정렬
     const sortedData = res.data.financialList.sort(
       (a, b) => a.stac_yymm - b.stac_yymm
@@ -38,5 +58,6 @@ export const getFinancialMetricsInfo = async (stock_code: string) => {
     return uniqueByYear;
   } catch (error) {
     console.log(error);
+    return [];
   }
 };

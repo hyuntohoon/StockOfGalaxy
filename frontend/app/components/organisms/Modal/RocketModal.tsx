@@ -145,7 +145,7 @@ const ModalTitle = styled.div`
 `;
 
 const ModalContent = styled.div`
-  background: rgba(255, 255, 255, 0.9);
+  background: rgb(238, 238, 238);
   padding-inline: 50px;
   padding-bottom: 50px;
   border-radius: 20px;

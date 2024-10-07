@@ -23,7 +23,6 @@ const Container = styled.div`
   background-color: #ffffff;
   border-radius: 10px;
   transition: background-color 0.3s ease, transform 0.3s ease;
-  cursor: pointer;
 
   @media (max-width: 600px) {
     flex-direction: column;

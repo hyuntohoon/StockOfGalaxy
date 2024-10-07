@@ -223,7 +223,7 @@ export default function Home(props: any) {
       ) : (
         <>
           <div ref={mountRef} id="canvas" style={{ width: '100%', height: '100vh', position: 'absolute', zIndex: 1 }}></div>
-            <DateCard right='30px'date={date} label={"PLANET PAGE"} />
+            <DateCard right='20px'date={date} label={"PLANET PAGE"} />
             <PlanetSimpleInfoCard />
             <TimeMachineButtonGroup />
             <RocketButtonGroup onRocketClick={() => setIsRocketModalOpen(true)} />

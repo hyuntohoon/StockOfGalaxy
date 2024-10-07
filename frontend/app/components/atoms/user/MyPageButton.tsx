@@ -5,6 +5,9 @@ import { useAccessToken } from "@/app/store/userSlice";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { FormButton } from "@/app/styles/user";
+import { IBM_Plex_Sans_KR } from 'next/font/google';
+
+const ibm = IBM_Plex_Sans_KR({ weight: '400', subsets: ['latin'] })
 
 const StyledLoginButton = styled.input`
   color: #0e224d;
@@ -51,6 +54,7 @@ const MyPageButton: React.FC<MyPageButtonProps> = ({
 
   return (
     <FormButton
+    className={ibm.className}
       type="button"
       value={value}
       onClick={() => {

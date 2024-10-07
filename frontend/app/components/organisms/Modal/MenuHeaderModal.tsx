@@ -1,10 +1,10 @@
 import React, { forwardRef } from 'react';
 import styled from '@emotion/styled';
-import Image from 'next/image';
-import profile from './profile.png';
+import ProfileImage from '../../atoms/ProfileImage';
 import LikedStockButtonGroup from '../../molecules/ButtonGroup/LikedStockButtonGroup';
 import MypageButtonGroup from '../../molecules/ButtonGroup/MypageButtonGroup';
 import SignOutButtonGroup from '../../molecules/ButtonGroup/SignOutButtonGroup';
+import { useUser } from '@/app/store/userSlice';
 
 interface MenuHeaderModalProps {
   position: { top: number; left: number }; 
@@ -15,6 +15,9 @@ interface MenuHeaderModalProps {
 // forwardRef 사용
 const MenuHeaderModal = forwardRef<HTMLDivElement, MenuHeaderModalProps>(
   ({ position, onMouseEnter, onMouseLeave }, ref) => {
+    const { user } = useUser();
+    const nickname = user?.nickname ?? "Guest";
+    const characterType = user?.characterType ?? 1;
     return (
       <ModalContainer
         ref={ref}
@@ -24,8 +27,8 @@ const MenuHeaderModal = forwardRef<HTMLDivElement, MenuHeaderModalProps>(
       >
         <ModalContent onClick={(e) => e.stopPropagation()}>
           <ProfileSection>
-            <Image src={profile} alt="프로필 사진" width={40} height={40} />
-            <ProfileName>참</ProfileName>
+            <ProfileImage characterType={characterType} alt={`${nickname}님의 프로필 사진`} />
+            <ProfileName>{nickname}</ProfileName>
           </ProfileSection>
           <hr />
           <MypageButtonGroup />

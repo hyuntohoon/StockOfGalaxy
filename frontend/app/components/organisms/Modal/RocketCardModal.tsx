@@ -47,7 +47,7 @@ const RocketCardModal: React.FC<RocketCardModalProps> = ({
     >
       <RocketContainer>
         <UserInfoWrapper>
-          <ProfileImage src={`/images/profile/${data.characterType}.png`} alt={`${data.nickname}의 프로필 이미지`} />
+          <ProfileImage characterType={data.characterType} alt={`${data.nickname}의 프로필 이미지`} />
           <Nickname>{data.nickname}</Nickname>
         </UserInfoWrapper>
         <ContentContainer>
@@ -71,7 +71,7 @@ const ModalContainer = styled.div`
   padding: 10px;
   width: 360px;
   min-height: 90px;
-  background: #f0ece9f5;
+  background: #ece9f0f5;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 24px;
   display: flex;

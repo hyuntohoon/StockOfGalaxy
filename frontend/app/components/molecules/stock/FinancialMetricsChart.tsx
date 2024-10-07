@@ -16,7 +16,10 @@ import {
   Legend,
   PointElement,
   ChartOptions,
+  LineController,
+  BarController,
 } from "chart.js";
+import Dividend from "@/app/components/atoms/stock/Dividend";
 
 ChartJS.register(
   CategoryScale,
@@ -26,11 +29,21 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
-  PointElement
+  PointElement,
+  LineController,
+  BarController
 );
+
+const SubTitle = styled.div`
+  font-size: 20px;
+  font-weight: bold;
+  font-family: "Noto Sans KR", sans-serif;
+  color: black;
+`;
 
 const Container = styled.div`
   display: flex;
+  flex-direction: column;
   flex: 0 0 50%;
   width: 620px;
   height: auto;
@@ -39,17 +52,50 @@ const Container = styled.div`
   border-radius: 20px;
   align-items: center;
   justify-content: center;
+  gap: 20px;
 `;
+
+const SubContainer = styled.div`
+  display: flex;
+  width: 95%;
+  flex-direction: row;
+  justify-content: space-between;
+`;
+
+interface FinancialMetrics {
+  stock_code: string;
+  stac_yymm: string;
+  current_assets: number;
+  current_liabilites: number;
+  total_liabilites: number;
+  total_equity: number;
+}
 
 const FinancialMetricsChart = () => {
   const { stock } = useParams();
   const stock_code = Array.isArray(stock) ? stock[0] : stock ?? "005930";
-  const [financialMetricsInfo, setFinancialMetricsInfo] = useState([]);
+  const [financialMetricsInfo, setFinancialMetricsInfo] = useState<
+    FinancialMetrics[]
+  >([
+    {
+      stock_code: "005930",
+      stac_yymm: "201703",
+      current_assets: 1292842,
+      current_liabilites: 568431,
+      total_liabilites: 743994,
+      total_equity: 1898180,
+    },
+    {
+      stock_code: "005930",
+      stac_yymm: "201703",
+      current_assets: 1292842,
+      current_liabilites: 568431,
+      total_liabilites: 743994,
+      total_equity: 1898180,
+    },
+  ]);
 
-  const formatDateString = (dateString) => {
-    if (dateString.length !== 6) {
-      throw new Error("Input string must be in the format YYYYMM");
-    }
+  const formatDateString = (dateString: string) => {
     const year = dateString.slice(0, 4);
     const month = dateString.slice(4, 6);
     return `${year}.${month}`;
@@ -63,23 +109,26 @@ const FinancialMetricsChart = () => {
     getData();
   }, []);
 
-  const [chartData, setChartData] = useState({ labels: [], datasets: [] });
+  const [chartData, setChartData] = useState({
+    labels: [],
+    datasets: [],
+  });
 
   useEffect(() => {
     if (financialMetricsInfo) {
+      console.log(financialMetricsInfo);
+
       const labels = financialMetricsInfo.map((item) =>
         formatDateString(item.stac_yymm)
       );
-      const totalCapital = financialMetricsInfo.map((item) =>
-        parseFloat(item.total_equity)
+      const totalCapital = financialMetricsInfo.map(
+        (item) => item.total_equity
       );
-      const totalLiabilities = financialMetricsInfo.map((item) =>
-        parseFloat(item.total_liabilites)
+      const totalLiabilities = financialMetricsInfo.map(
+        (item) => item.total_liabilites
       );
       const debtRatio = financialMetricsInfo.map(
-        (item) =>
-          (parseFloat(item.total_liabilites) / parseFloat(item.total_equity)) *
-          100
+        (item) => (item.total_liabilites / item.total_equity) * 100
       ); // 부채비율 계산
 
       const data = {
@@ -119,15 +168,18 @@ const FinancialMetricsChart = () => {
     responsive: true,
     plugins: {
       legend: {
-        position: "center",
-      },
-      title: {
         display: true,
-        text: "부채비율",
-        font: {
-          size: 20,
-        },
+        position: "top",
       },
+      // title: {
+      //   display: true,
+      //   text: "부채비율",
+      //   font: {
+      //     size: 20,
+      //     weight: 1000,
+      //   },
+      //   color: "black",
+      // },
     },
     scales: {
       x: {
@@ -142,7 +194,7 @@ const FinancialMetricsChart = () => {
           display: true,
         },
         ticks: {
-          callback: function (value: number) {
+          callback: function (value: any) {
             return value / 10000 + "조";
           },
         },
@@ -154,7 +206,7 @@ const FinancialMetricsChart = () => {
           drawOnChartArea: false,
         },
         ticks: {
-          callback: function (value) {
+          callback: function (value: any) {
             return value + "%";
           },
         },
@@ -162,9 +214,63 @@ const FinancialMetricsChart = () => {
     },
   };
 
+  console.log("sdsd", financialMetricsInfo);
+
   return (
     <Container>
-      <Bar data={chartData} options={options} />
+      <SubTitle>재무 안정성</SubTitle>
+      <SubContainer>
+        {financialMetricsInfo && financialMetricsInfo.length > 0 && (
+          <Dividend
+            title="부채비율"
+            content={(
+              (100 *
+                financialMetricsInfo[financialMetricsInfo.length - 1][
+                  "total_liabilites"
+                ]) /
+              financialMetricsInfo[financialMetricsInfo.length - 1][
+                "total_equity"
+              ]
+            ).toFixed(2)}
+          />
+        )}
+        {financialMetricsInfo && financialMetricsInfo.length > 0 && (
+          <Dividend
+            title="유동비율"
+            content={(
+              (100 *
+                financialMetricsInfo[financialMetricsInfo.length - 1][
+                  "current_assets"
+                ]) /
+              financialMetricsInfo[financialMetricsInfo.length - 1][
+                "current_liabilites"
+              ]
+            ).toFixed(2)}
+          />
+        )}
+        <Dividend
+          title="부채 증가율"
+          content={
+            financialMetricsInfo && financialMetricsInfo.length > 1
+              ? (
+                  (100 *
+                    (financialMetricsInfo[financialMetricsInfo.length - 1][
+                      "total_liabilites"
+                    ] -
+                      financialMetricsInfo[financialMetricsInfo.length - 2][
+                        "total_liabilites"
+                      ])) /
+                  financialMetricsInfo[financialMetricsInfo.length - 2][
+                    "total_liabilites"
+                  ]
+                ).toFixed(2)
+              : "0.00"
+          }
+        />
+      </SubContainer>
+      {chartData.labels.length > 0 && chartData.datasets.length > 0 && (
+        <Bar data={chartData} options={options} />
+      )}
     </Container>
   );
 };

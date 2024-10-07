@@ -20,6 +20,8 @@ const SignUpInputGroup = ({
   setNickname,
   setEmail,
   setIsAuthenticated,
+  password,
+  passwordCheck,
 }) => {
   const [formData, setFormData] = useState({
     id: "",
@@ -49,6 +51,8 @@ const SignUpInputGroup = ({
           placeholder="비밀번호 확인"
           setInfo={setPasswordCheck}
           setIsAuthenticated={setIsAuthenticated}
+          password={password}
+          passwordCheck={passwordCheck}
         />
         <SignUpInputField
           type="text"

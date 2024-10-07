@@ -12,7 +12,7 @@ import StockInfoTemplate from "@/app/components/templates/stock/StockInfoTemplat
 import styled from "@emotion/styled";
 import { useWheelScroll } from "@/app/hooks/useWheelScroll";
 import { News } from "@/app/types/planet";
-// import FinancialMetricsChart from "../../molecules/stock/FinancialMetricsChart";
+import FinancialMetricsChart from "../../molecules/stock/FinancialMetricsChart";
 import StockDailyPriceTemplate from "../../organisms/stock/StockDailyPriceTemplate";
 import NewsModal from "./NewsModal";
 
@@ -42,7 +42,7 @@ const PlanetDetailTemplate: React.FC<PlanetDetailTemplateProps> = ({
 
   const contentRef = useRef<HTMLDivElement>(null);
   const [scrollProgress, setScrollProgress] = useState<number>(0);
-  const [activeSection, setActiveSection] = useState<string>("홈");
+  const [activeSection, setActiveSection] = useState<string>("차트");
 
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedNews, setSelectedNews] = useState<News | null>(null); // 선택된 뉴스 상태
@@ -53,7 +53,7 @@ const PlanetDetailTemplate: React.FC<PlanetDetailTemplateProps> = ({
   };
 
   const sections = [
-    { name: "홈", ref: homeRef },
+    // { name: "홈", ref: homeRef },
     { name: "차트", ref: chartRef },
     { name: "종목", ref: stocksRef },
     { name: "행성소식", ref: planetNewsRef },
@@ -171,9 +171,9 @@ const PlanetDetailTemplate: React.FC<PlanetDetailTemplateProps> = ({
         sections={sections}
       />
       <ContentContainer onWheel={handleWheelScroll} ref={contentRef}>
-        <SectionContainer ref={homeRef}>
+        {/* <SectionContainer ref={homeRef}>
           <p style={{ color: "white" }}>홈 페이지 내용</p>
-        </SectionContainer>
+        </SectionContainer> */}
 
         <SectionContainer ref={chartRef}>
           <ChartTemplate />
@@ -182,7 +182,7 @@ const PlanetDetailTemplate: React.FC<PlanetDetailTemplateProps> = ({
 
         <SectionContainer ref={stocksRef}>
           <StockInfoTemplate />
-          {/* <FinancialMetricsChart /> */}
+          <FinancialMetricsChart />
         </SectionContainer>
 
         <SectionContainer ref={planetNewsRef}>
