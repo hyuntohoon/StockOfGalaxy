@@ -220,12 +220,12 @@ export const FavoritesContainer = styled.div<{ isOpen: boolean }>`
     }
 
     &:hover {
-      background-color: rgba(245, 245, 245, 0.5); /* 호버 시 백그라운드 밝게 */
+      background-color: rgba(245, 245, 245, 0.3); /* 호버 시 백그라운드 밝게 */
     }
   `}
 `;
 
-export const ToggleButton = styled.button`
+export const ToggleButton = styled.button<{ isOpen: boolean }>`
   background-color: transparent;
   padding-top: 10px;
   border: none;
@@ -238,18 +238,19 @@ export const ToggleButton = styled.button`
   color: #333;
   transition: color 0.3s ease;
 
-  &:hover {
-    color: #000;
-  }
+  display: ${({ isOpen }) => (isOpen ? 'block' : 'none')}; /* isOpen에 따라 보이거나 숨김 */
+  
+
 `;
 
 export const FavoriteHeader = styled.h2<{ isOpen: boolean }>`
-  ${({ isOpen }) => css`
-    margin-top: 0;
-    margin-bottom: 20px;
-    text-align: center;
-    font-size: 1.3rem;
-    color: ${isOpen ? '#222' : '#CCC'};
-    transition: color 0.3s ease;
-  `}
+  margin-top: 0;
+  margin-bottom: 20px;
+  text-align: center;
+  font-size: 1.3rem;
+  color: ${({ isOpen }) => (isOpen ? '#222' : '#CCC')}; /* 삼항 연산자 수정 */
+  transition: color 0.3s ease;
+  &:hover{
+    color: ${({ isOpen }) => (isOpen ? '#222' : '#000')};
+  }
 `;
