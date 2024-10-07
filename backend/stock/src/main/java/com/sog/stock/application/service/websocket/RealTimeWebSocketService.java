@@ -122,14 +122,22 @@ public class RealTimeWebSocketService {
                     // 재연결 후 기존 구독자들에 대해 다시 구독 요청 보내기
                     for (String stockCode : stockCodeSubscribers.keySet()) {
                         List<WebSocketSession> subscribers = stockCodeSubscribers.get(stockCode);
-                        // Iterator 사용하여 안전하게 반복
-                        Iterator<WebSocketSession> iterator = subscribers.iterator();
-                        while (iterator.hasNext()) {
-                            WebSocketSession session = iterator.next();
-                            log.info("주식 코드 {}에 대한 구독 요청을 다시 시도합니다.", stockCode);
-                            subscribeToStock(stockCode, session, true); // 다시 구독 요청
+
+                        // subscribers가 null이 아니고, 크기가 0이 아닐 때만 실행
+                        if (subscribers != null && !subscribers.isEmpty()) {
+
+                            // 리스트 복사본을 사용하여 ConcurrentModificationException 방지
+                            List<WebSocketSession> subscribersCopy = new ArrayList<>(subscribers);
+
+                            for (WebSocketSession clientSession : subscribersCopy) {
+                                if (clientSession.isOpen()) {
+                                    log.info("주식 코드 {}에 대한 구독 요청을 다시 시도합니다.", stockCode);
+                                    subscribeToStock(stockCode, clientSession, true); // 다시 구독 요청
+                                }
+                            }
                         }
                     }
+
                 } else {
                     log.error("키 재발급에 실패했습니다.");
                     throw new IllegalStateException("WebSocket 키 재발급 실패");

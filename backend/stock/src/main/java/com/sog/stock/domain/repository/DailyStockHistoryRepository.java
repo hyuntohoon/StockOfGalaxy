@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface DailyStockHistoryRepository extends JpaRepository<DailyStockHistory, Integer> {
 
-    List<DailyStockHistory> findByStock_StockCodeOrderByDailyStockHistoryDateDesc(String stockCode);
+    List<DailyStockHistory> findTop90ByStock_StockCodeOrderByDailyStockHistoryDateDesc(String stockCode);
 
     // 주어진 stockCode와 locDate에 맞는 DailyStockHistory 데이터를 조회
     Optional<DailyStockHistory> findByStock_StockCodeAndDailyStockHistoryDate(String stockCode, String dailyStockHistoryDate);
