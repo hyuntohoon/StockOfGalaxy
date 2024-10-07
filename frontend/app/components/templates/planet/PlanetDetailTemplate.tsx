@@ -10,7 +10,6 @@ import { ContentContainer, SectionContainer } from "@/app/styles/planet";
 import ChartTemplate from "@/app/components/templates/chart/ChartTemplate";
 import StockInfoTemplate from "@/app/components/templates/stock/StockInfoTemplate";
 import styled from "@emotion/styled";
-import { useWheelScroll } from "@/app/hooks/useWheelScroll";
 import { News } from "@/app/types/planet";
 import FinancialMetricsChart from "../../molecules/stock/FinancialMetricsChart";
 import StockDailyPriceTemplate from "../../organisms/stock/StockDailyPriceTemplate";
@@ -39,6 +38,8 @@ const PlanetDetailTemplate: React.FC<PlanetDetailTemplateProps> = ({
   const stocksRef = useRef<HTMLDivElement>(null);
   const planetNewsRef = useRef<HTMLDivElement>(null);
   const spaceNewsRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
+  const listRef2 = useRef<HTMLDivElement>(null);
 
   const contentRef = useRef<HTMLDivElement>(null);
   const [scrollProgress, setScrollProgress] = useState<number>(0);
@@ -73,18 +74,8 @@ const PlanetDetailTemplate: React.FC<PlanetDetailTemplateProps> = ({
     }
   };
 
-  useWheelScroll(contentRef, sections, scrollToSection);
 
-  // 페이지가 마운트될 때 가로 스크롤 위치 복원
-  useEffect(() => {
-    const savedScrollPositionX = sessionStorage.getItem("scrollPositionX");
-    if (savedScrollPositionX && contentRef.current) {
-      contentRef.current.scrollTo({
-        left: Number(savedScrollPositionX), // 저장된 가로 스크롤 위치로 복원
-        behavior: "auto", // 애니메이션 없이 바로 스크롤
-      });
-    }
-  }, []);
+
 
   useEffect(() => {
     const handleScroll = debounce(() => {
@@ -124,10 +115,10 @@ const PlanetDetailTemplate: React.FC<PlanetDetailTemplateProps> = ({
   const handleWheelScroll = (event: React.WheelEvent) => {
     if (
       contentRef.current &&
-      planetNewsRef.current &&
-      spaceNewsRef.current &&
-      !planetNewsRef.current.contains(event.target as Node) &&
-      !spaceNewsRef.current.contains(event.target as Node)
+      listRef.current &&
+      listRef2.current &&
+      !listRef.current.contains(event.target as Node) &&
+      !listRef2.current.contains(event.target as Node)
     ) {
       contentRef.current.scrollTo({
         left: contentRef.current.scrollLeft + event.deltaY * 15,
@@ -185,10 +176,10 @@ const PlanetDetailTemplate: React.FC<PlanetDetailTemplateProps> = ({
           <FinancialMetricsChart />
         </SectionContainer>
 
-        <SectionContainer ref={planetNewsRef}>
-          <div className="news-list">
+        <SectionContainer ref={planetNewsRef} >
+          <div className="news-list" ref={listRef}>
             {/* 행성 뉴스 데이터 렌더링 */}
-            <NewsList news={planetNews} onClick={handleNewsClick} />
+            <NewsList news={planetNews} onClick={handleNewsClick}/>
           </div>
           <div className="word-cloud">
             <WordCloudComponent data={planetWord} width={500} height={440} />
@@ -196,9 +187,9 @@ const PlanetDetailTemplate: React.FC<PlanetDetailTemplateProps> = ({
         </SectionContainer>
 
         <SectionContainer ref={spaceNewsRef}>
-          <div className="news-list">
+          <div className="news-list" ref={listRef2}>
             {/* 우주 뉴스 데이터 렌더링 */}
-            <NewsList news={spaceNews} onClick={handleNewsClick} />
+            <NewsList news={spaceNews} onClick={handleNewsClick}/>
           </div>
           <div className="word-cloud">
             <WordCloudComponent data={spaceWord} width={500} height={440} />
