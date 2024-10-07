@@ -27,7 +27,8 @@ public interface NewsRepository extends JpaRepository<News, Long> {
     List<NewsPreviewContainContentResponseDTO> findTodayNewsWithContent(LocalDateTime startOfDay, LocalDateTime endOfDay);
 
     // 특정 날짜와 주식 이름을 기준으로 조회 (JPA 쿼리)
-    @Query(value = "SELECT * FROM news n " +
+    @Query(value = "SELECT n.* " +
+        "FROM news n " +
         "JOIN news_keyword nk ON n.news_id = nk.news_id " +
         "WHERE nk.news_stock_name = :stockName " +
         "AND DATE(n.published_date) = :date",
