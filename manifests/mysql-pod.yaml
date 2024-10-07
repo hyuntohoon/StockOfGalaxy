@@ -8,6 +8,8 @@ data:
     [mysqld]
     ft_min_word_len = 2
     ft_stopword_file = ""
+    innodb_buffer_pool_size = 2G  # InnoDB 버퍼 풀 크기 2GB로 설정
+    innodb_flush_log_at_trx_commit = 2  # 트랜잭션 커밋 시 로그 플러시 동작
 
 ---
 apiVersion: v1
