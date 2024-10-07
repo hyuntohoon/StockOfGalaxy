@@ -25,8 +25,8 @@ const StockCode = styled.div`
 `;
 
 const CorpDetail = styled.div`
-  font-size: 0.8rem;
-  color: gray;
+  font-size: 1rem;
+  color: #333;
 `;
 
 const CompanyInfoNameContainer = ({
@@ -35,13 +35,9 @@ const CompanyInfoNameContainer = ({
   corpDetail,
 }: CompanyInfoNameContainerProps) => {
   return (
-    <>
-      <Container>
-        <StockName>{stockName}</StockName>
-        <StockCode>{stockCode}</StockCode>
-      </Container>
+   <Container>
       <CorpDetail>{corpDetail}</CorpDetail>
-    </>
+      </Container>
   );
 };
 

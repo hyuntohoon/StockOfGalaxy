@@ -24,7 +24,9 @@ export const SectionContainer = styled.div`
   justify-content: center;
 
   & > div {
-    background-color: #f0f0f0;
+    background-color:  rgba(255, 255, 255, 0.8);
+    // border: 1px solid;
+    // border-color: rgba(255, 255, 255, 0.4);
     border-radius: 15px;
     height: 500px;
     overflow: hidden;

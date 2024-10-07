@@ -19,7 +19,14 @@ const SubContainer = styled.div`
   flex-direction: column;
   min-width: 100%;
   height: auto;
+  margin: 0px;
+  padding: 0px;
+
+  img {
+    border-radius: 15px; /* img 태그에 border-radius 적용 */
+  }
 `;
+
 
 const StockInfoTemplate = () => {
   const { stock } = useParams();
