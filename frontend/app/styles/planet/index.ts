@@ -26,7 +26,7 @@ export const SectionContainer = styled.div`
   & > div {
     background-color: #f0f0f0;
     border-radius: 15px;
-    height: 450px;
+    height: 500px;
     overflow: hidden;
   }
 

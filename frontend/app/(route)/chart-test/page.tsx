@@ -1,5 +1,6 @@
 "use client";
 
+import ValuationMetrics from "@/app/components/molecules/stock/ValuationMetrics";
 import FinancialMetricsChart from "@/app/components/molecules/stock/FinancialMetricsChart";
 import { ErrorBoundary } from "react-error-boundary";
 
