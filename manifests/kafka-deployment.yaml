@@ -28,6 +28,11 @@ spec:
             # 인증 없이 접근 허용 (로컬 테스트 환경)
             - name: ALLOW_PLAINTEXT_LISTENER
               value: "yes"
+          resources:
+            requests:
+              memory: "512Mi"  # 최소 메모리 요청
+            limits:
+              memory: "1Gi"    # 최대 메모리 사용량 1Gi로 제한
           volumeMounts:
             - name: kafka-storage
               mountPath: /bitnami/kafka  # Kafka 데이터 저장 경로
