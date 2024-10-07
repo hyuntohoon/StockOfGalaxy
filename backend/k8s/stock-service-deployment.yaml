@@ -52,7 +52,7 @@ spec:
                   name: jwt-secret
                   key: secret
             - name: JAVA_TOOL_OPTIONS
-              value: "-javaagent:/elastic/elastic-apm-agent.jar -Delastic.apm.service_name=stock-service -Delastic.apm.server_urls=http://10.105.247.180:8200 -Delastic.apm.application_packages=com.sog -Delastic.apm.use_path_as_transaction_name=true -Delastic.apm.transaction_name_groups=/api/user/\\d+,/api/stock/\\d+,/api/news/\\d+"
+              value: "-javaagent:/elastic/elastic-apm-agent.jar -Delastic.apm.service_name=stock-service -Delastic.apm.server_urls=http://10.104.2.1:8200 -Delastic.apm.application_packages=com.sog -Delastic.apm.use_path_as_transaction_name=true -Delastic.apm.transaction_name_groups=/api/user/\\d+,/api/stock/\\d+,/api/news/\\d+"
           volumeMounts:
             - name: elastic-apm-volume
               mountPath: /elastic  # APM 에이전트가 위치할 경로
