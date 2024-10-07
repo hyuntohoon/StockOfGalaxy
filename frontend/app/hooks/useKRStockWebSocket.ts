@@ -6,8 +6,6 @@ const delay = (ms) => {
 
 const useKRStockWebSocket = (stockData, setStockDataInfo: any) => {
   useEffect(() => {
-    // const socket = new WebSocket("ws://localhost:8081");
-
     const socket = new WebSocket(
       `${process.env.NEXT_PUBLIC_WS_BASE_URL}/ws/stock`
     );
@@ -15,10 +13,10 @@ const useKRStockWebSocket = (stockData, setStockDataInfo: any) => {
     socket.onopen = async () => {
       console.log("Connected to server");
 
-      stockData.forEach(async (stock) => {
-        await delay(1);
+      for (const stock of stockData) {
+        await new Promise((resolve) => setTimeout(resolve, 200)); // 1초 딜레이
         await socket.send(stock.stock_code);
-      });
+      }
     };
 
     socket.onmessage = (event) => {

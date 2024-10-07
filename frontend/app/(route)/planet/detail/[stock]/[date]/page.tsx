@@ -16,6 +16,7 @@ import RocketButtonGroup from "@/app/components/molecules/ButtonGroup/RocketButt
 import RocketModal from "@/app/components/organisms/Modal/RocketModal";
 import { getTop7RocketsApi } from "@/app/utils/apis/rocket";
 import { RocketData } from "@/app/types/rocket";
+import { ErrorBoundary } from "react-error-boundary";
 
 // 임시 뉴스 데이터
 const dummyNewsData: News[] = [
@@ -120,8 +121,23 @@ const NewsPage: React.FC = (props: any) => {
     fetchData(); // 데이터 가져오기 호출
   }, []);
 
+  const logError = (error: Error, info: { componentStack: string }) => {
+    console.log("Error:", error);
+    console.log("Info:", info);
+  };
+
+  const FallbackComponent = ({ error, resetErrorBoundary }: any) => {
+    return (
+      <div>
+        <p>Something went wrong:</p>
+        <pre>{error.message}</pre>
+        <button onClick={resetErrorBoundary}>Try again</button>
+      </div>
+    );
+  };
+
   return (
-    <>
+    <ErrorBoundary FallbackComponent={FallbackComponent} onError={logError}>
       <PlanetDetailTemplate
         planetNews={planetNews}
         spaceNews={spaceNews}
@@ -136,7 +152,7 @@ const NewsPage: React.FC = (props: any) => {
           fetchRocketData={fetchRocketData}
         />
       )}
-    </>
+    </ErrorBoundary>
   );
 };
 

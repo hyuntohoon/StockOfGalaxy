@@ -17,7 +17,7 @@ export const stock_list = [
   },
   {
     stock_name: "KB금융",
-    stock_code: "105560",
+    stock_code: "105560", // 5
   },
   {
     stock_name: "POSCO홀딩스",
@@ -37,28 +37,28 @@ export const stock_list = [
   },
   {
     stock_name: "삼성SDI",
-    stock_code: "006400",
+    stock_code: "006400", // 10
   },
-  {
-    stock_name: "삼성바이오로직스",
-    stock_code: "207940",
-  },
-  {
-    stock_name: "LG화학",
-    stock_code: "051910",
-  },
-  {
-    stock_name: "하나금융지주",
-    stock_code: "086790",
-  },
-  {
-    stock_name: "LG에너지솔루션",
-    stock_code: "373220",
-  },
-  {
-    stock_name: "현대모비스",
-    stock_code: "012330",
-  },
+  // {
+  //   stock_name: "삼성바이오로직스",
+  //   stock_code: "207940",
+  // },
+  // {
+  //   stock_name: "LG화학",
+  //   stock_code: "051910",
+  // },
+  // {
+  //   stock_name: "하나금융지주",
+  //   stock_code: "086790",
+  // },
+  // {
+  //   stock_name: "LG에너지솔루션",
+  //   stock_code: "373220",
+  // },
+  // {
+  //   stock_name: "현대모비스",
+  //   stock_code: "012330", // 15
+  // },
   // {
   //   stock_name: "삼성물산",
   //   stock_code: "028260",
@@ -77,7 +77,7 @@ export const stock_list = [
   // },
   // {
   //   stock_name: "우리금융지주",
-  //   stock_code: "316140",
+  //   stock_code: "316140", // 20
   // },
   // {
   //   stock_name: "크래프톤",
@@ -97,7 +97,7 @@ export const stock_list = [
   // },
   // {
   //   stock_name: "LG",
-  //   stock_code: "003550",
+  //   stock_code: "003550", // 25
   // },
   // {
   //   stock_name: "삼성전기",
