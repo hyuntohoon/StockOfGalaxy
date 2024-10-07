@@ -53,7 +53,7 @@ const Icon = styled.div`
 const InfoBox = styled.div`
   position: absolute;
   top: 94px; /* 버튼 아래에 표시되도록 위치 조정 */
-  right: 50px;
+  right: 95px;
   width: 290px;
   background-color: #000000c4;
   padding: 10px;

@@ -11,9 +11,9 @@ const MenuHeaderWrapper = styled.div<{ isOpen: boolean }>`
   position: fixed;
   top: 0;
   bottom: 0;
-  right: 0;
+  right: 20px;  /* 오른쪽에서 20px 떨어진 위치 */
   transform: translateX(${props => (props.isOpen ? '0' : '120%')});  /* 슬라이드 거리를 더 크게 설정 */
-  width: 325px;  /* 메뉴가 더 넓게 나오도록 설정 */
+  width: 350px;  /* 메뉴가 더 넓게 나오도록 설정 */
   z-index: 10000;
 
   display: flex;
@@ -23,6 +23,7 @@ const MenuHeaderWrapper = styled.div<{ isOpen: boolean }>`
   transition: transform ${TRANSITION_DURATION} ease-in-out;
   pointer-events: ${props => (props.isOpen ? 'auto' : 'none')};
 `;
+
 
 interface StockHeaderProps {
   isOpen: boolean; // RootLayout에서 전달받는 isOpen prop

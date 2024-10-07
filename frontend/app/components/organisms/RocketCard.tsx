@@ -11,19 +11,21 @@ import { useMemberId } from '@/app/store/userSlice';
 import { RocketCardProps } from '@/app/types/rocket';
 import { deleteRocketApi } from '@/app/utils/apis/rocket';
 
-const RocketCard: React.FC<RocketCardProps & { fetchData: () => void }> = ({ data, currentPrice, fetchData }) => {
+const RocketCard: React.FC<RocketCardProps & {
+  fetchData: () => void;
+  isMaxPositive: boolean;
+  isMaxNegative: boolean;
+}> = ({ data, currentPrice, fetchData, isMaxPositive, isMaxNegative }) => {
   const { priceChange, priceChangeSign } = calculatePriceChange(data.price, currentPrice);
   const { memberId: currentMemberId } = useMemberId();
-  // console.log('currentMemberId:', currentMemberId)
+
   const handleDelete = async () => {
     const confirmDelete = window.confirm('정말로 이 로켓을 삭제하시겠습니까?');
     if (!confirmDelete) return;
 
     try {
-      // 로켓 삭제 API 호출
       await deleteRocketApi(data.rocketId, currentMemberId);
       alert('로켓이 삭제되었습니다.');
-      // 삭제 후 전체 리스트 갱신
       fetchData();
     } catch (error) {
       alert('로켓 삭제에 실패했습니다.');
@@ -31,7 +33,7 @@ const RocketCard: React.FC<RocketCardProps & { fetchData: () => void }> = ({ dat
   };
 
   return (
-    <Content>
+    <Content isMaxPositive={isMaxPositive} isMaxNegative={isMaxNegative}>
       <Header>
         <ProfileImageWrapper>
           <ProfileImage characterType={data.characterType} alt="프로필" />
@@ -55,18 +57,19 @@ const RocketCard: React.FC<RocketCardProps & { fetchData: () => void }> = ({ dat
       <StyledRocketContent message={data.message} />
       <TimeStampTimeMachineWrapper>
         <RocketTimeStamp createdAt={data.createdAt} />
-        <RocketTimeMachineButton createdAt={data.createdAt}/>
+        <RocketTimeMachineButton createdAt={data.createdAt} />
       </TimeStampTimeMachineWrapper>
     </Content>
   );
 };
 
 // 스타일 정의
-const Content = styled.div`
+const Content = styled.div<{ isMaxPositive: boolean; isMaxNegative: boolean }>`
   position: relative;
   width: 216px;
   height: 190px;
-  background-color: #d2d1d0;
+  background-color: ${({ isMaxPositive, isMaxNegative }) =>
+    isMaxPositive ? '#edd8df' : isMaxNegative ? '#cfe2e9' : '#d2d1d0'};
   border-radius: 20px;
   padding: 10px;
   display: flex;

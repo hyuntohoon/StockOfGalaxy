@@ -5,6 +5,9 @@ import { useIsLoggedIn } from '@/app/store/userSlice';
 import { createRocketApi } from '@/app/utils/apis/rocket';
 import { useParams } from 'next/navigation';
 import { useMemberId } from '@/app/store/userSlice';
+import { IBM_Plex_Sans_KR } from 'next/font/google';
+
+const ibm = IBM_Plex_Sans_KR({ weight: '400', subsets: ['latin'] })
 
 interface RocketInputFieldProps {
   currentPrice: number | null; // 실시간 주가 데이터
@@ -59,6 +62,7 @@ const RocketInputField: React.FC<RocketInputFieldProps> = ({ currentPrice, isTod
   return (
     <Container>
       <Input
+        className={ibm.className}
         type="text"
         placeholder={getPlaceholderText()}
         value={inputValue}
