@@ -34,15 +34,15 @@ const AlienGuideButton : React.FC<InfoBoxProps> = ({ info })=> {
 const StyledButton = styled.div`
   position: fixed;
   display: flex;
-  top: 30px;
-  right: 50px;
+  top: 27.5px;
+  right: 100px;
   width: 54px;
   height: 54px;
   justify-content: center;
   align-items: center;
   background-color: rgba(255, 255, 255, 0.809);
   border-radius: 50px;
-  box-shadow: 0px 0px 15px rgba(247, 255, 210, 0.662);
+  box-shadow: 0px 0px 15px rgba(247, 255, 210, 0.5);
   cursor: pointer;
 `;
 

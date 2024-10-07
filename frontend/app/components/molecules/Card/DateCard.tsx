@@ -35,18 +35,19 @@ const DateCardContainer = styled.div<{ right?: string; left?: string }>`
   align-items: center;
   justify-content: center;
   background-color: rgba(255, 255, 255, 0.4);
-  padding: 20px;
-  border-radius: 15px;
+  padding: 2px 20px;
+  border-radius: 24px;
   color: #ffffff;
   font-weight: 600;
   font-size: 18px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
   position: absolute;
-  top: 30px;
+  top: 20px;
   ${({ right }) => right && `right: ${right};`}  // right가 있으면 적용
   ${({ left }) => left && `left: ${left};`}    // left가 있으면 적용
   z-index: 1000;
-  width: 200px;  // 가로 크기 조정
+  width: 250px;  // 가로 크기 조정
+  height: 120px
 `;
 
 const Label = styled.span`

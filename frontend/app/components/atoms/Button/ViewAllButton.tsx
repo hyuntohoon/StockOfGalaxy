@@ -48,7 +48,7 @@ const StyledButton = styled.div`
   align-items: center;
   background-color: rgba(255, 255, 255, 0.809);
   border-radius: 50px;
-  box-shadow: 0px 0px 15px rgba(247, 255, 210, 0.662);
+  box-shadow: 0px 0px 15px rgba(247, 255, 210, 0.5);
   cursor: pointer;
 `;
 

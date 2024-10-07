@@ -41,8 +41,8 @@ const CardContainer = styled.div`
   font-size: 16px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
   position: absolute;
-  top: 30px;
-  left: 30px;
+  top: 20px;
+  left: 20px;
   z-index: 1000;
   min-width: 120px;
 `;
