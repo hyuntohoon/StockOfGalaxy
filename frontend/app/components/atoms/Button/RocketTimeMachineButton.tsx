@@ -43,6 +43,7 @@ const Button = styled.button`
   border-radius: 30px;
   width: 70px;
   height: 34px;
+  transition: background-color 0.4s ease;
   cursor: pointer;
 
   &:hover {

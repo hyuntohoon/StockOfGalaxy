@@ -30,6 +30,11 @@ const Button = styled.button`
   z-index: 1000;
   cursor: pointer;
   border: none;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #202938ba; /* 호버 시 배경색 변경 */
+  }
 `;
 
 const Icon = styled.div`

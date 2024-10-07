@@ -16,18 +16,19 @@ const RocketButtonGroup = ({ onRocketClick }) => {
 
   return (
     <>
-    <ButtonGroup onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)} onClick={onRocketClick}>
+    <ButtonGroup 
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)} 
+      onClick={onRocketClick}
+    >
       <Icon>
         <Image src={rocketIcon} alt="로켓" width={50} height={50} />
       </Icon>
       <Text>로켓</Text>
     </ButtonGroup>
-    {isHovered && (
-      <InfoBox>
-        <AlienGuideInfoBox info={info}/>
-      </InfoBox>
-    )}
+    <InfoBox isVisible={isHovered}>
+      <AlienGuideInfoBox info={info}/>
+    </InfoBox>
     </>
   );
 };
@@ -63,16 +64,20 @@ const Text = styled.div`
   text-align: center;
 `;
 
-const InfoBox = styled.div`
+const InfoBox = styled.div<{ isVisible: boolean }>`
   position: absolute;
   right: 30px;
   bottom: 125px;
   width: 290px;
-
   background-color: #000000c4;
   padding: 10px;
   border-radius: 16px;
   box-shadow: 0px 0px 12px rgba(75, 75, 75, 0.217);
+  
+  /* 애니메이션 추가 */
+  opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
+  transform: ${({ isVisible }) => (isVisible ? 'translateY(0)' : 'translateY(-10px)')};
+  transition: opacity 0.4s ease, transform 0.4s ease;
 `;
 
 export default RocketButtonGroup;
