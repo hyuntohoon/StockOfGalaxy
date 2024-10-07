@@ -34,17 +34,20 @@ const CompanyInfoContainer = () => {
   });
 
   useEffect(() => {
-    getCompanyInfo(stock_code).then((data) => {
+    const getCompanyInfoData = async () => {
+      const res = await getCompanyInfo(stock_code);
       setCompanyInfo({
-        corpDetail: data.corp_description,
-        stockName: data.corp_name,
-        stockCode: data.stock_code,
-        ceoName: data.ceo_nm,
-        hmUrl: data.hm_url,
-        estDate: data.est_dt,
-        accMonth: data.acc_mt,
+        corpDetail: res.corp_description,
+        stockName: res.corp_name,
+        stockCode: res.stock_code,
+        ceoName: res.ceo_nm,
+        hmUrl: res.hm_url,
+        estDate: res.est_dt,
+        accMonth: res.acc_mt,
       });
-    });
+    };
+
+    getCompanyInfoData();
   }, []);
 
   return (

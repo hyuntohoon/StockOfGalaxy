@@ -85,6 +85,14 @@ const FinancialMetricsChart = () => {
       total_liabilites: 743994,
       total_equity: 1898180,
     },
+    {
+      stock_code: "005930",
+      stac_yymm: "201703",
+      current_assets: 1292842,
+      current_liabilites: 568431,
+      total_liabilites: 743994,
+      total_equity: 1898180,
+    },
   ]);
 
   const formatDateString = (dateString: string) => {
