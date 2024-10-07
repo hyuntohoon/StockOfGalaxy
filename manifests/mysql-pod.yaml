@@ -1,6 +1,18 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  name: mysql-config
+  namespace: backcd  # 네임스페이스 추가
+data:
+  my.cnf: |
+    [mysqld]
+    ft_min_word_len = 2
+    ft_stopword_file = ""
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
   name: mysql-init-script
   namespace: backcd  # 네임스페이스 추가
 data:
@@ -40,11 +52,14 @@ spec:
           mountPath: /var/lib/mysql
         - name: mysql-init-script
           mountPath: /docker-entrypoint-initdb.d
+        - name: mysql-config-volume
+          mountPath: /etc/mysql/my.cnf  # ConfigMap을 MySQL 설정 파일로 마운트
+          subPath: my.cnf
         resources:
           limits:
             memory: "4Gi"  # 메모리 제한 4Gi
           requests:
-            memory: "2Gi"  # 최소 요청 메모리 2Gi (조정 가능)
+            memory: "2Gi"  # 최소 요청 메모리 2Gi
       volumes:
       - name: mysql-storage
         persistentVolumeClaim:
@@ -52,6 +67,9 @@ spec:
       - name: mysql-init-script
         configMap:
           name: mysql-init-script
+      - name: mysql-config-volume
+        configMap:
+          name: mysql-config
       nodeSelector:
         kubernetes.io/hostname: ip-172-26-0-238
       tolerations:
