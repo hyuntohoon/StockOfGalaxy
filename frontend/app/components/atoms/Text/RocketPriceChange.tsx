@@ -1,14 +1,14 @@
 import styled from '@emotion/styled';
 
 interface RocketPriceChangeProps {
-  priceChange: string;
+  priceChange: number;
   priceChangeSign: string;
 }
 
 const RocketPriceChange = ({ priceChange, priceChangeSign }: RocketPriceChangeProps) => {
   return (
     <PriceChangeContainer priceChangeSign={priceChangeSign}>
-      {priceChangeSign} {priceChange}
+      {priceChangeSign} {priceChange}%
     </PriceChangeContainer>
   );
 };

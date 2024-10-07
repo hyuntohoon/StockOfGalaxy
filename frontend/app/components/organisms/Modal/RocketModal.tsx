@@ -60,9 +60,8 @@ const RocketModal = ({ onClose, fetchRocketData }) => { // fetchRocketData 추�
       // 양수 중 가장 큰 값 찾기
       const maxPositive = rocketList.reduce((prev, curr) => {
         const { priceChangeSign, priceChange } = calculatePriceChange(curr.price, currentPrice);
-        const numericPriceChange = parseFloat(priceChange); // priceChange 문자열을 숫자로 변환
-        if (priceChangeSign === '+' && (!prev || numericPriceChange > parseFloat(prev.priceChange))) {
-          return { ...curr, priceChange: numericPriceChange }; // 양수 중 가장 큰 값
+        if (priceChangeSign === '+' && (!prev || priceChange > prev.priceChange)) {
+          return { ...curr, priceChange }; // 양수 중 가장 큰 값
         }
         return prev;
       }, null);
@@ -70,15 +69,11 @@ const RocketModal = ({ onClose, fetchRocketData }) => { // fetchRocketData 추�
       // 음수 중 가장 큰 값 찾기
       const maxNegative = rocketList.reduce((prev, curr) => {
         const { priceChangeSign, priceChange } = calculatePriceChange(curr.price, currentPrice);
-        const numericPriceChange = parseFloat(priceChange); // priceChange 문자열을 숫자로 변환
-        if (priceChangeSign === '-' && (!prev || numericPriceChange > parseFloat(prev.priceChange))) {
-          return { ...curr, priceChange: numericPriceChange }; // 음수 중 가장 큰 값
+        if (priceChangeSign === '-' && (!prev || priceChange > prev.priceChange)) {
+          return { ...curr, priceChange }; // 음수 중 가장 큰 값
         }
         return prev;
       }, null);
-  
-      // console.log("가장 큰 양수:", maxPositive);
-      // console.log("가장 큰 음수:", maxNegative);
   
       setMaxPositiveRocket(maxPositive);
       setMaxNegativeRocket(maxNegative);
@@ -90,7 +85,8 @@ const RocketModal = ({ onClose, fetchRocketData }) => { // fetchRocketData 추�
     } finally {
       setLoading(false);
     }
-  };  
+  };
+   
 
   useEffect(() => {
     fetchData();
@@ -231,6 +227,10 @@ const StyledCloseIcon = styled(IoClose)`
   right: 16px;
   font-size: 24px;
   cursor: pointer;
+  &:hover {
+    color: #00000087;
+  }
+  transition: color 0.3s ease;
 `;
 
 export default RocketModal;
