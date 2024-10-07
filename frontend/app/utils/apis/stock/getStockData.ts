@@ -136,8 +136,23 @@ export const getHeaderStockData = async (
       url: `${process.env.NEXT_PUBLIC_API_BASE_URL}/stock/${stock_code}/${loc_date}`,
     });
 
-    return res.data;
+    return res.data
+      ? res.data
+      : {
+          market_capitalization: "0",
+          low_price: "0",
+          high_price: "0",
+          year_low_price: "0",
+          year_high_price: "0",
+        };
   } catch (error) {
     console.log(error);
+    return {
+      market_capitalization: "0",
+      low_price: "0",
+      high_price: "0",
+      year_low_price: "0",
+      year_high_price: "0",
+    };
   }
 };
