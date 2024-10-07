@@ -10,13 +10,13 @@ import { stock_list } from "@/app/utils/apis/stock/findStockName";
 import { useRouter, useParams } from "next/navigation";
 
 const ParentContainer = styled.div`
-  width: 300px;
+  width: 340px;
   height: 92%; /* 높이를 줄여서 StockHeader와 맞춤 */
   max-height: 95vh; /* 최대 높이 설정 */
   overflow-y: auto; /* 스크롤 가능하게 설정 */
   background-color: #dbdbdbf9;
   border-radius: 26px;
-  padding: 20px;
+  padding: 18px;
   display: flex;
   flex-direction: column;
   box-shadow: 0px 0px 20px rgba(115, 115, 115, 0.224);
@@ -33,7 +33,7 @@ const Container = styled.div`
   padding: 20px;
   margin: 8px 15px;
   background-color: #ffffff;
-  width: 270px;
+  width: 300px;
   height: 30px;
   text-align: center;
   display: flex;
