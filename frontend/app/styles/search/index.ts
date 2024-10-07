@@ -78,9 +78,19 @@ export const SearchResultsContainer = styled.div`
   backdrop-filter: blur(10px);
   transition: all 0.4s ease-in-out;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-  ::-webkit-scrollbar {
-  display: none;
-}
+  /* 스크롤바 스타일링 */
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.3); /* 스크롤바 색상 */
+    border-radius: 4px; /* 스크롤바 둥글게 */
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(255, 255, 255, 0.6); /* 스크롤바 호버 시 색상 */
+  }
 `;
 
 export const SearchItem = styled.div`
@@ -126,4 +136,5 @@ export const NoResults = styled.div`
   text-align: center;
   margin-top: 20px;
   font-size: 15px;
+  z-index: 100000;
 `;

@@ -1,9 +1,6 @@
 import dynamic from 'next/dynamic';
 import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
-import { keyframes } from '@emotion/react';
-import { wordData } from '@/app/mocks/wordData';
-import WordCloudComponent from '../common/WordCloudComponent';
 import {ModalContent, ModalOverlay, ConfirmButton, CancelButton} from "./style";
 import { useDate } from '@/app/store/date';
 import { useRouter } from 'next/navigation';
@@ -16,7 +13,7 @@ const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 interface AreaChartProps {
   data: { date: string; newsCount: number; traffic: number; topStocks: string[] }[];
-  detail: { date: string; newsCount: number; traffic: number; topStocks: string[]; wordCloudData: {text: string; value: number}[] }[];
+  detail: { date: string; newsCount: number; traffic: number; topStocks: string[]}[];
 }
 
 const ChartContainer = styled.div`
@@ -28,7 +25,7 @@ const ChartContainer = styled.div`
   padding: 40px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   border-radius: 20px;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(255, 255, 255, 0.4);
 `;
 
 const ButtonContainer = styled.div`
@@ -204,7 +201,9 @@ const AreaChart: React.FC<AreaChartProps> = ({ data, detail }) => {
     },
     dataLabels: {
       enabled: false,
+      
     },
+  
     stroke: {
       curve: 'smooth' as const,
     },
@@ -214,7 +213,7 @@ const AreaChart: React.FC<AreaChartProps> = ({ data, detail }) => {
       labels: {
         formatter:         (value: string) => formatDate(value),
         style: {
-          colors: '#FFFFFF',
+          colors: 'black',
         },
       },
     },
@@ -222,6 +221,7 @@ const AreaChart: React.FC<AreaChartProps> = ({ data, detail }) => {
       show: true, // Y축 수치 표시
       min: yMin,
       max: yMax,
+      
     },
     tooltip: {
       custom: function ({

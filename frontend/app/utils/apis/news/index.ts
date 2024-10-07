@@ -13,7 +13,13 @@ export const searchNewsWithTitle = async(keyword: string, page: number, size: nu
     try {
         const res = await defaultRequest.get(`/news/search/title?keyword=${keyword}&page=${page}&size=${size}`);
         console.log(res);
-        return res.data;  // 제목으로 검색한 ���스
+       
+        return res.data.map((newsItem: any) => ({
+            newsId: newsItem.newsId,
+            title: newsItem.title,
+            publishDate: newsItem.publishedDate,
+            thumbnailImg: newsItem.thumbnailImg,
+        }));
     } catch (error) {
         console.error("제목으로 검색한 ���스 조회 실��", error);
         throw error;
