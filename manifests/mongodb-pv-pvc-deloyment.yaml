@@ -77,10 +77,11 @@ metadata:
   name: mongodb-service
   namespace: backcd
 spec:
-  type: ClusterIP  # NodePort 대신 ClusterIP로 설정하여 클러스터 내부에서 접근 가능하도록 변경 (외부 접근이 필요할 경우 NodePort 유지 가능)
+  type: NodePort  # ClusterIP 대신 NodePort로 변경하여 외부 접근 가능하도록 설정
   selector:
     app: mongodb  
   ports:
     - protocol: TCP
       port: 27017  # MongoDB 기본 포트
-      targetPort: 27017  
+      targetPort: 27017
+      nodePort: 30017  # NodePort 번호 30017로 설정
