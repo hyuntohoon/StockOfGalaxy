@@ -146,16 +146,16 @@ const SearchPage = () => {
     const [selectedNews, setSelectedNews] = useState<News | null>(null); // 선택된 뉴스 상태
     const [modalOpen, setModalOpen] = useState(false); // 모달 열기 상태
 
-  // 뉴스 데이터 추가
-  const router = useRouter();
-  const [newsResults, setNewsResults] = useState<News[]>([]);
-  const [page, setPage] = useState(0); // 페이지 상태
-  const [hasMore, setHasMore] = useState(true); // 추가 데이터 여부 상태
-  const [isLoading, setIsLoading] = useState(false); // 로딩 상태
-  const observer = useRef<IntersectionObserver | null>(null);
-  const lastNewsElementRef = useRef<HTMLDivElement | null>(null); // 마지막 뉴스 항목을 위한 ref
-  const [selectedNews, setSelectedNews] = useState<News | null>(null); // 선택된 뉴스 상태
-  const [modalOpen, setModalOpen] = useState(false); // 모달 열기 상태
+  // // 뉴스 데이터 추가
+  // const router = useRouter();
+  // const [newsResults, setNewsResults] = useState<News[]>([]);
+  // const [page, setPage] = useState(0); // 페이지 상태
+  // const [hasMore, setHasMore] = useState(true); // 추가 데이터 여부 상태
+  // const [isLoading, setIsLoading] = useState(false); // 로딩 상태
+  // const observer = useRef<IntersectionObserver | null>(null);
+  // const lastNewsElementRef = useRef<HTMLDivElement | null>(null); // 마지막 뉴스 항목을 위한 ref
+  // const [selectedNews, setSelectedNews] = useState<News | null>(null); // 선택된 뉴스 상태
+  // const [modalOpen, setModalOpen] = useState(false); // 모달 열기 상태
 
   const handleNewsClick = (news: News) => {
     setSelectedNews(news); // 선택된 뉴스 설정
@@ -164,31 +164,31 @@ const SearchPage = () => {
   // 실시간 데이터 업데이트
   useKRStockWebSocket(stockData, setStockDataInfo);
 
-  const handleSearch = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      setHasSearched(true);
-      setPage(0); // 페이지 초기화
-      setNewsResults([]); // 이전 검색 결과 초기화
-      fetchNews(); // 뉴스 데이터 가져오기
-    }
-  };
+  // const handleSearch = (e: React.KeyboardEvent) => {
+  //   if (e.key === "Enter") {
+  //     setHasSearched(true);
+  //     setPage(0); // 페이지 초기화
+  //     setNewsResults([]); // 이전 검색 결과 초기화
+  //     fetchNews(); // 뉴스 데이터 가져오기
+  //   }
+  // };
 
-  const fetchNews = useCallback(async () => {
-    if (!searchTerm.trim()) return;
-    try {
-      const response = await searchNewsWithTitle(searchTerm, page, 10);
-      if (response.length) {
-        console.log(response);
-        setNewsResults(response);
-      } else {
-        console.log(response, "ss");
+  // const fetchNews = useCallback(async () => {
+  //   if (!searchTerm.trim()) return;
+  //   try {
+  //     const response = await searchNewsWithTitle(searchTerm, page, 10);
+  //     if (response.length) {
+  //       console.log(response);
+  //       setNewsResults(response);
+  //     } else {
+  //       console.log(response, "ss");
 
-        setNewsResults(dummyNewsData);
-      }
-    } catch (error) {
-      console.error("뉴스 검색 실패:", error);
-    }
-  }, [searchTerm, page]);
+  //       setNewsResults(dummyNewsData);
+  //     }
+  //   } catch (error) {
+  //     console.error("뉴스 검색 실패:", error);
+  //   }
+  // }, [searchTerm, page]);
 
   // 스크롤 시 마지막 뉴스 항목 관찰
   useEffect(() => {
