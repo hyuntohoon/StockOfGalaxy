@@ -173,7 +173,6 @@ export default function Planet() {
     let camera: THREE.PerspectiveCamera;
     let circle: THREE.Object3D;
     let surroundingPlanets: Array<{ mesh: THREE.Mesh; radius: number; angle: number; speed: number }> = [];
-    let particle: THREE.Object3D;
   
     const textureLoader = new THREE.TextureLoader();
     const numSurroundingPlanets = items.length;
@@ -198,29 +197,7 @@ export default function Planet() {
   
       circle = new THREE.Object3D();
       scene.add(circle);
-      particle = new THREE.Object3D();
-      scene.add(particle);
-
-      const geometry = new THREE.TetrahedronGeometry(1, 0);
-      const material = new THREE.MeshPhongMaterial({
-        color: 0xffffff,
-        flatShading: true,
-      });
-
-      for (let i = 0; i < 1000; i++) {
-        const mesh = new THREE.Mesh(geometry, material);
-        mesh.position
-          .set(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5)
-          .normalize();
-        mesh.position.multiplyScalar(180 + Math.random() * 700);
-        mesh.rotation.set(
-          Math.random() * 2,
-          Math.random() * 2,
-          Math.random() * 2
-        );
-        particle.add(mesh);
-      }
-
+  
   
       const geom = new THREE.SphereGeometry(14, 36, 36);
   
@@ -322,7 +299,6 @@ export default function Planet() {
   
       // 별 그룹을 천천히 회전시킴
       // starGroup.rotation.y += 0.0005;
-      particle.rotation.y -= 0.003;
 
       surroundingPlanets.forEach(({ mesh, radius, angle, speed }) => {
         const newAngle = angle + speed;

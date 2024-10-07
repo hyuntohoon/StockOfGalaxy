@@ -10,7 +10,6 @@ import { useDate } from '@/app/store/date';
 import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io'; 
 import { TimeTravelContainer, Title, BackButton, DateInputContainer, StyledDatePicker, ConfirmButton, InfoText, ToggleButton } from './style';
 import { getTimeChart } from '@/app/utils/apis/timetravel';
-import SpaceBackGround from '@/app/components/organisms/SpaceBackground';
 
 const ChartContainer = styled.div`
   width: 100%;
@@ -63,7 +62,6 @@ const TimeTravel = () => {
 
   return (
     <>
-      <SpaceBackGround />    
       <TimeTravelContainer style={{ position: 'relative' }}>
       <BackButton onClick={() => router.back()}>
         <IoArrowBack />
