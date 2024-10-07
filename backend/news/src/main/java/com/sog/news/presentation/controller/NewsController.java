@@ -127,9 +127,10 @@ public class NewsController {
     }
 
     @Operation(summary = "날짜별 키워드 빈도수 조회", description = "해당 날짜의 모든 뉴스 기사의 키워드 검색합니다.")
-    @GetMapping("/keyword-frequency/daily")
-    public ResponseEntity<?> getDailyKeywordFrequency(@RequestParam LocalDate startDate) {
-        return newsService.getDailyKeywordFrequency(startDate);
+    @GetMapping("/keyword-frequency/daily/{date}")
+    public ResponseEntity<List<DailyKeywordFrequencyResponseDTO>> getDailyKeywordFrequency(@PathVariable LocalDate date) {
+        List<DailyKeywordFrequencyResponseDTO> frequencies = newsService.getDailyKeywordFrequency(date);
+        return ResponseEntity.ok(frequencies);
     }
 
     @Operation(summary = "뉴스 검색", description = "뉴스를 상세 조회합니다.")
@@ -148,8 +149,8 @@ public class NewsController {
 
     @Operation(summary = "종목별 기사 수 상위 8개 조회", description = "특정 일자에 종목별 뉴스 기사 수 상위 8개를 조회합니다.")
     @GetMapping("/top-stocks/{date}")
-    public ResponseEntity<List<StockNewsCountResponseDTO>> getTopNewsStockCountByDate(@PathVariable LocalDate date) {
-        List<StockNewsCountResponseDTO> topStockNewsCounts = newsService.getTopNewsStockCountByDate(date);
+    public ResponseEntity<List<DailyStockFrequencyResponseDTO>> getTopNewsStockCountByDate(@PathVariable LocalDate date) {
+        List<DailyStockFrequencyResponseDTO> topStockNewsCounts = newsService.getTopNewsStockCountByDate(date);
         return new ResponseEntity<>(topStockNewsCounts, HttpStatus.OK);
     }
 }
