@@ -16,6 +16,8 @@ spring:
           time_zone: Asia/Seoul
     show-sql: true
   data:
+    mongodb:
+      uri: mongodb://3.38.183.146:30017/topic
 #    redis:
 #      host: redis
 #      port: 6379
@@ -28,6 +30,7 @@ logging:
 
 server:
   port: 8080  # ?? ??? 8081? ??
+  timezone: Asia/Seoul
   error:
     include-message: always
     include-binding-errors: always
