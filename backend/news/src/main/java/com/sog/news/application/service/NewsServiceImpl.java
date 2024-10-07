@@ -59,32 +59,30 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     public List<TodayPlanetNewsResposeDTO> getTodayPlanetNews(LocalDate date, String stockName) {
-        // LocalDate를 LocalDateTime으로 변환 (해당 날짜의 시작과 끝)
-        LocalDateTime startOfDay = date.atStartOfDay();
-        LocalDateTime endOfDay = date.atTime(23, 59, 59);
+        // 날짜를 String 형식으로 변환 (MySQL의 DATE 필터링을 위해)
+        String dateString = date.toString();  // 'YYYY-MM-DD' 형식으로 변환
 
         // 뉴스 발행일자와 주식 이름으로 조회
-        List<News> newsList = newsRepository.findByPublishedDateAndStockName(startOfDay, endOfDay, stockName);
+        List<News> newsList = newsRepository.findByPublishedDateAndStockName(dateString, stockName);
 
         // DTO로 변환 후 반환
         return newsList.stream()
-                .map(TodayPlanetNewsResposeDTO::fromEntity)  // fromEntity 메서드를 이용한 변환
-                .collect(Collectors.toList());
+            .map(TodayPlanetNewsResposeDTO::fromEntity)  // fromEntity 메서드를 이용한 변환
+            .collect(Collectors.toList());
     }
 
     @Override
     public List<NewsPreviewContainContentResponseDTO> getTodayPlanetNewsWithContent(LocalDate date, String stockName) {
-        // LocalDate를 LocalDateTime으로 변환 (해당 날짜의 시작과 끝)
-        LocalDateTime startOfDay = date.atStartOfDay();
-        LocalDateTime endOfDay = date.atTime(23, 59, 59);
+        // LocalDate를 String으로 변환 (YYYY-MM-DD 형식, SQL에서 DATE 필터링을 위해)
+        String dateString = date.toString();  // 'YYYY-MM-DD' 형식으로 변환
 
-        // 뉴스 발행일자와 주식 이름으로 조회
-        List<News> newsList = newsRepository.findByPublishedDateAndStockName(startOfDay, endOfDay, stockName);
+        // 뉴스 발행일자와 주식 이름으로 조회 (published_date는 DATE 필터링)
+        List<News> newsList = newsRepository.findByPublishedDateAndStockName(dateString, stockName);
 
-        // DTO로 변환 후 반환
+        // DTO로 변환 후 반환 (각 News 객체를 NewsPreviewContainContentResponseDTO로 변환)
         return newsList.stream()
-                .map(NewsPreviewContainContentResponseDTO::fromEntity)  // fromEntity 메서드를 이용한 변환
-                .collect(Collectors.toList());
+            .map(NewsPreviewContainContentResponseDTO::fromEntity)  // fromEntity 메서드를 사용한 변환
+            .collect(Collectors.toList());
     }
 
     public List<NewsPreviewResponseDTO> searchNewsByTitleWithPaging(String keyword, int page, int size) {

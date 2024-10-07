@@ -26,15 +26,14 @@ public interface NewsRepository extends JpaRepository<News, Long> {
             "FROM News n WHERE n.publishedDate BETWEEN :startOfDay AND :endOfDay")
     List<NewsPreviewContainContentResponseDTO> findTodayNewsWithContent(LocalDateTime startOfDay, LocalDateTime endOfDay);
 
-    // 특정 날짜 범위와 주식 이름을 기준으로 조회
-    @Query(value = "SELECT * FROM news WHERE news_id IN ( " +
-        "SELECT news_keyword.news_id FROM news_keyword WHERE news_stock_name = :stockName) " +
-        "AND published_date BETWEEN :startOfDay AND :endOfDay",
+    // 특정 날짜와 주식 이름을 기준으로 조회 (JPA 쿼리)
+    @Query(value = "SELECT * FROM news n " +
+        "JOIN news_keyword nk ON n.news_id = nk.news_id " +
+        "WHERE nk.news_stock_name = :stockName " +
+        "AND DATE(n.published_date) = :date",
         nativeQuery = true)
-    List<News> findByPublishedDateAndStockName(@Param("startOfDay") LocalDateTime startOfDay,
-        @Param("endOfDay") LocalDateTime endOfDay,
+    List<News> findByPublishedDateAndStockName(@Param("date") String date,
         @Param("stockName") String stockName);
-
 
 
     // 뉴스의 제목에서 키워드로 검색하며, 최신순으로 페이징 처리

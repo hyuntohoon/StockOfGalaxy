@@ -42,7 +42,8 @@ public class NewsController {
 
     @Operation(summary = "오늘의 행성 뉴스 조회", description = "오늘 날짜의 행성 관련 뉴스를 조회합니다.")
     @GetMapping("/today/planet/{date}/{stockName}")
-    public ResponseEntity<List<TodayPlanetNewsResposeDTO>> getTodayPlanetNews(@PathVariable LocalDate date, @PathVariable String stockName) {
+    public ResponseEntity<List<TodayPlanetNewsResposeDTO>> getTodayPlanetNews(@PathVariable LocalDate date,
+        @PathVariable String stockName) {
         List<TodayPlanetNewsResposeDTO> todayPlanetNews = newsService.getTodayPlanetNews(date, stockName);
         return new ResponseEntity<>(todayPlanetNews, HttpStatus.OK);
     }

@@ -2,9 +2,11 @@ package com.sog.news.application.service;
 
 import com.sog.news.domain.dto.*;
 
+import com.sog.news.domain.model.News;
 import java.time.LocalDate;
 import java.util.List;
 
+import java.util.stream.Collectors;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
