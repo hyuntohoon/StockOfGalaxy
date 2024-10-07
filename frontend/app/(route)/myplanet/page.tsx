@@ -8,6 +8,7 @@ import { FavoriteItemProps,FavoriteItem } from '@/app/types/myplanet';
 import { PageContainer, CanvasContainer, FavoritesContainer, ToggleButton, FavoriteHeader} from "@/app/styles/myplanet"
 import styled from '@emotion/styled';
 import { css, keyframes } from '@emotion/react';
+import { stock_list } from '@/app/utils/apis/stock/findStockName';
 import { stockData } from '@/app/mocks/stockData';
 import Image from 'next/image';
 import anime from 'animejs';
@@ -62,7 +63,7 @@ export default function Planet() {
   const mountRef = useRef<HTMLDivElement>(null);
   const {accessToken, setAccessToken} = useAccessToken();
   const [stock, setStock] = useState<{stockName: string; stockCode: string;}[]>(
-    stockData.map((s) => ({
+    stock_list.map((s) => ({
     stockName: s.stock_name,
     stockCode: s.stock_code
   })));

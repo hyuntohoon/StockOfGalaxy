@@ -16,6 +16,7 @@ import {
     NoResults, 
     NewsInfo
 } from '@/app/styles/search';
+import { stock_list } from "@/app/utils/apis/stock/findStockName";
 import { stockData } from '@/app/mocks/stockData';
 import useKRStockWebSocket from '@/app/hooks/useKRStockWebSocket';
 import formatPrice from '@/app/utils/apis/stock/formatPrice';
@@ -67,7 +68,7 @@ const SearchPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [hasSearched, setHasSearched] = useState(false); // 검색 버튼(엔터)을 눌렀을 때만 true
   const [stockDataInfo, setStockDataInfo] = useState<stockState[]>(
-    stockData.map((stock) => ({
+    stock_list.map((stock) => ({
       stock_name: stock.stock_name,
       stock_code: stock.stock_code,
       currentPrice: null,
@@ -161,7 +162,7 @@ const SearchPage = () => {
     setModalOpen(true); // 모달 열기
   };
   // 실시간 데이터 업데이트
-  useKRStockWebSocket(stockData, setStockDataInfo);
+  useKRStockWebSocket(stock_list, setStockDataInfo);
 
   // const handleSearch = (e: React.KeyboardEvent) => {
   //   if (e.key === "Enter") {

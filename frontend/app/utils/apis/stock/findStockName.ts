@@ -67,10 +67,10 @@ export const stock_list = [
   //   stock_name: "LG전자",
   //   stock_code: "066570",
   // },
-  // {
-  //   stock_name: "카카오",
-  //   stock_code: "035720",
-  // },
+  {
+    stock_name: "카카오",
+    stock_code: "035720",
+  },
   // {
   //   stock_name: "삼성화재",
   //   stock_code: "000810",
