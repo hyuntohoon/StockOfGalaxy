@@ -33,11 +33,11 @@ public interface NewsService {
 
     ResponseEntity<?> getDailyStockKeywordFrequency(LocalDate date, String stockCode);
 
-    ResponseEntity<?> getDailyKeywordFrequency(LocalDate startDate);
+    List<DailyKeywordFrequencyResponseDTO> getDailyKeywordFrequency(LocalDate startDate);
 
     NewsResponseDTO getNewsById(Long id);
 
     List<NewsCountByDateResponseDTO> getNewsCountByDateRange(LocalDate startDate, LocalDate endDate);
 
-    List<StockNewsCountResponseDTO> getTopNewsStockCountByDate(LocalDate date);
+    List<DailyStockFrequencyResponseDTO> getTopNewsStockCountByDate(LocalDate date);
 }
