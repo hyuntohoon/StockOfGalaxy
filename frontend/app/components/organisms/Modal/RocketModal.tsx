@@ -12,7 +12,7 @@ import { getCurrentPrice } from '@/app/utils/apis/stock/getStockData';
 import { useDate } from '@/app/store/date';
 import { calculatePriceChange } from '@/app/utils/libs/stock/calculatePriceChange';
 
-const RocketModal = ({ onClose, fetchRocketData }) => { // fetchRocketData 추가
+const RocketModal = ({ onClose, fetchRocketData }) => { 
   const [data, setData] = useState([]); // 현재 보여주는 데이터
   const [allData, setAllData] = useState([]); // 전체 데이터를 저장할 상태
   const [loading, setLoading] = useState(false);
@@ -57,6 +57,9 @@ const RocketModal = ({ onClose, fetchRocketData }) => { // fetchRocketData 추�
       const response = await getRocketListApi(stockCode);
       const rocketList = response.rocketList;
   
+      // currentPrice가 로드되지 않은 경우 대기
+      if (!currentPrice) return; 
+  
       // 양수 중 가장 큰 값 찾기
       const maxPositive = rocketList.reduce((prev, curr) => {
         const { priceChangeSign, priceChange } = calculatePriceChange(curr.price, currentPrice);
@@ -83,14 +86,16 @@ const RocketModal = ({ onClose, fetchRocketData }) => { // fetchRocketData 추�
     } catch (err) {
       console.error('로켓 데이터를 불러오는 중 에러가 발생했습니다.', err);
     } finally {
-      setLoading(false);
+      setLoading(false); // 로딩 종료
     }
-  };
-   
+  }; 
 
+  // 데이터를 로드하는 useEffect
   useEffect(() => {
-    fetchData();
-  }, [stockCode]);
+    if (currentPrice) { // currentPrice가 유효할 때만 fetchData 호출
+      fetchData();
+    }
+  }, [stockCode, currentPrice]);
 
   const fetchMoreData = useCallback(() => {
     if (data.length >= allData.length || loading) { // 모든 데이터를 불러왔거나 로딩 중이면 중단
@@ -111,7 +116,6 @@ const RocketModal = ({ onClose, fetchRocketData }) => { // fetchRocketData 추�
     }
   }, [fetchMoreData, loading]);
 
-  // handleDelete에서 fetchData 전달
   return (
     <ModalOverlay>
       <ModalWrapper>
@@ -122,8 +126,8 @@ const RocketModal = ({ onClose, fetchRocketData }) => { // fetchRocketData 추�
           <RocketInputField
             currentPrice={currentPrice}
             isToday={isToday}
-            fetchRocketData={fetchRocketData} // getTop7RocketsApi 호출
-            fetchRocketListData={fetchData}  // getRocketListApi 호출
+            fetchRocketData={fetchRocketData} 
+            fetchRocketListData={fetchData}
           />
           </Header>
           <CardsContainer>
@@ -138,13 +142,14 @@ const RocketModal = ({ onClose, fetchRocketData }) => { // fetchRocketData 추�
               />
             ))}
           </CardsContainer>
-          {loading && <LoadingSpinner />}
         </ModalContent>
+        {loading && <LoadingSpinner />} {/* 로딩 스피너를 ModalWrapper에 배치 */}
       </ModalWrapper>
     </ModalOverlay>
   );
 };
 
+// 스타일 정의
 const ModalOverlay = styled.div`
   position: fixed;
   top: 0;
@@ -164,6 +169,7 @@ const ModalWrapper = styled.div`
   align-items: flex-start;
   justify-content: center;
   z-index: 2100;
+  position: relative; /* 추가 */
 `;
 
 const ModalTitle = styled.div`
