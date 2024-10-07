@@ -74,7 +74,7 @@ const PlanetDetailTemplate: React.FC<PlanetDetailTemplateProps> = ({
     }
   };
 
-
+  // useWheelScroll(contentRef, sections, scrollToSection);
 
 
   useEffect(() => {

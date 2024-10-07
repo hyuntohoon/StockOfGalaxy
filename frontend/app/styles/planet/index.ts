@@ -47,11 +47,11 @@ export const NavBarWrapper = styled.nav`
   display: flex;
   justify-content: center;
   gap: 20px;
-  padding: 10px 0;
+  padding:5px 0;
   position: relative;
   left: 0;
   right: 0;
-  height: 50px;
+  height: 40px;
   z-index: 1001;
 `;
 
