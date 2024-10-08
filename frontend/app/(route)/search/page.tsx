@@ -209,6 +209,8 @@ const SearchPage = () => {
     };
   }, [lastNewsElementRef, hasMore, isLoading]);
 
+
+
     const handleSearch = (e: React.KeyboardEvent) => {
         if (e.key === 'Enter') {
             setHasSearched(true);
@@ -266,6 +268,14 @@ const SearchPage = () => {
         }
     }, [page, fetchNews]);
 
+    useEffect(() => {
+           if(searchTerm){ setHasSearched(true);
+            setHasMore(true);
+            setPage(0); // 페이지 초기화
+            setNewsResults([]); // 이전 검색 결과 초기화
+            fetchNews(0); }
+    }, [searchTerm])
+
     
     // 검색된 주식 필터링
     const filteredStocks = stockDataInfo.filter(stock => 
@@ -277,17 +287,7 @@ const SearchPage = () => {
     return (
         <>
         <SearchContainer hasSearched={hasSearched}>
-            {!hasSearched && (
-                <TabsContainer hasSearched={hasSearched}>
-                    <Tab active={activeTab === 'stock'} onClick={() => setActiveTab('stock')}>
-                        종목
-                    </Tab>
-                    <Tab active={activeTab === 'news'} onClick={() => setActiveTab('news')}>
-                        뉴스
-                    </Tab>
-                </TabsContainer>
-            )}
-
+            
             <SearchInputWrapper hasSearched={hasSearched}>
                 <SearchIcon />
                 <SearchInput
@@ -299,7 +299,7 @@ const SearchPage = () => {
                 />
             </SearchInputWrapper>
 
-            {hasSearched && (
+            
                 <TabsContainer hasSearched={hasSearched}>
                     <Tab active={activeTab === 'stock'} onClick={() => setActiveTab('stock')}>
                         종목
@@ -308,11 +308,13 @@ const SearchPage = () => {
                         뉴스
                     </Tab>
                 </TabsContainer>
-            )}
+        
 
             {/* 종목 탭 */}
-            {hasSearched && activeTab === 'stock' && filteredStocks.length > 0 && (
+            {activeTab === 'stock' && filteredStocks.length > 0 && (
+
                 <SearchResultsContainer>
+                  {!hasSearched && <p>인기 종목</p>}
                     {filteredStocks.map((stock, index) => (
                         <SearchItem key={index}>
                             <div>
@@ -340,7 +342,7 @@ const SearchPage = () => {
             )}
 
             
-{hasSearched && activeTab === 'news' && newsResults.length > 0 && (
+            {activeTab === 'news' && newsResults.length > 0 && (
                 <SearchResultsContainer>
                     {newsResults.map((news, index) => {
                         const isLastElement = index === newsResults.length - 1;
@@ -358,7 +360,7 @@ const SearchPage = () => {
                 </SearchResultsContainer>
             )}
             {/* 결과가 없을 때 */}
-            {hasSearched && activeTab === 'stock' && filteredStocks.length === 0 && (
+            {activeTab === 'stock' && filteredStocks.length === 0 && (
                 <NoResults>검색 결과가 없습니다.</NoResults>
             )}
             {/* 뉴스 모달 컴포넌트 추가 */}
