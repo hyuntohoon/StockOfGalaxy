@@ -61,7 +61,7 @@ export const getSpaceKeywords = async(today: string) => {
         if (keywordsData) {
             const keywords = Object.keys(keywordsData).map(key => ({
                 text: key,         // 키워드
-                value: keywordsData[key]  // 빈도수
+                value: keywordsData[key]/10, // 빈도수
             }));
         
             return keywords;

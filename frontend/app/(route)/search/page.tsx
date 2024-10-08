@@ -81,7 +81,7 @@ const SearchPage = () => {
     {
       newsId: 26,
       title: "삼성전자, 새로운 갤럭시 출시",
-      publishDate: "2024-04-20T10:00:00",
+      publishedDate: "2024-04-20T10:00:00",
       content:
         "삼성전자가 2일 장초반 주당 6만원선이 붕괴됐다. 반도체 고점론에 대한 우려가 가시지 않은 가운데 중동 리스크로 인해 투자심리가 위축된 영향으로 풀이된다. 삼성전자는 이날...",
       thumbnailImg: "/images/logo/samsung.png",
@@ -89,7 +89,7 @@ const SearchPage = () => {
     {
       newsId: 27,
       title: "삼성전자, 새로운 갤럭시 출시",
-      publishDate: "2024-04-20T10:00:00",
+      publishedDate: "2024-04-20T10:00:00",
       content:
         "삼성전자가 2일 장초반 주당 6만원선이 붕괴됐다. 반도체 고점론에 대한 우려가 가시지 않은 가운데 중동 리스크로 인해 투자심리가 위축된 영향으로 풀이된다. 삼성전자는 이날...",
       thumbnailImg: "/images/logo/samsung.png",
@@ -97,7 +97,7 @@ const SearchPage = () => {
     {
       newsId: 28,
       title: "삼성전자, 새로운 갤럭시 출시",
-      publishDate: "2024-04-20T10:00:00",
+      publishedDate: "2024-04-20T10:00:00",
       content:
         "삼성전자가 2일 장초반 주당 6만원선이 붕괴됐다. 반도체 고점론에 대한 우려가 가시지 않은 가운데 중동 리스크로 인해 투자심리가 위축된 영향으로 풀이된다. 삼성전자는 이날...",
       thumbnailImg: "/images/logo/samsung.png",
@@ -105,7 +105,7 @@ const SearchPage = () => {
     {
       newsId: 29,
       title: "삼성전자, 새로운 갤럭시 출시",
-      publishDate: "2024-04-20T10:00:00",
+      publishedDate: "2024-04-20T10:00:00",
       content:
         "삼성전자가 2일 장초반 주당 6만원선이 붕괴됐다. 반도체 고점론에 대한 우려가 가시지 않은 가운데 중동 리스크로 인해 투자심리가 위축된 영향으로 풀이된다. 삼성전자는 이날...",
       thumbnailImg: "/images/logo/samsung.png",
@@ -113,7 +113,7 @@ const SearchPage = () => {
     {
       newsId: 30,
       title: "삼성전자, 새로운 갤럭시 출시",
-      publishDate: "2024-04-20T10:00:00",
+      publishedDate: "2024-04-20T10:00:00",
       content:
         "삼성전자가 2일 장초반 주당 6만원선이 붕괴됐다. 반도체 고점론에 대한 우려가 가시지 않은 가운데 중동 리스크로 인해 투자심리가 위축된 영향으로 풀이된다. 삼성전자는 이날...",
       thumbnailImg: "/images/logo/samsung.png",
@@ -121,7 +121,7 @@ const SearchPage = () => {
     {
       newsId: 31,
       title: "삼성전자, 새로운 갤럭시 출시",
-      publishDate: "2024-04-20T10:00:00",
+      publishedDate: "2024-04-20T10:00:00",
       content:
         "삼성전자가 2일 장초반 주당 6만원선이 붕괴됐다. 반도체 고점론에 대한 우려가 가시지 않은 가운데 중동 리스크로 인해 투자심리가 위축된 영향으로 풀이된다. 삼성전자는 이날...",
       thumbnailImg: "/images/logo/samsung.png",
@@ -351,7 +351,7 @@ const SearchPage = () => {
                             <div>
                                 <strong>{news.title}</strong>
                                 <NewsDescription>{news.content}</NewsDescription>
-                                <NewsInfo>{formatDate(news.publishDate)}</NewsInfo>
+                                <NewsInfo>{formatDate(news.publishedDate)}</NewsInfo>
                             </div>
                         </SearchItem>
                         );

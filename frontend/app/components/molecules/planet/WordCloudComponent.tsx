@@ -32,6 +32,7 @@ const WordCloudContainer = styled.div`
   width: 100%;
   height: 100%;
   position: relative;
+  background-color: rgba(255, 255, 255, 0.8);
 `;
 
 // 워드 인터페이스 정의
@@ -61,7 +62,7 @@ const WordCloudComponent: React.FC<WordCloudProps> = ({ data, width, height }) =
       })))
       .padding(5)
       .rotate(() => (Math.random() > 0.5 ? 90 : 0))
-      .font('Impact')
+      .font('IBM Plex Sans KR')
       .fontSize((d) => d.size)
       .on('end', (words) => {
         setWords(words);
@@ -86,13 +87,13 @@ const WordCloudComponent: React.FC<WordCloudProps> = ({ data, width, height }) =
   return (
     <WordCloudContainer>
       <svg ref={svgRef} width={width} height={height}>
-        <g transform={`translate(${width / 2},${height / 2})`}>
+        <g transform={`translate(${width / 2 - 50},${height / 2})`}>
           {words.map((word, index) => (
             <text
               key={index}
               fontSize={word.size}
-              fontFamily="Impact"
-              fill="#61dafb"
+              fontFamily="IBM Plex Sans KR"  // 폰트를 적용
+              fill="#29088A"
               textAnchor="middle"
               transform={`translate(${word.x},${word.y}) rotate(${word.rotate})`}
               style={{ userSelect: 'none', cursor: 'pointer' }}
