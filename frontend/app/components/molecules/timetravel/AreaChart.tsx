@@ -1,19 +1,34 @@
-import dynamic from 'next/dynamic';
-import React, { useState, useEffect } from 'react';
-import styled from '@emotion/styled';
-import {ModalContent, ModalOverlay, ConfirmButton, CancelButton} from "./style";
-import { useDate } from '@/app/store/date';
-import { useRouter } from 'next/navigation';
-import { IBM_Plex_Sans_KR } from 'next/font/google';
+import dynamic from "next/dynamic";
+import React, { useState, useEffect } from "react";
+import styled from "@emotion/styled";
+import {
+  ModalContent,
+  ModalOverlay,
+  ConfirmButton,
+  CancelButton,
+} from "./style";
+import { useDate } from "@/app/store/date";
+import { useRouter } from "next/navigation";
+import { IBM_Plex_Sans_KR } from "next/font/google";
 
-const ibm = IBM_Plex_Sans_KR({ weight: '500', subsets: ['latin'] })
+const ibm = IBM_Plex_Sans_KR({ weight: "500", subsets: ["latin"] });
 
 // 서버 사이드 렌더링 없이 클라이언트에서 동적으로 불러와 화면 렌더링
-const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
+const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 interface AreaChartProps {
-  data: { date: string; newsCount: number; traffic: number; topStocks: string[] }[];
-  detail: { date: string; newsCount: number; traffic: number; topStocks: string[]}[];
+  data: {
+    date: string;
+    newsCount: number;
+    traffic: number;
+    topStocks: string[];
+  }[];
+  detail: {
+    date: string;
+    newsCount: number;
+    traffic: number;
+    topStocks: string[];
+  }[];
 }
 
 const ChartContainer = styled.div`
@@ -52,9 +67,15 @@ const ButtonContainer = styled.div`
   }
 `;
 
-
-
-const Modal = ({ onClose, onConfirm, date }: { onClose: () => void, onConfirm: () => void, date: string }) => {
+const Modal = ({
+  onClose,
+  onConfirm,
+  date,
+}: {
+  onClose: () => void;
+  onConfirm: () => void;
+  date: string;
+}) => {
   // 모달 바깥을 클릭했을 때 닫기
   const handleOverlayClick = (event: React.MouseEvent) => {
     if (event.target === event.currentTarget) {
@@ -65,14 +86,20 @@ const Modal = ({ onClose, onConfirm, date }: { onClose: () => void, onConfirm: (
   return (
     <ModalOverlay onClick={handleOverlayClick}>
       <ModalContent>
-        <button className="close-button" onClick={onClose}>×</button>
+        <button className="close-button" onClick={onClose}>
+          ×
+        </button>
 
         {/* 모달 텍스트 안내 */}
         <div className="modal-text-section">
           <h3>{date}로 이동하시겠습니까?</h3>
           <div className="modal-buttons">
-            <ConfirmButton className={ibm.className} onClick={onConfirm}>확인</ConfirmButton>
-            <CancelButton className={ibm.className} onClick={onClose}>취소</CancelButton>
+            <ConfirmButton className={ibm.className} onClick={onConfirm}>
+              확인
+            </ConfirmButton>
+            <CancelButton className={ibm.className} onClick={onClose}>
+              취소
+            </CancelButton>
           </div>
         </div>
       </ModalContent>
@@ -80,15 +107,14 @@ const Modal = ({ onClose, onConfirm, date }: { onClose: () => void, onConfirm: (
   );
 };
 
-
 const AreaChart: React.FC<AreaChartProps> = ({ data, detail }) => {
   const [series, setSeries] = useState([
     {
-      name: '뉴스 수',
+      name: "뉴스 수",
       data: [] as number[],
     },
     {
-      name: '트래픽',
+      name: "트래픽",
       data: [] as number[],
     },
   ]);
@@ -102,15 +128,21 @@ const AreaChart: React.FC<AreaChartProps> = ({ data, detail }) => {
     { date: string; newsCount: number; traffic: number; topStocks: string[] }[]
   >([]);
   const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태
-  const {date, setDate} = useDate();
+  const { date, setDate } = useDate();
   const router = useRouter();
 
-
   const handleConfirm = (date: string) => {
-    const newDate = date.split(' ')[0].replace(/-/g, '');
+    const newDate = date.split(" ")[0].replace(/-/g, "");
     setDate(newDate);
-    router.push(`/main/${newDate}`)
-  }
+    router.push(`/main/${newDate}`);
+  };
+
+  const parseDate = (dateString: string) => {
+    const year = dateString.slice(0, 4);
+    const month = dateString.slice(4, 6);
+    const day = dateString.slice(6, 8);
+    return `${year}-${month}-${day}`; // 'YYYY-MM-DD' 형식으로 변환
+  };
 
   // 필터된 데이터로 시리즈 업데이트
   useEffect(() => {
@@ -118,19 +150,23 @@ const AreaChart: React.FC<AreaChartProps> = ({ data, detail }) => {
     setFilteredData(newFilteredData); // 필터된 데이터 저장
     setSeries([
       {
-        name: '뉴스 수',
+        name: "뉴스 수",
         data: newFilteredData.map((d) => d.newsCount),
       },
       {
-        name: '거래량',
+        name: "거래량",
         data: newFilteredData.map((d) => d.traffic),
       },
     ]);
-    setCategories(newFilteredData.map((d) => new Date(d.date).toISOString()));
+    setCategories(
+      newFilteredData.map((d) => new Date(parseDate(d.date)).toISOString())
+    );
     updateYAxisRange(newFilteredData); // Y축 범위 설정
   }, [data, selectedDays]);
 
-  const updateYAxisRange = (filteredData: { newsCount: number; traffic: number }[]) => {
+  const updateYAxisRange = (
+    filteredData: { newsCount: number; traffic: number }[]
+  ) => {
     const allValues = [
       ...filteredData.map((d) => d.newsCount),
       ...filteredData.map((d) => d.traffic),
@@ -164,11 +200,12 @@ const AreaChart: React.FC<AreaChartProps> = ({ data, detail }) => {
   ) => {
     const { dataPointIndex } = config;
     const clickedData = filteredData[dataPointIndex];
-    
+
     // 해당 날짜의 detail 데이터를 찾아서 모달에 전달
-    const matchedDetail = detail && Array.isArray(detail) && clickedData.date 
-      ? detail.find((d) => d.date === clickedData.date) 
-      : undefined;    
+    const matchedDetail =
+      detail && Array.isArray(detail) && clickedData.date
+        ? detail.find((d) => d.date === clickedData.date)
+        : undefined;
 
     if (matchedDetail) {
       setModalData(matchedDetail);
@@ -179,7 +216,7 @@ const AreaChart: React.FC<AreaChartProps> = ({ data, detail }) => {
   const options = {
     chart: {
       height: 500,
-      type: 'area' as const,
+      type: "area" as const,
       toolbar: {
         show: true,
         tools: {
@@ -194,26 +231,25 @@ const AreaChart: React.FC<AreaChartProps> = ({ data, detail }) => {
       },
       events: {
         mounted: (chart: any) => {
-          chart.el.addEventListener('wheel', handleWheel);
+          chart.el.addEventListener("wheel", handleWheel);
         },
         click: handleDataPointSelection, // 클릭 이벤트
       },
     },
     dataLabels: {
       enabled: false,
-      
     },
-  
+
     stroke: {
-      curve: 'smooth' as const,
+      curve: "smooth" as const,
     },
     xaxis: {
-      type: 'datetime' as const,
+      type: "datetime" as const,
       categories: categories,
       labels: {
-        formatter:         (value: string) => formatDate(value),
+        formatter: (value: string) => formatDate(value),
         style: {
-          colors: 'black',
+          colors: "black",
         },
       },
     },
@@ -221,7 +257,6 @@ const AreaChart: React.FC<AreaChartProps> = ({ data, detail }) => {
       show: true, // Y축 수치 표시
       min: yMin,
       max: yMax,
-      
     },
     tooltip: {
       custom: function ({
@@ -278,13 +313,24 @@ const AreaChart: React.FC<AreaChartProps> = ({ data, detail }) => {
         <button onClick={() => setSelectedDays(7)}>1주</button>
       </ButtonContainer>
 
-      <Chart options={options} series={series} type="area" height={350} width={650} />
+      <Chart
+        options={options}
+        series={series}
+        type="area"
+        height={350}
+        width={650}
+      />
 
       {/* 모달이 열려 있을 경우 모달 표시 */}
-      {isModalOpen && modalData && <Modal onClose={() => setIsModalOpen(false)} date={modalData.date} onConfirm={()=>handleConfirm(modalData.date)} />}
+      {isModalOpen && modalData && (
+        <Modal
+          onClose={() => setIsModalOpen(false)}
+          date={modalData.date}
+          onConfirm={() => handleConfirm(modalData.date)}
+        />
+      )}
     </ChartContainer>
   );
 };
 
 export default AreaChart;
-
