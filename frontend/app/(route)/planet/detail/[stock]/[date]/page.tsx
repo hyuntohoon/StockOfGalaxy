@@ -5,6 +5,7 @@ import { wordData } from "@/app/mocks/wordData";
 import {
   getPlanetNewsWithContent,
   getSpaceNewsWithContent,
+  getSpaceKeywords
 } from "@/app/utils/apis/news";
 import { getStockInfo, getStockName } from "@/app/utils/apis/stock/planet";
 import { useRecoilValue } from "recoil";
@@ -109,11 +110,25 @@ const NewsPage: React.FC = (props: any) => {
         setSpaceNews(dummyNewsData); // 에러 발생 시 dummy 데이터로 설정
       }
     };
+    
+    const fetchSpaceKeywords = async() => {
+      try {
+        const res = await getSpaceKeywords(date);
+        if(res) {
+          setSpaceWord(res);
+        }
+        
+      }catch (error) {
+        console.error("Error fetching news data:", error);
+        setSpaceNews(dummyNewsData); // 에러 발생 시 dummy 데이터로 설정
+      }
+    }
 
     // 비동기 호출을 감싸는 함수
     const fetchData = async () => {
       await fetchStockData();
       const response = await getName(); // `await` 추가
+      await fetchSpaceKeywords();
       await fetchPlanetData(response);
       await fetchSpaceData();
     };

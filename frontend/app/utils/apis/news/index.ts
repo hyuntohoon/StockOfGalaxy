@@ -49,6 +49,21 @@ export const getSpaceNewsWithContent = async(today:string) => {
     }
 }
 
+export const getSpaceKeywords = async(today: string) => {
+    try {
+        const formattedDate = convertToApiDateFormat(today);
+        const res = await defaultRequest.get(`/news/keyword-frequency/daily/${formattedDate}`);
+        const keywords = Object.keys(res.data.keyword).map(key => ({
+            text: key,         // 키워드
+            value: res.data.keyword[key]  // 빈도수
+          }));
+      
+          return keywords; 
+    }catch (error) {
+        console.error("키워드 조회 실패", error);
+        throw error;
+    }
+}
 
 
 export const getPlanetNews = async (today: string, stockName: string) => {
