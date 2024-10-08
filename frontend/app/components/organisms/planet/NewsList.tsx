@@ -20,14 +20,14 @@ const NewsList: React.FC<{ news: News[]; onClick: (item: News) => void }> = ({ n
     <NewsListWrapper>
       {news && news.map((item) => (
         <NewsItem key={item.newsId} onClick={() => onClick(item)}>
-          <ImgWithFallback src={item.thumbnailImg} alt={item.title} width={60} height={60} />
+          <ImgWithFallback src={item.thumbnailImg} alt={item.title} width={70} height={70} />
           <NewsContent>
             <div>
               <NewsTitle>{item.title}</NewsTitle>
               <NewsSummary>{item.content}</NewsSummary>
             </div>
             <NewsMeta>
-              <span>{formatDate(item.publishDate)}</span>
+              <span>{formatDate(item.publishedDate)}</span>
             </NewsMeta>
           </NewsContent>
         </NewsItem>

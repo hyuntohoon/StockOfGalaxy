@@ -53,13 +53,22 @@ export const getSpaceKeywords = async(today: string) => {
     try {
         const formattedDate = convertToApiDateFormat(today);
         const res = await defaultRequest.get(`/news/keyword-frequency/daily/${formattedDate}`);
-        const keywords = Object.keys(res.data.keyword).map(key => ({
-            text: key,         // 키워드
-            value: res.data.keyword[key]  // 빈도수
-          }));
-      
-          return keywords; 
-    }catch (error) {
+        
+        // 응답이 배열이므로 첫 번째 요소의 keyword에 접근
+        const keywordsData = res.data[0]?.keyword; 
+
+        // keyword 데이터가 있는지 확인 후 변환
+        if (keywordsData) {
+            const keywords = Object.keys(keywordsData).map(key => ({
+                text: key,         // 키워드
+                value: keywordsData[key]  // 빈도수
+            }));
+        
+            return keywords;
+        } else {
+            throw new Error("키워드 데이터가 없습니다.");
+        }
+    } catch (error) {
         console.error("키워드 조회 실패", error);
         throw error;
     }

@@ -25,7 +25,7 @@ const dummyNewsData: News[] = [
   {
     newsId: 26,
     title: "삼성전자, 새로운 갤럭시 출시",
-    publishDate: "2024-04-20T10:00:00",
+    publishedDate: "2024-04-20T10:00:00",
     content:
       "삼성전자가 2일 장초반 주당 6만원선이 붕괴됐다. 반도체 고점론에 대한 우려가 가시지 않은 가운데 중동 리스크로 인해 투자심리가 위축된 영향으로 풀이된다. 삼성전자는 이날...",
     thumbnailImg: "/images/logo/samsung.png",
@@ -33,7 +33,7 @@ const dummyNewsData: News[] = [
   {
     newsId: 27,
     title: "삼성전자, 새로운 갤럭시 출시",
-    publishDate: "2024-04-20T10:00:00",
+    publishedDate: "2024-04-20T10:00:00",
     content:
       "삼성전자가 2일 장초반 주당 6만원선이 붕괴됐다. 반도체 고점론에 대한 우려가 가시지 않은 가운데 중동 리스크로 인해 투자심리가 위축된 영향으로 풀이된다. 삼성전자는 이날...",
     thumbnailImg: "/images/logo/samsung.png",
@@ -113,63 +113,55 @@ const NewsPage: React.FC = (props: any) => {
       }
     };
 
-    const getName = async () => {
-      try {
-        const name = await getStockName(stock);
-        setName(name); // API에서 받은 stock name를 저장
-        return name;
-      } catch (error) {
-        console.error("Error fetching stock name:", error);
-      }
-    };
-
     const fetchPlanetData = async (stockName: string) => {
       try {
         console.log("요청", stockName, date);
         const res = await getPlanetNewsWithContent(DateToString(selectedDate), stockName);
-        // planetNews가 비어있으면 dummy 데이터로 설정
         setPlanetNews(res.length > 0 ? res : dummyNewsData);
       } catch (error) {
         console.error("Error fetching news data:", error);
-        setPlanetNews(dummyNewsData); // 에러 발생 시 dummy 데이터로 설정
+        setPlanetNews(dummyNewsData);
       }
     };
 
     const fetchSpaceData = async () => {
       try {
         const res = await getSpaceNewsWithContent(date);
-        // spaceNews가 비어있으면 dummy 데이터로 설정
         setSpaceNews(res.length > 0 ? res : dummyNewsData);
       } catch (error) {
         console.error("Error fetching news data:", error);
-        setSpaceNews(dummyNewsData); // 에러 발생 시 dummy 데이터로 설정
+        setSpaceNews(dummyNewsData);
       }
     };
-    
+
     const fetchSpaceKeywords = async() => {
       try {
         const res = await getSpaceKeywords(date);
-        if(res) {
+        if (res) {
           setSpaceWord(res);
         }
-        
-      }catch (error) {
-        console.error("Error fetching news data:", error);
-        setSpaceNews(dummyNewsData); // 에러 발생 시 dummy 데이터로 설정
+      } catch (error) {
+        console.error("Error fetching space keywords:", error);
+        setSpaceNews(dummyNewsData);
       }
-    }
-
-    // 비동기 호출을 감싸는 함수
-    const fetchData = async () => {
-      await fetchStockData();
-      const response = await getName(); // `await` 추가
-      await fetchSpaceKeywords();
-      await fetchPlanetData(name);
-      await fetchSpaceData();
     };
 
-    fetchData(); // 데이터 가져오기 호출
-  }, []);
+    const fetchData = async () => {
+      await fetchStockData();
+      
+      const name = await getStockName(stock); // getName의 결과를 변수에 저장
+      setName(name); // name 상태 업데이트
+
+      if (name) {
+        await fetchPlanetData(name); // name이 유효할 때만 실행
+        await fetchSpaceData();
+        await fetchSpaceKeywords();
+      }
+    };
+
+    fetchData();
+}, [selectedDate, name]); // selectedDate나 name이 변경될 때마다 다시 호출
+
 
   const logError = (error: Error, info: { componentStack: string }) => {
     console.log("Error:", error);
