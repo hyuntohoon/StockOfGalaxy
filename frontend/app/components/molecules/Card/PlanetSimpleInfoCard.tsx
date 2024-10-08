@@ -162,7 +162,7 @@ const TitleRow = styled.div`
 const StockCode = styled.span`
   margin-left: 10px;
   font-size: 14px;
-  color: #ffffff8b;
+  color: #ffffffca;
 `;
 
 const PriceRow = styled.div`
@@ -175,17 +175,17 @@ const CurrentPrice = styled.div`
   font-size: 16px;
   margin-right: 15px;
   letter-spacing: 0.6px;
-  color: #ffffffda;
+  color: #ffffffed;
 `;
 
 const PriceChange = styled.div<{ changePrice: number | null }>`
   font-size: 14px;
-  color: ${({ changePrice }) => (changePrice && changePrice > 0 ? '#d8aeba' : '#9ec0f6')};
+  color: ${({ changePrice }) => (changePrice && changePrice > 0 ? '#f5bccb' : '#9ec0f6')};
 `;
 
 const ChangeRate = styled.div<{ changePrice: number | null }>`
   font-size: 14px;
-  color: ${({ changePrice }) => (changePrice && changePrice > 0 ? '#d8aeba' : '#9ec0f6')};
+  color: ${({ changePrice }) => (changePrice && changePrice > 0 ? '#f5bccb' : '#9ec0f6')};
   margin-left: 4px;
 `;
 
