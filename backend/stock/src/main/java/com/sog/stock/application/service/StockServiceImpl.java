@@ -51,6 +51,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -58,6 +59,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -547,6 +550,7 @@ public class StockServiceImpl implements StockService {
 
 
     @Override
+    @Transactional
     public Mono<TimeMachineListResponseDTO> getStockFrequencyByDate(String startDate,
         String endDate) {
         // 1. 날짜 형식을 YYYY-MM-DD로 변환
@@ -557,40 +561,58 @@ public class StockServiceImpl implements StockService {
         return newsClient.getNewsCountByDate(startFormatted, endFormatted)
             .flatMapMany(Flux::fromIterable)
             .map(newsData -> {
-                // 3. 더미 데이터를 생성하여 사용
-                String totalStockVolume = generateDummyStockVolume();  // 임시로 거래량을 생성
-                List<String> top3Stocks = generateDummyTop3Stocks();  // 임시로 상위 3개 주식명을 생성
+                String stockDateFormat = convertNewsDateToStockDate(newsData.getDate().toString());
 
-                // 4. DTO 생성
-                TimeMachineResponseDTO dto = new TimeMachineResponseDTO(
-                    newsData.getDate().toString(),  // 날짜 (String 형식으로 변환)
-                    newsData.getCount(),  // 기사 수
-                    totalStockVolume,  // 총 거래량 (더미)
-                    top3Stocks  // 상위 3개 주식명 (더미)
+                // 3. 공휴일이면 뉴스 기사수만 처리
+                if (isHoliday(stockDateFormat)) {
+                    return new TimeMachineResponseDTO(
+                        stockDateFormat,
+                        newsData.getCount(),
+                        "0",
+                        Collections.emptyList()
+                    );
+                }
+
+                Pageable pageable = PageRequest.of(0, 3); // 상위 3개
+
+                // 4. 공휴일이 아닌 경우 DailyStockHistory에서 상위 3개 주식 조회
+                List<DailyStockHistory> top3Stocks = dailyStockHistoryRepository
+                    .findTop3ByVolumeByDate(stockDateFormat, pageable);  // 변환된 날짜로 상위 3개 주식 조회
+
+                // 상위 3개 주식의 총 거래량 계산
+                long totalVolume = top3Stocks.stream()
+                    .mapToLong(stock -> Long.parseLong(stock.getStockAcmlVol()))
+                    .sum();
+
+                // 평균 거래량 계산
+                long averageVolume = (top3Stocks.size() > 0) ? totalVolume / top3Stocks.size() : 0;
+
+                // 상위 3개 주식명 리스트 추출
+                List<String> stockNames = top3Stocks.stream()
+                    .map(stock -> stock.getStock().getCorpName())
+                    .collect(Collectors.toList());
+
+                // 5. DTO 생성
+                return new TimeMachineResponseDTO(
+                    stockDateFormat,              // 변환된 날짜
+                    newsData.getCount(),          // 기사 수
+                    String.valueOf(averageVolume), // 평균 거래량
+                    stockNames                    // 상위 3개 주식명
                 );
-
-                return dto;
             })
-            .collectList() // 리스트로 수집
-            .map(timeMachineResponseList -> new TimeMachineListResponseDTO(
-                timeMachineResponseList));  // List로부터 DTO 생성
-
-    }
-
-    // 더미 데이터 생성 메서드 - 거래량
-    private String generateDummyStockVolume() {
-        return String.valueOf((int) (Math.random() * 1000000) + 1000000); // 임시로 100만 ~ 200만 사이의 값
-    }
-
-    // 더미 데이터 생성 메서드 - 상위 3개 주식명
-    private List<String> generateDummyTop3Stocks() {
-        return Arrays.asList("삼성전자", "LG전자", "현대차");  // 임시로 고정된 주식 종목명 리스트
+            .collectList()
+            .map(TimeMachineListResponseDTO::new);  // List로부터 DTO 생성
     }
 
     // "yyyyMMdd" -> "yyyy-MM-dd"로 변환
     public static String convertToNewsDateFormat(String date) {
         LocalDate localDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyyMMdd"));
         return localDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    }
+
+    private String convertNewsDateToStockDate(String newsDate) {
+        LocalDate date = LocalDate.parse(newsDate);
+        return date.format(DateTimeFormatter.BASIC_ISO_DATE);
     }
 
 }
