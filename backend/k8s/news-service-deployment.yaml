@@ -61,8 +61,8 @@ spec:
               memory: "512Mi"
               cpu: "500m"
             limits:
-              memory: "1024Mi"
-              cpu: "4"
+              memory: "512Mi"
+              cpu: "2"
       volumes:
         - name: elastic-apm-volume
           emptyDir: {}  # 파드 내 임시 디렉터리 사용
