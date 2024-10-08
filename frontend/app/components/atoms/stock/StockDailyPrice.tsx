@@ -20,6 +20,8 @@ const Container = styled.div`
   align-items: center;
   gap: 20px;
   margin: 8px 0px;
+  font-size: 15px;
+  font-weight: 600;
 `;
 
 const Column = styled.span`

@@ -26,7 +26,7 @@ const FullscreenVideo = styled.video`
 // 시작 버튼 스타일
 const StartButton = styled.button<{ isVisible: boolean }>`
   position: absolute;
-  top: ${(props) => (props.isVisible ? '50%' : '60%')}; // 위에서 50% 위치에 오도록
+  bottom: 5%; // 위에서 50% 위치에 오도록
   left: 50%;
   transform: translate(-50%, -50%);
   background-color: transparent; // 배경 투명
@@ -67,7 +67,7 @@ export default function Home() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setButtonVisible(true); // 8초 후 버튼을 보이도록 설정
-    }, 6000);
+    }, 3000);
 
     return () => clearTimeout(timer); // 컴포넌트 언마운트 시 타이머 클리어
   }, []);
