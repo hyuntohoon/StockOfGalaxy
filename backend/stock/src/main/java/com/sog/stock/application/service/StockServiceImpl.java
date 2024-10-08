@@ -47,6 +47,7 @@ import jakarta.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -164,18 +165,18 @@ public class StockServiceImpl implements StockService {
         switch (quarterType) {
             case D:
                 // "D" 타입일 경우 최근 90개의 데이터를 반환
-                historyList = quarterStockHistoryRepository.findTop90ByStock_StockCodeAndQuarterTypeOrderByStock_EstDtDesc(
-                    stockCode, quarterType);
+                historyList = quarterStockHistoryRepository.findTop90ByStockCodeAndQuarterType(
+                    stockCode);
                 break;
             case M:
                 // "M" 타입일 경우 최근 60개의 데이터를 반환
-                historyList = quarterStockHistoryRepository.findTop60ByStock_StockCodeAndQuarterTypeOrderByStock_EstDtDesc(
-                    stockCode, quarterType);
+                historyList = quarterStockHistoryRepository.findTop60ByStockCodeAndQuarterType(
+                    stockCode);
                 break;
             case Y:
                 // "Y" 타입일 경우 해당 종목코드의 모든 데이터를 반환
-                historyList = quarterStockHistoryRepository.findByStock_StockCodeAndQuarterType(
-                    stockCode, quarterType);
+                historyList = quarterStockHistoryRepository.findByStockCodeAndQuarterType(
+                    stockCode);
                 break;
             default:
                 throw new IllegalArgumentException("Invalid quarter type: " + quarterType);
@@ -388,7 +389,8 @@ public class StockServiceImpl implements StockService {
         Stock stock = stockRepository.findById(stockCode)
             .orElseThrow(() -> new RuntimeException("Stock not found"));
 
-        List<Rocket> rockets = rocketRepository.findByStockAndIsDeletedFalseOrderByRocketIdDesc(stock);
+        List<Rocket> rockets = rocketRepository.findAllByStockOrderByCreatedAtDesc(
+            stock.getStockCode());
 
         // Mono 리스트를 Flux로 변환하여 모두 처리
         return Flux.fromIterable(rockets)
@@ -445,14 +447,13 @@ public class StockServiceImpl implements StockService {
     }
 
 
-
     @Override
     public Mono<RocketResponseListDTO> getLimitedRocketsByStockCode(String stockCode, int limit) {
         Stock stock = stockRepository.findById(stockCode)
             .orElseThrow(() -> new RuntimeException("Stock not found"));
 
         // 삭제되지 않은 로켓을 rocketId가 큰 순서로 조회
-        List<Rocket> rockets = rocketRepository.findTop7ByStockAndIsDeletedFalseOrderByRocketIdDesc(stock);
+        List<Rocket> rockets = rocketRepository.findTop7ByStock(stock.getStockCode());
 
         // Mono 리스트를 Flux로 변환하여 모두 처리
         return Flux.fromIterable(rockets)
@@ -483,15 +484,7 @@ public class StockServiceImpl implements StockService {
         Stock stock = stockRepository.findById(rocketAddRequestDTO.getStockCode())
             .orElseThrow(() -> new RuntimeException("해당 종목을 찾을 수 없습니다."));
 
-        // Stock 엔티티와 DTO
-        Rocket rocket = Rocket.builder()
-            .memberId(rocketAddRequestDTO.getMemberId())
-            .content(rocketAddRequestDTO.getMessage())
-            .stockPrice(rocketAddRequestDTO.getPrice())
-            .rocketCreatedAt(LocalDateTime.now())
-            .isDeleted(false)
-            .stock(stock)  // 조회한 Stock 엔티티 설정
-            .build();
+        Rocket rocket = Rocket.createRocket(rocketAddRequestDTO, stock);
 
         // 엔티티 저장
         rocketRepository.save(rocket);
@@ -514,7 +507,8 @@ public class StockServiceImpl implements StockService {
 
                 for (StockNewsCountResponseDTO stockNews : stockNewsList) {
                     // 종목명을 통해 종목번호를 부분 일치 검색
-                    List<Stock> stocks = stockRepository.findAllByPartialCorpName(stockNews.getStockName());
+                    List<Stock> stocks = stockRepository.findAllByPartialCorpName(
+                        stockNews.getStockName());
 
                     // 여러 종목이 검색되었을 때 우선순위에 따른 필터링 로직 적용
                     Optional<Stock> selectedStock = stocks.stream()
@@ -542,7 +536,9 @@ public class StockServiceImpl implements StockService {
 
                     rank++;
                     // 8개의 종목만 추가
-                    if (rank > 8) break;
+                    if (rank > 8) {
+                        break;
+                    }
                 }
 
                 return Mono.just(new StockTop8ListResponseDTO(stockTop8ResponseList));
@@ -576,7 +572,8 @@ public class StockServiceImpl implements StockService {
                 return dto;
             })
             .collectList() // 리스트로 수집
-            .map(timeMachineResponseList -> new TimeMachineListResponseDTO(timeMachineResponseList));  // List로부터 DTO 생성
+            .map(timeMachineResponseList -> new TimeMachineListResponseDTO(
+                timeMachineResponseList));  // List로부터 DTO 생성
 
     }
 

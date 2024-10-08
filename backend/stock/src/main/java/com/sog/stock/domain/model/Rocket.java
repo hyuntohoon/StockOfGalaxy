@@ -1,5 +1,7 @@
 package com.sog.stock.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.sog.stock.domain.dto.rocket.RocketAddRequestDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -10,6 +12,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -36,8 +39,9 @@ public class Rocket {
     @Column(nullable = false)
     private Integer stockPrice;
 
-    @Column(nullable = false)
-    private LocalDateTime rocketCreatedAt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @Column(name = "rocket_created_at", nullable = false)
+    private LocalDateTime rocketCreatedAt;
 
     @Column(nullable = false)
     private Boolean isDeleted = false;
@@ -53,6 +57,17 @@ public class Rocket {
     // 소프트 삭제 처리 메서드 (필드 상태만 변경)
     public void markAsDeleted() {
         this.isDeleted = true;  // 상태만 변경
+    }
+
+    public static Rocket createRocket(RocketAddRequestDTO rocketAddRequestDTO, Stock stock) {
+        return Rocket.builder()
+            .memberId(rocketAddRequestDTO.getMemberId())
+            .content(rocketAddRequestDTO.getMessage())
+            .stockPrice(rocketAddRequestDTO.getPrice())
+            .rocketCreatedAt(LocalDateTime.now(ZoneId.of("Asia/Seoul"))) // 여기서 현재 시간을 설정
+            .isDeleted(false)
+            .stock(stock)
+            .build();
     }
 
 }
