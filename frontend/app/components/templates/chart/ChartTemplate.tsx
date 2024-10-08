@@ -25,17 +25,32 @@ const ChartContainer = styled.div`
 `;
 
 const OptionContainer = styled.div`
-  display: flex;
-  flex-direction: row;
+  display: grid;
+  grid-template-columns: 8fr 1fr 1fr 1fr 1fr;
   gap: 10px;
+  padding: 10px 20px;
+  align-items: center;
 `;
 
 const Option = styled.div`
   background-color: white;
-  padding: 10px;
+  padding: 5px;
   border-radius: 5px;
   cursor: pointer;
+  text-align: center;
 `;
+
+const SubTitle = styled.div`
+  font-size: 20px;
+  font-weight: bold;
+  font-family: "Noto Sans KR", sans-serif;
+  color: black;
+`;
+
+const CustomHook = ({ stock_code, chart, type }) => {
+  useKRChartWebSocket(stock_code, chart, type);
+  return <></>;
+};
 
 const ChartTemplate = () => {
   const [chartContainerRef, setChartContainerRef] = useState(null);
@@ -43,14 +58,11 @@ const ChartTemplate = () => {
   const [type, setType] = useState("Y");
   const { stock, date } = useParams();
   const stock_code = Array.isArray(stock) ? stock[0] : stock ?? "005930";
-  const currentDate = date ?? "20241004";
+  const currentDate = date ?? "20241008";
 
   useEffect(() => {
     if (chartContainerRef) {
       const newChart = init(chartContainerRef);
-
-      // newChart.createIndicator("MA", false, { id: "candle_pane" });
-      // newChart.createIndicator("VOL");
 
       newChart?.setStyles({
         grid: {
@@ -80,7 +92,7 @@ const ChartTemplate = () => {
 
       const initChartData = async () => {
         const dataList = await getPastStockData(stock_code, type);
-        if (!dataList) return;
+        console.log(dataList);
         newChart?.applyNewData(dataList);
         setChart(newChart);
       };
@@ -101,8 +113,6 @@ const ChartTemplate = () => {
     changeRate: number | null;
   }
 
-  useKRChartWebSocket(stock_code, chart, type);
-
   const changeType = async (type: string) => {
     chart?.clearData();
     setType(type);
@@ -116,11 +126,37 @@ const ChartTemplate = () => {
     }
   };
 
+  const isDifferentDate = () => {
+    const currentDate = new Date();
+    const formattedCurrentDate = `${currentDate.getFullYear()}${(
+      currentDate.getMonth() + 1
+    )
+      .toString()
+      .padStart(2, "0")}${currentDate.getDate().toString().padStart(2, "0")}`;
+
+    return formattedCurrentDate !== date;
+  };
+
   return (
     <>
+      <>
+        {/* isDifferentDate() === false && */}
+        {chart ? (
+          <CustomHook stock_code={stock_code} chart={chart} type={type} />
+        ) : (
+          ""
+        )}
+      </>
       <Container>
         <OptionContainer>
-          <Option onClick={() => changeType("minute")}>1분</Option>
+          <SubTitle>종목 차트</SubTitle>
+          <>
+            {isDifferentDate() === false ? (
+              <Option onClick={() => changeType("minute")}>1분</Option>
+            ) : (
+              ""
+            )}
+          </>
           <Option onClick={() => changeType("D")}>일</Option>
           <Option onClick={() => changeType("M")}>월</Option>
           <Option onClick={() => changeType("Y")}>년</Option>

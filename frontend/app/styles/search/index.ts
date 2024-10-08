@@ -7,7 +7,7 @@ export const SearchContainer = styled.div<{ hasSearched: boolean }>`
   align-items: center;
   justify-content: flex-start;
   height: 100vh;
-  margin-top: ${(props) => (props.hasSearched ? '10px' : '15%')};
+  margin-top: 10px;
   padding: 40px 20px;
   color: #ffffff;
   transition: margin-top 0.4s ease-in-out;
