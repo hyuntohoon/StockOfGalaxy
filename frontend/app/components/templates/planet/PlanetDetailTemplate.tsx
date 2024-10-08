@@ -40,6 +40,8 @@ const PlanetDetailTemplate: React.FC<PlanetDetailTemplateProps> = ({
   const spaceNewsRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const listRef2 = useRef<HTMLDivElement>(null);
+  const listRef3 = useRef<HTMLDivElement>(null);
+  const listRef4 = useRef<HTMLDivElement>(null);
 
   const contentRef = useRef<HTMLDivElement>(null);
   const [scrollProgress, setScrollProgress] = useState<number>(0);
@@ -118,6 +120,10 @@ const PlanetDetailTemplate: React.FC<PlanetDetailTemplateProps> = ({
       listRef.current &&
       listRef2.current &&
       !listRef.current.contains(event.target as Node) &&
+      listRef3.current &&
+      !listRef3.current.contains(event.target as Node) &&
+      listRef4.current &&
+      !listRef4.current.contains(event.target as Node) &&
       !listRef2.current.contains(event.target as Node)
     ) {
       contentRef.current.scrollTo({
@@ -167,8 +173,10 @@ const PlanetDetailTemplate: React.FC<PlanetDetailTemplateProps> = ({
         </SectionContainer> */}
 
         <SectionContainer ref={chartRef}>
-          <ChartTemplate />
+          <div ref={listRef4} style={{width: "100%", height: "100%"}}><ChartTemplate /></div>
+          <div ref={listRef3} style={{width: "100%", height: "100%"}}>
           <StockDailyPriceTemplate />
+          </div>
         </SectionContainer>
 
         <SectionContainer ref={stocksRef}>

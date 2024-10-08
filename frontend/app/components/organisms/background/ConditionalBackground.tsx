@@ -10,7 +10,8 @@ export default function ConditionalBackground() {
   // 특정 경로에서 SpaceBackGround를 제외
   const excludeBackgroundPaths = [
     "/planet/main", 
-    "/main"
+    "/main",
+    "/timetravel"
   ];
 
   // 제외할 경로와 일치하는지 확인
