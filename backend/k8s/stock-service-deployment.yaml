@@ -59,10 +59,10 @@ spec:
           resources:  # 리소스 요청 및 제한 설정
             requests:
               memory: "512Mi"
-              cpu: "250m"
+              cpu: "125m"
             limits:
               memory: "1Gi"
-              cpu: "500m"
+              cpu: "250m"
       volumes:
         - name: elastic-apm-volume
           emptyDir: {}  # 파드 내 임시 디렉터리 사용
