@@ -75,9 +75,9 @@ const PlanetTrendModal: React.FC<PlanetTrendModalProps> = ({
         setStockDataInfo([{
           stock_name: corpName || null,
           stock_code: stockCode || null,
-          currentPrice: historicalData.endPrice, // 과거 데이터의 종가 사용
-          changePrice: historicalData.changePrice,
-          changeRate: historicalData.changeRate,
+          currentPrice: historicalData.close_price, // 과거 데이터의 종가 사용
+          changePrice: historicalData.prdy_vrss,
+          changeRate: historicalData.prdy_ctrt,
         }]);
       }
     } catch (error) {
@@ -85,13 +85,13 @@ const PlanetTrendModal: React.FC<PlanetTrendModalProps> = ({
     }
   };
 
-  useKRStockWebSocket(stockDataInfo, setStockDataInfo); // -> todo: 나중에 데이터 넣고 아래로 바꿔라
+  // useKRStockWebSocket(stockDataInfo, setStockDataInfo); // -> todo: 나중에 데이터 넣고 아래로 바꿔라
   // 웹소켓에서 받은 데이터는 isToday일 때만 상태 업데이트
-  // useKRStockWebSocket(stockDataInfo, (newStockDataInfo) => {
-  //   if (isToday) {
-  //     setStockDataInfo(newStockDataInfo);
-  //   }
-  // });
+  useKRStockWebSocket(stockDataInfo, (newStockDataInfo) => {
+    if (isToday) {
+      setStockDataInfo(newStockDataInfo);
+    }
+  });
 
   useEffect(() => {
     if (isToday) {

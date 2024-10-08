@@ -23,23 +23,28 @@ const PlanetSimpleInfoCard = () => {
   const stockCode = Array.isArray(stockCodeParam) ? stockCodeParam[0] : stockCodeParam;
   const { date } = useDate();
 
-  const [stockDataInfo, setStockDataInfo] = useState<stockState>({
-    stock_name: null,
-    stock_code: stockCode || null,
-    currentPrice: null,
-    changePrice: null,
-    changeRate: null,
-  });
+  const [stockDataInfo, setStockDataInfo] = useState<stockState[]>([
+    {
+      stock_name: null,
+      stock_code: stockCode || null,
+      currentPrice: null,
+      changePrice: null,
+      changeRate: null,
+    }
+  ]);
 
   const realDate = getTodayDate();
   const isToday = date === realDate;
-  console.log('isToday', isToday)
+
   // 주식명 데이터를 가져오는 함수
   useEffect(() => {
     const fetchStockName = async () => {
       if (stockCode) {
         const name = await getStockName(stockCode);
-        setStockDataInfo((prev) => ({ ...prev, stock_name: name }));
+        setStockDataInfo(prev => prev.map(stock => ({
+          ...stock,
+          stock_name: name
+        })));
       }
     };
     fetchStockName();
@@ -54,23 +59,23 @@ const PlanetSimpleInfoCard = () => {
             // 현재 데이터 받아오기
             const currentPriceData = await getCurrentPrice(stockCode);
             if (currentPriceData) {
-              setStockDataInfo((prev) => ({
-                ...prev,
+              setStockDataInfo(prev => prev.map(stock => ({
+                ...stock,
                 currentPrice: currentPriceData.stckPrpr,
                 changePrice: currentPriceData.prdyVrss,
                 changeRate: currentPriceData.prdyCtrt,
-              }));
+              })));
             }
           } else {
             // 과거 데이터 받아오기
             const historicalData = await getStockHistoryInfoApi(stockCode, date);
             if (historicalData) {
-              setStockDataInfo((prev) => ({
-                ...prev,
+              setStockDataInfo(prev => prev.map(stock => ({
+                ...stock,
                 currentPrice: historicalData.close_price, // 과거 데이터의 종가 사용
                 changePrice: historicalData.prdy_vrss,
                 changeRate: historicalData.prdy_ctrt,
-              }));
+              })));
             }
           }
         } catch (error) {
@@ -82,24 +87,13 @@ const PlanetSimpleInfoCard = () => {
   }, [stockCode, isToday, date]);
 
   // 웹소켓 데이터를 통해 실시간 업데이트 (오늘 날짜일 때만)
-  useKRStockWebSocket([{ stock_code: stockCode }], (data) => {
-    console.log('웹소켓 데이터 수신:', data); // 웹소켓으로부터 어떤 데이터가 들어오는지 확인
-    if (isToday && data && data.stock_prpr) {
-      setStockDataInfo((prev) => {
-        const updatedState = {
-          ...prev,
-          currentPrice: data.stock_prpr,
-          changePrice: data.prdy_vrss,
-          changeRate: data.prdy_ctrt,
-        };
-        console.log('업데이트된 상태:', updatedState); // 상태 업데이트 확인
-        return updatedState;
-      });
+  useKRStockWebSocket(stockDataInfo, (newStockDataInfo) => {
+    if (isToday) {
+      setStockDataInfo(newStockDataInfo);
     }
   });
-  
-  
-   
+
+  if (!stockDataInfo[0]) return null;
 
   return (
     <CardContainer>
@@ -108,16 +102,16 @@ const PlanetSimpleInfoCard = () => {
       </IconContainer>
       <StockInfoContainer>
         <TitleRow>
-          <PlanetCardTitle title={stockDataInfo.stock_name} />
-          <StockCode>{stockDataInfo.stock_code}</StockCode>
+          <PlanetCardTitle title={stockDataInfo[0].stock_name} />
+          <StockCode>{stockDataInfo[0].stock_code}</StockCode>
         </TitleRow>
         <PriceRow>
-          <CurrentPrice>{Number(stockDataInfo.currentPrice || 0).toLocaleString()}원</CurrentPrice>
-          <PriceChange changePrice={stockDataInfo.changePrice}>
-            {Number(stockDataInfo.changePrice || 0).toLocaleString()}원
+          <CurrentPrice>{Number(stockDataInfo[0].currentPrice || 0).toLocaleString()}원</CurrentPrice>
+          <PriceChange changePrice={stockDataInfo[0].changePrice}>
+            {Number(stockDataInfo[0].changePrice || 0).toLocaleString()}원
           </PriceChange>
-          <ChangeRate changePrice={stockDataInfo.changePrice}>
-            ({stockDataInfo.changeRate}%)
+          <ChangeRate changePrice={stockDataInfo[0].changePrice}>
+            ({stockDataInfo[0].changeRate}%)
           </ChangeRate>
         </PriceRow>
       </StockInfoContainer>
