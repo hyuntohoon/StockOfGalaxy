@@ -225,6 +225,11 @@ const Header = styled.div`
   flex-direction: row;
   gap: 20px;
   justify-content: space-between;
+  position: sticky;
+  top: 0;
+  background-color: rgb(238, 238, 238); /* 배경색을 고정시켜 자연스럽게 */
+  z-index: 10; /* 다른 요소보다 위에 표시되도록 설정 */
+  padding-top: 10px;
 `;
 
 const StyledCloseIcon = styled(IoClose)`
@@ -237,6 +242,7 @@ const StyledCloseIcon = styled(IoClose)`
     color: #00000087;
   }
   transition: color 0.3s ease;
+  z-index: 11; /* Close 버튼도 다른 요소 위에 위치 */
 `;
 
 export default RocketModal;
