@@ -6,6 +6,9 @@ interface DateCardProps {
   left?: string;  // 선택적 속성
   date: string;
   label?: string;
+  width?: string;  // 선택적 속성 (width 추가)
+  height?: string;
+  top?: string;
 }
 
 const formatDate = (dateString: string): string => {
@@ -15,11 +18,11 @@ const formatDate = (dateString: string): string => {
   return `${year}.${month}.${day}`;
 };
 
-const DateCard = ({ right, left, date, label }: DateCardProps) => {
+const DateCard = ({ right, left, date, label, width, height, top }: DateCardProps) => {
   return (
-    <DateCardContainer right={right} left={left}>
+    <DateCardContainer right={right} left={left} width={width} height={height} top={top}>
       {label && <Label>{label}</Label>}
-      <Separator />
+      {label && <Separator />}
       <DateContent>
         <StyledCalendarIcon />
         <span>{formatDate(date)}</span>
@@ -29,7 +32,7 @@ const DateCard = ({ right, left, date, label }: DateCardProps) => {
 };
 
 // 스타일링 적용
-const DateCardContainer = styled.div<{ right?: string; left?: string }>`
+const DateCardContainer = styled.div<{ right?: string; left?: string; width?: string, height?: string, top?:string }>`
   display: flex;
   flex-direction: column;  // 상하로 정렬
   align-items: center;
@@ -42,16 +45,16 @@ const DateCardContainer = styled.div<{ right?: string; left?: string }>`
   font-size: 18px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
   position: absolute;
-  top: 20px;
+  top: ${({ top }) => top || '20px'};  // top이 있으면 적용, 없으면 기본값 20px
   ${({ right }) => right && `right: ${right};`}  // right가 있으면 적용
   ${({ left }) => left && `left: ${left};`}    // left가 있으면 적용
   z-index: 1000;
-  width: 250px;  // 가로 크기 조정
-  height: 120px
+  width: ${({ width }) => width || '250px'};  // width가 있으면 적용, 없으면 기본값 250px
+  height: ${({ height }) => height || '120px'}   // height 있으면 적용, 없으면 기본값 120px
 `;
 
 const Label = styled.span`
-  font-size: 20px;
+  font-size: 18px;
   color: #ffffff;
   margin-bottom: 10px;
 `;

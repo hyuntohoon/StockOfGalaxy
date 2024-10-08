@@ -22,11 +22,9 @@ const AlienGuideButton : React.FC<InfoBoxProps> = ({ info })=> {
           <Image src={alien} alt="플래닛 트랜드 가이드" width={35} />
         </Icon>
       </StyledButton>
-      {isHovered && (
-        <InfoBox>
-          <AlienGuideInfoBox info={info}/>
-        </InfoBox>
-      )}
+      <InfoBox isVisible={isHovered}>
+        <AlienGuideInfoBox info={info}/>
+      </InfoBox>
     </div>
   );
 };
@@ -35,7 +33,7 @@ const StyledButton = styled.div`
   position: fixed;
   display: flex;
   top: 27.5px;
-  right: 100px;
+  right: 110px;
   width: 54px;
   height: 54px;
   justify-content: center;
@@ -44,21 +42,32 @@ const StyledButton = styled.div`
   border-radius: 50px;
   box-shadow: 0px 0px 15px rgba(247, 255, 210, 0.5);
   cursor: pointer;
+  transition: transform 0.2s;
+  
+  /* 마우스 호버 시 확대 효과 */
+  &:hover {
+    transform: scale(1.1); /* 살짝 커지도록 설정 */
+  }
 `;
 
 const Icon = styled.div`
   display: flex;
 `;
 
-const InfoBox = styled.div`
+const InfoBox = styled.div<{ isVisible: boolean }>`
   position: absolute;
-  top: 94px; /* 버튼 아래에 표시되도록 위치 조정 */
-  right: 50px;
+  top: 100px; /* 버튼 아래에 표시되도록 위치 조정 */
+  right: 110px;
   width: 290px;
   background-color: #000000c4;
   padding: 10px;
   border-radius: 16px;
   box-shadow: 0px 0px 12px rgba(75, 75, 75, 0.217);
+
+  /* 애니메이션 추가 */
+  opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
+  transform: ${({ isVisible }) => (isVisible ? 'translateY(0)' : 'translateY(-10px)')};
+  transition: opacity 0.4s ease, transform 0.4s ease;
 `;
 
 export default AlienGuideButton;

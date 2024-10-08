@@ -9,7 +9,7 @@ const PlanetCardTitle = ({ title }: PlanetCardTitleProps) => {
 };
 
 const Title = styled.h2`
-  font-size: 22px;
+  font-size: 20px;
   font-weight: bold;
   color: white;
   margin: 0;

@@ -9,7 +9,7 @@ export interface RocketData {
 
 export interface RocketPriceGroupProps {
   stockPrice: number;
-  priceChange: string; // 변동률
+  priceChange: number; // 변동률
   priceChangeSign: string; // 변동률 부호
 }
 

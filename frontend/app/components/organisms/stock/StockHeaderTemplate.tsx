@@ -11,6 +11,7 @@ import { useParams, useRouter } from "next/navigation";
 import { getCurrentPrice } from "@/app/utils/apis/stock/getStockData";
 import { findStockName } from "@/app/utils/apis/stock/findStockName";
 import { getHeaderStockData } from "@/app/utils/apis/stock/getStockData";
+import { find } from "lodash";
 
 const ParentContainer = styled.div`
   min-width: 950px;
@@ -26,7 +27,7 @@ const ParentContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 50px;
+  margin: 20px;
 `;
 
 const Container = styled.div`
@@ -85,7 +86,7 @@ const StockHeaderTemplate = () => {
   const stock_code = Array.isArray(stock) ? stock[0] : stock ?? "005930";
   const current_date = Array.isArray(date) ? date[0] : date;
 
-  const [stockDataInfo, setStockDataInfo] = useState<stockState[]>([
+  const stock_list = [
     {
       stock_name: findStockName(stock_code),
       stock_code: stock_code,
@@ -93,7 +94,17 @@ const StockHeaderTemplate = () => {
       changePrice: 0,
       changeRate: 0,
     },
-  ]);
+  ];
+
+  const [stockDataInfo, setStockDataInfo] = useState<stockState[]>(
+    stock_list.map((stock) => ({
+      stock_name: stock.stock_name,
+      stock_code: stock.stock_code,
+      currentPrice: 0,
+      changePrice: 0,
+      changeRate: 0,
+    }))
+  );
 
   const router = useRouter();
   const { stock: stockCode } = useParams(); // useParams로 stockCode와 date 가져오기
@@ -152,7 +163,16 @@ const StockHeaderTemplate = () => {
 
   return (
     <HeaderWrapper>
-      <>{isDifferentDate() == false ? <CustomHook /> : ""}</>
+      <>
+        {isDifferentDate() === false && stockDataInfo ? (
+          <CustomHook
+            stockDataInfo={stockDataInfo}
+            setStockDataInfo={setStockDataInfo}
+          />
+        ) : (
+          ""
+        )}
+      </>
       <Button onClick={handleClick}>
         <GoTriangleDown />
       </Button>

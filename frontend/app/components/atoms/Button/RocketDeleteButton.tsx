@@ -23,6 +23,13 @@ const StyledIcon = styled.div`
   margin-left: 10px;
   color: #3D3D3D;
   cursor: pointer;
+  transition: color 0.3s ease, transform 0.3s ease; /* 색상 및 크기 변경에 대한 트랜지션 추가 */
+
+  &:hover {
+    color: #d44040; /* 호버 시 색상 변경 (토마토색) */
+    transform: scale(1.2); /* 호버 시 크기 1.2배로 확대 */
+  }
 `;
+
 
 export default RocketDeleteButton;

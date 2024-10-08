@@ -57,7 +57,7 @@ export default function Home(props: any) {
 
   useEffect(() => {
     let circle: THREE.Object3D;
-    let particle: THREE.Object3D;
+    let particleGroup: THREE.Group;
 
     function init() {
       renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -65,45 +65,24 @@ export default function Home(props: any) {
       renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.autoClear = false;
       renderer.setClearColor(0x000000, 0.0);
-
+  
       if (mountRef.current) {
         mountRef.current.appendChild(renderer.domElement);
       }
-
+  
       const newScene = new THREE.Scene();
       setScene(newScene);
-
+  
       camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
       camera.position.z = 400;
       newScene.add(camera);
-
+  
       circle = new THREE.Object3D();
-      particle = new THREE.Object3D();
-      newScene.add(particle);
-
+      particleGroup = new THREE.Group();
+      newScene.add(particleGroup);
       newScene.add(circle);
 
-      
-
-      const geometry = new THREE.TetrahedronGeometry(1, 0);
-      const material = new THREE.MeshPhongMaterial({
-        color: 0xffffff,
-        flatShading: true,
-      });
-
-      for (let i = 0; i < 1000; i++) {
-        const mesh = new THREE.Mesh(geometry, material);
-        mesh.position
-          .set(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5)
-          .normalize();
-        mesh.position.multiplyScalar(180 + Math.random() * 700);
-        mesh.rotation.set(
-          Math.random() * 2,
-          Math.random() * 2,
-          Math.random() * 2
-        );
-        particle.add(mesh);
-      }
+      createParticles(particleGroup);
 
       const planetGeometry = new THREE.SphereGeometry(planetRadius, 48, 48);
       const planetTexture = new THREE.TextureLoader().load(`/images/planetTexture/${textureId}.jpg`);
@@ -112,10 +91,10 @@ export default function Home(props: any) {
       });
       const planet = new THREE.Mesh(planetGeometry, planetMaterial);
       circle.add(planet);
-
+  
       const ambientLight = new THREE.AmbientLight(0xBEBEBE);
       newScene.add(ambientLight);
-
+  
       const lights: THREE.DirectionalLight[] = [];
       lights[0] = new THREE.DirectionalLight(0xffffff, 0.3);
       lights[1] = new THREE.DirectionalLight(0xffffff, 0.3);
@@ -147,35 +126,35 @@ export default function Home(props: any) {
         transparent: true,
         depthTest: false,
       });
-
+  
       const glowMesh = new THREE.Mesh(planetGeometry.clone(), glowMaterial);
       glowMesh.scale.multiplyScalar(1.2);
       circle.add(glowMesh);
-
+  
       window.addEventListener('resize', onWindowResize, false);
-
+  
       function onWindowResize() {
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
       }
-
+  
       function animate() {
         requestAnimationFrame(animate);
-        particle.rotation.x -= 0.0001;
-        particle.rotation.y -= 0.002;
+        particleGroup.rotation.x -= 0.0001;
+        particleGroup.rotation.y -= 0.002;
         circle.rotation.y += 0.004;
         renderer.clear();
         renderer.render(newScene, camera);
       }
-
+  
       animate();
     }
-
+  
     if (!isLoading) {
       init();
     }
-
+  
     return () => {
       window.removeEventListener('resize', onWindowResize);
       if (mountRef.current && renderer) {
@@ -183,38 +162,6 @@ export default function Home(props: any) {
       }
     };
   }, [isLoading]);
-
-  const createStars = () => {
-    const starsGroup = new THREE.Group();
-    const starGeometry = new THREE.TetrahedronGeometry(1.5, 0);
-    const colors = [0xe0e0e0, 0xA4A8FF, 0xFFA4DF, 0xb0e0e6]; // 색상 추가
-    const starMaterials = colors.map(
-      (color) =>
-        new THREE.MeshPhongMaterial({
-          color: color,
-          shininess: 80, // 광택
-          specular: 0xffffff, // 반사광
-          flatShading: true,
-        })
-    );
-
-    for (let i = 0; i < 1200; i++) {
-      const material = starMaterials[Math.floor(Math.random() * starMaterials.length)];
-      const starMesh = new THREE.Mesh(starGeometry, material);
-      starMesh.position
-        .set(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5)
-        .normalize();
-      starMesh.position.multiplyScalar(150 + Math.random() * 800);
-      starMesh.rotation.set(
-        Math.random() * 2,
-        Math.random() * 2,
-        Math.random() * 2
-      );
-      starsGroup.add(starMesh);
-    }
-
-    return starsGroup;
-  };
 
   return (
     <div style={{ position: 'relative' }}>
@@ -231,14 +178,45 @@ export default function Home(props: any) {
             {isRocketModalOpen &&
               <RocketModal
                 onClose={() => setIsRocketModalOpen(false)}
-                fetchRocketData={fetchRocketData} // 로켓 탑7 API 호출 함수
-            />}
+                fetchRocketData={fetchRocketData}
+              />}
           <DetailTriangleButton />
           <DetailTriangleButtonGuide />
         </>
       )}
     </div>
   );
+}
+
+// 입자 생성 함수
+function createParticles(particleGroup: THREE.Group) {
+  const particleGeometry = new THREE.TetrahedronGeometry(1.5, 0);
+  const colors = [0xe0e0e0, 0xA4A8FF, 0xFFA4DF, 0xb0e0e6]; // 색상 추가
+  const materials = colors.map(
+    (color) =>
+      new THREE.MeshPhongMaterial({
+        color: color,
+        shininess: 80, // 광택
+        specular: 0xffffff, // 반사광
+        flatShading: true,
+      })
+  );
+
+  // 입자 생성
+  for (let i = 0; i < 1200; i++) {
+    const material = materials[Math.floor(Math.random() * materials.length)];
+    const particleMesh = new THREE.Mesh(particleGeometry, material);
+    particleMesh.position
+      .set(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5)
+      .normalize();
+    particleMesh.position.multiplyScalar(150 + Math.random() * 800);
+    particleMesh.rotation.set(
+      Math.random() * 2,
+      Math.random() * 2,
+      Math.random() * 2
+    );
+    particleGroup.add(particleMesh);
+  }
 }
 
 function onWindowResize(this: Window, ev: UIEvent) {

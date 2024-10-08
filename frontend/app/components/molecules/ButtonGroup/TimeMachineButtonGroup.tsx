@@ -1,10 +1,9 @@
-
 'use client'
 import styled from '@emotion/styled';
 import Image from 'next/image';
 import { useState } from 'react';
-import timeIcon from '@/public/images/planet/timeIcon.png'
-import {useRouter} from 'next/navigation';
+import timeIcon from '@/public/images/planet/timeIcon.png';
+import { useRouter } from 'next/navigation';
 import AlienGuideInfoBox from "@/app/components/atoms/Text/AlienGuideInfoBox";
 
 const TimeMachineButtonGroup = ({ bottom = '30px', right = '100px' }) => {
@@ -15,24 +14,29 @@ const TimeMachineButtonGroup = ({ bottom = '30px', right = '100px' }) => {
   };
   const [isHovered, setIsHovered] = useState(false); // 마우스 호버 상태 관리
 
-
   const info = [
     '타임머신을 타고','다른 날짜의 주식 정보를 여행할 수 있어요!'
-  ]
+  ];
+
+  const infoBoxRight = `${parseInt(right, 10) + 10}px`; // ButtonGroup의 right 값 + 10
+
   return (
     <>
-    <ButtonGroup onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)} bottom={bottom} right={right} onClick={handleTimeMachineClick}>
-      <Icon>
-        <Image src={timeIcon} alt="타임머신" width={50} height={50} />
-      </Icon>
-      <Text>타임머신</Text>
-    </ButtonGroup>
-      {isHovered && (
-        <InfoBox>
-          <AlienGuideInfoBox info={info}/>
-        </InfoBox>
-      )}
+      <ButtonGroup 
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        bottom={bottom}
+        right={right}
+        onClick={handleTimeMachineClick}
+      >
+        <Icon>
+          <Image src={timeIcon} alt="타임머신" width={50} height={50} />
+        </Icon>
+        <Text>타임머신</Text>
+      </ButtonGroup>
+      <InfoBox isVisible={isHovered} right={infoBoxRight}>
+        <AlienGuideInfoBox info={info} />
+      </InfoBox>
     </>
   );
 };
@@ -68,16 +72,20 @@ const Text = styled.div`
   text-align: center;
 `;
 
-const InfoBox = styled.div`
+const InfoBox = styled.div<{ isVisible: boolean; right: string }>`
   position: absolute;
-  right: 50px;
+  right: ${({ right }) => right}; // ButtonGroup의 right 값 + 10px
   bottom: 125px;
   width: 290px;
-
   background-color: #000000c4;
   padding: 10px;
   border-radius: 16px;
   box-shadow: 0px 0px 12px rgba(75, 75, 75, 0.217);
+
+  /* 애니메이션 추가 */
+  opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
+  transform: ${({ isVisible }) => (isVisible ? 'translateY(0)' : 'translateY(-10px)')};
+  transition: opacity 0.4s ease, transform 0.4s ease;
 `;
 
 export default TimeMachineButtonGroup;

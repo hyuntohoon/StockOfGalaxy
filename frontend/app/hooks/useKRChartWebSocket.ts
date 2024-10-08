@@ -14,13 +14,10 @@ const formatNumber = (number) => {
 };
 
 const useKRChartWebSocket = (tr_key: string, chart: any, type: string) => {
-  console.log(tr_key, chart, type, "chart");
   useEffect(() => {
     if (!chart) {
       return;
     }
-
-    // const socket = new WebSocket("ws://localhost:8080");
 
     const socket = new WebSocket(
       `${process.env.NEXT_PUBLIC_WS_BASE_URL}/ws/chart`

@@ -6,6 +6,7 @@ import Title from '../atoms/common/Title';
 interface HeaderButtonGroupProps {
   icon: ReactNode;
   label: string;
+  onClick?: () => void; // onClick 속성 추가
 }
 
 const HeaderButtonGroup = ({ icon, label }: HeaderButtonGroupProps) => {
