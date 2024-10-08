@@ -5,11 +5,61 @@ import CustomDatePicker from "@/app/components/molecules/timetravel/CustomDatePi
 import { IoArrowBack } from 'react-icons/io5';
 import AreaChart from '@/app/components/molecules/timetravel/AreaChart';
 import styled from '@emotion/styled';
-import { wordData } from '@/app/mocks/wordData';
 import { useDate } from '@/app/store/date';
 import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io'; 
-import { TimeTravelContainer, Title, BackButton, DateInputContainer, StyledDatePicker, ConfirmButton, InfoText, ToggleButton } from './style';
+import { TimeTravelContainer, Title, BackButton, DateInputContainer, ConfirmButton, InfoText, ToggleButton } from './style';
 import { getTimeChart } from '@/app/utils/apis/timetravel';
+import { keyframes } from "@emotion/react";
+
+// 텍스트에 애니메이션 효과 추가
+const fadeIn = keyframes`
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+`;
+
+const MovingText = styled.h2`
+  position: absolute;
+  bottom: 5%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #ffffff;
+  font-size: 1.3rem;
+  font-weight: bold;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5); // 그림자 효과로 텍스트 가독성 향상
+  animation: ${fadeIn} 6s ease-in-out infinite; // 애니메이션 적용
+  z-index: 10000;
+  text-align: center;
+  white-space: nowrap; // 텍스트 줄바꿈 방지
+`;
+const VideoContainer = styled.div`
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+`;
+
+// 비디오 스타일
+const FullscreenVideo = styled.video`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: translate(-50%, -50%);
+`;
+
+
 
 const ChartContainer = styled.div`
   width: 100%;
@@ -22,22 +72,35 @@ const ChartContainer = styled.div`
 
 const formatDate = (date: Date) => {
   return date.toISOString().slice(0, 10).replace(/-/g, '');
-}
+};
+const formatTravelDate = (date: Date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 1을 더함
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}년 ${month}월 ${day}일`;
+};
 
 const TimeTravel = () => {
   const { date: dateString, setDate } = useDate();
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [isChartVisible, setIsChartVisible] = useState(false);
   const router = useRouter();
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false); // 비디오 재생 여부 상태 추가
   const today = new Date();
   const [chartData, setChartData] = useState([]);
 
   const handleConfirm = () => {
     if (selectedDate) {
-      const offsetDate = new Date(selectedDate.getTime() - (selectedDate.getTimezoneOffset() * 60000));
-      const newDate = offsetDate.toISOString().split('T')[0].replace(/-/g, '');
+      const offsetDate = new Date(selectedDate.getTime() - selectedDate.getTimezoneOffset() * 60000);
+      const newDate = formatDate(offsetDate);
       setDate(newDate);
-      router.push(`/main/${newDate}`);
+
+      // 비디오 재생 상태 설정 및 4초 후 페이지 이동
+      setIsVideoPlaying(true);
+      setTimeout(() => {
+        setIsVideoPlaying(false); // 비디오 재생 중지
+        router.push(`/main/${newDate}`); // 페이지 이동
+      }, 4500); // 4초 후 이동
     }
   };
 
@@ -46,52 +109,65 @@ const TimeTravel = () => {
   useEffect(() => {
     const fetchInitialData = async () => {
       const initialData = await getTimeChart("20240101", "20240501");
-      const formattedInitialData = initialData.stockVolumeAndNewsList.map(item => ({
+      const formattedInitialData = initialData.stockVolumeAndNewsList.map((item: any) => ({
         date: item.date,
         newsCount: item.articleCount * 10,
         traffic: parseInt(item.totalStockVolume, 10) % 10000,
         topStocks: item.top3Stocks,
       }));
       setChartData(formattedInitialData.reverse());
-    }
+    };
     fetchInitialData();
-
-    
-
   }, []);
 
   return (
     <>
-      <TimeTravelContainer style={{ position: 'relative' }}>
-      <BackButton onClick={() => router.back()}>
-        <IoArrowBack />
-      </BackButton>
-
-      <Title>시간 여행</Title>
-
-      <DateInputContainer isChartVisible={isChartVisible}>
-        <CustomDatePicker date={selectedDate} setDate= {(date: Date) => setSelectedDate(date)}/>
-        
-        <ConfirmButton onClick={handleConfirm} isChartVisible={isChartVisible}>
-          이동
-        </ConfirmButton>
-      </DateInputContainer>
-
-      <InfoText isChartVisible={isChartVisible}>날짜별 주식 데이터를 한 눈에 확인할 수 있어요!</InfoText>
-
-      <ToggleButton onClick={toggleChartVisibility}>
-        {isChartVisible ? '차트 접기' : '차트 펼치기'}{' '}
-        {isChartVisible ? <IoIosArrowUp /> : <IoIosArrowDown />}
-      </ToggleButton>
-
-      {isChartVisible && (
-        <ChartContainer>
-          <AreaChart data={chartData} detail={chartData} />
-        </ChartContainer>
+      {isVideoPlaying && (
+        <VideoContainer>
+          <FullscreenVideo autoPlay muted>
+            <source src="/videos/move.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </FullscreenVideo>
+          {/* 이동 중일 때 표시할 텍스트 */}
+          <MovingText>{`${formatTravelDate(selectedDate!)}로 이동하는 중...`}</MovingText>
+        </VideoContainer>
       )}
 
-      
-    </TimeTravelContainer>
+      {!isVideoPlaying && (
+        <VideoContainer>
+          <FullscreenVideo autoPlay loop muted>
+            <source src="/videos/timetravel.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </FullscreenVideo>
+          <TimeTravelContainer style={{ position: 'relative' }}>
+            <BackButton onClick={() => router.back()}>
+              <IoArrowBack />
+            </BackButton>
+
+            <Title>시간 여행</Title>
+
+            <DateInputContainer isChartVisible={isChartVisible}>
+              <CustomDatePicker date={selectedDate} setDate={(date: Date) => setSelectedDate(date)} />
+              <ConfirmButton onClick={handleConfirm} isChartVisible={isChartVisible}>
+                이동
+              </ConfirmButton>
+            </DateInputContainer>
+
+            <InfoText isChartVisible={isChartVisible}>날짜별 주식 데이터를 한 눈에 확인할 수 있어요!</InfoText>
+
+            <ToggleButton onClick={toggleChartVisibility}>
+              {isChartVisible ? '차트 접기' : '차트 펼치기'}{' '}
+              {isChartVisible ? <IoIosArrowUp /> : <IoIosArrowDown />}
+            </ToggleButton>
+
+            {isChartVisible && (
+              <ChartContainer>
+                <AreaChart data={chartData} detail={chartData} />
+              </ChartContainer>
+            )}
+          </TimeTravelContainer>
+        </VideoContainer>
+      )}
     </>
   );
 };
