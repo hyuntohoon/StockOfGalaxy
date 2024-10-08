@@ -33,7 +33,7 @@ const StyledButton = styled.div`
   position: fixed;
   display: flex;
   top: 27.5px;
-  right: 100px;
+  right: 110px;
   width: 54px;
   height: 54px;
   justify-content: center;
@@ -56,8 +56,8 @@ const Icon = styled.div`
 
 const InfoBox = styled.div<{ isVisible: boolean }>`
   position: absolute;
-  top: 94px; /* 버튼 아래에 표시되도록 위치 조정 */
-  right: 95px;
+  top: 100px; /* 버튼 아래에 표시되도록 위치 조정 */
+  right: 110px;
   width: 290px;
   background-color: #000000c4;
   padding: 10px;

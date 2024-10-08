@@ -27,8 +27,7 @@ const planetsArray: THREE.Mesh[] = [];
 
 export default function Page(props: any) {
   const { date, setDate } = useDate();
-  const { date: currentDate } = props.params;
-  setDate(props.params.date);
+  // console.log('이동한 날짜: ', date)
   const mountRef = useRef<HTMLDivElement>(null);
   const [hoveredPlanet, setHoveredPlanet] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -41,49 +40,72 @@ export default function Page(props: any) {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-
+  
+    // 카메라 설정
     camera.current = new THREE.PerspectiveCamera(
       75,
       window.innerWidth / window.innerHeight,
       0.1,
       1000
     );
-
+  
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
     mountRef.current?.appendChild(renderer.domElement);
-
+  
     const scene = new THREE.Scene();
     camera.current.position.z = 550;
-
+  
     setupLights(scene);
     createParticles(scene);
-
+  
     const textureLoader = new THREE.TextureLoader();
-
+  
+    // 이전 행성들을 삭제하는 함수
+    function clearPlanets() {
+      planetsArray.forEach((planet) => {
+        scene.remove(planet); // 씬에서 행성을 제거
+    
+        // planet.geometry.dispose()로 geometry 자원 해제
+        planet.geometry.dispose();
+    
+        // planet.material이 배열일 수 있으므로 확인
+        if (Array.isArray(planet.material)) {
+          planet.material.forEach((material) => material.dispose()); // 배열일 경우 각 material의 dispose 호출
+        } else {
+          planet.material.dispose(); // 단일 material일 경우 dispose 호출
+        }
+      });
+    
+      planetsArray.length = 0; // 행성 배열 초기화
+    }
+    
+  
     // 빈 배열일 경우 오늘 날짜로 이동
     function handleEmptyDataError() {
       setIsErrorModalOpen(true); // 에러 모달을 열기
     }
-
+  
     getPlanetTrendApi(date)
       .then((data) => {
         const trendData = data.stockTop8ResponseList;
-
+  
         if (!trendData || trendData.length === 0) {
           // 빈 배열일 경우 모달을 열기
           handleEmptyDataError();
           return;
         }
-
+  
+        // 텍스처 로드 후 새로운 행성 생성
         return loadTextures(trendData, textureLoader).then((textures) => ({
           trendData,
           textures,
         }));
       })
       .then(({ trendData, textures }) => {
-        createPlanets(trendData, scene, textures, camera.current!);
+        clearPlanets(); // 새로운 데이터가 오면 이전 행성을 삭제
+        createPlanets(trendData, scene, textures, camera.current!); // 새로운 행성 생성
         setTrendData(trendData); // 행성 데이터를 상태에 저장
         setTextures(textures); // 텍스처 데이터를 상태에 저장
       })
@@ -91,21 +113,21 @@ export default function Page(props: any) {
         console.error("행성 트렌드 데이터를 불러오는 중 오류 발생:", error);
         handleEmptyDataError(); // API 오류 시 모달을 열기
       });
-
+  
     let frameId: number;
-
+  
     function animate() {
       frameId = requestAnimationFrame(animate);
       animatePlanets();
       renderer.render(scene, camera.current!);
     }
-
+  
     function onWindowResize() {
       camera.current!.aspect = window.innerWidth / window.innerHeight;
       camera.current!.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
     }
-
+  
     window.addEventListener("resize", onWindowResize, false);
     window.addEventListener("mousemove", (event) =>
       onMouseMove(event, planetsArray, renderer)
@@ -114,7 +136,7 @@ export default function Page(props: any) {
       onPlanetClick(event, planetsArray, renderer)
     );
     animate();
-
+  
     return () => {
       cancelAnimationFrame(frameId);
       window.removeEventListener("resize", onWindowResize);
@@ -125,8 +147,10 @@ export default function Page(props: any) {
         onPlanetClick(event, planetsArray, renderer)
       );
       mountRef.current?.removeChild(renderer.domElement);
+      clearPlanets(); // 컴포넌트 언마운트 시 이전 행성을 삭제
     };
-  }, [currentDate]);
+  }, [date]);
+  
 
   // 마우스 움직임 처리 함수
   const onMouseMove = (event, planets, renderer) => {
@@ -173,7 +197,7 @@ export default function Page(props: any) {
     if (intersects.length > 0) {
       const clickedPlanet = intersects[0].object;
       const { stockCode } = clickedPlanet.userData;
-      router.push(`/planet/main/${stockCode}/${currentDate}`);
+      router.push(`/planet/main/${stockCode}/${date}`);
     }
   };
 
