@@ -242,6 +242,13 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
+    public Optional<String> getHolidayInfo(String holidayDate) {
+        return stockHolidayRepository.findByLocDate(holidayDate)
+            .map(StockHoliday::getStockDate);  // 공휴일 이름을 반환
+    }
+
+
+    @Override
     public void addFinancialList(FinancialListDTO financialList) {
         // 각 financial dto를 entity로 변환 후 저장
         for (FinancialDTO financialDTO : financialList.getFinancialList()) {
@@ -563,12 +570,19 @@ public class StockServiceImpl implements StockService {
             .map(newsData -> {
                 String stockDateFormat = convertNewsDateToStockDate(newsData.getDate().toString());
 
+                // 3. 공휴일 여부와 이름 조회
+                Optional<String> holidayInfoOpt = getHolidayInfo(stockDateFormat);
+                boolean isHoliday = holidayInfoOpt.isPresent();
+                String holidayInfo = holidayInfoOpt.orElse("영업일");
+
                 // 3. 공휴일이면 뉴스 기사수만 처리
                 if (isHoliday(stockDateFormat)) {
                     return new TimeMachineResponseDTO(
                         stockDateFormat,
                         newsData.getCount(),
                         "0",
+                        isHoliday,
+                        holidayInfo,
                         Collections.emptyList()
                     );
                 }
@@ -592,12 +606,17 @@ public class StockServiceImpl implements StockService {
                     .map(stock -> stock.getStock().getCorpName())
                     .collect(Collectors.toList());
 
+                // 뉴스 데이터가 빈 배열일 경우 기사 수를 0으로 설정
+                int newsCount = newsData.getCount() == null ? 0 : newsData.getCount();
+
                 // 5. DTO 생성
                 return new TimeMachineResponseDTO(
                     stockDateFormat,              // 변환된 날짜
-                    newsData.getCount(),          // 기사 수
+                    newsCount,          // 기사 수
                     String.valueOf(averageVolume), // 평균 거래량
-                    stockNames                    // 상위 3개 주식명
+                    isHoliday,
+                    holidayInfo,
+                    stockNames                  // 상위 3개 주식명
                 );
             })
             .collectList()

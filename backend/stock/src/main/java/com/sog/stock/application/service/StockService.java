@@ -18,6 +18,7 @@ import com.sog.stock.domain.dto.StockNameResponseDTO;
 import com.sog.stock.domain.dto.rocket.RocketResponseDTO;
 import com.sog.stock.domain.dto.rocket.RocketResponseListDTO;
 import com.sog.stock.domain.enums.QuarterType;
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
@@ -53,6 +54,9 @@ public interface StockService {
 
     // 공휴일 정보 조회
     boolean isHoliday(String holidayDate);
+
+    // 공휴일 이름 조회
+    Optional<String> getHolidayInfo(String holidayDate);
 
     // 제무재표 등록
     void addFinancialList(FinancialListDTO financialList);
