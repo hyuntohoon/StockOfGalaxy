@@ -70,7 +70,8 @@ const DatepickerWrapper = styled.div`
     .react-datepicker{
         border-radius: 25px;
         opacity: 0.95;
-        padding : 20px;
+        padding : 15px;
+        height: 80%;
         animation: ${fadeIn} 0.4s ease forwards; /* 스르륵 나타나는 효과 */
         transition: opacity 0.4s ease; /* 사라질 때 효과 */
 
@@ -88,7 +89,7 @@ const DatepickerWrapper = styled.div`
 
     .react-datepicker__month-container {
         
-        padding-bottom : 16px;
+        padding-bottom : 0px;
 
         .react-datepicker__day-names{
             
@@ -100,8 +101,8 @@ const DatepickerWrapper = styled.div`
             
             .react-datepicker__day-name{
                 display : flex;
-                width : 40px;
-                height : 40px;
+                width : 35px;
+                height : 35px;
                 justify-content : center;
                 align-items : center;
             }
@@ -123,8 +124,8 @@ const DatepickerWrapper = styled.div`
 
             > * {
                 display : flex;
-                width : 40px;
-                height : 40px;
+                width : 30px;
+                height : 30px;
                 justify-content : center;
                 align-items : center;
                 color: var(--neutral-dark-medium, #494A50);
@@ -138,12 +139,12 @@ const DatepickerWrapper = styled.div`
             }
 
             .react-datepicker__day--selected{
-                border-radius: 15px;
+                border-radius: 8px;
                 font-size: 15px;
                 background: var(--highlight-darkest, #006FFD);
                 display: flex;
-                width: 40px;
-                height: 40px;
+                width: 30px;
+                height: 30px;
                 justify-content: center;
                 align-items: center;
                 color : #fff;
@@ -168,8 +169,6 @@ const YearMonthSelect = styled.select<{width?: number}>`
   background-color: #fff; /* 배경 색상 */
   border-radius: 5px; /* 테두리 둥글게 */
   padding: 5px;
-
-
 `;
 
 
