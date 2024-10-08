@@ -164,7 +164,7 @@ const StockHeaderTemplate = () => {
   return (
     <HeaderWrapper>
       <>
-        {isDifferentDate() == false && stockDataInfo ? (
+        {isDifferentDate() === false && stockDataInfo ? (
           <CustomHook
             stockDataInfo={stockDataInfo}
             setStockDataInfo={setStockDataInfo}

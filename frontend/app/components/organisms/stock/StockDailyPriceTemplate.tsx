@@ -16,7 +16,6 @@ const StockDailyPriceTemplate = () => {
   return (
     <>
       <Container>
-        {/* <StockDailyPriceTitle /> */}
         <StockDailyPriceList />
       </Container>
     </>

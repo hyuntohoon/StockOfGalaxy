@@ -37,6 +37,11 @@ const Option = styled.div`
   cursor: pointer;
 `;
 
+const CustomHook = ({ stock_code, chart, type }) => {
+  useKRChartWebSocket(stock_code, chart, type);
+  return <></>;
+};
+
 const ChartTemplate = () => {
   const [chartContainerRef, setChartContainerRef] = useState(null);
   const [chart, setChart] = useState<any>(null);
@@ -48,9 +53,6 @@ const ChartTemplate = () => {
   useEffect(() => {
     if (chartContainerRef) {
       const newChart = init(chartContainerRef);
-
-      // newChart.createIndicator("MA", false, { id: "candle_pane" });
-      // newChart.createIndicator("VOL");
 
       newChart?.setStyles({
         grid: {
@@ -101,8 +103,6 @@ const ChartTemplate = () => {
     changeRate: number | null;
   }
 
-  useKRChartWebSocket(stock_code, chart, type);
-
   const changeType = async (type: string) => {
     chart?.clearData();
     setType(type);
@@ -116,11 +116,36 @@ const ChartTemplate = () => {
     }
   };
 
+  const isDifferentDate = () => {
+    const currentDate = new Date();
+    const formattedCurrentDate = `${currentDate.getFullYear()}${(
+      currentDate.getMonth() + 1
+    )
+      .toString()
+      .padStart(2, "0")}${currentDate.getDate().toString().padStart(2, "0")}`;
+
+    return formattedCurrentDate !== date;
+  };
+
   return (
     <>
+      <>
+        {/* isDifferentDate() === false && */}
+        {chart ? (
+          <CustomHook stock_code={stock_code} chart={chart} type={type} />
+        ) : (
+          ""
+        )}
+      </>
       <Container>
         <OptionContainer>
-          <Option onClick={() => changeType("minute")}>1분</Option>
+          <>
+            {isDifferentDate() === false ? (
+              <Option onClick={() => changeType("minute")}>1분</Option>
+            ) : (
+              ""
+            )}
+          </>
           <Option onClick={() => changeType("D")}>일</Option>
           <Option onClick={() => changeType("M")}>월</Option>
           <Option onClick={() => changeType("Y")}>년</Option>

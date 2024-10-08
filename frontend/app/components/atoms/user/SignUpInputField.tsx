@@ -74,7 +74,7 @@ const SignUpInputField: React.FC<SignUpInputFieldProps> = ({
   } else if (placeholder === "비밀번호") {
     errorMessage = validatePassword(userId)
       ? ""
-      : "영문, 숫자를 포함한 6자 이상의 비밀번호를 입력해주세요.";
+      : "영문, 숫자, 특수문자를 포함한 6자 이상의 비밀번호를 입력해주세요.";
   } else if (placeholder === "비밀번호 확인") {
     errorMessage =
       password === passwordCheck ? "" : "비밀번호가 일치하지 않습니다.";
