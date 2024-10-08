@@ -18,6 +18,7 @@ import RocketModal from "@/app/components/organisms/Modal/RocketModal";
 import { getTop7RocketsApi } from "@/app/utils/apis/rocket";
 import { RocketData } from "@/app/types/rocket";
 import { ErrorBoundary } from "react-error-boundary";
+import CustomCalendar from "@/app/components/organisms/planet/CustomCalendar"
 
 // 임시 뉴스 데이터
 const dummyNewsData: News[] = [
@@ -39,6 +40,13 @@ const dummyNewsData: News[] = [
   },
 ];
 
+const formatDate = (dateString:string) => {
+  const year = parseInt(dateString.substring(0, 4), 10);
+  const month = parseInt(dateString.substring(4, 6), 10) - 1; // 월은 0부터 시작하므로 -1 필요
+  const day = parseInt(dateString.substring(6, 8), 10);
+  return new Date(year, month, day);
+}
+
 const NewsPage: React.FC = (props: any) => {
   const { setDate } = useDate();
   const { stock, date } = props.params;
@@ -54,6 +62,9 @@ const NewsPage: React.FC = (props: any) => {
   const [stockInfo, setStockInfo] = useState<Stock>();
   const [isRocketModalOpen, setIsRocketModalOpen] = useState(false);
   const [rocketData, setRocketData] = useState<RocketData[]>([]);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(formatDate(date)); // 선택된 날짜 상태
+  const [name, setName] = useState<string>("");
+
 
   const fetchRocketData = async () => {
     try {
@@ -65,9 +76,32 @@ const NewsPage: React.FC = (props: any) => {
     }
   };
 
+  const DateToString = (date: Date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}${month}${day}`;
+  }
+  
+
   useEffect(() => {
     fetchRocketData();
   }, [stock]);
+
+  useEffect(() => {
+    const fetchPlanetData = async (stockName: string) => {
+      try {
+        console.log("요청", stockName, date);
+        const res = await getPlanetNewsWithContent(DateToString(selectedDate), stockName);
+        // planetNews가 비어있으면 dummy 데이터로 설정
+        setPlanetNews(res.length > 0 ? res : dummyNewsData);
+      } catch (error) {
+        console.error("Error fetching news data:", error);
+        setPlanetNews(dummyNewsData); // 에러 발생 시 dummy 데이터로 설정
+      }
+    };
+    fetchPlanetData(name);
+  }, [selectedDate])
 
   useEffect(() => {
     const fetchStockData = async () => {
@@ -82,6 +116,7 @@ const NewsPage: React.FC = (props: any) => {
     const getName = async () => {
       try {
         const name = await getStockName(stock);
+        setName(name); // API에서 받은 stock name를 저장
         return name;
       } catch (error) {
         console.error("Error fetching stock name:", error);
@@ -91,7 +126,7 @@ const NewsPage: React.FC = (props: any) => {
     const fetchPlanetData = async (stockName: string) => {
       try {
         console.log("요청", stockName, date);
-        const res = await getPlanetNewsWithContent(date, stockName);
+        const res = await getPlanetNewsWithContent(DateToString(selectedDate), stockName);
         // planetNews가 비어있으면 dummy 데이터로 설정
         setPlanetNews(res.length > 0 ? res : dummyNewsData);
       } catch (error) {
@@ -129,7 +164,7 @@ const NewsPage: React.FC = (props: any) => {
       await fetchStockData();
       const response = await getName(); // `await` 추가
       await fetchSpaceKeywords();
-      await fetchPlanetData(response);
+      await fetchPlanetData(name);
       await fetchSpaceData();
     };
 
@@ -151,6 +186,8 @@ const NewsPage: React.FC = (props: any) => {
     );
   };
 
+
+
   return (
     <ErrorBoundary FallbackComponent={FallbackComponent} onError={logError}>
       <PlanetDetailTemplate
@@ -158,6 +195,12 @@ const NewsPage: React.FC = (props: any) => {
         spaceNews={spaceNews}
         planetWord={planetWord}
         spaceWord={spaceWord}
+        calendar={
+        <CustomCalendar
+          selectedDate={selectedDate}
+          setDate={setSelectedDate}
+          today={formatDate(date)}
+        />}
       />
       <TimeMachineButtonGroup />
       <RocketButtonGroup onRocketClick={() => setIsRocketModalOpen(true)} />
