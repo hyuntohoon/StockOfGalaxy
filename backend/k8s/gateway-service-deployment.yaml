@@ -46,9 +46,9 @@ spec:
               mountPath: /elastic  # APM 에이전트가 위치할 경로
           resources:
             requests:
-              memory: "125Mi"  # 최소 메모리 요청
+              memory: "250Mi"  # 최소 메모리 요청
             limits:
-              memory: "250Mi"  # 최대 메모리 제한
+              memory: "500Mi"  # 최대 메모리 제한
       volumes:
         - name: elastic-apm-volume
           emptyDir: {}  # 파드 내 임시 디렉터리 사용
