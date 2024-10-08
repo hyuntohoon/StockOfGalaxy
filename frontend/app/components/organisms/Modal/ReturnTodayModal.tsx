@@ -2,6 +2,7 @@ import React from 'react';
 import styled from '@emotion/styled';
 import { useRouter } from 'next/navigation';
 import { IBM_Plex_Sans_KR } from 'next/font/google';
+import { useDate } from '@/app/store/date';
 
 const ibm = IBM_Plex_Sans_KR({ weight: '400', subsets: ['latin'] })
 
@@ -11,11 +12,14 @@ interface ReturnTodayModalProps {
 
 const ReturnTodayModal: React.FC<ReturnTodayModalProps> = ({ onClose }) => {
   const router = useRouter();
-
+  const { setDate } = useDate();
+  
   // 오늘 날짜로 이동하는 함수
   const handleTodayRedirect = () => {
     const today = new Date();
     const formattedDate = today.toISOString().slice(0, 10).replace(/-/g, '');
+    
+    setDate(formattedDate); // 날짜 설정
 
     router.push(`/main/${formattedDate}`);
     onClose();

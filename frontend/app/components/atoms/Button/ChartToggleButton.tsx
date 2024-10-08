@@ -82,13 +82,12 @@ const ChartToggleButton: React.FC = () => {
 
   return (
     <>
-      {/* 토글 스위치 UI */}
-      <div 
-        style={{ position: "fixed", top: "27.5px", right: "28px", zIndex: 100000 }}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-      >
-        <ToggleSwitch>
+     {/* 토글 스위치 UI */}
+     <div style={{ position: "fixed", top: "27.5px", right: "28px", zIndex: 100000 }}>
+        <ToggleSwitch
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
           <input type="checkbox" checked={isStockHeaderOpen} onChange={handleToggleChange} />
           <span />
         </ToggleSwitch>
