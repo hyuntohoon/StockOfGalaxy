@@ -31,7 +31,7 @@ public class NewsConsumer {
     private final DailyKeywordFrequencyRepository dailyKeywordFrequencyRepository;
     private final DailyStockFrequencyRepository dailyStockFrequencyRepository;
 
-    @KafkaListener(topics = "NEWS2222", groupId = "News", containerFactory = "newsKafkaListenerContainerFactory")
+    @KafkaListener(topics = "NEWS-Topic", groupId = "News", containerFactory = "newsKafkaListenerContainerFactory")
     public void consumeNewsMessage(NewsConsumerResponseDTO newsConsumerResponseDTO, Acknowledgment ack) {
         try {
             // NewsCategory가 null일 경우 "기타" 카테고리로 설정
@@ -61,7 +61,7 @@ public class NewsConsumer {
         }
     }
 
-    @KafkaListener(topics = "DailyKeywordFrequency-Test3", groupId = "News", containerFactory = "dailyKeywordFrequencyKafkaListenerContainerFactory")
+    @KafkaListener(topics = "DailyKeywordFrequency-Topic", groupId = "News", containerFactory = "dailyKeywordFrequencyKafkaListenerContainerFactory")
     public void dailyKeywordFrequencyMessage(DailyKeywordFrequencyResponseDTO dailyKeywordFrequencyResponseDTO, Acknowledgment ack) {
         try {
             // DTO를 엔티티로 변환
@@ -77,7 +77,7 @@ public class NewsConsumer {
         }
     }
 
-    @KafkaListener(topics = "DailyStockFrequency", groupId = "News", containerFactory = "dailyStockFrequencyKafkaListenerContainerFactory")
+    @KafkaListener(topics = "DailyStockFrequency-Topic", groupId = "News", containerFactory = "dailyStockFrequencyKafkaListenerContainerFactory")
     public void dailyStockFrequencyMessage(DailyStockFrequencyResponseDTO dailyStockFrequencyResponseDTO, Acknowledgment ack) {
         try {
 //             DTO를 엔티티로 변환 (필요한 경우)
