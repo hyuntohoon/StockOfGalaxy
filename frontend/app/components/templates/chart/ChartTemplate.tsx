@@ -25,16 +25,26 @@ const ChartContainer = styled.div`
 `;
 
 const OptionContainer = styled.div`
-  display: flex;
-  flex-direction: row;
+  display: grid;
+  grid-template-columns: 8fr 1fr 1fr 1fr 1fr;
   gap: 10px;
+  padding: 10px 20px;
+  align-items: center;
 `;
 
 const Option = styled.div`
   background-color: white;
-  padding: 10px;
+  padding: 5px;
   border-radius: 5px;
   cursor: pointer;
+  text-align: center;
+`;
+
+const SubTitle = styled.div`
+  font-size: 20px;
+  font-weight: bold;
+  font-family: "Noto Sans KR", sans-serif;
+  color: black;
 `;
 
 const CustomHook = ({ stock_code, chart, type }) => {
@@ -48,7 +58,7 @@ const ChartTemplate = () => {
   const [type, setType] = useState("Y");
   const { stock, date } = useParams();
   const stock_code = Array.isArray(stock) ? stock[0] : stock ?? "005930";
-  const currentDate = date ?? "20241004";
+  const currentDate = date ?? "20241008";
 
   useEffect(() => {
     if (chartContainerRef) {
@@ -82,7 +92,7 @@ const ChartTemplate = () => {
 
       const initChartData = async () => {
         const dataList = await getPastStockData(stock_code, type);
-        if (!dataList) return;
+        console.log(dataList);
         newChart?.applyNewData(dataList);
         setChart(newChart);
       };
@@ -139,6 +149,7 @@ const ChartTemplate = () => {
       </>
       <Container>
         <OptionContainer>
+          <SubTitle>종목 차트</SubTitle>
           <>
             {isDifferentDate() === false ? (
               <Option onClick={() => changeType("minute")}>1분</Option>
