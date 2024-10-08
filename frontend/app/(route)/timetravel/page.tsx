@@ -98,25 +98,48 @@ const TimeTravel = () => {
       // 비디오 재생 상태 설정 및 4초 후 페이지 이동
       setIsVideoPlaying(true);
       setTimeout(() => {
-        setIsVideoPlaying(false); // 비디오 재생 중지
         router.push(`/main/${newDate}`); // 페이지 이동
       }, 4500); // 4초 후 이동
     }
   };
 
   const toggleChartVisibility = () => setIsChartVisible((prev) => !prev);
-
   useEffect(() => {
     const fetchInitialData = async () => {
-      const initialData = await getTimeChart("20240101", "20240501");
+      // 오늘 이전 7일간의 데이터를 먼저 가져옴
+      const startDate7DaysAgo = new Date();
+      startDate7DaysAgo.setDate(today.getDate() - 7);
+      const formattedStartDate7DaysAgo = formatDate(startDate7DaysAgo);
+  
+      // 오늘 날짜 이전 7일간 데이터 가져오기
+      const initialData = await getTimeChart(formattedStartDate7DaysAgo, formatDate(today));
       const formattedInitialData = initialData.stockVolumeAndNewsList.map((item: any) => ({
         date: item.date,
         newsCount: item.articleCount * 10,
         traffic: parseInt(item.totalStockVolume, 10) % 10000,
         topStocks: item.top3Stocks,
       }));
+  
+      // 첫 번째 데이터만 먼저 화면에 표시
       setChartData(formattedInitialData.reverse());
+  
+      // 비동기적으로 오늘 이전 1년 데이터를 받아서 추가
+      const startDate1YearAgo = new Date();
+      startDate1YearAgo.setFullYear(today.getFullYear() - 1);
+      const formattedStartDate1YearAgo = formatDate(startDate1YearAgo);
+  
+      const olderData = await getTimeChart(formattedStartDate1YearAgo, formattedStartDate7DaysAgo);
+      const formattedOlderData = olderData.stockVolumeAndNewsList.map((item: any) => ({
+        date: item.date,
+        newsCount: item.articleCount * 10,
+        traffic: parseInt(item.totalStockVolume, 10) % 10000,
+        topStocks: item.top3Stocks,
+      }));
+  
+      // 기존 데이터에 1년 데이터를 추가
+      setChartData(prevData => [...prevData, ...formattedOlderData.reverse()]);
     };
+  
     fetchInitialData();
   }, []);
 
@@ -128,7 +151,7 @@ const TimeTravel = () => {
             <source src="/videos/move.mp4" type="video/mp4" />
             Your browser does not support the video tag.
           </FullscreenVideo>
-          {/* 이동 중일 때 표시할 텍스트 */}
+          
           <MovingText>{`${formatTravelDate(selectedDate!)}로 이동하는 중...`}</MovingText>
         </VideoContainer>
       )}
