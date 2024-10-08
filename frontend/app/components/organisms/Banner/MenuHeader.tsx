@@ -1,7 +1,7 @@
 "use client";
 
+import React, { useState, useEffect, useRef } from 'react';
 import styled from '@emotion/styled';
-import { useState, useEffect, useRef } from 'react';
 import HomeButtonGroup from '../../molecules/ButtonGroup/Header/HomeButtonGroup';
 import ReturnTodayButtonGroup from '../../molecules/ButtonGroup/Header/ReturnTodayButtonGroup';
 import SearchIconButtonGroup from '../../molecules/ButtonGroup/Header/SearchIconButtonGroup';
@@ -9,6 +9,7 @@ import MyIconButtonGroup from '../../molecules/ButtonGroup/Header/MyIconButtonGr
 import SignInButtonGroup from '../../molecules/ButtonGroup/Header/SignInButtonGroup';
 import MenuHeaderModal from '../Modal/MenuHeaderModal';
 import { useIsLoggedIn } from '@/app/store/userSlice';
+import ReturnTodayModal from '../Modal/ReturnTodayModal';
 
 // 슬라이딩 애니메이션을 위한 트랜지션 시간
 const TRANSITION_DURATION = '0.3s';
@@ -51,7 +52,10 @@ const MenuHeaderWrapper = styled.div<{ isOpen: boolean }>`
 
 const MenuHeader: React.FC = () => {
   const { isLoggedIn } = useIsLoggedIn();
-  const [isModalOpen, setIsModalOpen] = useState(false);  
+  
+  // 각각의 모달 상태 관리
+  const [isReturnTodayModalOpen, setIsReturnTodayModalOpen] = useState(false);  
+  const [isMenuHeaderModalOpen, setIsMenuHeaderModalOpen] = useState(false);  
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
 
@@ -59,30 +63,26 @@ const MenuHeader: React.FC = () => {
   const modalRef = useRef<HTMLDivElement>(null);
   const myIconRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (!isMenuOpen) {
-      setIsModalOpen(false);
-    }
-  }, [isMenuOpen]);
-
-  const toggleModal = () => {
+  const toggleMenuHeaderModal = () => {
     if (myIconRef.current) {
       const rect = myIconRef.current.getBoundingClientRect();
       setModalPosition({ top: rect.top, left: rect.right - 15 });
     }
-    setIsModalOpen(prev => !prev);
+    setIsMenuHeaderModalOpen(prev => !prev);
   };
 
   const handleMouseLeave = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     const target = event.relatedTarget as Node | null;
 
-    // 메뉴와 모달 영역을 확인하여 마우스가 두 영역 모두를 벗어났을 때만 메뉴와 모달을 닫음
-    if (
-      (!menuRef.current || (target && !menuRef.current.contains(target))) &&
-      (!modalRef.current || (target && !modalRef.current.contains(target)))
-    ) {
-      setIsMenuOpen(false);
-      setIsModalOpen(false);
+    if (!isReturnTodayModalOpen && !isMenuHeaderModalOpen) {
+      // 모달이 열려 있지 않으면 메뉴 닫기
+      if (
+        (!menuRef.current || (target && !menuRef.current.contains(target))) &&
+        (!modalRef.current || (target && !modalRef.current.contains(target)))
+      ) {
+        setIsMenuOpen(false);
+        setIsMenuHeaderModalOpen(false);
+      }
     }
   };
 
@@ -94,7 +94,8 @@ const MenuHeader: React.FC = () => {
       !modalRef.current.contains(event.target as Node)
     ) {
       setIsMenuOpen(false);
-      setIsModalOpen(false);
+      setIsMenuHeaderModalOpen(false);
+      setIsReturnTodayModalOpen(false);  // ReturnTodayModal 닫기
     }
   };
 
@@ -116,12 +117,12 @@ const MenuHeader: React.FC = () => {
           isOpen={isMenuOpen}
           ref={menuRef}
         >
-          <ReturnTodayButtonGroup />
+          <ReturnTodayButtonGroup openModal={() => setIsReturnTodayModalOpen(true)} />  {/* openModal prop 전달 */}
           <HomeButtonGroup />
           <SearchIconButtonGroup />
           {isLoggedIn ? (
             <div ref={myIconRef} style={{ marginBottom: 0 }}>
-              <MyIconButtonGroup onClick={toggleModal} />
+              <MyIconButtonGroup onClick={toggleMenuHeaderModal} />
             </div>
           ) : (
             <SignInButtonGroup />
@@ -129,13 +130,19 @@ const MenuHeader: React.FC = () => {
         </MenuHeaderWrapper>
       </Container>
 
-      {isModalOpen && (
-        <MenuHeaderModal ref={modalRef}
-          position={modalPosition} 
-          onMouseEnter={() => setIsMenuOpen(true)}  // 모달에 마우스가 올라가면 메뉴를 열어둠
-          onMouseLeave={handleMouseLeave} // 모달에서 마우스가 벗어나면 닫음
-          setIsModalOpen={setIsModalOpen}
+      {isMenuHeaderModalOpen && (
+        <MenuHeaderModal
+          ref={modalRef}
+          position={modalPosition}
+          onMouseEnter={() => setIsMenuOpen(true)}
+          onMouseLeave={handleMouseLeave}
+          setIsModalOpen={setIsMenuHeaderModalOpen}
         />
+      )}
+
+      {/* ReturnTodayModal */}
+      {isReturnTodayModalOpen && (
+        <ReturnTodayModal onClose={() => setIsReturnTodayModalOpen(false)} />
       )}
     </>
   );
