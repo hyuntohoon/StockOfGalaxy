@@ -3,8 +3,8 @@
 import { useState } from 'react';
 import styled from '@emotion/styled';
 import StockHeader from '../../organisms/Banner/StockHeader';
+import AlienGuideInfoBox from '../Text/AlienGuideInfoBox';
 
-// 서비스 테마에 맞춘 토글 스위치 스타일 정의
 const ToggleSwitch = styled.label`
   z-index: 10010;
   position: relative;
@@ -14,6 +14,12 @@ const ToggleSwitch = styled.label`
   margin: 10px;
   box-shadow: 0px 0px 15px rgba(247, 255, 210, 0.5);
   border-radius: 50px;
+  transition: transform 0.2s;
+  
+  /* 마우스 호버 시 확대 효과 */
+  &:hover {
+    transform: scale(1.1); /* 살짝 커지도록 설정 */
+  }
 
   & input {
     opacity: 0;
@@ -62,7 +68,13 @@ const ToggleSwitch = styled.label`
 
 const ChartToggleButton: React.FC = () => {
   // 상태 관리
+  const [isHovered, setIsHovered] = useState(false); // 마우스 호버 상태 관리
   const [isStockHeaderOpen, setIsStockHeaderOpen] = useState(false);
+
+  const info = [
+    'CLICK!🖱️',
+    '시가총액 기준 실시간 차트를 확인해보세요!'
+  ];
 
   const handleToggleChange = () => {
     setIsStockHeaderOpen(!isStockHeaderOpen);
@@ -71,11 +83,21 @@ const ChartToggleButton: React.FC = () => {
   return (
     <>
       {/* 토글 스위치 UI */}
-      <div style={{ position: "fixed", top: "27.5px", right: "28px", zIndex: 100000 }}>
+      <div 
+        style={{ position: "fixed", top: "27.5px", right: "28px", zIndex: 100000 }}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
         <ToggleSwitch>
           <input type="checkbox" checked={isStockHeaderOpen} onChange={handleToggleChange} />
           <span />
         </ToggleSwitch>
+        {/* StockHeader가 열려있지 않을 때 InfoBox 표시 */}
+        {!isStockHeaderOpen && (
+          <InfoBox isVisible={isHovered}>
+            <AlienGuideInfoBox info={info} />
+          </InfoBox>
+        )}
       </div>
 
       {/* StockHeader 토글 상태에 따라 열림 */}
@@ -83,5 +105,21 @@ const ChartToggleButton: React.FC = () => {
     </>
   );
 };
+
+const InfoBox = styled.div<{ isVisible: boolean }>`
+  position: absolute;
+  top: 70px; /* 버튼 아래에 표시되도록 위치 조정 */
+  right: 5px;
+  width: 290px;
+  background-color: #000000ea;
+  padding: 10px;
+  border-radius: 16px;
+  box-shadow: 0px 0px 12px rgba(75, 75, 75, 0.217);
+  
+  /* 애니메이션 추가 */
+  opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
+  transform: ${({ isVisible }) => (isVisible ? 'translateY(0)' : 'translateY(-10px)')};
+  transition: opacity 0.4s ease, transform 0.4s ease;
+`;
 
 export default ChartToggleButton;
