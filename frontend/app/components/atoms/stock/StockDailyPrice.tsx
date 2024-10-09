@@ -57,7 +57,7 @@ const StockDailyPrice = ({
       <Column>{formatStockDate(stockDate)}</Column>
       <Column>{formatPrice(endPrice)}원</Column>
       <PriceChangeColumn isPositive={isPositive}>
-        {prdyVrssSign == "5" ? "-" : "+"}
+        {prdyVrssSign == "5" ? " " : "+"}
         {formattedCtrt}%
       </PriceChangeColumn>
       <Column>{formatPrice(startPrice)}원</Column>

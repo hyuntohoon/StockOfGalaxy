@@ -14,7 +14,7 @@ import { getHeaderStockData } from "@/app/utils/apis/stock/getStockData";
 import { find } from "lodash";
 
 const ParentContainer = styled.div`
-  min-width: 950px;
+  min-width: 980px;
   height: 50vh;
   overflow-y: auto;
   background-color: #111;
