@@ -16,5 +16,9 @@ export const dateState = atom({
 
 export const useDate = () => {
   const [date, setDate] = useRecoilState(dateState);
-  return { date, setDate };
+  const today = getTodayDate();
+
+  // 현재 date가 오늘 날짜인지 확인
+  const isToday = date === today;
+  return { date, setDate, isToday};
 }
