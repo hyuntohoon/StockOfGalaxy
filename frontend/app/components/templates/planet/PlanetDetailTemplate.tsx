@@ -15,10 +15,7 @@ import FinancialMetricsChart from "../../molecules/stock/FinancialMetricsChart";
 import StockDailyPriceTemplate from "../../organisms/stock/StockDailyPriceTemplate";
 import NewsModal from "./NewsModal";
 
-const ChartContainer = styled.div`
-  width: 800px;
-  height: auto;
-`;
+
 
 interface PlanetDetailTemplateProps {
   planetNews: News[]; // 행성 뉴스 데이터
@@ -26,7 +23,20 @@ interface PlanetDetailTemplateProps {
   planetWord: any[]; // 첫 번째 워드 클라우드 데이터 (행성 관련)
   spaceWord: any[]; // 두 번째 워드 클라우드 데이터 (우주 관련)
   calendar: React.ReactNode;
+  stockName: string,
 }
+
+
+const StyledParagraph = styled.p`
+  padding-left: 20px; /* 양옆 패딩 적용 */
+  padding-right: 20px;
+  font-size: 16px; /* 적절한 글씨 크기 */
+  text-align: center; /* 중앙 정렬 */
+  margin-top: 15px; /* 줄 간격 */
+  margin-bottom: 0px;
+  color: black; /* 텍스트 색상 */
+  border-radius: 8px; /* 모서리 둥글게 */
+`;
 
 
 const PlanetDetailTemplate: React.FC<PlanetDetailTemplateProps> = ({
@@ -35,6 +45,7 @@ const PlanetDetailTemplate: React.FC<PlanetDetailTemplateProps> = ({
   planetWord,
   spaceWord,
   calendar,
+  stockName
 }) => {
   const homeRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<HTMLDivElement>(null);
@@ -192,6 +203,9 @@ const PlanetDetailTemplate: React.FC<PlanetDetailTemplateProps> = ({
         <SectionContainer ref={planetNewsRef} >
           <div className="news-list" ref={listRef}>
             {/* 행성 뉴스 데이터 렌더링 */}
+            <StyledParagraph>
+              행성 소식에서는 <strong>{stockName}</strong> 관련 뉴스를 확인할 수 있어요!
+            </StyledParagraph>
             <NewsList news={planetNews} onClick={handleNewsClick}/>
           </div>
           {/* <div className="word-cloud">
@@ -205,6 +219,7 @@ const PlanetDetailTemplate: React.FC<PlanetDetailTemplateProps> = ({
         <SectionContainer ref={spaceNewsRef}>
           <div className="news-list" ref={listRef2}>
             {/* 우주 뉴스 데이터 렌더링 */}
+            <StyledParagraph>우주 소식에서는 여행 중인 날짜의 모든 뉴스를 조회할 수 있어요!</StyledParagraph>
             <NewsList news={spaceNews} onClick={handleNewsClick}/>
           </div>
           <div className="word-cloud">

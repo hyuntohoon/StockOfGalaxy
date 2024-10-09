@@ -133,7 +133,7 @@ const NewsPage: React.FC = (props: any) => {
       setShowModal(true);
       const timer = setTimeout(() => {
         setShowModal(false);
-      }, 4000);
+      }, 3000);
       return () => clearTimeout(timer);
     }
   }, [name]); // name이 설정된 후에 모달 표시
@@ -227,6 +227,7 @@ const NewsPage: React.FC = (props: any) => {
         spaceNews={spaceNews}
         planetWord={planetWord}
         spaceWord={spaceWord}
+        stockName={name}
         calendar={
           <CustomCalendar
             selectedDate={selectedDate}

@@ -35,7 +35,7 @@ display: flex;
   top: 37px;
   left: 40px;
   z-index: 1000;
-  width: 140px;
+  width: fit;
   height: 60px;
 `;
 

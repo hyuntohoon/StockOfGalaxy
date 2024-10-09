@@ -3,11 +3,12 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css'; // 기본 스타일 import
 import styled from '@emotion/styled';
 import moment from "moment";
-import {useState} from "react";
+import { useState } from "react";
 import { IBM_Plex_Sans_KR } from 'next/font/google';
 
 // IBM 글씨체 적용
 const ibm = IBM_Plex_Sans_KR({ weight: '500', subsets: ['latin'] });
+
 export const StyledCalendarWrapper = styled.div`
   width: 100%;
   display: flex;
@@ -118,7 +119,6 @@ export const StyledCalendarWrapper = styled.div`
   }
 `;
 
-
 export const StyledCalendar = styled(Calendar)``;
 
 /* 오늘 버튼 스타일 */
@@ -170,11 +170,8 @@ interface CustomCalendarProps {
 
 const CustomCalendar: React.FC<CustomCalendarProps> = ({ selectedDate, setDate, today }) => {
 
-  const [activeStartDate, setActiveStartDate] = useState<Date | null>(
-    new Date()
-  );
-
-  const realToday = new Date();
+  // 캘린더의 초기 날짜와 선택된 날짜를 today 값으로 설정
+  const [activeStartDate, setActiveStartDate] = useState<Date | null>(today);
 
   const handleTodayClick = () => {
     const today = new Date();
@@ -183,24 +180,9 @@ const CustomCalendar: React.FC<CustomCalendarProps> = ({ selectedDate, setDate, 
   };
 
   return (
-    // <StyledCalendar
-    //   onChange={setDate}
-    //   value={selectedDate}
-    //   formatDay={(locale, date) => moment(date).format("D")}
-    //   tileClassName={({ date }) =>
-    //     date.toDateString() === today.toDateString()
-    //       ? 'react-calendar__tile--now'
-    //       : ''
-    //   }
-    //   tileContent={({ date }) => (
-    //     <div>
-    //       {date.toDateString() === today.toDateString() && <div>오늘</div>}
-    //     </div>
-    //   )}
-    // />
     <StyledCalendarWrapper className={ibm.className}>
         <StyledCalendar
-          value={selectedDate}
+          value={selectedDate || today}
           onChange={setDate}
           formatDay={(locale, date) => moment(date).format("D")}
           formatYear={(locale, date) => moment(date).format("YYYY")}
@@ -210,14 +192,10 @@ const CustomCalendar: React.FC<CustomCalendarProps> = ({ selectedDate, setDate, 
           next2Label={null}
           prev2Label={null}
           minDetail="year"
-          // 오늘 날짜로 돌아오는 기능을 위해 필요한 옵션 설정
-          activeStartDate={
-            activeStartDate === null ? undefined : activeStartDate
-          }
+          activeStartDate={activeStartDate || undefined}
           onActiveStartDateChange={({ activeStartDate }) =>
             setActiveStartDate(activeStartDate)
           }
-          // 오늘 날짜에 '오늘' 텍스트 삽입하고 출석한 날짜에 점 표시를 위한 설정
           tileContent={({ date, view }) => {
             let html = [];
 
@@ -229,18 +207,10 @@ const CustomCalendar: React.FC<CustomCalendarProps> = ({ selectedDate, setDate, 
               html.push(<StyledDot key={moment(date).format("YYYY-MM-DD")} />);
             }
 
-            else if (
-              date.getMonth() === realToday.getMonth() &&
-              date.getDate() === realToday.getDate()
-            ) {
-              html.push(<StyledToday key={"today"}>오늘</StyledToday>);
-            }
-            
             return <>{html}</>;
           }}
         />
-      
-      </StyledCalendarWrapper>
+    </StyledCalendarWrapper>
   );
 };
 
