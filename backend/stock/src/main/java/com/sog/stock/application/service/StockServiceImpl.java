@@ -399,13 +399,12 @@ public class StockServiceImpl implements StockService {
         Stock stock = stockRepository.findById(stockCode)
             .orElseThrow(() -> new RuntimeException("Stock not found"));
 
-        List<Rocket> rockets = rocketRepository.findAllByStockOrderByCreatedAtDesc(
+        List<Rocket> rockets = rocketRepository.findAllByStockRAndRocketIdDesc(
             stock.getStockCode());
 
         // Mono 리스트를 Flux로 변환하여 모두 처리
         return Flux.fromIterable(rockets)
-            .sort(Comparator.comparingLong(Rocket::getRocketId).reversed()) // 추가적인 정렬 확인
-            .flatMap(this::buildRocketResponse) // 각 rocket을 비동기적으로 처리
+            .concatMap(this::buildRocketResponse) // 각 rocket을 비동기적으로 처리
             .collectList() // 처리된 RocketResponseDTO 리스트를 다시 Mono로 변환
             .map(RocketResponseListDTO::new); // 리스트를 RocketResponseListDTO로 변환
     }
@@ -467,8 +466,7 @@ public class StockServiceImpl implements StockService {
 
         // Mono 리스트를 Flux로 변환하여 모두 처리
         return Flux.fromIterable(rockets)
-            .sort(Comparator.comparingLong(Rocket::getRocketId).reversed()) // 추가적인 정렬 확인
-            .flatMap(this::buildRocketResponse) // 각 rocket을 비동기적으로 처리
+            .concatMap(this::buildRocketResponse) // 각 rocket을 비동기적으로 처리
             .collectList() // 처리된 RocketResponseDTO 리스트를 다시 Mono로 변환
             .map(RocketResponseListDTO::new); // 리스트를 RocketResponseListDTO로 변환
     }
