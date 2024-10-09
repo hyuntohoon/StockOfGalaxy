@@ -14,5 +14,4 @@ public interface StockRepository extends JpaRepository<Stock, String> {
     // 종목명으로 종목을 검색 (부분 일치)
     @Query("SELECT s FROM Stock s WHERE s.corpName LIKE %:name%")
     List<Stock> findAllByPartialCorpName(@Param("name") String name);
-
 }
