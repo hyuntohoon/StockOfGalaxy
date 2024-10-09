@@ -19,5 +19,4 @@ public interface RocketRepository extends JpaRepository<Rocket, Integer> {
     @Query(value = "SELECT * FROM rocket WHERE stock_code = :stockCode AND is_deleted = false ORDER BY rocket_created_at DESC, rocket_id ASC LIMIT 7", nativeQuery = true)
     List<Rocket> findTop7ByStock(@Param("stockCode") String stockCode);
 
-
 }
