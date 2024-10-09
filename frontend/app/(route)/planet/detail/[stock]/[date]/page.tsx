@@ -105,7 +105,6 @@ const NewsPage: React.FC = (props: any) => {
     formatDate(date)
   ); // 선택된 날짜 상태
   const [name, setName] = useState<string>("");
-  const [showModal, setShowModal] = useState<boolean>(false); // 모달 표시 상태
 
   const fetchRocketData = async () => {
     try {
@@ -127,16 +126,7 @@ const NewsPage: React.FC = (props: any) => {
     fetchRocketData();
   }, [stock]);
 
-  // 모달 표시 로직 (name이 존재할 때만 모달 표시)
-  useEffect(() => {
-    if (name) {
-      setShowModal(true);
-      const timer = setTimeout(() => {
-        setShowModal(false);
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [name]); // name이 설정된 후에 모달 표시
+
 
   useEffect(() => {
     const fetchStockData = async () => {
@@ -151,24 +141,21 @@ const NewsPage: React.FC = (props: any) => {
     const fetchPlanetData = async (stockName: string) => {
       try {
         console.log("요청", stockName, date);
-        const res = await getPlanetNewsWithContent(
-          DateToString(selectedDate),
-          stockName
-        );
-        setPlanetNews(res.length > 0 ? res : dummyNewsData);
+        const res = await getPlanetNewsWithContent(DateToString(selectedDate), stockName);
+        setPlanetNews(res);
       } catch (error) {
         console.error("Error fetching news data:", error);
-        setPlanetNews(dummyNewsData);
+        // setPlanetNews(dummyNewsData);
       }
     };
 
     const fetchSpaceData = async () => {
       try {
         const res = await getSpaceNewsWithContent(date);
-        setSpaceNews(res.length > 0 ? res : dummyNewsData);
+        setSpaceNews(res);
       } catch (error) {
         console.error("Error fetching news data:", error);
-        setSpaceNews(dummyNewsData);
+        // setSpaceNews(dummyNewsData);
       }
     };
 
@@ -217,15 +204,7 @@ const NewsPage: React.FC = (props: any) => {
 
   return (
     <ErrorBoundary FallbackComponent={FallbackComponent} onError={logError}>
-      {/* 모달 백그라운드 */}
-      <ModalBackdrop isVisible={showModal} />
-      {/* 모달창 */}
-      {showModal && (
-        <ModalContainer isVisible={showModal}>
-          {formatDateToDisplay(selectedDate as Date)} 의 {name} 관련 주식 뉴스
-          정보입니다.
-        </ModalContainer>
-      )}
+      
       <PlanetDetailTemplate
         planetNews={planetNews}
         spaceNews={spaceNews}

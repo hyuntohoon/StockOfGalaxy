@@ -10,10 +10,11 @@ import { ContentContainer, SectionContainer } from "@/app/styles/planet";
 import ChartTemplate from "@/app/components/templates/chart/ChartTemplate";
 import StockInfoTemplate from "@/app/components/templates/stock/StockInfoTemplate";
 import styled from "@emotion/styled";
-import { News } from "@/app/types/planet";
+import { News,NewsDetail } from "@/app/types/planet";
 import FinancialMetricsChart from "../../molecules/stock/FinancialMetricsChart";
 import StockDailyPriceTemplate from "../../organisms/stock/StockDailyPriceTemplate";
 import NewsModal from "./NewsModal";
+import { getNewsDetail } from "@/app/utils/apis/news";
 
 
 
@@ -30,7 +31,7 @@ interface PlanetDetailTemplateProps {
 const StyledParagraph = styled.p`
   padding-left: 20px; /* 양옆 패딩 적용 */
   padding-right: 20px;
-  font-size: 16px; /* 적절한 글씨 크기 */
+  font-size: 20px; /* 적절한 글씨 크기 */
   text-align: center; /* 중앙 정렬 */
   margin-top: 15px; /* 줄 간격 */
   margin-bottom: 0px;
@@ -62,10 +63,22 @@ const PlanetDetailTemplate: React.FC<PlanetDetailTemplateProps> = ({
   const [activeSection, setActiveSection] = useState<string>("차트");
 
   const [modalOpen, setModalOpen] = useState(false);
-  const [selectedNews, setSelectedNews] = useState<News | null>(null); // 선택된 뉴스 상태
+  const [selectedNews, setSelectedNews] = useState<NewsDetail | null>(null); // 선택된 뉴스 상태
 
   const handleNewsClick = async (item: News) => {
-    setSelectedNews(item); // 선택된 뉴스 설정
+
+    if (item.newsId) {
+      const fetchNewsDetail = async () => {
+        try {
+          const newsData = await getNewsDetail(Number(item.newsId));
+          setSelectedNews(newsData);
+        } catch (error) {
+          console.error('Error fetching news detail:', error);
+        }
+      };
+      fetchNewsDetail();
+    }
+    // setSelectedNews(item); // 선택된 뉴스 설정
     setModalOpen(true); // 모달 열기
   };
 
@@ -230,7 +243,7 @@ const PlanetDetailTemplate: React.FC<PlanetDetailTemplateProps> = ({
 
       {/* 모달 컴포넌트 추가 */}
       {modalOpen && selectedNews && (
-        <NewsModal news={selectedNews} onClose={() => setModalOpen(false)} />
+        <NewsModal news={selectedNews} stockName={stockName} setSelectedNews={setSelectedNews} onClose={() => setModalOpen(false)} />
       )}
     </>
   );
