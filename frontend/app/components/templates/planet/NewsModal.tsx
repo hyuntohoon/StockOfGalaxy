@@ -313,7 +313,7 @@ const NewsModal: React.FC<NewsModalProps> = ({ news, onClose, stockName, setSele
         {loading && <LoadingSpinner />} {/* 요약 중일 때 로딩 애니메이션 표시 */}
         {showSummary && <AiSummary>{summary || "요약 결과가 없습니다."}</AiSummary>}
 
-        <NewsImage src={news.thumbnailImg} alt={news.title} />
+          {news.thumbnailImg !== "이미지 없음" && <NewsImage src={news.thumbnailImg}  alt={news.title} />}
 
         <NewsContent>
           {news.sentences &&
@@ -332,7 +332,7 @@ const NewsModal: React.FC<NewsModalProps> = ({ news, onClose, stockName, setSele
           <h3>{stockName} 관련 뉴스</h3>
           {planetNews.map((item) => (
             <NewsCard key={item.newsId} onClick={() => handleRelatedNewsClick(item)}>
-              <NewsCardImage src={item.thumbnailImg} alt={item.title} />
+              <NewsCardImage src={item.thumbnailImg === "이미지 없음" ? "/images/default.jpg" : item.thumbnailImg}  alt={item.title} />
               <NewsCardContent>
                 <NewsCardTitle>{item.title}</NewsCardTitle>
                 <NewsCardSummary>{item.content}</NewsCardSummary>
