@@ -1,30 +1,32 @@
 "use client";
 
 /** @jsxImportSource @emotion/react */
+
 import { useState, useEffect, useCallback, useRef } from "react";
+import { useRouter } from "next/navigation";
 import {
-    SearchContainer, 
-    SearchInputWrapper, 
-    SearchInput, 
-    SearchIcon, 
-    TabsContainer, 
-    Tab, 
-    SearchResultsContainer, 
-    SearchItem, 
-    // StockPrice, 
-    NewsDescription, 
-    NoResults, 
-    NewsInfo
-} from '@/app/styles/search';
+  SearchContainer,
+  SearchInputWrapper,
+  SearchInput,
+  SearchIcon,
+  TabsContainer,
+  Tab,
+  SearchResultsContainer,
+  SearchItem,
+  // StockPrice,
+  NewsDescription,
+  NoResults,
+  NewsInfo,
+} from "@/app/styles/search";
 import { stock_list } from "@/app/utils/apis/stock/findStockName";
-import { stockData } from '@/app/mocks/stockData';
-import useKRStockWebSocket from '@/app/hooks/useKRStockWebSocket';
-import formatPrice from '@/app/utils/apis/stock/formatPrice';
-import styled from '@emotion/styled';
-import { format } from 'path';
-import { News } from '@/app/types/planet';
-import NewsModal from '@/app/components/templates/planet/NewsModal';
-import { searchNewsWithTitle } from '@/app/utils/apis/news';
+import { stockData } from "@/app/mocks/stockData";
+import useKRStockWebSocket from "@/app/hooks/useKRStockWebSocket";
+import formatPrice from "@/app/utils/apis/stock/formatPrice";
+import styled from "@emotion/styled";
+import { format } from "path";
+import { News } from "@/app/types/planet";
+import NewsModal from "@/app/components/templates/planet/NewsModal";
+import { searchNewsWithTitle } from "@/app/utils/apis/news";
 
 const StockPriceContainer = styled.div`
   display: flex;
@@ -64,6 +66,7 @@ interface stockState {
 }
 
 const SearchPage = () => {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState("stock"); // 'stock' or 'news'
   const [searchTerm, setSearchTerm] = useState("");
   const [hasSearched, setHasSearched] = useState(false); // 검색 버튼(엔터)을 눌렀을 때만 true
@@ -128,23 +131,23 @@ const SearchPage = () => {
     },
   ];
 
-    const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString('ko-KR', {
-          year: 'numeric',
-          month: '2-digit',
-          day: '2-digit',
-        });
-      };
-    
-    // 뉴스 데이터 추가
-    const [newsResults, setNewsResults] = useState<News[]>([]);
-    const [page, setPage] = useState(0); // 페이지 상태
-    const [hasMore, setHasMore] = useState(true); // 추가 데이터 여부 상태
-    const [isLoading, setIsLoading] = useState(false); // 로딩 상태
-    const observer = useRef<IntersectionObserver | null>(null);
-    const lastNewsElementRef = useRef<HTMLDivElement | null>(null); // 마지막 뉴스 항목을 위한 ref
-    const [selectedNews, setSelectedNews] = useState<News | null>(null); // 선택된 뉴스 상태
-    const [modalOpen, setModalOpen] = useState(false); // 모달 열기 상태
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString("ko-KR", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
+  };
+
+  // 뉴스 데이터 추가
+  const [newsResults, setNewsResults] = useState<News[]>([]);
+  const [page, setPage] = useState(0); // 페이지 상태
+  const [hasMore, setHasMore] = useState(true); // 추가 데이터 여부 상태
+  const [isLoading, setIsLoading] = useState(false); // 로딩 상태
+  const observer = useRef<IntersectionObserver | null>(null);
+  const lastNewsElementRef = useRef<HTMLDivElement | null>(null); // 마지막 뉴스 항목을 위한 ref
+  const [selectedNews, setSelectedNews] = useState<News | null>(null); // 선택된 뉴스 상태
+  const [modalOpen, setModalOpen] = useState(false); // 모달 열기 상태
 
   // // 뉴스 데이터 추가
   // const router = useRouter();
@@ -209,170 +212,198 @@ const SearchPage = () => {
     };
   }, [lastNewsElementRef, hasMore, isLoading]);
 
+  const handleSearch = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      setHasSearched(true);
+      setHasMore(true);
+      setPage(0); // 페이지 초기화
+      setNewsResults([]); // 이전 검색 결과 초기화
+      fetchNews(0); // 뉴스 데이터 가져오기
+    }
+  };
 
-
-    const handleSearch = (e: React.KeyboardEvent) => {
-        if (e.key === 'Enter') {
-            setHasSearched(true);
-            setHasMore(true);
-            setPage(0); // 페이지 초기화
-            setNewsResults([]); // 이전 검색 결과 초기화
-            fetchNews(0); // 뉴스 데이터 가져오기
+  const fetchNews = useCallback(
+    async (currentPage: number) => {
+      if (!searchTerm.trim()) return;
+      try {
+        setIsLoading(true);
+        const response = await searchNewsWithTitle(searchTerm, currentPage, 10);
+        if (response.length < 10) {
+          setHasMore(false);
         }
+        setNewsResults((prev) => [...prev, ...response]);
+        setIsLoading(false);
+      } catch (error) {
+        console.error("뉴스 검색 실패:", error);
+        setIsLoading(false);
+      }
+    },
+    [searchTerm]
+  );
+
+  // 스크롤 시 마지막 뉴스 항목 감지
+  useEffect(() => {
+    if (observer.current) observer.current.disconnect();
+
+    observer.current = new IntersectionObserver(
+      (entries) => {
+        const target = entries[0];
+        if (target.isIntersecting && hasMore && !isLoading) {
+          setPage((prev) => prev + 1);
+        }
+      },
+      {
+        root: null, // 뷰포트 기준으로 설정
+        rootMargin: "0px",
+        threshold: 1.0, // 요소의 100%가 화면에 나타날 때만 trigger
+      }
+    );
+
+    if (lastNewsElementRef.current) {
+      observer.current.observe(lastNewsElementRef.current);
+    }
+
+    return () => {
+      if (observer.current) observer.current.disconnect();
     };
+  }, [lastNewsElementRef, hasMore, isLoading]);
 
-    const fetchNews = useCallback(async (currentPage: number) => {
-        if (!searchTerm.trim()) return;
-        try {
-            setIsLoading(true);
-            const response = await searchNewsWithTitle(searchTerm, currentPage, 10);
-            if (response.length < 10) {
-                setHasMore(false); 
-            }
-            setNewsResults(prev => [...prev, ...response]);
-            setIsLoading(false);
-        } catch (error) {
-            console.error('뉴스 검색 실패:', error);
-            setIsLoading(false);
-        }
-    }, [searchTerm]);
+  // 페이지 변경 시 새로운 데이터를 가져옵니다.
+  useEffect(() => {
+    if (page > 0) {
+      fetchNews(page);
+    }
+  }, [page, fetchNews]);
 
-    // 스크롤 시 마지막 뉴스 항목 감지
-    useEffect(() => {
-        if (observer.current) observer.current.disconnect();
+  useEffect(() => {
+    if (searchTerm) {
+      setHasSearched(true);
+      setHasMore(true);
+      setPage(0); // 페이지 초기화
+      setNewsResults([]); // 이전 검색 결과 초기화
+      fetchNews(0);
+    }
+  }, [searchTerm]);
 
-        observer.current = new IntersectionObserver((entries) => {
-            const target = entries[0];
-            if (target.isIntersecting && hasMore && !isLoading) {
-                setPage(prev => prev + 1);
-            }
-        }, {
-            root: null, // 뷰포트 기준으로 설정
-            rootMargin: '0px',
-            threshold: 1.0 // 요소의 100%가 화면에 나타날 때만 trigger
-        });
+  // 검색된 주식 필터링
+  const filteredStocks = stockDataInfo.filter(
+    (stock) =>
+      stock.stock_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      stock.stock_code?.includes(searchTerm)
+  );
 
-        if (lastNewsElementRef.current) {
-            observer.current.observe(lastNewsElementRef.current);
-        }
+  const moveDetailPage = (stock_code: string) => {
+    const currentDate = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+    router.push(`/planet/main/${stock_code}/${currentDate}`);
+  };
 
-        return () => {
-            if (observer.current) observer.current.disconnect();
-        };
-    }, [lastNewsElementRef, hasMore, isLoading]);
+  return (
+    <>
+      <SearchContainer hasSearched={hasSearched}>
+        <SearchInputWrapper hasSearched={hasSearched}>
+          <SearchIcon />
+          <SearchInput
+            type="text"
+            placeholder="검색어를 입력하세요"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            onKeyDown={handleSearch} // 엔터 입력 처리
+          />
+        </SearchInputWrapper>
 
-    // 페이지 변경 시 새로운 데이터를 가져옵니다.
-    useEffect(() => {
-        if (page > 0) {
-            fetchNews(page);
-        }
-    }, [page, fetchNews]);
+        <TabsContainer hasSearched={hasSearched}>
+          <Tab
+            active={activeTab === "stock"}
+            onClick={() => setActiveTab("stock")}
+          >
+            종목
+          </Tab>
+          <Tab
+            active={activeTab === "news"}
+            onClick={() => setActiveTab("news")}
+          >
+            뉴스
+          </Tab>
+        </TabsContainer>
 
-    useEffect(() => {
-           if(searchTerm){ setHasSearched(true);
-            setHasMore(true);
-            setPage(0); // 페이지 초기화
-            setNewsResults([]); // 이전 검색 결과 초기화
-            fetchNews(0); }
-    }, [searchTerm])
+        {/* 종목 탭 */}
+        {activeTab === "stock" && filteredStocks.length > 0 && (
+          <SearchResultsContainer>
+            {!hasSearched && <p>인기 종목</p>}
+            {filteredStocks.map((stock, index) => (
+              <SearchItem
+                key={index}
+                onClick={() => {
+                  moveDetailPage(stock.stock_code);
+                }}
+              >
+                <div>
+                  <strong>{stock.stock_name}</strong> ({stock.stock_code})
+                </div>
+                <StockPriceContainer>
+                  <StockPrice>
+                    {stock.currentPrice
+                      ? `${formatPrice(stock.currentPrice)}원`
+                      : ""}
+                  </StockPrice>
 
-    
-    // 검색된 주식 필터링
-    const filteredStocks = stockDataInfo.filter(stock => 
-        stock.stock_name?.toLowerCase().includes(searchTerm.toLowerCase()) || 
-        stock.stock_code?.includes(searchTerm)
-    );
+                  {stock.changePrice !== null && (
+                    <ChangePrice isPositive={stock.changePrice > 0}>
+                      ({stock.changePrice > 0 ? "+" : ""}
+                      {formatPrice(stock.changePrice)?.toLocaleString()}원)
+                    </ChangePrice>
+                  )}
 
+                  {stock.changeRate !== null && (
+                    <ChangeRate isPositive={stock.changeRate > 0}>
+                      {Math.abs(stock.changeRate)}%
+                    </ChangeRate>
+                  )}
+                </StockPriceContainer>
+              </SearchItem>
+            ))}
+          </SearchResultsContainer>
+        )}
 
-    return (
-        <>
-        <SearchContainer hasSearched={hasSearched}>
-            
-            <SearchInputWrapper hasSearched={hasSearched}>
-                <SearchIcon />
-                <SearchInput
-                    type="text"
-                    placeholder="검색어를 입력하세요"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    onKeyDown={handleSearch} // 엔터 입력 처리
-                />
-            </SearchInputWrapper>
-
-            
-                <TabsContainer hasSearched={hasSearched}>
-                    <Tab active={activeTab === 'stock'} onClick={() => setActiveTab('stock')}>
-                        종목
-                    </Tab>
-                    <Tab active={activeTab === 'news'} onClick={() => setActiveTab('news')}>
-                        뉴스
-                    </Tab>
-                </TabsContainer>
-        
-
-            {/* 종목 탭 */}
-            {activeTab === 'stock' && filteredStocks.length > 0 && (
-
-                <SearchResultsContainer>
-                  {!hasSearched && <p>인기 종목</p>}
-                    {filteredStocks.map((stock, index) => (
-                        <SearchItem key={index}>
-                            <div>
-                                <strong>{stock.stock_name}</strong> ({stock.stock_code})
-                            </div>
-                            <StockPriceContainer>
-                            <StockPrice>{stock.currentPrice ? `${formatPrice(stock.currentPrice)}원` : ''}</StockPrice>
-                            
-                            {stock.changePrice !== null && (
-                                <ChangePrice isPositive={stock.changePrice > 0}>
-                                ({stock.changePrice > 0 ? '+' : ''}{formatPrice(stock.changePrice)?.toLocaleString()}원)
-                                </ChangePrice>
-                            )}
-
-                            {stock.changeRate !== null && (
-                                <ChangeRate isPositive={stock.changeRate > 0}>
-                                
-                                {Math.abs(stock.changeRate)}%
-                                </ChangeRate>
-                            )}
-                            </StockPriceContainer>
-                        </SearchItem>
-                    ))}
-                </SearchResultsContainer>
-            )}
-
-            
-            {activeTab === 'news' && newsResults.length > 0 && (
-                <SearchResultsContainer>
-                    {newsResults.map((news, index) => {
-                        const isLastElement = index === newsResults.length - 1;
-                        return (
-                            <SearchItem key={index} ref={isLastElement ? lastNewsElementRef : null} onClick={() => handleNewsClick(news)}>
-                            <div>
-                                <strong>{news.title}</strong>
-                                <NewsDescription>{news.content}</NewsDescription>
-                                <NewsInfo>{formatDate(news.publishedDate)}</NewsInfo>
-                            </div>
-                        </SearchItem>
-                        );
-                    })}
-                    <div id="observer" style={{ height: '10px' }} ref={lastNewsElementRef}></div>
-                </SearchResultsContainer>
-            )}
-            {/* 결과가 없을 때 */}
-            {activeTab === 'stock' && filteredStocks.length === 0 && (
-                <NoResults>검색 결과가 없습니다.</NoResults>
-            )}
-            {/* 뉴스 모달 컴포넌트 추가 */}
-            {modalOpen && selectedNews && (
-                <NewsModal
-                    news={selectedNews}
-                    onClose={() => setModalOpen(false)} // 모달 닫기 핸들러
-                />
-            )}
-        </SearchContainer>
-        </>
-    );
+        {activeTab === "news" && newsResults.length > 0 && (
+          <SearchResultsContainer>
+            {newsResults.map((news, index) => {
+              const isLastElement = index === newsResults.length - 1;
+              return (
+                <SearchItem
+                  key={index}
+                  ref={isLastElement ? lastNewsElementRef : null}
+                  onClick={() => handleNewsClick(news)}
+                >
+                  <div>
+                    <strong>{news.title}</strong>
+                    <NewsDescription>{news.content}</NewsDescription>
+                    <NewsInfo>{formatDate(news.publishedDate)}</NewsInfo>
+                  </div>
+                </SearchItem>
+              );
+            })}
+            <div
+              id="observer"
+              style={{ height: "10px" }}
+              ref={lastNewsElementRef}
+            ></div>
+          </SearchResultsContainer>
+        )}
+        {/* 결과가 없을 때 */}
+        {activeTab === "stock" && filteredStocks.length === 0 && (
+          <NoResults>검색 결과가 없습니다.</NoResults>
+        )}
+        {/* 뉴스 모달 컴포넌트 추가 */}
+        {modalOpen && selectedNews && (
+          <NewsModal
+            news={selectedNews}
+            onClose={() => setModalOpen(false)} // 모달 닫기 핸들러
+          />
+        )}
+      </SearchContainer>
+    </>
+  );
 };
 
 export default SearchPage;

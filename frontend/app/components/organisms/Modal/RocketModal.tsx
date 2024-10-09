@@ -55,10 +55,13 @@ const RocketModal = ({ onClose, fetchRocketData }) => {
     try {
       const response = await getRocketListApi(stockCode);
       const rocketList = response.rocketList;
-  
+
       // currentPrice가 로드되지 않은 경우 대기
-      if (!currentPrice) return; 
-  
+      if (!currentPrice || !rocketList.length) {
+        setLoading(false);
+        return; 
+      }
+
       // 양수 중 가장 큰 값 찾기
       const maxPositive = rocketList.reduce((prev, curr) => {
         const { priceChangeSign, priceChange } = calculatePriceChange(curr.price, currentPrice);
@@ -67,7 +70,7 @@ const RocketModal = ({ onClose, fetchRocketData }) => {
         }
         return prev;
       }, null);
-  
+
       // 음수 중 가장 큰 값 찾기
       const maxNegative = rocketList.reduce((prev, curr) => {
         const { priceChangeSign, priceChange } = calculatePriceChange(curr.price, currentPrice);
@@ -76,24 +79,26 @@ const RocketModal = ({ onClose, fetchRocketData }) => {
         }
         return prev;
       }, null);
-  
+
       setMaxPositiveRocket(maxPositive);
       setMaxNegativeRocket(maxNegative);
-  
+
       const remainingData = rocketList.filter(
         (rocket) => rocket.rocketId !== maxPositive?.rocketId && rocket.rocketId !== maxNegative?.rocketId
       );
       
-      setAllData([maxPositive, maxNegative, ...remainingData]); // maxPositive와 maxNegative를 맨 앞에 고정
-      setData([maxPositive, maxNegative, ...remainingData.slice(0, 6)]); // 초기 8개 데이터 중 maxPositive와 maxNegative를 고정
+      // maxPositive와 maxNegative가 null인 경우 필터링
+      const validData = [maxPositive, maxNegative, ...remainingData].filter(Boolean);
+
+      setAllData(validData); // 유효한 데이터만 설정
+      setData(validData.slice(0, 8)); // 초기 8개 데이터만 보여줌
     } catch (err) {
       console.error('로켓 데이터를 불러오는 중 에러가 발생했습니다.', err);
     } finally {
       setLoading(false); // 로딩 종료
     }
-  }; 
+  };
 
-  // 데이터를 로드하는 useEffect
   useEffect(() => {
     if (currentPrice) { // currentPrice가 유효할 때만 fetchData 호출
       fetchData();
@@ -132,12 +137,12 @@ const RocketModal = ({ onClose, fetchRocketData }) => {
         <ModalTitle>로켓 모아보기</ModalTitle>
         <ModalContent onScroll={handleScroll}>
           <Header>
-          <RocketInputField
-            currentPrice={currentPrice}
-            isToday={isToday}
-            fetchRocketData={fetchRocketData} 
-            fetchRocketListData={fetchData}
-          />
+            <RocketInputField
+              currentPrice={currentPrice}
+              isToday={isToday}
+              fetchRocketData={fetchRocketData}
+              fetchRocketListData={fetchData}
+            />
           </Header>
           <CardsContainer>
             {data.map((item) => (
