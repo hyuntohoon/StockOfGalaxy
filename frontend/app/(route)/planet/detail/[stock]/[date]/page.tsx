@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React, { useEffect, useState } from "react";
 import { wordData } from "@/app/mocks/wordData";
 import {
@@ -18,7 +18,7 @@ import { getTop7RocketsApi } from "@/app/utils/apis/rocket";
 import { RocketData } from "@/app/types/rocket";
 import { ErrorBoundary } from "react-error-boundary";
 import DetailPageDateCard from "@/app/components/molecules/Card/DetailPageDateCard";
-import CustomCalendar from "@/app/components/organisms/planet/CustomCalendar"
+import CustomCalendar from "@/app/components/organisms/planet/CustomCalendar";
 import styled from "@emotion/styled";
 
 // 임시 뉴스 데이터
@@ -94,16 +94,16 @@ const NewsPage: React.FC = (props: any) => {
 
   const [planetNews, setPlanetNews] = useState<News[]>([]);
   const [spaceNews, setSpaceNews] = useState<News[]>([]);
-  const [planetWord, setPlanetWord] = useState<{ text: string; value: number }[]>(
-    wordData
-  );
-  const [spaceWord, setSpaceWord] = useState<{ text: string; value: number }[]>(
-    wordData
-  );
+  const [planetWord, setPlanetWord] =
+    useState<{ text: string; value: number }[]>(wordData);
+  const [spaceWord, setSpaceWord] =
+    useState<{ text: string; value: number }[]>(wordData);
   const [stockInfo, setStockInfo] = useState<Stock>();
   const [isRocketModalOpen, setIsRocketModalOpen] = useState(false);
   const [rocketData, setRocketData] = useState<RocketData[]>([]);
-  const [selectedDate, setSelectedDate] = useState<Date | null>(formatDate(date)); // 선택된 날짜 상태
+  const [selectedDate, setSelectedDate] = useState<Date | null>(
+    formatDate(date)
+  ); // 선택된 날짜 상태
   const [name, setName] = useState<string>("");
   const [showModal, setShowModal] = useState<boolean>(false); // 모달 표시 상태
 
@@ -151,7 +151,10 @@ const NewsPage: React.FC = (props: any) => {
     const fetchPlanetData = async (stockName: string) => {
       try {
         console.log("요청", stockName, date);
-        const res = await getPlanetNewsWithContent(DateToString(selectedDate), stockName);
+        const res = await getPlanetNewsWithContent(
+          DateToString(selectedDate),
+          stockName
+        );
         setPlanetNews(res.length > 0 ? res : dummyNewsData);
       } catch (error) {
         console.error("Error fetching news data:", error);
@@ -183,7 +186,7 @@ const NewsPage: React.FC = (props: any) => {
 
     const fetchData = async () => {
       await fetchStockData();
-      
+
       const name = await getStockName(stock);
       setName(name); // name 값을 얻어온 후에 상태를 업데이트
 
@@ -219,7 +222,8 @@ const NewsPage: React.FC = (props: any) => {
       {/* 모달창 */}
       {showModal && (
         <ModalContainer isVisible={showModal}>
-          {formatDateToDisplay(selectedDate as Date)} 의 {name} 관련 주식 뉴스 정보입니다. 
+          {formatDateToDisplay(selectedDate as Date)} 의 {name} 관련 주식 뉴스
+          정보입니다.
         </ModalContainer>
       )}
       <PlanetDetailTemplate
@@ -244,7 +248,7 @@ const NewsPage: React.FC = (props: any) => {
           fetchRocketData={fetchRocketData}
         />
       )}
-    <DetailPageDateCard date={date}/>
+      <DetailPageDateCard date={date} />
     </ErrorBoundary>
   );
 };
