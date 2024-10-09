@@ -11,7 +11,7 @@ const RocketButtonGroup = ({ onRocketClick }) => {
 
   const info = [
     '행성을 맴도는 로켓은',
-    '과거의 유저들이 주식에 대한','의견을 날려보낸 것이랍니다!'
+    '과거의 유저들이 주식에 대한','의견을 날려보낸 것이랍니다! 🚀'
   ]
 
   return (
@@ -44,7 +44,7 @@ const ButtonGroup = styled.div`
   width: 100px;
   z-index: 1000;
   cursor: pointer;
-  transition: transform 0.2s;
+  transition: transform 0.3s;
   
   /* 마우스 호버 시 확대 효과 */
   &:hover {
@@ -78,7 +78,7 @@ const InfoBox = styled.div<{ isVisible: boolean }>`
   background-color: #000000c4;
   padding: 10px;
   border-radius: 16px;
-  box-shadow: 0px 0px 12px rgba(75, 75, 75, 0.217);
+  box-shadow: 0px 0px 14px rgba(116, 88, 128, 0.2);
   
   /* 애니메이션 추가 */
   opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};

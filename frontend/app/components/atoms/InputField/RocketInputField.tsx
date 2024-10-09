@@ -29,18 +29,23 @@ const RocketInputField: React.FC<RocketInputFieldProps> = ({ currentPrice, isTod
 
   const handleSubmit = async () => {
     if (isLoggedIn) {
+      if (!inputValue.trim()) {
+        alert('메시지를 입력하세요.');
+        return; // 공백만 있을 경우 로켓 작성 중단
+      }
+  
       try {
         const response = await createRocketApi(
           memberId,
           stockCode,
           currentPrice,  // 실시간 주가를 함께 전송
-          inputValue
+          inputValue.trim()
         );
         console.log('로켓 작성 성공:', response);
         alert('로켓이 작성되었습니다.');
         setInputValue(''); // 입력 필드 초기화
-        fetchRocketData(); // 작성 후 로켓 데이터 갱신 (getTop7RocketsApi)
-        fetchRocketListData(); // 작성 후 리스트 데이터 갱신 (getRocketListApi)
+        fetchRocketData(); // 작성 후 로켓 데이터 갱신
+        fetchRocketListData(); // 작성 후 리스트 데이터 갱신
       } catch (error) {
         alert('로켓 작성에 실패했습니다.');
       }
@@ -48,7 +53,7 @@ const RocketInputField: React.FC<RocketInputFieldProps> = ({ currentPrice, isTod
       alert('로그인 후 댓글 작성이 가능합니다.');
     }
   };
-
+  
   const getPlaceholderText = () => {
     if (!isLoggedIn) {
       return '로그인 후 댓글 작성이 가능합니다.';
@@ -83,8 +88,7 @@ const Container = styled.div`
   padding: 10px;
   background-color: #ffffff;
   border-radius: 16px;
-  margin-top: 40px;
-  margin-bottom: 20px;
+  margin-block: 30px;
 `;
 
 const Input = styled.input`

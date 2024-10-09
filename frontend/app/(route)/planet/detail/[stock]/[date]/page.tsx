@@ -17,9 +17,9 @@ import RocketModal from "@/app/components/organisms/Modal/RocketModal";
 import { getTop7RocketsApi } from "@/app/utils/apis/rocket";
 import { RocketData } from "@/app/types/rocket";
 import { ErrorBoundary } from "react-error-boundary";
-import CustomCalendar from "@/app/components/organisms/planet/CustomCalendar";
+import DetailPageDateCard from "@/app/components/molecules/Card/DetailPageDateCard";
+import CustomCalendar from "@/app/components/organisms/planet/CustomCalendar"
 import styled from "@emotion/styled";
-import DateCard from "@/app/components/molecules/Card/DateCard";
 
 // 임시 뉴스 데이터
 const dummyNewsData: News[] = [
@@ -243,7 +243,7 @@ const NewsPage: React.FC = (props: any) => {
           fetchRocketData={fetchRocketData}
         />
       )}
-    <DateCard left="40px" date={date} width="180px" height="60px"  top="35px"/>
+    <DetailPageDateCard date={date}/>
     </ErrorBoundary>
   );
 };

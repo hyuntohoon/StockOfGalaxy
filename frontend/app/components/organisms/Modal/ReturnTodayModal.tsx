@@ -17,7 +17,10 @@ const ReturnTodayModal: React.FC<ReturnTodayModalProps> = ({ onClose }) => {
   // 오늘 날짜로 이동하는 함수
   const handleTodayRedirect = () => {
     const today = new Date();
-    const formattedDate = today.toISOString().slice(0, 10).replace(/-/g, '');
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    const formattedDate = `${year}${month}${day}`;
     
     setDate(formattedDate); // 날짜 설정
 

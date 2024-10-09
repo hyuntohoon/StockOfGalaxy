@@ -15,7 +15,7 @@ const TimeMachineButtonGroup = ({ bottom = '30px', right = '100px' }) => {
   const [isHovered, setIsHovered] = useState(false); // 마우스 호버 상태 관리
 
   const info = [
-    '타임머신을 타고','다른 날짜의 주식 정보를 여행할 수 있어요!'
+    '타임머신을 타고','다른 날짜의 주식 정보를 여행할 수 있어요! ⏰'
   ];
 
   const infoBoxRight = `${parseInt(right, 10) + 10}px`; // ButtonGroup의 right 값 + 10
@@ -52,6 +52,13 @@ const ButtonGroup = styled.div<{ bottom: string; right: string }>`
   width: 100px;
   z-index: 1000;
   cursor: pointer;
+
+  transition: transform 0.3s;
+  
+  /* 마우스 호버 시 확대 효과 */
+  &:hover {
+    transform: scale(1.1); /* 살짝 커지도록 설정 */
+  }
 `;
 
 const Icon = styled.div`
@@ -80,7 +87,7 @@ const InfoBox = styled.div<{ isVisible: boolean; right: string }>`
   background-color: #000000c4;
   padding: 10px;
   border-radius: 16px;
-  box-shadow: 0px 0px 12px rgba(75, 75, 75, 0.217);
+  box-shadow: 0px 0px 14px rgba(116, 88, 128, 0.2);
 
   /* 애니메이션 추가 */
   opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};

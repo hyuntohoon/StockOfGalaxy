@@ -62,7 +62,7 @@ const InfoBox = styled.div<{ isVisible: boolean }>`
   background-color: #000000c4;
   padding: 10px;
   border-radius: 16px;
-  box-shadow: 0px 0px 12px rgba(75, 75, 75, 0.217);
+  box-shadow: 0px 0px 14px rgba(75, 75, 75, 0.217);
 
   /* 애니메이션 추가 */
   opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
