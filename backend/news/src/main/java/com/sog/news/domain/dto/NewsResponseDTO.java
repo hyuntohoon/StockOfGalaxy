@@ -17,7 +17,7 @@ import java.util.List;
 public class NewsResponseDTO {
     private Long newsId;
     private String title;
-    private String content;
+    private List<String> sentences;
     private NewsCategory category;
     private LocalDateTime publishedDate;
     private String newsLink;
@@ -28,11 +28,11 @@ public class NewsResponseDTO {
     private List<String> keywords;  // 키워드 리스트 추가
 
     // News 엔티티 -> DTO 변환
-    public static NewsResponseDTO fromEntity(News news, List<String> keywords) {
+    public static NewsResponseDTO fromEntity(News news, List<String> keywords, List<String> sentences) {
         return NewsResponseDTO.builder()
                 .newsId(news.getNewsId())
                 .title(news.getTitle())
-                .content(news.getContent())
+                .sentences(sentences)
                 .category(news.getCategory())
                 .publishedDate(news.getPublishedDate())
                 .newsLink(news.getNewsLink())

@@ -22,9 +22,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
 public class NewsServiceImpl implements NewsService {
+
+    @Autowired
+    private WebClient webClient;
 
     @Autowired
     private NewsRepository newsRepository;
@@ -178,8 +182,19 @@ public class NewsServiceImpl implements NewsService {
                 .map(NewsKeyword::getNewsStockName)  // NewsKeyword에서 키워드 추출
                 .collect(Collectors.toList());
 
+        // WebClient로 외부 API 호출하여 문장 분리
+        SentenceSplitResponseDTO response = webClient.post()
+            .uri("https://www.ssafy11th-songsam.site/bots/")
+            .bodyValue(new SentenceSplitRequestDTO(news.getContent()))  // content를 담아서 전송
+            .retrieve()
+            .bodyToMono(SentenceSplitResponseDTO.class)  // API 응답을 처리할 클래스
+            .block();  // 동기 처리
+
+        // 문장 리스트 추출
+        List<String> sentences = response.getSentences();
+
         // DTO로 변환 후 반환
-        return NewsResponseDTO.fromEntity(news, keywords);  // News와 키워드를 함께 전달
+        return NewsResponseDTO.fromEntity(news, keywords, sentences);  // News와 키워드를 함께 전달
     }
 
     @Override
@@ -208,4 +223,5 @@ public class NewsServiceImpl implements NewsService {
                 .map(DailyStockFrequencyResponseDTO::fromEntity)
                 .collect(Collectors.toList());
     }
+
 }
