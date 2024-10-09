@@ -16,7 +16,6 @@ import com.sog.news.domain.repository.DailyKeywordFrequencyRepository;
 import com.sog.news.domain.repository.DailyStockFrequencyRepository;
 import com.sog.news.domain.repository.NewsRepository;
 import com.sog.news.global.exception.exceptions.NewsNotFoundException;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
