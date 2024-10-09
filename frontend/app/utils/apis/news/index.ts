@@ -1,4 +1,76 @@
 import { defaultRequest } from "../request";
+import axios from 'axios';
+
+export const summarizeNews = async (sentences: string[]) => {
+    try {
+      const response = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.NEXT_PUBLIC_GPT_API_KEY}`, // 환경 변수 확인
+        },
+        body: JSON.stringify({
+          model: "gpt-3.5-turbo",
+          messages: [
+            {
+              role: "system",
+              content: "You are a helpful assistant that summarizes news articles in a way that even beginners in stocks or news can easily understand. The summary should be concise, in Korean, and free of any additional explanations."
+            },
+            {
+              role: "user",
+              content: `다음 뉴스 내용을 주식이나 뉴스를 처음 접하는 사람도 쉽게 이해할 수 있도록 핵심만 요약해 주세요. 부수적인 설명 없이 오직 요약만 포함해주세요: \n\n${sentences.join(" ")}`
+            }
+          ],
+          temperature: 0.5 // 요약 결과의 일관성을 높이기 위해 낮은 temperature 설정
+        }),
+      });
+  
+      const responseData = await response.json();
+      return responseData.choices[0].message.content.trim();
+    } catch (error) {
+      console.error('Error summarizing news:', error);
+      return '요약 실패';
+    }
+  };
+  
+  
+// export const summarizeNews = async (sentences: string[]) => {
+//     try {
+//       // sentences 배열의 첫 5문장만 사용
+//       const limitedSentences = sentences.slice(0, 5).join(" ");
+  
+//       const response = await axios.post(
+//         'https://api.openai.com/v1/chat/completions',
+//         {
+//           model: "gpt-3.5-turbo", // GPT 모델 선택
+//           messages: [
+//             {
+//               role: "system",
+//               content: "You are a helpful assistant that summarizes news articles concisely and in Korean, without any additional explanation."
+//             },
+//             {
+//               role: "user",
+//               content: `다음 뉴스 내용을 한국어로 요약해 주세요. 부수적인 설명 없이 오직 요약만 포함해주세요: \n\n${limitedSentences}`
+//             }
+//           ],
+//           max_tokens: 200, // 요약 결과의 길이를 설정합니다.
+//           temperature: 0.7
+//         },
+//         {
+//           headers: {
+//             'Authorization': `Bearer ${GPT_KEY}`,
+//             'Content-Type': 'application/json',
+//           },
+//         }
+//       );
+  
+//       return response.data.choices[0].message.content;
+//     } catch (error) {
+//       console.error('Error summarizing news:', error);
+//       return "요약 실패";
+//     }
+//   };
+  
 
 const convertToApiDateFormat = (dateString: string): string => {
     // yyyyMMdd 형식을 yyyy-MM-dd 형식으로 변환
