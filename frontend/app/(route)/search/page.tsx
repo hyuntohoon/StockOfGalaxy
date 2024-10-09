@@ -3,7 +3,7 @@
 /** @jsxImportSource @emotion/react */
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import {
   SearchContainer,
   SearchInputWrapper,
