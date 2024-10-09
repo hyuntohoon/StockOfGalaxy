@@ -21,7 +21,7 @@ const NewsList: React.FC<{ news: News[]; onClick: (item: News) => void }> = ({ n
     <NewsListWrapper>
       {news && news.map((item) => (
         <NewsItem key={item.newsId} onClick={() => onClick(item)}>
-          <Image src={item.thumbnailImg} alt={item.title} width={70} height={70} />
+          <img src={item.thumbnailImg} alt={item.title} width={70} height={70} />
           <NewsContent>
             <div>
               <NewsTitle>{item.title}</NewsTitle>
