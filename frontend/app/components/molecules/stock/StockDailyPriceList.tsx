@@ -7,7 +7,7 @@ import styled from "@emotion/styled";
 
 const ParentContainer = styled.div`
   padding: 20px;
-  border-radius: 15px
+  border-radius: 15px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   height: 90%;
   max-height: 580px;
