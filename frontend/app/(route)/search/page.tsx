@@ -5,19 +5,20 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import {
-  SearchContainer,
-  SearchInputWrapper,
-  SearchInput,
-  SearchIcon,
-  TabsContainer,
-  Tab,
-  SearchResultsContainer,
-  SearchItem,
-  // StockPrice,
-  NewsDescription,
-  NoResults,
-  NewsInfo,
-} from "@/app/styles/search";
+    SearchContainer, 
+    SearchInputWrapper, 
+    SearchInput, 
+    SearchIcon, 
+    TabsContainer, 
+    Tab, 
+    SearchResultsContainer, 
+    SearchItem, 
+    // StockPrice, 
+    NewsDescription, 
+    NoResults, 
+    NewsInfo
+} from '@/app/styles/search';
+import { useSearchParams } from "next/navigation";
 import { stock_list } from "@/app/utils/apis/stock/findStockName";
 import { stockData } from "@/app/mocks/stockData";
 import useKRStockWebSocket from "@/app/hooks/useKRStockWebSocket";
@@ -66,9 +67,11 @@ interface stockState {
 }
 
 const SearchPage = () => {
-  const router = useRouter();
+    const searchParams = useSearchParams(); // useSearchParams 사용
+    const router = useRouter();
+  const querySearchTerm = searchParams.get('searchTerm') || ""; 
   const [activeTab, setActiveTab] = useState("stock"); // 'stock' or 'news'
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState(querySearchTerm);
   const [hasSearched, setHasSearched] = useState(false); // 검색 버튼(엔터)을 눌렀을 때만 true
   const [stockDataInfo, setStockDataInfo] = useState<stockState[]>(
     stock_list.map((stock) => ({

@@ -8,7 +8,7 @@ const NavButton = styled.button<{ active: boolean }>`
   cursor: pointer;
   padding: 10px 20px;
   border-bottom: ${(props) => (props.active ? '2px solid #61dafb' : 'none')};
-
+  z-index: 0;
   &:hover {
     color: #61dafb;
   }
