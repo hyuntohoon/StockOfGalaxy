@@ -10,6 +10,8 @@ const Container = styled.div`
 `;
 
 const Column = styled.span`
+  font-size: 1rem;
+  font-weight: bold;
   min-width: 100px;
   text-align: center;
 `;

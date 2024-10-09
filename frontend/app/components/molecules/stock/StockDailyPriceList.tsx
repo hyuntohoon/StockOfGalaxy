@@ -8,34 +8,41 @@ import styled from "@emotion/styled";
 const ParentContainer = styled.div`
   padding: 20px;
   border-radius: 15px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   height: 90%;
   max-height: 580px;
   max-width: 580px;
 `;
 
 const Container = styled.div`
+  margin-top: 10px;
   display: flex;
   flex-direction: column;
-  max-width: 100%;
-  max-height: 95%;
-  overflow-x: auto;
-  overflow-y: auto;
 
-  /* Firefox용 스크롤바 스타일 */
-  scrollbar-width: thin;
-  scrollbar-color: grey transparent;
+  min-width: 100%;
+  min-height: 100%;
 
-  /* WebKit 기반 브라우저에서 스크롤바 스타일 */
+  max-width: 600px;
+  max-height: 380px;
+  overflow-x: auto !important;
+  overflow-y: auto !important;
+
   &::-webkit-scrollbar {
-    width: 8px; /* 스크롤바의 너비를 명시적으로 설정 */
+    width: 6px;
+    height: 6px;
   }
+
+  /* 스크롤바의 핸들 스타일 설정 */
   &::-webkit-scrollbar-thumb {
+    background-color: #bbb;
     border-radius: 10px;
-    background-color: #03e9f4; /* 스크롤바 핸들의 배경색 */
   }
-  &::-webkit-scrollbar-track {
-    background: transparent; /* 스크롤바 트랙의 배경을 투명하게 설정 */
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: #888; /* 호버 시 진한 회색으로 변경 */
+  }
+
+  &::-webkit-scrollbar-corner {
+    background-color: transparent;
   }
 `;
 
@@ -47,7 +54,7 @@ const SubTitle = styled.div`
 `;
 
 const StyledHr = styled.hr`
-  width: 100%;
+  width: 120%;
   border: none;
   border-top: 2px solid #bbb;
   border-bottom: 2px solid #fff;
@@ -99,8 +106,9 @@ const StockDailyPriceList = () => {
     <>
       <ParentContainer>
         <SubTitle>일별 시세</SubTitle>
-        <StyledHr />
         <Container onWheel={handleWheel}>
+          <StockDailyPriceSubTitle />
+          <StyledHr />
           {dummyData.map((data, index) => (
             <StockDailyPrice
               key={index}

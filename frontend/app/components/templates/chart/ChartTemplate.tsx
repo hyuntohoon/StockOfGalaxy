@@ -10,6 +10,20 @@ import {
 import { useParams } from "next/navigation";
 import useKRChartWebSocket from "@/app/hooks/useKRChartWebSocket";
 
+const FullscreenButton = styled.div`
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  background-color: white;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+
+  &:hover {
+    background-color: #ddd;
+    transform: scale(1.05);
+  }
+`;
+
 const Container = styled.div`
   display: flex;
   flex: 0 0 55%;
@@ -21,23 +35,31 @@ const Container = styled.div`
 const ChartContainer = styled.div`
   height: 380px;
   overflow: hidden;
-  background-color: #111;
+  background-color: white;
 `;
 
 const OptionContainer = styled.div`
   display: grid;
-  grid-template-columns: 8fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 7fr 1fr 1fr 1fr 1fr 1fr;
   gap: 10px;
   padding: 10px 20px;
   align-items: center;
 `;
 
-const Option = styled.div`
-  background-color: white;
+const Option = styled.div<{ isSelected: boolean }>`
+  width: 40px;
+  height: auto;
   padding: 5px;
   border-radius: 5px;
   cursor: pointer;
   text-align: center;
+  background-color: ${({ isSelected }) => (isSelected ? "#f0f0f0" : "white")};
+  transition: background-color 0.3s ease, transform 0.3s ease;
+
+  &:hover {
+    background-color: #ddd;
+    transform: scale(1.05);
+  }
 `;
 
 const SubTitle = styled.div`
@@ -47,6 +69,8 @@ const SubTitle = styled.div`
   color: black;
 `;
 
+const TotalContainer = styled.div``;
+
 const CustomHook = ({ stock_code, chart, type }) => {
   useKRChartWebSocket(stock_code, chart, type);
   return <></>;
@@ -54,11 +78,12 @@ const CustomHook = ({ stock_code, chart, type }) => {
 
 const ChartTemplate = () => {
   const [chartContainerRef, setChartContainerRef] = useState(null);
+  const [totalContainerRef, setTotalContainerRef] = useState(null);
   const [chart, setChart] = useState<any>(null);
-  const [type, setType] = useState("Y");
+  const [type, setType] = useState("M");
   const { stock, date } = useParams();
   const stock_code = Array.isArray(stock) ? stock[0] : stock ?? "005930";
-  const currentDate = date ?? "20241008";
+  const currentDate = date ?? "20241010";
 
   useEffect(() => {
     if (chartContainerRef) {
@@ -137,35 +162,57 @@ const ChartTemplate = () => {
     return formattedCurrentDate !== date;
   };
 
+  const handleFullscreenToggle = () => {
+    chart.resize();
+    changeType(type);
+    if (totalContainerRef) {
+      const elem = totalContainerRef as any;
+      if (!document.fullscreenElement) {
+        elem.requestFullscreen?.();
+      } else {
+        document.exitFullscreen?.();
+      }
+    }
+  };
+
   return (
-    <>
-      <>
-        {/* isDifferentDate() === false && */}
-        {chart ? (
-          <CustomHook stock_code={stock_code} chart={chart} type={type} />
-        ) : (
-          ""
-        )}
-      </>
+    <TotalContainer ref={(el: any) => setTotalContainerRef(el)}>
+      {chart ? (
+        <CustomHook stock_code={stock_code} chart={chart} type={type} />
+      ) : null}
       <Container>
         <OptionContainer>
           <SubTitle>종목 차트</SubTitle>
           <>
             {isDifferentDate() === false ? (
-              <Option onClick={() => changeType("minute")}>1분</Option>
+              <Option
+                onClick={() => changeType("minute")}
+                isSelected={type === "minute"}
+              >
+                1분
+              </Option>
             ) : (
               ""
             )}
           </>
-          <Option onClick={() => changeType("D")}>일</Option>
-          <Option onClick={() => changeType("M")}>월</Option>
-          <Option onClick={() => changeType("Y")}>년</Option>
+          <Option onClick={() => changeType("D")} isSelected={type === "D"}>
+            일
+          </Option>
+          <Option onClick={() => changeType("M")} isSelected={type === "M"}>
+            월
+          </Option>
+          <Option onClick={() => changeType("Y")} isSelected={type === "Y"}>
+            년
+          </Option>
+          <FullscreenButton onClick={handleFullscreenToggle}>
+            ㅇ
+          </FullscreenButton>
         </OptionContainer>
         <ChartContainer
           ref={(el: any) => setChartContainerRef(el)}
         ></ChartContainer>
       </Container>
-    </>
+    </TotalContainer>
   );
 };
 
