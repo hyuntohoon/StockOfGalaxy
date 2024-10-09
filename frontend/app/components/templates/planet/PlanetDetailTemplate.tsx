@@ -176,8 +176,10 @@ const PlanetDetailTemplate: React.FC<PlanetDetailTemplateProps> = ({
         </SectionContainer> */}
 
         <SectionContainer ref={chartRef}>
-          <div ref={listRef4} style={{width: "100%", height: "100%"}}><ChartTemplate /></div>
-          <div ref={listRef3} style={{width: "100%", height: "100%"}}>
+          <div ref={listRef4} style={{width: '40vw'}}>
+            <ChartTemplate />
+          </div>
+          <div ref={listRef3} style={{width: '40vw'}}>
           <StockDailyPriceTemplate />
           </div>
         </SectionContainer>
