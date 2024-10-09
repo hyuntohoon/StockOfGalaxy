@@ -4,7 +4,6 @@ export const dynamic = 'force-dynamic';
 
 /** @jsxImportSource @emotion/react */
 import { useState, useEffect, useCallback, useRef } from "react";
-import { useSearchParams } from 'next/navigation'; // useSearchParams 임포트
 import {
     SearchContainer, 
     SearchInputWrapper, 
@@ -73,15 +72,6 @@ interface stockState {
 const SearchPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [hasSearched, setHasSearched] = useState(false); 
-  
-  // 클라이언트 측에서만 실행되도록 useEffect 안에서 처리
-  useEffect(() => {
-    const searchParams = useSearchParams();
-    const querySearchTerm = searchParams.get('searchTerm') || "";
-    setSearchTerm(querySearchTerm);
-    setHasSearched(Boolean(querySearchTerm));
-  }, []);
-
   const [activeTab, setActiveTab] = useState("stock");
   
   const [stockDataInfo, setStockDataInfo] = useState<stockState[]>(

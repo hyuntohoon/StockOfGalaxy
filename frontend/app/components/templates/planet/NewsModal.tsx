@@ -240,9 +240,6 @@ const NewsModal: React.FC<NewsModalProps> = ({ news, onClose, stockName, setSele
 
   const router = useRouter(); // useRouter 사용
 
-  const handleKeywordClick = (keyword: string) => {
-    router.push(`/search?searchTerm=${encodeURIComponent(keyword)}`);
-  }
   // AI 요약 버튼 클릭 핸들러
   const handleAiSummaryClick = async () => {
     if (summary) {
@@ -302,7 +299,7 @@ const NewsModal: React.FC<NewsModalProps> = ({ news, onClose, stockName, setSele
           <div>
             {news.keywords &&
               news.keywords.map((keyword, idx) => (
-                <KeywordChip key={idx} onClick={() => handleKeywordClick(keyword)}>
+                <KeywordChip key={idx}>
                   {keyword}
                 </KeywordChip>
               ))}
