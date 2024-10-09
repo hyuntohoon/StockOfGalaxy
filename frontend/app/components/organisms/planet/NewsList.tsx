@@ -28,7 +28,11 @@ const NewsList: React.FC<{ news: News[]; onClick: (item: News) => void }> = ({ n
     <NewsListWrapper>
       {news && news.map((item) => (
         <NewsItem key={item.newsId} onClick={() => onClick(item)}>
-          <StyledImage src={item.thumbnailImg} alt={item.title} />
+          <StyledImage 
+            src={item.thumbnailImg === "이미지 없음" ? "/images/default.jpg" : item.thumbnailImg} 
+            alt={item.title} 
+          />
+
           <NewsContent>
             <div>
               <NewsTitle>{item.title}</NewsTitle>
