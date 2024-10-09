@@ -1,6 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import styled from '@emotion/styled';
-import { IoClose } from "react-icons/io5";
 import RocketInputField from '../../atoms/InputField/RocketInputField';
 import RocketCard from '../RocketCard';
 import LoadingSpinner from '../../atoms/LoadingSpinner';
@@ -81,8 +80,12 @@ const RocketModal = ({ onClose, fetchRocketData }) => {
       setMaxPositiveRocket(maxPositive);
       setMaxNegativeRocket(maxNegative);
   
-      setAllData(rocketList);
-      setData(rocketList.slice(0, 8)); // 초기 8개 데이터만 보여줌
+      const remainingData = rocketList.filter(
+        (rocket) => rocket.rocketId !== maxPositive?.rocketId && rocket.rocketId !== maxNegative?.rocketId
+      );
+      
+      setAllData([maxPositive, maxNegative, ...remainingData]); // maxPositive와 maxNegative를 맨 앞에 고정
+      setData([maxPositive, maxNegative, ...remainingData.slice(0, 6)]); // 초기 8개 데이터 중 maxPositive와 maxNegative를 고정
     } catch (err) {
       console.error('로켓 데이터를 불러오는 중 에러가 발생했습니다.', err);
     } finally {
@@ -116,12 +119,18 @@ const RocketModal = ({ onClose, fetchRocketData }) => {
     }
   }, [fetchMoreData, loading]);
 
+  // Modal 외부 클릭시 닫힘 처리
+  const handleOverlayClick = (e) => {
+    if (e.target === e.currentTarget) {
+      onClose(); // 모달 외부 클릭시 닫기
+    }
+  };
+
   return (
-    <ModalOverlay>
-      <ModalWrapper>
+    <ModalOverlay onClick={handleOverlayClick}> {/* 외부 클릭시 모달 닫기 */}
+      <ModalWrapper onClick={(e) => e.stopPropagation()}> {/* 내부 클릭시 이벤트 중단 */}
         <ModalTitle>로켓 모아보기</ModalTitle>
         <ModalContent onScroll={handleScroll}>
-          <StyledCloseIcon onClick={onClose} />
           <Header>
           <RocketInputField
             currentPrice={currentPrice}
@@ -143,7 +152,7 @@ const RocketModal = ({ onClose, fetchRocketData }) => {
             ))}
           </CardsContainer>
         </ModalContent>
-        {loading && <LoadingSpinner />} {/* 로딩 스피너를 ModalWrapper에 배치 */}
+        {loading && <LoadingSpinner />}
       </ModalWrapper>
     </ModalOverlay>
   );
@@ -169,7 +178,7 @@ const ModalWrapper = styled.div`
   align-items: flex-start;
   justify-content: center;
   z-index: 2100;
-  position: relative; /* 추가 */
+  position: relative;
 `;
 
 const ModalTitle = styled.div`
@@ -192,7 +201,6 @@ const ModalContent = styled.div`
   position: relative;
   justify-items: center;
 
-  /* 스크롤바 커스텀 스타일링 */
   &::-webkit-scrollbar {
     width: 10px;
   }
@@ -223,26 +231,12 @@ const CardsContainer = styled.div`
 const Header = styled.div`
   display: flex;
   flex-direction: row;
-  gap: 20px;
   justify-content: space-between;
   position: sticky;
   top: 0;
-  background-color: rgb(238, 238, 238); /* 배경색을 고정시켜 자연스럽게 */
-  z-index: 10; /* 다른 요소보다 위에 표시되도록 설정 */
-  padding-top: 10px;
+  background-color: rgb(238, 238, 238);
+  z-index: 10;
 `;
 
-const StyledCloseIcon = styled(IoClose)`
-  position: absolute;
-  top: 12px;
-  right: 16px;
-  font-size: 24px;
-  cursor: pointer;
-  &:hover {
-    color: #00000087;
-  }
-  transition: color 0.3s ease;
-  z-index: 11; /* Close 버튼도 다른 요소 위에 위치 */
-`;
 
 export default RocketModal;

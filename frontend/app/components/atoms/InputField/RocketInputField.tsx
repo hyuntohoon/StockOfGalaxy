@@ -88,8 +88,7 @@ const Container = styled.div`
   padding: 10px;
   background-color: #ffffff;
   border-radius: 16px;
-  margin-top: 40px;
-  margin-bottom: 20px;
+  margin-block: 30px;
 `;
 
 const Input = styled.input`
