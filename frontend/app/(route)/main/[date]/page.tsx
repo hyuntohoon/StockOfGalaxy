@@ -285,7 +285,7 @@ export default function Page(props: any) {
         )}
       </RecoilRoot>
       <AlienGuideButton info={isToday ? info : pastInfo} />
-      {/* <ViewAllButton
+       <ViewAllButton
         onMouseEnter={() => setIsViewAllHover(true)} // ViewAllButton에 마우스 호버시
         onMouseLeave={() => setIsViewAllHover(false)} // 마우스가 버튼에서 벗어날 때
       />
