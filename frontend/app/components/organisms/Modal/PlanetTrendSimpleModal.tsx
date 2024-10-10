@@ -12,7 +12,7 @@ interface stockState {
 const PlanetTrendSimpleModal: React.FC<PlanetTrendSimpleModalProps> = ({
   stockCode,
   corpName,
-  rank, // 랭크를 추가
+  rank,
   position,
   camera,
   rendererDomElement,
@@ -20,6 +20,7 @@ const PlanetTrendSimpleModal: React.FC<PlanetTrendSimpleModalProps> = ({
 }) => {
   const [screenPosition, setScreenPosition] = useState({ x: -9999, y: -9999 });
   const [modalSize, setModalSize] = useState({ width: 0, height: 0 });
+  const [isVisible, setIsVisible] = useState(false);
   const [stockDataInfo, setStockDataInfo] = useState<stockState[]>([
     {
       stock_name: corpName || null,
@@ -48,6 +49,10 @@ const PlanetTrendSimpleModal: React.FC<PlanetTrendSimpleModalProps> = ({
       const { offsetWidth, offsetHeight } = modalRef.current;
       setModalSize({ width: offsetWidth, height: offsetHeight });
     }
+
+    // 애니메이션 시작을 위해 isVisible을 true로 설정
+    setIsVisible(true);
+
   }, [position, camera, rendererDomElement]);
 
   if (!stockDataInfo[0]) return null;
@@ -61,10 +66,10 @@ const PlanetTrendSimpleModal: React.FC<PlanetTrendSimpleModalProps> = ({
         camera={camera}
         rendererDomElement={rendererDomElement}
       />
-
       {/* PlanetTrendSimpleModal - 행성 중앙에 위치 */}
       <StyledModal
         ref={modalRef}
+        isVisible={isVisible}
         style={{
           top: `${screenPosition.y - modalSize.height / 2}px`,
           left: `${screenPosition.x - modalSize.width / 2}px`,
@@ -79,18 +84,24 @@ const PlanetTrendSimpleModal: React.FC<PlanetTrendSimpleModalProps> = ({
   );
 };
 
-const StyledModal = styled.div`
+// isVisible 상태에 따라 애니메이션 적용
+const StyledModal = styled.div<{ isVisible: boolean }>`
   position: absolute;
   display: flex;
   align-items: center;
   background: #4646467d;
   border-radius: 25px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  padding: 10px 12px;
+  padding: 8px 10px;
   z-index: 2000;
   min-width: 30px;
   height: 30px;
   width: auto;
+
+  /* 애니메이션 추가 */
+  opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
+  transform: ${({ isVisible }) => (isVisible ? 'translateY(0)' : 'translateY(0)')};
+  transition: opacity 0.4s ease, transform 0.4s ease;
 `;
 
 const StockSimpleInfo = styled.div`
