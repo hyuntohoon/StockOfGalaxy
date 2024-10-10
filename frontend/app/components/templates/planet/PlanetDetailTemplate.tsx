@@ -64,6 +64,7 @@ const PlanetDetailTemplate: React.FC<PlanetDetailTemplateProps> = ({
 
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedNews, setSelectedNews] = useState<NewsDetail | null>(null); // 선택된 뉴스 상태
+  const [isVisible, setIsVisible] = useState(false);  // 모달 애니메이션 상태 추가
 
   const handleNewsClick = async (item: News) => {
 
@@ -80,6 +81,7 @@ const PlanetDetailTemplate: React.FC<PlanetDetailTemplateProps> = ({
     }
     // setSelectedNews(item); // 선택된 뉴스 설정
     setModalOpen(true); // 모달 열기
+    setIsVisible(true);
   };
 
   const sections = [
@@ -243,7 +245,12 @@ const PlanetDetailTemplate: React.FC<PlanetDetailTemplateProps> = ({
 
       {/* 모달 컴포넌트 추가 */}
       {modalOpen && selectedNews && (
-        <NewsModal news={selectedNews} stockName={stockName} setSelectedNews={setSelectedNews} onClose={() => setModalOpen(false)} />
+        <NewsModal news={selectedNews} isVisible={isVisible} stockName={stockName} setSelectedNews={setSelectedNews} onClose={() =>{
+          setIsVisible(false);  // 모달 닫기 애니메이션 시작
+          setTimeout(() => {
+          setModalOpen(false);
+          }, 1500); }
+        } />
       )}
     </>
   );

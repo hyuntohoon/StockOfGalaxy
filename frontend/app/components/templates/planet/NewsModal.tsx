@@ -14,6 +14,7 @@ interface NewsModalProps {
   news: NewsDetail;
   onClose: () => void;
   stockName: string;
+  isVisible: boolean;
   setSelectedNews: (news: NewsDetail | null) => void; // 새로운 뉴스 설정 함수
 }
 const StockKeywordChip = styled.div`
@@ -76,8 +77,33 @@ const ModalBackground = styled.div`
   z-index: 100000001;
 `;
 
-// 모달 컨테이너
-const ModalContainer = styled.div`
+import { keyframes } from '@emotion/react';
+
+// 모달 등장 애니메이션
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`;
+
+// 모달 사라지는 애니메이션
+const fadeOut = keyframes`
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+`;
+
+const ModalContainer = styled.div<{ isVisible: boolean }>`
   background-color: white;
   border-radius: 20px;
   width: 65vw;
@@ -105,8 +131,10 @@ const ModalContainer = styled.div`
 
   scrollbar-width: thin;
   scrollbar-color: rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.1);
-`;
 
+   animation: ${({ isVisible }) => (isVisible ? fadeIn : fadeOut)} 1.5s ease;
+
+`;
 // 뉴스 이미지 스타일
 const NewsImage = styled.img`
   width: 60%;
@@ -290,20 +318,20 @@ interface stockState {
   changeRate: number;
 }
 
-const NewsModal: React.FC<NewsModalProps> = ({ news, onClose, stockName, setSelectedNews }) => {
+const NewsModal: React.FC<NewsModalProps> = ({ news, onClose, stockName, setSelectedNews, isVisible }) => {
   const [showSummary, setShowSummary] = useState(false);
   const [summary, setSummary] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const { date } = useDate();
   const [planetNews, setPlanetNews] = useState<News[]>([]);
   const [stockDataInfo, setStockDataInfo] = useState<stockState[]>(() =>
-    news?.keywords?.map((keyword) => {
+    news?.keywords?.slice(0,3).map((keyword) => {
       const stockCode = stockNumbers[keyword]; // stockNumbers에서 keyword에 해당하는 value 찾기
   
       // stockCode가 있으면 findStockName으로 종목 이름을 찾고 state에 할당
       if (stockCode) {
         return {
-          stock_name: findStockName(stockCode), // 종목 이름을 할당
+          stock_name: keyword, // 종목 이름을 할당
           stock_code: stockCode, // 종목 코드를 할당
           currentPrice: null,
           changePrice: null,
@@ -353,7 +381,7 @@ const NewsModal: React.FC<NewsModalProps> = ({ news, onClose, stockName, setSele
           // stockCode가 있으면 findStockName으로 종목 이름을 찾고 state에 할당
           if (stockCode) {
             return {
-              stock_name: findStockName(stockCode), // 종목 이름을 할당
+              stock_name: keyword, // 종목 이름을 할당
               stock_code: stockCode, // 종목 코드를 할당
               currentPrice: null,
               changePrice: null,
@@ -388,7 +416,7 @@ const NewsModal: React.FC<NewsModalProps> = ({ news, onClose, stockName, setSele
 
   return (
     <ModalBackground onClick={onClose}>
-      <ModalContainer id="modal-container" onClick={(e) => e.stopPropagation()}>
+      <ModalContainer id="modal-container" onClick={(e) => e.stopPropagation()} isVisible={isVisible}>
         <CloseButton onClick={onClose}>&times;</CloseButton>
 
         <NewsTitle>{news.title}</NewsTitle>
@@ -400,13 +428,15 @@ const NewsModal: React.FC<NewsModalProps> = ({ news, onClose, stockName, setSele
               <StockKeywordChip key={idx}>
                 <StockName>{stock.stock_name}</StockName>
                 <StockPriceInfo>
-                  <StockPrice>{stock.currentPrice ? `${formatPrice(stock.currentPrice)}원` : ''}</StockPrice>
+                  <StockPrice>{stock.currentPrice ? `${formatPrice(stock.currentPrice)}원` : '000,000원'}</StockPrice>
                   
-                  {stock.changeRate !== null && (
+                  {stock.changeRate ? (
                     <ChangeRate isPositive={stock.changeRate > 0}>
                       ({stock.changePrice > 0 ? '+' : ''}{Math.abs(stock.changeRate)}%)
                     </ChangeRate>
-                  )}
+                  ): ( <ChangeRate isPositive={true}>
+                    +0.0%
+                  </ChangeRate>)}
                 </StockPriceInfo>
               </StockKeywordChip>
             ))}

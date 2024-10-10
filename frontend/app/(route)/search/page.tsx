@@ -92,6 +92,7 @@ const SearchPage = () => {
   const lastNewsElementRef = useRef<HTMLDivElement | null>(null);
   const [selectedNews, setSelectedNews] = useState<NewsDetail | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
   const handleNewsClick = async (item: News) => {
     if (item.newsId) {
@@ -244,7 +245,13 @@ const SearchPage = () => {
         <NewsModal
           news={selectedNews}
           stockName={searchTerm}
-          onClose={() => setModalOpen(false)}
+          onClose={() => {
+            setIsVisible(false);
+            setTimeout(() => {
+              setModalOpen(false);
+            }, 1500);
+          }}
+          isVisible={isVisible}
           setSelectedNews={setSelectedNews}
         />
       )}
