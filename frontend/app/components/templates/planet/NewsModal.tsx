@@ -346,6 +346,24 @@ const NewsModal: React.FC<NewsModalProps> = ({ news, onClose, stockName, setSele
       setSelectedNews(newsDetail);
       setSummary(null);
       setShowSummary(false);
+      setStockDataInfo(() =>
+        news?.keywords?.map((keyword) => {
+          const stockCode = stockNumbers[keyword]; // stockNumbers에서 keyword에 해당하는 value 찾기
+      
+          // stockCode가 있으면 findStockName으로 종목 이름을 찾고 state에 할당
+          if (stockCode) {
+            return {
+              stock_name: findStockName(stockCode), // 종목 이름을 할당
+              stock_code: stockCode, // 종목 코드를 할당
+              currentPrice: null,
+              changePrice: null,
+              changeRate: null,
+            };
+          } else {
+            return null; // 해당하는 종목이 없을 경우 null로 처리
+          }
+        }).filter(item => item !== null) || [] // keywords가 없을 때 빈 배열 처리
+      )
     } catch (error) {
       console.error("Error fetching news detail:", error);
     }

@@ -86,7 +86,7 @@ const NewsList: React.FC<{ news: News[]; onClick: (item: News) => void }> = ({ n
           </NewsItem>
         ))
       ) : (
-        <StyledMessage>뉴스 기사를 아직 가져오지 못했어요🥲 다른 날짜로 이동해볼까요?</StyledMessage>
+        <StyledMessage>뉴스 기사를 아직 가져오지 못했어요😢 다른 날짜로 이동해볼까요?</StyledMessage>
       )}
 
     </NewsListWrapper>
