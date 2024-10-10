@@ -23,10 +23,10 @@ const DateCard = ({ right, left, date, label, width, height, top }: DateCardProp
     <DateCardContainer right={right} left={left} width={width} height={height} top={top}>
       {label && <Label>{label}</Label>}
       {label && <Separator />}
-      <DateContent>
+      <div className="planet-container"><DateContent>
         <StyledCalendarIcon />
         <span>{formatDate(date)}</span>
-      </DateContent>
+      </DateContent></div>
     </DateCardContainer>
   );
 };
