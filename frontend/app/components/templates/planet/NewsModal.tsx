@@ -1,14 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import styled from '@emotion/styled';
-import { News, NewsDetail } from '@/app/types/planet';
-import { getNewsDetail, getPlanetNewsWithContent, summarizeNews } from '@/app/utils/apis/news';
-import { useDate } from '@/app/store/date';
-import { useRouter } from 'next/navigation'; // useRouter 임포트
-import useKRStockWebSocket from '@/app/hooks/useKRStockWebSocket';
-import { stockData } from '@/app/mocks/stockData';
-import { stockNumbers } from '@/app/utils/libs/stockNumbers';
-import { findStockName } from '@/app/utils/apis/stock/findStockName';
-import formatPrice from '@/app/utils/apis/stock/formatPrice';
+import React, { useState, useEffect } from "react";
+import styled from "@emotion/styled";
+import { News, NewsDetail } from "@/app/types/planet";
+import {
+  getNewsDetail,
+  getPlanetNewsWithContent,
+  summarizeNews,
+} from "@/app/utils/apis/news";
+import { useDate } from "@/app/store/date";
+import { useRouter } from "next/navigation"; // useRouter 임포트
+import useKRStockWebSocket from "@/app/hooks/useKRStockWebSocket";
+import { stockData } from "@/app/mocks/stockData";
+import { stockNumbers } from "@/app/utils/libs/stockNumbers";
+import { findStockName } from "@/app/utils/apis/stock/findStockName";
+import formatPrice from "@/app/utils/apis/stock/formatPrice";
+import { getCurrentPrice } from "@/app/utils/apis/stock/getStockData";
 
 interface NewsModalProps {
   news: NewsDetail;
@@ -62,7 +67,6 @@ const ChangeRate = styled.span<{ isPositive: boolean }>`
   font-weight: bold;
 `;
 
-
 // 모달 배경
 const ModalBackground = styled.div`
   position: fixed;
@@ -77,7 +81,7 @@ const ModalBackground = styled.div`
   z-index: 100000001;
 `;
 
-import { keyframes } from '@emotion/react';
+import { keyframes } from "@emotion/react";
 
 // 모달 등장 애니메이션
 const fadeIn = keyframes`
@@ -133,8 +137,7 @@ const ModalContainer = styled.div<{ isVisible: boolean }>`
   scrollbar-width: thin;
   scrollbar-color: rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.1);
 
-   animation: ${({ isVisible }) => (isVisible ? fadeIn : fadeOut)} 1.5s ease;
-
+  animation: ${({ isVisible }) => (isVisible ? fadeIn : fadeOut)} 1.5s ease;
 `;
 // 뉴스 이미지 스타일
 const NewsImage = styled.img`
@@ -309,8 +312,6 @@ const NewsCardSummary = styled.p`
   color: #666;
 `;
 
-
-
 interface stockState {
   stock_name: string;
   stock_code: string;
@@ -319,31 +320,59 @@ interface stockState {
   changeRate: number;
 }
 
-const NewsModal: React.FC<NewsModalProps> = ({ news, onClose, stockName, setSelectedNews, isVisible }) => {
+const NewsModal: React.FC<NewsModalProps> = ({
+  news,
+  onClose,
+  stockName,
+  setSelectedNews,
+  isVisible,
+}) => {
   const [showSummary, setShowSummary] = useState(false);
   const [summary, setSummary] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const { date } = useDate();
   const [planetNews, setPlanetNews] = useState<News[]>([]);
-  const [stockDataInfo, setStockDataInfo] = useState<stockState[]>(() =>
-    news?.keywords?.slice(0,3).map((keyword) => {
-      const stockCode = stockNumbers[keyword]; // stockNumbers에서 keyword에 해당하는 value 찾기
-  
-      // stockCode가 있으면 findStockName으로 종목 이름을 찾고 state에 할당
-      if (stockCode) {
-        return {
-          stock_name: keyword, // 종목 이름을 할당
-          stock_code: stockCode, // 종목 코드를 할당
-          currentPrice: null,
-          changePrice: null,
-          changeRate: null,
-        };
-      } else {
-        return null; // 해당하는 종목이 없을 경우 null로 처리
-      }
-    }).filter(item => item !== null) || [] // keywords가 없을 때 빈 배열 처리
+  const [stockDataInfo, setStockDataInfo] = useState<stockState[]>(
+    () =>
+      news?.keywords
+        ?.slice(0, 3)
+        .map((keyword) => {
+          const stockCode = stockNumbers[keyword]; // stockNumbers에서 keyword에 해당하는 value 찾기
+
+          // stockCode가 있으면 findStockName으로 종목 이름을 찾고 state에 할당
+          if (stockCode) {
+            return {
+              stock_name: keyword, // 종목 이름을 할당
+              stock_code: stockCode, // 종목 코드를 할당
+              currentPrice: null,
+              changePrice: null,
+              changeRate: null,
+            };
+          } else {
+            return null; // 해당하는 종목이 없을 경우 null로 처리
+          }
+        })
+        .filter((item) => item !== null) || [] // keywords가 없을 때 빈 배열 처리
   );
-  
+
+  useEffect(() => {
+    const initializeStockPrices = async () => {
+      const updatedStockDataInfo = await Promise.all(
+        stockDataInfo.map(async (stock) => {
+          const res = await getCurrentPrice(stock.stock_code);
+          return {
+            ...stock,
+            currentPrice: parseInt(res.stckPrpr),
+            changePrice: parseInt(res.prdyVrss),
+            changeRate: parseFloat(res.prdyCtrt),
+          };
+        })
+      );
+      setStockDataInfo(updatedStockDataInfo);
+    };
+
+    initializeStockPrices();
+  }, []);
 
   const router = useRouter(); // useRouter 사용
 
@@ -368,37 +397,39 @@ const NewsModal: React.FC<NewsModalProps> = ({ news, onClose, stockName, setSele
   useKRStockWebSocket(stockDataInfo, setStockDataInfo);
   // 관련 뉴스 클릭 시
   const handleRelatedNewsClick = async (item: News) => {
-    
     try {
-      console.log(item)
+      console.log(item);
       const newsDetail = await getNewsDetail(item.newsId);
       setSelectedNews(newsDetail);
       setSummary(null);
       setShowSummary(false);
-      setStockDataInfo(() =>
-        news?.keywords?.map((keyword) => {
-          const stockCode = stockNumbers[keyword]; // stockNumbers에서 keyword에 해당하는 value 찾기
-      
-          // stockCode가 있으면 findStockName으로 종목 이름을 찾고 state에 할당
-          if (stockCode) {
-            return {
-              stock_name: keyword, // 종목 이름을 할당
-              stock_code: stockCode, // 종목 코드를 할당
-              currentPrice: null,
-              changePrice: null,
-              changeRate: null,
-            };
-          } else {
-            return null; // 해당하는 종목이 없을 경우 null로 처리
-          }
-        }).filter(item => item !== null) || [] // keywords가 없을 때 빈 배열 처리
-      )
+      setStockDataInfo(
+        () =>
+          news?.keywords
+            ?.map((keyword) => {
+              const stockCode = stockNumbers[keyword]; // stockNumbers에서 keyword에 해당하는 value 찾기
+
+              // stockCode가 있으면 findStockName으로 종목 이름을 찾고 state에 할당
+              if (stockCode) {
+                return {
+                  stock_name: keyword, // 종목 이름을 할당
+                  stock_code: stockCode, // 종목 코드를 할당
+                  currentPrice: null,
+                  changePrice: null,
+                  changeRate: null,
+                };
+              } else {
+                return null; // 해당하는 종목이 없을 경우 null로 처리
+              }
+            })
+            .filter((item) => item !== null) || [] // keywords가 없을 때 빈 배열 처리
+      );
     } catch (error) {
       console.error("Error fetching news detail:", error);
     }
-    const modalContainer = document.getElementById('modal-container');
+    const modalContainer = document.getElementById("modal-container");
     if (modalContainer) {
-      modalContainer.scrollTo({ top: 0, behavior: 'smooth' });
+      modalContainer.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
 
@@ -417,42 +448,51 @@ const NewsModal: React.FC<NewsModalProps> = ({ news, onClose, stockName, setSele
 
   return (
     <ModalBackground onClick={onClose}>
-      <ModalContainer id="modal-container" onClick={(e) => e.stopPropagation()} isVisible={isVisible}>
+      <ModalContainer
+        id="modal-container"
+        onClick={(e) => e.stopPropagation()}
+        isVisible={isVisible}
+      >
         <CloseButton onClick={onClose}>&times;</CloseButton>
-
         <NewsTitle>{news.title}</NewsTitle>
-
         <KeywordChips>
-        <div>
-          {stockDataInfo && 
-            stockDataInfo.map((stock, idx) => (
-              <StockKeywordChip key={idx}>
-                <StockName>{stock.stock_name}</StockName>
-                <StockPriceInfo>
-                  <StockPrice>{stock.currentPrice ? `${formatPrice(stock.currentPrice)}원` : '000,000원'}</StockPrice>
-                  
-                  {stock.changeRate ? (
-                    <ChangeRate isPositive={stock.changeRate > 0}>
-                      ({stock.changePrice > 0 ? '+' : ''}{Math.abs(stock.changeRate)}%)
-                    </ChangeRate>
-                  ): ( <ChangeRate isPositive={true}>
-                    +0.0%
-                  </ChangeRate>)}
-                </StockPriceInfo>
-              </StockKeywordChip>
-            ))}
-        </div>
+          <div>
+            {stockDataInfo &&
+              stockDataInfo.map((stock, idx) => (
+                <StockKeywordChip key={idx}>
+                  <StockName>{stock.stock_name}</StockName>
+                  <StockPriceInfo>
+                    <StockPrice>
+                      {stock.currentPrice
+                        ? `${formatPrice(stock.currentPrice)}원`
+                        : "000,000원"}
+                    </StockPrice>
+
+                    {stock.changeRate ? (
+                      <ChangeRate isPositive={stock.changeRate > 0}>
+                        ({stock.changePrice > 0 ? "+" : ""}
+                        {Math.abs(stock.changeRate)}%)
+                      </ChangeRate>
+                    ) : (
+                      <ChangeRate isPositive={true}>+0.0%</ChangeRate>
+                    )}
+                  </StockPriceInfo>
+                </StockKeywordChip>
+              ))}
+          </div>
           <AiSummaryButton onClick={handleAiSummaryClick}>
             {showSummary ? "AI 요약 닫기" : "AI 뉴스 요약"}
           </AiSummaryButton>
         </KeywordChips>
-
         <HorizontalLine />
-        {loading && <LoadingSpinner />} {/* 요약 중일 때 로딩 애니메이션 표시 */}
-        {showSummary && <AiSummary>{summary || "요약 결과가 없습니다."}</AiSummary>}
-
-          {news.thumbnailImg !== "이미지 없음" && <NewsImage src={news.thumbnailImg}  alt={news.title} />}
-
+        {loading && <LoadingSpinner />}{" "}
+        {/* 요약 중일 때 로딩 애니메이션 표시 */}
+        {showSummary && (
+          <AiSummary>{summary || "요약 결과가 없습니다."}</AiSummary>
+        )}
+        {news.thumbnailImg !== "이미지 없음" && (
+          <NewsImage src={news.thumbnailImg} alt={news.title} />
+        )}
         <NewsContent>
           {news.sentences &&
             news.sentences.map((sentence, index) => (
@@ -460,17 +500,29 @@ const NewsModal: React.FC<NewsModalProps> = ({ news, onClose, stockName, setSele
             ))}
         </NewsContent>
         <HorizontalLine />
-
-        <OriginalLinkButton href={news.newsLink} target="_blank" rel="noopener noreferrer">
+        <OriginalLinkButton
+          href={news.newsLink}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           원본 링크로 이동
         </OriginalLinkButton>
-
         {/* 관련 뉴스 표시 */}
         <RelatedNewsContainer>
           <h3>{stockName} 관련 뉴스</h3>
           {planetNews.map((item) => (
-            <NewsCard key={item.newsId} onClick={() => handleRelatedNewsClick(item)}>
-              <NewsCardImage src={item.thumbnailImg === "이미지 없음" ? "/images/default.jpg" : item.thumbnailImg}  alt={item.title} />
+            <NewsCard
+              key={item.newsId}
+              onClick={() => handleRelatedNewsClick(item)}
+            >
+              <NewsCardImage
+                src={
+                  item.thumbnailImg === "이미지 없음"
+                    ? "/images/default.jpg"
+                    : item.thumbnailImg
+                }
+                alt={item.title}
+              />
               <NewsCardContent>
                 <NewsCardTitle>{item.title}</NewsCardTitle>
                 <NewsCardSummary>{item.content}</NewsCardSummary>

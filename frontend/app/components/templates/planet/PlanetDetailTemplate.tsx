@@ -10,13 +10,11 @@ import { ContentContainer, SectionContainer } from "@/app/styles/planet";
 import ChartTemplate from "@/app/components/templates/chart/ChartTemplate";
 import StockInfoTemplate from "@/app/components/templates/stock/StockInfoTemplate";
 import styled from "@emotion/styled";
-import { News,NewsDetail } from "@/app/types/planet";
+import { News, NewsDetail } from "@/app/types/planet";
 import FinancialMetricsChart from "../../molecules/stock/FinancialMetricsChart";
 import StockDailyPriceTemplate from "../../organisms/stock/StockDailyPriceTemplate";
 import NewsModal from "./NewsModal";
 import { getNewsDetail } from "@/app/utils/apis/news";
-
-
 
 interface PlanetDetailTemplateProps {
   planetNews: News[]; // 행성 뉴스 데이터
@@ -24,9 +22,8 @@ interface PlanetDetailTemplateProps {
   planetWord: any[]; // 첫 번째 워드 클라우드 데이터 (행성 관련)
   spaceWord: any[]; // 두 번째 워드 클라우드 데이터 (우주 관련)
   calendar: React.ReactNode;
-  stockName: string,
+  stockName: string;
 }
-
 
 const StyledParagraph = styled.p`
   padding-left: 20px; /* 양옆 패딩 적용 */
@@ -39,14 +36,13 @@ const StyledParagraph = styled.p`
   border-radius: 8px; /* 모서리 둥글게 */
 `;
 
-
 const PlanetDetailTemplate: React.FC<PlanetDetailTemplateProps> = ({
   planetNews,
   spaceNews,
   planetWord,
   spaceWord,
   calendar,
-  stockName
+  stockName,
 }) => {
   const homeRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<HTMLDivElement>(null);
@@ -64,17 +60,16 @@ const PlanetDetailTemplate: React.FC<PlanetDetailTemplateProps> = ({
 
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedNews, setSelectedNews] = useState<NewsDetail | null>(null); // 선택된 뉴스 상태
-  const [isVisible, setIsVisible] = useState(false);  // 모달 애니메이션 상태 추가
+  const [isVisible, setIsVisible] = useState(false); // 모달 애니메이션 상태 추가
 
   const handleNewsClick = async (item: News) => {
-
     if (item.newsId) {
       const fetchNewsDetail = async () => {
         try {
           const newsData = await getNewsDetail(Number(item.newsId));
           setSelectedNews(newsData);
         } catch (error) {
-          console.error('Error fetching news detail:', error);
+          console.error("Error fetching news detail:", error);
         }
       };
       fetchNewsDetail();
@@ -106,7 +101,6 @@ const PlanetDetailTemplate: React.FC<PlanetDetailTemplateProps> = ({
   };
 
   // useWheelScroll(contentRef, sections, scrollToSection);
-
 
   useEffect(() => {
     const handleScroll = debounce(() => {
@@ -202,11 +196,11 @@ const PlanetDetailTemplate: React.FC<PlanetDetailTemplateProps> = ({
         </SectionContainer> */}
 
         <SectionContainer ref={chartRef}>
-          <div ref={listRef4} style={{width: '40vw'}}>
+          <div ref={listRef4} style={{ width: "40vw" }}>
             <ChartTemplate />
           </div>
-          <div ref={listRef3} style={{width: '40vw'}}>
-          <StockDailyPriceTemplate />
+          <div ref={listRef3} style={{ width: "40vw" }}>
+            <StockDailyPriceTemplate />
           </div>
         </SectionContainer>
 
@@ -215,27 +209,29 @@ const PlanetDetailTemplate: React.FC<PlanetDetailTemplateProps> = ({
           <FinancialMetricsChart />
         </SectionContainer>
 
-        <SectionContainer ref={planetNewsRef} >
+        <SectionContainer ref={planetNewsRef}>
           <div className="news-list" ref={listRef}>
             {/* 행성 뉴스 데이터 렌더링 */}
             <StyledParagraph>
-              행성 소식에서는 <strong>{stockName}</strong> 관련 뉴스를 확인할 수 있어요!
+              행성 소식에서는 <strong>{stockName}</strong> 관련 뉴스를 확인할 수
+              있어요!
             </StyledParagraph>
-            <NewsList news={planetNews} onClick={handleNewsClick}/>
+            <NewsList news={planetNews} onClick={handleNewsClick} />
           </div>
           {/* <div className="word-cloud">
             <WordCloudComponent data={planetWord} width={500} height={440} />
           </div> */}
           {/* 이 부분에서 Calendar 컴포넌트를 사용해줘! */}
-            {calendar} {/* 전달받은 calendar 컴포넌트를 렌더링 */}
-          
+          {calendar} {/* 전달받은 calendar 컴포넌트를 렌더링 */}
         </SectionContainer>
 
         <SectionContainer ref={spaceNewsRef}>
           <div className="news-list" ref={listRef2}>
             {/* 우주 뉴스 데이터 렌더링 */}
-            <StyledParagraph>우주 소식에서는 여행 중인 날짜의 모든 뉴스를 조회할 수 있어요!</StyledParagraph>
-            <NewsList news={spaceNews} onClick={handleNewsClick}/>
+            <StyledParagraph>
+              우주 소식에서는 여행 중인 날짜의 모든 뉴스를 조회할 수 있어요!
+            </StyledParagraph>
+            <NewsList news={spaceNews} onClick={handleNewsClick} />
           </div>
           <div className="word-cloud">
             <WordCloudComponent data={spaceWord} width={500} height={440} />
@@ -245,12 +241,18 @@ const PlanetDetailTemplate: React.FC<PlanetDetailTemplateProps> = ({
 
       {/* 모달 컴포넌트 추가 */}
       {modalOpen && selectedNews && (
-        <NewsModal news={selectedNews} isVisible={isVisible} stockName={stockName} setSelectedNews={setSelectedNews} onClose={() =>{
-          setIsVisible(false);  // 모달 닫기 애니메이션 시작
-          setTimeout(() => {
-          setModalOpen(false);
-          }, 1500); }
-        } />
+        <NewsModal
+          news={selectedNews}
+          isVisible={isVisible}
+          stockName={stockName}
+          setSelectedNews={setSelectedNews}
+          onClose={() => {
+            setIsVisible(false); // 모달 닫기 애니메이션 시작
+            setTimeout(() => {
+              setModalOpen(false);
+            }, 800);
+          }}
+        />
       )}
     </>
   );

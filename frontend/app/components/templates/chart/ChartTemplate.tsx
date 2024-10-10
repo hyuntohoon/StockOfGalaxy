@@ -80,7 +80,7 @@ const ChartTemplate = () => {
   const [type, setType] = useState("M");
   const { stock, date } = useParams();
   const stock_code = Array.isArray(stock) ? stock[0] : stock ?? "005930";
-  const currentDate = date ?? "20241010";
+  const currentDate = date ?? "20241011";
 
   useEffect(() => {
     if (chartContainerRef) {
@@ -114,7 +114,6 @@ const ChartTemplate = () => {
 
       const initChartData = async () => {
         const dataList = await getPastStockData(stock_code, type);
-        console.log(dataList);
         newChart?.applyNewData(dataList);
         setChart(newChart);
       };
@@ -161,7 +160,7 @@ const ChartTemplate = () => {
 
   return (
     <>
-      {chart ? (
+      {isDifferentDate() === false && chart ? (
         <CustomHook stock_code={stock_code} chart={chart} type={type} />
       ) : null}
       <Container>
