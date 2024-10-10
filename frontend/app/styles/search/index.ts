@@ -1,5 +1,17 @@
 import styled from '@emotion/styled';
 import { FiSearch } from 'react-icons/fi';
+import { keyframes } from '@emotion/react';
+
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(20px); /* 아래에서 위로 올라오는 효과 */
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`;
 
 export const SearchContainer = styled.div<{ hasSearched: boolean }>`
   display: flex;
@@ -11,6 +23,7 @@ export const SearchContainer = styled.div<{ hasSearched: boolean }>`
   padding: 40px 20px;
   color: #ffffff;
   transition: margin-top 0.4s ease-in-out;
+  animation: ${fadeIn} 0.8s ease-in-out;
 `;
 
 export const SearchInputWrapper = styled.div<{ hasSearched: boolean }>`
@@ -34,6 +47,7 @@ export const SearchInput = styled.input`
   font-size: 16px;
   color: #ffffff;
   padding: 10px;
+  
 `;
 
 export const SearchIcon = styled(FiSearch)`
@@ -78,6 +92,10 @@ export const SearchResultsContainer = styled.div`
   backdrop-filter: blur(10px);
   transition: all 0.4s ease-in-out;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  
+  /* 처음 등장할 때 애니메이션 */
+  animation: ${fadeIn} 0.8s ease-in-out;
+
   /* 스크롤바 스타일링 */
   &::-webkit-scrollbar {
     width: 8px;

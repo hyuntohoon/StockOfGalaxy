@@ -105,6 +105,7 @@ const fadeOut = keyframes`
 
 const ModalContainer = styled.div<{ isVisible: boolean }>`
   background-color: white;
+  color: black;
   border-radius: 20px;
   width: 65vw;
   padding: 60px 5%;

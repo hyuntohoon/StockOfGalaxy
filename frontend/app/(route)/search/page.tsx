@@ -104,6 +104,7 @@ const SearchPage = () => {
       }
     }
     setModalOpen(true);
+    setIsVisible(true);
   };
 
   useKRStockWebSocket(stock_list, setStockDataInfo);
@@ -245,12 +246,12 @@ const SearchPage = () => {
         <NewsModal
           news={selectedNews}
           stockName={searchTerm}
-          onClose={() => {
-            setIsVisible(false);
+          onClose={() =>{
+            setIsVisible(false);  // 모달 닫기 애니메이션 시작
             setTimeout(() => {
-              setModalOpen(false);
-            }, 1500);
-          }}
+            setModalOpen(false);
+            }, 1500); }
+          }
           isVisible={isVisible}
           setSelectedNews={setSelectedNews}
         />
