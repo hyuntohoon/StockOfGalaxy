@@ -14,7 +14,7 @@ export const StyledCalendarWrapper = styled.div`
   display: flex;
   justify-content: center;
   position: relative;
-  z-index: 999;
+  
 
   .react-calendar {
     width: 100%;

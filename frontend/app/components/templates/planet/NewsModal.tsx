@@ -344,6 +344,8 @@ const NewsModal: React.FC<NewsModalProps> = ({ news, onClose, stockName, setSele
       console.log(item)
       const newsDetail = await getNewsDetail(item.newsId);
       setSelectedNews(newsDetail);
+      setSummary(null);
+      setShowSummary(false);
     } catch (error) {
       console.error("Error fetching news detail:", error);
     }
