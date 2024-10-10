@@ -41,6 +41,8 @@ export default function Page(props: any) {
   const [textures, setTextures] = useState([]);
   const camera = useRef<THREE.PerspectiveCamera | null>(null);
   const router = useRouter();
+  const [daysAgo, setDaysAgo] = useState(0);
+
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -140,6 +142,20 @@ export default function Page(props: any) {
     );
     animate();
 
+    // 오늘 날짜와 비교하여 며칠 전인지 계산
+      const today = new Date();
+      const inputDate = new Date(
+        parseInt(date.substring(0, 4)),   // 년
+        parseInt(date.substring(4, 6)) - 1, // 월 (0부터 시작하기 때문에 -1)
+        parseInt(date.substring(6, 8))    // 일
+      );
+  
+      const diffTime = today.getTime() - inputDate.getTime(); // 밀리초 단위 차이
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)); // 며칠 전인지 계산
+  
+      // 오늘이면 isToday true, 아니면 false
+      setDaysAgo(diffDays);
+
     return () => {
       cancelAnimationFrame(frameId);
       window.removeEventListener("resize", onWindowResize);
@@ -152,6 +168,8 @@ export default function Page(props: any) {
       mountRef.current?.removeChild(renderer.domElement);
       clearPlanets(); // 컴포넌트 언마운트 시 이전 행성을 삭제
     };
+
+    
   }, [date]);
 
   // 마우스 움직임 처리 함수
@@ -230,7 +248,7 @@ export default function Page(props: any) {
       }}
     >
       <RecoilRoot>
-        <DateCard left="20px" date={date} label={isToday ? "🌟 오늘의 인기 주식 🌟" : `🌟 과거 인기 주식 🌟`} />
+        <DateCard left="20px" date={date} label={isToday ? "🌟 오늘의 인기 주식 🌟" : `🌟 ${daysAgo}일 전 인기 주식 🌟`} />
         {isModalOpen && hoveredPlanet && (
           <PlanetTrendModal
             stockCode={hoveredPlanet.stockCode}

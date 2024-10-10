@@ -15,6 +15,7 @@ import { RocketData } from '@/app/types/rocket';
 import { getTop7RocketsApi } from '@/app/utils/apis/rocket';
 import TypeWritter from './TypeWritter';
 import { useDate } from '@/app/store/date';
+import AlienGuideButton from '@/app/components/atoms/Button/AlienGuideButton';
 
 interface stockState {
   stock_name: string | null;
@@ -27,13 +28,15 @@ interface stockState {
 let renderer: THREE.WebGLRenderer;
 let camera: THREE.PerspectiveCamera;
 
+
+
 export default function Home(props: any) {
   const { date } = props.params;
-  const { setDate } = useDate();
+  const { setDate, isToday } = useDate();
   setDate(date);
   const mountRef = useRef<HTMLDivElement>(null);
   const [isRocketModalOpen, setIsRocketModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [rocketData, setRocketData] = useState<RocketData[]>([]);
   const planetRadius = 150;
   const stockCodeParam = useParams().stock;
@@ -50,6 +53,17 @@ export default function Home(props: any) {
       console.error('로켓 데이터를 불러오는 중 에러가 발생했습니다.', error);
     }
   };
+
+  const info = [
+    "행성의 실시간 주식 정보와 함께",
+    "3,000,000건의 뉴스를 분석해서 표현했어요!",
+    "로켓은 과거의 사용자들이 그 당시의 주가와 함께 의견을 남긴 흔적이에요!",
+  ];
+  const pastInfo = [
+    `${date.slice(4,6)}월 ${date.slice(6, 8)}일의 주식 정보를 가져왔어요!`,
+    "이 날에는 어떤 일이 일어났었는지 뉴스를 통해 확인해볼까요?",
+    "화면 아래의 화살표를 클릭해보세요! 🖱️"
+  ];
 
   useEffect(() => {
     fetchRocketData();
@@ -165,6 +179,7 @@ export default function Home(props: any) {
 
   return (
     <div style={{ position: 'relative' }}>
+        <AlienGuideButton info={isToday ? info : pastInfo} left={350} width={500}/>
       {isLoading ? (
         <TypeWritter onFinish={() => setIsLoading(false)} />
       ) : (
