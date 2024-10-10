@@ -179,7 +179,7 @@ export default function Home(props: any) {
 
   return (
     <div style={{ position: 'relative' }}>
-        <AlienGuideButton info={isToday ? info : pastInfo} left={350} width={500}/>
+        <AlienGuideButton info={isToday ? info : pastInfo} left={380} width={500}/>
       {isLoading ? (
         <TypeWritter onFinish={() => setIsLoading(false)} />
       ) : (
