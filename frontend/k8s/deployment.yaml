@@ -54,6 +54,12 @@ spec:
             memory: "512Mi"  # 최소 512Mi 메모리 요청
           limits:
             memory: "1Gi"    # 최대 1Gi 메모리 제한
+        env:
+        - name: NEXT_PUBLIC_GPT_API_KEY  # 추가된 부분
+          valueFrom:
+            secretKeyRef:
+              name: gpt-api-secret
+              key: gpt-api-key
 
 ---
 apiVersion: v1
