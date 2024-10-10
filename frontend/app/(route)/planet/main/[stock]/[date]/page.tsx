@@ -19,9 +19,9 @@ import { useDate } from '@/app/store/date';
 interface stockState {
   stock_name: string | null;
   stock_code: string | null;
-  currentPrice: number | null;
-  changePrice: number | null;
-  changeRate: number | null;
+  currentPrice: string | null;
+  changePrice: string | null;
+  changeRate: string | null;
 }
 
 let renderer: THREE.WebGLRenderer;

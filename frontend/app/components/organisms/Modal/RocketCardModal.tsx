@@ -26,7 +26,7 @@ const RocketCardModal: React.FC<RocketCardModalProps> = ({
   currentPrice
 }) => {
   const [screenPosition, setScreenPosition] = useState({ x: -9999, y: -9999 }); // 초기 위치를 화면 밖으로 설정
-  const { priceChange, priceChangeSign } = calculatePriceChange(data.price, Number(currentPrice));
+  const { priceChange, priceChangeSign } = calculatePriceChange(data.price, currentPrice);
 
   useEffect(() => {
     // 3D 좌표를 2D 화면 좌표로 변환하는 함수

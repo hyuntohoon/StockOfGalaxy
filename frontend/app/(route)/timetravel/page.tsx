@@ -1,14 +1,22 @@
-'use client';
-import React, { useEffect, useState, useRef } from 'react';
-import { useRouter } from 'next/navigation';
-import CustomDatePicker from "@/app/components/molecules/timetravel/CustomDatePicker"
-import { IoArrowBack } from 'react-icons/io5';
-import AreaChart from '@/app/components/molecules/timetravel/AreaChart';
-import styled from '@emotion/styled';
-import { useDate } from '@/app/store/date';
-import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io'; 
-import { TimeTravelContainer, Title, BackButton, DateInputContainer, ConfirmButton, InfoText, ToggleButton } from './style';
-import { getTimeChart } from '@/app/utils/apis/timetravel';
+"use client";
+import React, { useEffect, useState, useRef } from "react";
+import { useRouter } from "next/navigation";
+import CustomDatePicker from "@/app/components/molecules/timetravel/CustomDatePicker";
+import { IoArrowBack } from "react-icons/io5";
+import AreaChart from "@/app/components/molecules/timetravel/AreaChart";
+import styled from "@emotion/styled";
+import { useDate } from "@/app/store/date";
+import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
+import {
+  TimeTravelContainer,
+  Title,
+  BackButton,
+  DateInputContainer,
+  ConfirmButton,
+  InfoText,
+  ToggleButton,
+} from "./style";
+import { getTimeChart } from "@/app/utils/apis/timetravel";
 import { keyframes } from "@emotion/react";
 
 // 텍스트에 애니메이션 효과 추가
@@ -59,8 +67,6 @@ const FullscreenVideo = styled.video`
   transform: translate(-50%, -50%);
 `;
 
-
-
 const ChartContainer = styled.div`
   width: 100%;
   max-width: 1000px;
@@ -71,12 +77,12 @@ const ChartContainer = styled.div`
 `;
 
 const formatDate = (date: Date) => {
-  return date.toISOString().slice(0, 10).replace(/-/g, '');
+  return date.toISOString().slice(0, 10).replace(/-/g, "");
 };
 const formatTravelDate = (date: Date) => {
   const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 1을 더함
-  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, "0"); // 월은 0부터 시작하므로 1을 더함
+  const day = String(date.getDate()).padStart(2, "0");
   return `${year}년 ${month}월 ${day}일`;
 };
 
@@ -91,7 +97,9 @@ const TimeTravel = () => {
 
   const handleConfirm = () => {
     if (selectedDate) {
-      const offsetDate = new Date(selectedDate.getTime() - selectedDate.getTimezoneOffset() * 60000);
+      const offsetDate = new Date(
+        selectedDate.getTime() - selectedDate.getTimezoneOffset() * 60000
+      );
       const newDate = formatDate(offsetDate);
       setDate(newDate);
 
@@ -110,36 +118,46 @@ const TimeTravel = () => {
       const startDate7DaysAgo = new Date();
       startDate7DaysAgo.setDate(today.getDate() - 7);
       const formattedStartDate7DaysAgo = formatDate(startDate7DaysAgo);
-  
+
       // 오늘 날짜 이전 7일간 데이터 가져오기
-      const initialData = await getTimeChart(formattedStartDate7DaysAgo, formatDate(today));
-      const formattedInitialData = initialData.stockVolumeAndNewsList.map((item: any) => ({
-        date: item.date,
-        newsCount: item.articleCount * 10,
-        traffic: parseInt(item.totalStockVolume, 10) % 10000,
-        topStocks: item.top3Stocks,
-      }));
-  
+      const initialData = await getTimeChart(
+        formattedStartDate7DaysAgo,
+        formatDate(today)
+      );
+      const formattedInitialData = initialData.stockVolumeAndNewsList.map(
+        (item: any) => ({
+          date: item.date,
+          newsCount: item.articleCount,
+          traffic: parseInt(item.totalStockVolume, 10) % 10000,
+          topStocks: item.top3Stocks,
+        })
+      );
+
       // 첫 번째 데이터만 먼저 화면에 표시
       setChartData(formattedInitialData.reverse());
-  
+
       // 비동기적으로 오늘 이전 1년 데이터를 받아서 추가
       const startDate1YearAgo = new Date();
       startDate1YearAgo.setFullYear(today.getFullYear() - 1);
       const formattedStartDate1YearAgo = formatDate(startDate1YearAgo);
-  
-      const olderData = await getTimeChart(formattedStartDate1YearAgo, formattedStartDate7DaysAgo);
-      const formattedOlderData = olderData.stockVolumeAndNewsList.map((item: any) => ({
-        date: item.date,
-        newsCount: item.articleCount * 10,
-        traffic: parseInt(item.totalStockVolume, 10) % 10000,
-        topStocks: item.top3Stocks,
-      }));
-  
+
+      const olderData = await getTimeChart(
+        formattedStartDate1YearAgo,
+        formattedStartDate7DaysAgo
+      );
+      const formattedOlderData = olderData.stockVolumeAndNewsList.map(
+        (item: any) => ({
+          date: item.date,
+          newsCount: item.articleCount * 10,
+          traffic: parseInt(item.totalStockVolume, 10) % 10000,
+          topStocks: item.top3Stocks,
+        })
+      );
+
       // 기존 데이터에 1년 데이터를 추가
-      setChartData(prevData => [...prevData, ...formattedOlderData.reverse()]);
+      setChartData(formattedOlderData.concat(formattedInitialData));
     };
-  
+
     fetchInitialData();
   }, []);
 
@@ -151,8 +169,10 @@ const TimeTravel = () => {
             <source src="/videos/move.mp4" type="video/mp4" />
             Your browser does not support the video tag.
           </FullscreenVideo>
-          
-          <MovingText>{`${formatTravelDate(selectedDate!)}로 이동하는 중...`}</MovingText>
+
+          <MovingText>{`${formatTravelDate(
+            selectedDate!
+          )}로 이동하는 중...`}</MovingText>
         </VideoContainer>
       )}
 
@@ -162,7 +182,7 @@ const TimeTravel = () => {
             <source src="/videos/timetravel.mp4" type="video/mp4" />
             Your browser does not support the video tag.
           </FullscreenVideo>
-          <TimeTravelContainer style={{ position: 'relative' }}>
+          <TimeTravelContainer style={{ position: "relative" }}>
             <BackButton onClick={() => router.back()}>
               <IoArrowBack />
             </BackButton>
@@ -170,16 +190,24 @@ const TimeTravel = () => {
             <Title>시간 여행</Title>
 
             <DateInputContainer isChartVisible={isChartVisible}>
-              <CustomDatePicker date={selectedDate} setDate={(date: Date) => setSelectedDate(date)} />
-              <ConfirmButton onClick={handleConfirm} isChartVisible={isChartVisible}>
+              <CustomDatePicker
+                date={selectedDate}
+                setDate={(date: Date) => setSelectedDate(date)}
+              />
+              <ConfirmButton
+                onClick={handleConfirm}
+                isChartVisible={isChartVisible}
+              >
                 이동
               </ConfirmButton>
             </DateInputContainer>
 
-            <InfoText isChartVisible={isChartVisible}>날짜별 주식 데이터를 한 눈에 확인할 수 있어요!</InfoText>
+            <InfoText isChartVisible={isChartVisible}>
+              날짜별 주식 데이터를 한 눈에 확인할 수 있어요!
+            </InfoText>
 
             <ToggleButton onClick={toggleChartVisibility}>
-              {isChartVisible ? '차트 접기' : '차트 펼치기'}{' '}
+              {isChartVisible ? "차트 접기" : "차트 펼치기"}{" "}
               {isChartVisible ? <IoIosArrowUp /> : <IoIosArrowDown />}
             </ToggleButton>
 

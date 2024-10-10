@@ -15,7 +15,7 @@ const RocketModal = ({ onClose, fetchRocketData }) => {
   const [data, setData] = useState([]); // 현재 보여주는 데이터
   const [allData, setAllData] = useState([]); // 전체 데이터를 저장할 상태
   const [loading, setLoading] = useState(false);
-  const [currentPrice, setCurrentPrice] = useState<number | null>(null); // 주가 정보 상태
+  const [currentPrice, setCurrentPrice] = useState<string | null>(null); // 주가 정보 상태
   const [maxPositiveRocket, setMaxPositiveRocket] = useState(null); // 양수 중 가장 큰 값
   const [maxNegativeRocket, setMaxNegativeRocket] = useState(null); // 음수 중 가장 큰 값
 

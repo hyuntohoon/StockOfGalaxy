@@ -251,12 +251,6 @@ export default function Page(props: any) {
                 }
                 onClose={() => setIsViewAllHover(false)}
               />
-              {/* <PlanetTrendRank 
-                rank={data.rank} 
-                position={planetsArray[index].position}
-                camera={camera.current!}
-                rendererDomElement={mountRef.current?.children[0] as HTMLCanvasElement}
-              /> */}
             </>
           ))}
         {isErrorModalOpen && (

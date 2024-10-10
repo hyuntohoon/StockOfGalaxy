@@ -105,9 +105,9 @@ const StockTemplate = () => {
               const updatedStockData = [...prevStockData];
               updatedStockData[stockIndex] = {
                 ...updatedStockData[stockIndex],
-                currentPrice: res.stckPrpr,
-                changePrice: res.prdyVrss,
-                changeRate: res.prdyCtrt,
+                currentPrice: parseInt(res.stckPrpr),
+                changePrice: parseInt(res.prdyVrss),
+                changeRate: parseFloat(res.prdyCtrt),
               };
 
               return updatedStockData;
