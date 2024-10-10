@@ -20,9 +20,9 @@ import { getTodayDate } from "@/app/utils/libs/getTodayDate";
 interface stockState {
   stock_name: string | null;
   stock_code: string | null;
-  currentPrice: number | null;
-  changePrice: number | null;
-  changeRate: number | null;
+  currentPrice: string | null;
+  changePrice: string | null;
+  changeRate: string | null;
 }
 
 const PlanetTrendModal: React.FC<PlanetTrendModalProps> = ({
@@ -133,7 +133,7 @@ const PlanetTrendModal: React.FC<PlanetTrendModalProps> = ({
           {Number(stockDataInfo[0].currentPrice || 0).toLocaleString()}원
         </StockPrice>
         <Change
-          color={stockDataInfo[0].changePrice! > 0 ? "#F02C44" : "#2C6FF0"}
+          color={Number(stockDataInfo[0].changePrice!) > 0 ? "#F02C44" : "#2C6FF0"}
         >
           {parseInt(stockDataInfo[0].changePrice?.toString() || "0").toLocaleString()}원 (
           {stockDataInfo[0].changeRate}%)
