@@ -14,7 +14,7 @@ const Container = styled.div`
   background-color: #f5f5f5;
   border-radius: 15px;
   padding: 10px 20px;
-  width: 160px;
+  width: 145px;
   height: 50px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); // 그림자 추가
 `;

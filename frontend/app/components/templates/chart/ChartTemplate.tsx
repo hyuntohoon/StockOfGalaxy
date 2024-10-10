@@ -69,8 +69,6 @@ const SubTitle = styled.div`
   color: black;
 `;
 
-const TotalContainer = styled.div``;
-
 const CustomHook = ({ stock_code, chart, type }) => {
   useKRChartWebSocket(stock_code, chart, type);
   return <></>;
@@ -78,7 +76,6 @@ const CustomHook = ({ stock_code, chart, type }) => {
 
 const ChartTemplate = () => {
   const [chartContainerRef, setChartContainerRef] = useState(null);
-  const [totalContainerRef, setTotalContainerRef] = useState(null);
   const [chart, setChart] = useState<any>(null);
   const [type, setType] = useState("M");
   const { stock, date } = useParams();
@@ -162,21 +159,8 @@ const ChartTemplate = () => {
     return formattedCurrentDate !== date;
   };
 
-  const handleFullscreenToggle = () => {
-    chart.resize();
-    changeType(type);
-    if (totalContainerRef) {
-      const elem = totalContainerRef as any;
-      if (!document.fullscreenElement) {
-        elem.requestFullscreen?.();
-      } else {
-        document.exitFullscreen?.();
-      }
-    }
-  };
-
   return (
-    <TotalContainer ref={(el: any) => setTotalContainerRef(el)}>
+    <>
       {chart ? (
         <CustomHook stock_code={stock_code} chart={chart} type={type} />
       ) : null}
@@ -204,15 +188,12 @@ const ChartTemplate = () => {
           <Option onClick={() => changeType("Y")} isSelected={type === "Y"}>
             년
           </Option>
-          <FullscreenButton onClick={handleFullscreenToggle}>
-            ㅇ
-          </FullscreenButton>
         </OptionContainer>
         <ChartContainer
           ref={(el: any) => setChartContainerRef(el)}
         ></ChartContainer>
       </Container>
-    </TotalContainer>
+    </>
   );
 };
 

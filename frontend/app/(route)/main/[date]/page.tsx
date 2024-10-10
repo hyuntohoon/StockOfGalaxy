@@ -16,8 +16,10 @@ import AlienGuideButton from "@/app/components/atoms/Button/AlienGuideButton";
 import { getPlanetTrendApi } from "@/app/utils/apis/stock";
 import ViewAllButton from "@/app/components/atoms/Button/ViewAllButton";
 import PlanetTrendRank from "@/app/components/atoms/Text/PlanetTrendRank";
+import { getCurrentPrice } from "@/app/utils/apis/stock/getStockData";
 
-interface CustomPlanet extends THREE.Mesh<THREE.SphereGeometry, THREE.MeshStandardMaterial> {
+interface CustomPlanet
+  extends THREE.Mesh<THREE.SphereGeometry, THREE.MeshStandardMaterial> {
   rotationSpeed: {
     x: number;
     y: number;
@@ -42,7 +44,7 @@ export default function Page(props: any) {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-  
+
     // 카메라 설정
     camera.current = new THREE.PerspectiveCamera(
       75,
@@ -50,28 +52,28 @@ export default function Page(props: any) {
       0.1,
       1000
     );
-  
+
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
     mountRef.current?.appendChild(renderer.domElement);
-  
+
     const scene = new THREE.Scene();
     camera.current.position.z = 550;
-  
+
     setupLights(scene);
     createParticles(scene);
-  
+
     const textureLoader = new THREE.TextureLoader();
-  
+
     // 이전 행성들을 삭제하는 함수
     function clearPlanets() {
       planetsArray.forEach((planet) => {
         scene.remove(planet); // 씬에서 행성을 제거
-    
+
         // planet.geometry.dispose()로 geometry 자원 해제
         planet.geometry.dispose();
-    
+
         // planet.material이 배열일 수 있으므로 확인
         if (Array.isArray(planet.material)) {
           planet.material.forEach((material) => material.dispose()); // 배열일 경우 각 material의 dispose 호출
@@ -79,26 +81,25 @@ export default function Page(props: any) {
           planet.material.dispose(); // 단일 material일 경우 dispose 호출
         }
       });
-    
+
       planetsArray.length = 0; // 행성 배열 초기화
     }
-    
-  
+
     // 빈 배열일 경우 오늘 날짜로 이동
     function handleEmptyDataError() {
       setIsErrorModalOpen(true); // 에러 모달을 열기
     }
-  
+
     getPlanetTrendApi(date)
       .then((data) => {
         const trendData = data.stockTop8ResponseList;
-  
+
         if (!trendData || trendData.length === 0) {
           // 빈 배열일 경우 모달을 열기
           handleEmptyDataError();
           return;
         }
-  
+
         // 텍스처 로드 후 새로운 행성 생성
         return loadTextures(trendData, textureLoader).then((textures) => ({
           trendData,
@@ -115,21 +116,21 @@ export default function Page(props: any) {
         console.error("행성 트렌드 데이터를 불러오는 중 오류 발생:", error);
         handleEmptyDataError(); // API 오류 시 모달을 열기
       });
-  
+
     let frameId: number;
-  
+
     function animate() {
       frameId = requestAnimationFrame(animate);
       animatePlanets();
       renderer.render(scene, camera.current!);
     }
-  
+
     function onWindowResize() {
       camera.current!.aspect = window.innerWidth / window.innerHeight;
       camera.current!.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
     }
-  
+
     window.addEventListener("resize", onWindowResize, false);
     window.addEventListener("mousemove", (event) =>
       onMouseMove(event, planetsArray, renderer)
@@ -138,7 +139,7 @@ export default function Page(props: any) {
       onPlanetClick(event, planetsArray, renderer)
     );
     animate();
-  
+
     return () => {
       cancelAnimationFrame(frameId);
       window.removeEventListener("resize", onWindowResize);
@@ -152,7 +153,6 @@ export default function Page(props: any) {
       clearPlanets(); // 컴포넌트 언마운트 시 이전 행성을 삭제
     };
   }, [date]);
-  
 
   // 마우스 움직임 처리 함수
   const onMouseMove = (event, planets, renderer) => {
@@ -228,7 +228,9 @@ export default function Page(props: any) {
             corpName={hoveredPlanet.corpName}
             position={hoveredPlanet.position}
             camera={camera.current!}
-            rendererDomElement={mountRef.current?.children[0] as HTMLCanvasElement}
+            rendererDomElement={
+              mountRef.current?.children[0] as HTMLCanvasElement
+            }
             date={date}
             onClose={() => setIsModalOpen(false)}
           />
@@ -244,7 +246,9 @@ export default function Page(props: any) {
                 rank={data.rank}
                 position={planetsArray[index].position}
                 camera={camera.current!}
-                rendererDomElement={mountRef.current?.children[0] as HTMLCanvasElement}
+                rendererDomElement={
+                  mountRef.current?.children[0] as HTMLCanvasElement
+                }
                 onClose={() => setIsViewAllHover(false)}
               />
               {/* <PlanetTrendRank 
@@ -254,8 +258,7 @@ export default function Page(props: any) {
                 rendererDomElement={mountRef.current?.children[0] as HTMLCanvasElement}
               /> */}
             </>
-          ))
-        }
+          ))}
         {isErrorModalOpen && (
           <PlanetTrendErrorModal onClose={() => setIsErrorModalOpen(false)} />
         )}
@@ -300,7 +303,10 @@ function createPlanets(planetsData, scene, textures, camera) {
     const material = new THREE.MeshStandardMaterial({ map: textures[index] });
 
     // 커스텀 행성 타입으로 캐스팅
-    const planet: CustomPlanet = new THREE.Mesh(geometry, material) as CustomPlanet;
+    const planet: CustomPlanet = new THREE.Mesh(
+      geometry,
+      material
+    ) as CustomPlanet;
 
     // 행성 위치 설정
     planet.position.set(
@@ -339,7 +345,7 @@ function animatePlanets() {
 function createParticles(scene: THREE.Scene) {
   const particleGroup = new THREE.Group();
   const particleGeometry = new THREE.TetrahedronGeometry(1.5, 0);
-  const colors = [0xe0e0e0, 0xA4A8FF, 0xFFA4DF, 0xb0e0e6]; // 색상 추가
+  const colors = [0xe0e0e0, 0xa4a8ff, 0xffa4df, 0xb0e0e6]; // 색상 추가
   const materials = colors.map(
     (color) =>
       new THREE.MeshPhongMaterial({
