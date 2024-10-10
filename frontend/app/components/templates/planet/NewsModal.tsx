@@ -4,7 +4,11 @@ import { News, NewsDetail } from '@/app/types/planet';
 import { getNewsDetail, getPlanetNewsWithContent, summarizeNews } from '@/app/utils/apis/news';
 import { useDate } from '@/app/store/date';
 import { useRouter } from 'next/navigation'; // useRouter 임포트
-
+import useKRStockWebSocket from '@/app/hooks/useKRStockWebSocket';
+import { stockData } from '@/app/mocks/stockData';
+import { stockNumbers } from '@/app/utils/libs/stockNumbers';
+import { findStockName } from '@/app/utils/apis/stock/findStockName';
+import formatPrice from '@/app/utils/apis/stock/formatPrice';
 
 interface NewsModalProps {
   news: NewsDetail;
@@ -12,6 +16,51 @@ interface NewsModalProps {
   stockName: string;
   setSelectedNews: (news: NewsDetail | null) => void; // 새로운 뉴스 설정 함수
 }
+const StockKeywordChip = styled.div`
+  display: inline-flex;
+  align-items: center; /* 수평으로 정렬 */
+  background-color: #ececec;
+  border-radius: 15px;
+  padding: 10px 20px;
+  margin-right: 10px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  cursor: pointer;
+  &:hover {
+    background-color: #dcdcdc;
+  }
+`;
+
+const StockName = styled.span`
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-right: 10px; /* 주식명과 가격 정보 사이의 간격 */
+`;
+
+const StockPriceInfo = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 5px;
+`;
+
+const StockPrice = styled.span`
+  font-size: 1rem; /* 글씨를 조금 작게 설정 */
+  color: black;
+  font-weight: bold;
+`;
+
+const ChangePrice = styled.span<{ isPositive: boolean }>`
+  font-size: 0.9rem; /* 글씨를 조금 작게 설정 */
+  color: ${({ isPositive }) => (isPositive ? "#FF4500" : "#1E90FF")};
+  font-weight: bold;
+`;
+
+const ChangeRate = styled.span<{ isPositive: boolean }>`
+  font-size: 0.9rem; /* 글씨를 조금 작게 설정 */
+  color: ${({ isPositive }) => (isPositive ? "#FF4500" : "#1E90FF")};
+  font-weight: bold;
+`;
+
 
 // 모달 배경
 const ModalBackground = styled.div`
@@ -231,12 +280,41 @@ const NewsCardSummary = styled.p`
   color: #666;
 `;
 
+
+
+interface stockState {
+  stock_name: string;
+  stock_code: string;
+  currentPrice: number;
+  changePrice: number;
+  changeRate: number;
+}
+
 const NewsModal: React.FC<NewsModalProps> = ({ news, onClose, stockName, setSelectedNews }) => {
   const [showSummary, setShowSummary] = useState(false);
   const [summary, setSummary] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const { date } = useDate();
   const [planetNews, setPlanetNews] = useState<News[]>([]);
+  const [stockDataInfo, setStockDataInfo] = useState<stockState[]>(() =>
+    news?.keywords?.map((keyword) => {
+      const stockCode = stockNumbers[keyword]; // stockNumbers에서 keyword에 해당하는 value 찾기
+  
+      // stockCode가 있으면 findStockName으로 종목 이름을 찾고 state에 할당
+      if (stockCode) {
+        return {
+          stock_name: findStockName(stockCode), // 종목 이름을 할당
+          stock_code: stockCode, // 종목 코드를 할당
+          currentPrice: null,
+          changePrice: null,
+          changeRate: null,
+        };
+      } else {
+        return null; // 해당하는 종목이 없을 경우 null로 처리
+      }
+    }).filter(item => item !== null) || [] // keywords가 없을 때 빈 배열 처리
+  );
+  
 
   const router = useRouter(); // useRouter 사용
 
@@ -258,7 +336,7 @@ const NewsModal: React.FC<NewsModalProps> = ({ news, onClose, stockName, setSele
       setShowSummary(true);
     }
   };
-
+  useKRStockWebSocket(stockDataInfo, setStockDataInfo);
   // 관련 뉴스 클릭 시
   const handleRelatedNewsClick = async (item: News) => {
     
@@ -266,6 +344,8 @@ const NewsModal: React.FC<NewsModalProps> = ({ news, onClose, stockName, setSele
       console.log(item)
       const newsDetail = await getNewsDetail(item.newsId);
       setSelectedNews(newsDetail);
+      setSummary(null);
+      setShowSummary(false);
     } catch (error) {
       console.error("Error fetching news detail:", error);
     }
@@ -296,14 +376,23 @@ const NewsModal: React.FC<NewsModalProps> = ({ news, onClose, stockName, setSele
         <NewsTitle>{news.title}</NewsTitle>
 
         <KeywordChips>
-          <div>
-            {news.keywords &&
-              news.keywords.map((keyword, idx) => (
-                <KeywordChip key={idx}>
-                  {keyword}
-                </KeywordChip>
-              ))}
-          </div>
+        <div>
+          {stockDataInfo && 
+            stockDataInfo.map((stock, idx) => (
+              <StockKeywordChip key={idx}>
+                <StockName>{stock.stock_name}</StockName>
+                <StockPriceInfo>
+                  <StockPrice>{stock.currentPrice ? `${formatPrice(stock.currentPrice)}원` : ''}</StockPrice>
+                  
+                  {stock.changeRate !== null && (
+                    <ChangeRate isPositive={stock.changeRate > 0}>
+                      ({stock.changePrice > 0 ? '+' : ''}{Math.abs(stock.changeRate)}%)
+                    </ChangeRate>
+                  )}
+                </StockPriceInfo>
+              </StockKeywordChip>
+            ))}
+        </div>
           <AiSummaryButton onClick={handleAiSummaryClick}>
             {showSummary ? "AI 요약 닫기" : "AI 뉴스 요약"}
           </AiSummaryButton>
@@ -313,7 +402,7 @@ const NewsModal: React.FC<NewsModalProps> = ({ news, onClose, stockName, setSele
         {loading && <LoadingSpinner />} {/* 요약 중일 때 로딩 애니메이션 표시 */}
         {showSummary && <AiSummary>{summary || "요약 결과가 없습니다."}</AiSummary>}
 
-        <NewsImage src={news.thumbnailImg} alt={news.title} />
+          {news.thumbnailImg !== "이미지 없음" && <NewsImage src={news.thumbnailImg}  alt={news.title} />}
 
         <NewsContent>
           {news.sentences &&
@@ -332,7 +421,7 @@ const NewsModal: React.FC<NewsModalProps> = ({ news, onClose, stockName, setSele
           <h3>{stockName} 관련 뉴스</h3>
           {planetNews.map((item) => (
             <NewsCard key={item.newsId} onClick={() => handleRelatedNewsClick(item)}>
-              <NewsCardImage src={item.thumbnailImg} alt={item.title} />
+              <NewsCardImage src={item.thumbnailImg === "이미지 없음" ? "/images/default.jpg" : item.thumbnailImg}  alt={item.title} />
               <NewsCardContent>
                 <NewsCardTitle>{item.title}</NewsCardTitle>
                 <NewsCardSummary>{item.content}</NewsCardSummary>

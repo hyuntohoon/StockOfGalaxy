@@ -72,14 +72,26 @@ export const summarizeNews = async (sentences: string[]) => {
 //   };
   
 
-const convertToApiDateFormat = (dateString: string): string => {
-    // yyyyMMdd 형식을 yyyy-MM-dd 형식으로 변환
-    const year = dateString.slice(0, 4);   // 첫 4자리: 년도
-  const month = dateString.slice(4, 6);  // 5~6자리: 월
-  const day = dateString.slice(6, 8);    // 7~8자리: 일
 
-  return `${year}-${month}-${day}`; // yyyy-MM-dd 형식으로 반환
-  };
+const convertToApiDateFormat = (dateString: string): string => {
+  // yyyyMMdd 형식을 Date 객체로 변환
+  const year = parseInt(dateString.slice(0, 4));   // 첫 4자리: 년도
+  const month = parseInt(dateString.slice(4, 6)) - 1; // 5~6자리: 월 (0부터 시작)
+  const day = parseInt(dateString.slice(6, 8));   // 7~8자리: 일
+
+  // Date 객체 생성
+  const date = new Date(year, month, day);
+
+  // 하루 더하기
+  date.setDate(date.getDate() + 1);
+
+  // yyyy-MM-dd 형식으로 변환
+  const updatedYear = date.getFullYear();
+  const updatedMonth = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1
+  const updatedDay = String(date.getDate()).padStart(2, '0'); // 일은 1~31 사이의 숫자
+
+  return `${updatedYear}-${updatedMonth}-${updatedDay}`;
+};
   
 export const searchNewsWithTitle = async(keyword: string, page: number, size: number) => {
     try {
