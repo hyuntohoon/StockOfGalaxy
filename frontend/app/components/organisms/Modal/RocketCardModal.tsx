@@ -14,7 +14,7 @@ interface RocketCardModalProps {
   camera: PerspectiveCamera;  // 3D 좌표를 변환하기 위한 카메라
   rendererDomElement: HTMLCanvasElement; // 렌더러의 DOM 요소
   data: RocketData;
-  currentPrice: number;
+  currentPrice: string;
 }
 
 const RocketCardModal: React.FC<RocketCardModalProps> = ({

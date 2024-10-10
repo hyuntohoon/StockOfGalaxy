@@ -24,6 +24,16 @@ export interface PlanetTrendModalProps {
   onClose: () => void; // 모달을 닫는 함수
 }
 
+export interface PlanetTrendSimpleModalProps {
+  stockCode: string;
+  corpName: string;
+  rank: number;
+  position: Vector3; // 3D 좌표
+  camera: PerspectiveCamera; // 3D 좌표 변환을 위한 카메라
+  rendererDomElement: HTMLCanvasElement; // 렌더러의 DOM 요소
+  onClose: () => void; // 모달을 닫는 함수
+}
+
 export interface SelectedPlanetTrendData {
   stockCode: string; // 주식 코드
   corpName: string; // 주식명

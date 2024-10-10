@@ -10,7 +10,7 @@ import { IBM_Plex_Sans_KR } from 'next/font/google';
 const ibm = IBM_Plex_Sans_KR({ weight: '400', subsets: ['latin'] })
 
 interface RocketInputFieldProps {
-  currentPrice: number | null; // 실시간 주가 데이터
+  currentPrice: string | null; // 실시간 주가 데이터
   isToday: boolean;
   fetchRocketData: () => void; // getTop7RocketsApi 함수
   fetchRocketListData: () => void; // getRocketListApi 함수

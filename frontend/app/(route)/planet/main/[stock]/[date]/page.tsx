@@ -20,9 +20,9 @@ import AlienGuideButton from '@/app/components/atoms/Button/AlienGuideButton';
 interface stockState {
   stock_name: string | null;
   stock_code: string | null;
-  currentPrice: number | null;
-  changePrice: number | null;
-  changeRate: number | null;
+  currentPrice: string | null;
+  changePrice: string | null;
+  changeRate: string | null;
 }
 
 let renderer: THREE.WebGLRenderer;
