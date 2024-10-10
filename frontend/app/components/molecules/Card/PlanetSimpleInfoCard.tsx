@@ -133,7 +133,7 @@ const CardContainer = styled.div`
   top: 20px;
   left: 20px;
   z-index: 1000;
-  min-width: 260px;
+  min-width: 300px;
   align-items: center;
 `;
 
