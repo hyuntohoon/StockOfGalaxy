@@ -18,7 +18,7 @@ public interface DailyStockHistoryRepository extends JpaRepository<DailyStockHis
     // 주어진 stockCode와 locDate에 맞는 DailyStockHistory 데이터를 조회
     Optional<DailyStockHistory> findByStock_StockCodeAndDailyStockHistoryDate(String stockCode, String dailyStockHistoryDate);
 
-    @Query("SELECT dsh FROM DailyStockHistory dsh JOIN FETCH dsh.stock WHERE dsh.dailyStockHistoryDate = :date ORDER BY dsh.stockAcmlVol DESC")
+    @Query("SELECT DISTINCT dsh FROM DailyStockHistory dsh JOIN FETCH dsh.stock WHERE dsh.dailyStockHistoryDate = :date ORDER BY dsh.stockAcmlVol DESC")
     List<DailyStockHistory> findTop3ByVolumeByDate(@Param("date") String date, Pageable pageable);
 
 

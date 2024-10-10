@@ -243,8 +243,14 @@ public class StockServiceImpl implements StockService {
 
     @Override
     public Optional<String> getHolidayInfo(String holidayDate) {
-        return stockHolidayRepository.findByLocDate(holidayDate)
-            .map(StockHoliday::getStockDate);  // 공휴일 이름을 반환
+        Pageable pageable = PageRequest.of(0, 1); // 첫 번째 결과만 반환
+        List<StockHoliday> result = stockHolidayRepository.findByLocDate(holidayDate, pageable);
+
+        if (result.isEmpty()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(result.get(0).getStockDate());  // 첫 번째 결과 반환
     }
 
 
@@ -602,6 +608,7 @@ public class StockServiceImpl implements StockService {
                 // 상위 3개 주식명 리스트 추출
                 List<String> stockNames = top3Stocks.stream()
                     .map(stock -> stock.getStock().getCorpName())
+                    .distinct() // 중복제거
                     .collect(Collectors.toList());
 
                 // 뉴스 데이터가 빈 배열일 경우 기사 수를 0으로 설정
