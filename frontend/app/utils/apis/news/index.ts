@@ -101,7 +101,7 @@ export const searchNewsWithTitle = async(keyword: string, page: number, size: nu
         return res.data.map((newsItem: any) => ({
             newsId: newsItem.newsId,
             title: newsItem.title,
-            publishDate: newsItem.publishedDate,
+            publishedDate: newsItem.publishedDate,
             thumbnailImg: newsItem.thumbnailImg,
         }));
     } catch (error) {

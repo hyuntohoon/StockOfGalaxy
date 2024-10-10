@@ -30,7 +30,7 @@ interface CustomPlanet
 const planetsArray: THREE.Mesh[] = [];
 
 export default function Page(props: any) {
-  const { date, setDate } = useDate();
+  const { date, isToday } = useDate();
   // console.log('이동한 날짜: ', date)
   const mountRef = useRef<HTMLDivElement>(null);
   const [hoveredPlanet, setHoveredPlanet] = useState(null);
@@ -204,10 +204,20 @@ export default function Page(props: any) {
   };
 
   const info = [
-    "오늘은 어떤 주식이 인기 있었을까요?🌟",
-    "주식이 뉴스에서 언급된 횟수에 따라",
-    "주요 주식들을 행성 크기로 표현해보았어요!",
+    "오늘은 어떤 주식이 인기일까요?🌟",
+    "오늘 뉴스에서 주식이 언급되는 횟수에 따라",
+    "핫한 주식들을 행성 크기로 표현해보았어요!",
+    "",
+    "행성을 클릭해서 각 주식 종목마다",
+    "오늘 어떤 일이 일어나고 있는지 알아볼까요?"
   ];
+  const pastInfo = [
+    `${date.slice(4,6)}월 ${date.slice(6, 8)}일의 뉴스를 분석해서`
+    ,"가장 인기 있었던 주식들을"," 행성 크기로 표현해보았어요!",
+    "",
+    "행성을 클릭해서 각 주식 종목마다",
+    "이 날 어떤 일이 있었는지 알아볼까요?"
+  ]
 
   return (
     <div
@@ -220,8 +230,7 @@ export default function Page(props: any) {
       }}
     >
       <RecoilRoot>
-        <DateCard left="20px" date={date} label={"MAIN PAGE"} />
-        {/* 개별 행성에 대한 모달 */}
+        <DateCard left="20px" date={date} label={isToday ? "🌟 오늘의 인기 주식 🌟" : `🌟 과거 인기 주식 🌟`} />
         {isModalOpen && hoveredPlanet && (
           <PlanetTrendModal
             stockCode={hoveredPlanet.stockCode}
@@ -257,8 +266,8 @@ export default function Page(props: any) {
           <PlanetTrendErrorModal onClose={() => setIsErrorModalOpen(false)} />
         )}
       </RecoilRoot>
-      <AlienGuideButton info={info} />
-      <ViewAllButton
+      <AlienGuideButton info={isToday ? info : pastInfo} />
+      {/* <ViewAllButton
         onMouseEnter={() => setIsViewAllHover(true)} // ViewAllButton에 마우스 호버시
         onMouseLeave={() => setIsViewAllHover(false)} // 마우스가 버튼에서 벗어날 때
       />

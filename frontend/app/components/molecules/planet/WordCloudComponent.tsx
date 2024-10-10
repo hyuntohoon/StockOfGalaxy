@@ -55,14 +55,14 @@ const WordCloudComponent: React.FC<WordCloudProps> = ({ data, width, height }) =
 
   useEffect(() => {
     const layout = cloud<Word>()
-      .size([width, height]) // props로 전달된 가로 및 세로 사이즈 설정
+      .size([width+100, height+100]) // props로 전달된 가로 및 세로 사이즈 설정
       .words(data.map((d) => ({
         text: d.text,
         size: d.value * 10,
       })))
       .padding(5)
       .rotate(() => (Math.random() > 0.5 ? 90 : 0))
-      .font('IBM Plex Sans KR')
+      .font('Nanum Gothic')
       .fontSize((d) => d.size)
       .on('end', (words) => {
         setWords(words);
@@ -86,13 +86,14 @@ const WordCloudComponent: React.FC<WordCloudProps> = ({ data, width, height }) =
 
   return (
     <WordCloudContainer>
-      <svg ref={svgRef} width={width} height={height}>
-        <g transform={`translate(${width / 2 - 50},${height / 2})`}>
+      <svg ref={svgRef} width={width+100} height={height+100}>
+        <g transform={`translate(${(width+20) / 2},${(height+100) / 2})`}>
           {words.map((word, index) => (
             <text
               key={index}
               fontSize={word.size}
-              fontFamily="IBM Plex Sans KR"  // 폰트를 적용
+              fontFamily="Nanum Gothic"  // 폰트를 적용
+              fontWeight="bold"
               fill="#29088A"
               textAnchor="middle"
               transform={`translate(${word.x},${word.y}) rotate(${word.rotate})`}

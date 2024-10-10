@@ -10,13 +10,13 @@ interface InfoBoxProps {
 }
 
 const AlienGuideButton : React.FC<InfoBoxProps> = ({ info })=> {
-  const [isHovered, setIsHovered] = useState(false); // 마우스 호버 상태 관리
+  const [isHovered, setIsHovered] = useState(true); // 마우스 호버 상태 관리
 
   return (
     <div style={{ position: 'relative' }}>
       <StyledButton
         onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
+        onMouseLeave={() => setIsHovered(true)}
       >
         <Icon>
           <Image src={alien} alt="플래닛 트랜드 가이드" width={35} />
@@ -50,8 +50,25 @@ const StyledButton = styled.div`
   }
 `;
 
+/* 아이콘이 종알종알 말하는 느낌을 위한 애니메이션 */
 const Icon = styled.div`
   display: flex;
+  animation: talk 1s infinite ease-in-out; /* 애니메이션 적용 */
+
+  @keyframes talk {
+    0%, 100% {
+      transform: translateY(0); /* 원래 위치 */
+    }
+    25% {
+      transform: translateY(-2px); /* 살짝 위로 */
+    }
+    50% {
+      transform: translateY(2px); /* 살짝 아래로 */
+    }
+    75% {
+      transform: translateY(-2px); /* 다시 살짝 위로 */
+    }
+  }
 `;
 
 const InfoBox = styled.div<{ isVisible: boolean }>`

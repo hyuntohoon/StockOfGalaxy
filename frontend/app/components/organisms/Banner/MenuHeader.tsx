@@ -30,11 +30,11 @@ const MenuHeaderWrapper = styled.div<{ isOpen: boolean }>`
   position: fixed;
   top: 50%;
   left: 0;
-  transform: translate(-85%, -50%) translateX(${props => (props.isOpen ? '85%' : '0')});
+  transform: translate(-85%, -50%) translateX(${props => (props.isOpen ? '85%' : '0%')});
   display: flex;
   flex-direction: column;
   align-items: center; 
-  padding: 20px 5px;
+  padding: 20px 10px;
   background-color: rgba(255, 255, 255, 0.65);
   border-radius: 30px;
   justify-content: center;
