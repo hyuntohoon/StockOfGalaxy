@@ -164,6 +164,12 @@ const AreaChart: React.FC<AreaChartProps> = ({ data, detail }) => {
     updateYAxisRange(newFilteredData); // Y축 범위 설정
   }, [data, selectedDays]);
 
+  useEffect(() => {
+    data.sort((a, b) => {
+      return a.date.localeCompare(b.date);
+    });
+  }, [selectedDays]);
+
   const updateYAxisRange = (
     filteredData: { newsCount: number; traffic: number }[]
   ) => {
@@ -177,9 +183,11 @@ const AreaChart: React.FC<AreaChartProps> = ({ data, detail }) => {
 
   const formatDate = (timestamp: string) => {
     const date = new Date(timestamp);
+
     const year = date.getFullYear();
     const day = date.getDate();
     const month = date.getMonth() + 1;
+
     return `${year}/${month}/${day}`;
   };
 
@@ -285,18 +293,32 @@ const AreaChart: React.FC<AreaChartProps> = ({ data, detail }) => {
             font-family: 'Arial', sans-serif;
           ">
             <div style="font-size: 16px; font-weight: bold; margin-bottom: 8px;">
-              ${formattedDate}
+              ${parseDate(selectedData.date)}
             </div>
             <div style="margin-bottom: 12px;">
-              <strong style="font-size: 14px; color: #4CAF50;">Top 3 주식:</strong>
-              <div>${selectedData.topStocks[0]}</div>
-              <div>${selectedData.topStocks[1]}</div>
-              <div>${selectedData.topStocks[2]}</div>
+              <strong style="font-size: 14px; color: #4CAF50;">${
+                selectedData.topStocks.length == 3
+                  ? "Top 3 주식:"
+                  : "주식 폐장일"
+              }</strong>
+              <div>${
+                selectedData.topStocks[0] ? selectedData.topStocks[0] : ""
+              }</div>
+              <div>${
+                selectedData.topStocks[1] ? selectedData.topStocks[1] : ""
+              }</div>
+              <div>${
+                selectedData.topStocks[2] ? selectedData.topStocks[2] : ""
+              }</div>
             </div>
             <div style="border-top: 1px solid #fff; padding-top: 10px;">
-              <strong>뉴스 수:</strong> ${series[0][dataPointIndex]}
+              <strong>뉴스 수:</strong> ${series[0][
+                dataPointIndex
+              ].toLocaleString()}
               <br />
-              <strong>트래픽:</strong> ${series[1][dataPointIndex]}
+              <strong>거래량:</strong> ${series[1][
+                dataPointIndex
+              ].toLocaleString()}
             </div>
           </div>
         `;

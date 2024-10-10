@@ -28,7 +28,7 @@ export default function Rockets({ scene, rocketData, stockCode }: RocketProps) {
   const [selectedRocket, setSelectedRocket] = useState<RocketData | null>(null);
   const [hoveredRocket, setHoveredRocket] = useState<THREE.Mesh | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentPrice, setCurrentPrice] = useState<number | null>(null); // currentPrice 상태 추가
+  const [currentPrice, setCurrentPrice] = useState<string | null>(null); // currentPrice 상태 추가
   const mountRef = useRef<HTMLDivElement>(null);
   const camera = useRef<THREE.PerspectiveCamera | null>(null);
 

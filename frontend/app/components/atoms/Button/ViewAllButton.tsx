@@ -28,11 +28,9 @@ const ViewAllButton = ({ onMouseEnter, onMouseLeave }) => {
       <Icon>
         <Image src={eye} alt="플래닛 트랜드 전체보기" width={28} />
       </Icon>
-    {isHovered && (
-      <InfoBox>
+      <InfoBox isVisible={isHovered}>
         인기주식을 한 눈에! 👀
       </InfoBox>
-    )}
     </StyledButton>
   );
 };
@@ -41,7 +39,7 @@ const StyledButton = styled.div`
   position: fixed;
   display: flex;
   top: 30px;
-  right: 120px;
+  right: 180px;
   width: 54px;
   height: 54px;
   justify-content: center;
@@ -56,7 +54,7 @@ const Icon = styled.div`
   display: flex;
 `;
 
-const InfoBox = styled.div`
+const InfoBox = styled.div<{ isVisible: boolean }>`
   display: flex;
   position: absolute;
   top: 60px; /* 버튼 아래에 표시되도록 위치 조정 */
@@ -74,5 +72,9 @@ const InfoBox = styled.div`
   text-align: center;
   justify-content: center;
   align-items: center;
+  /* 애니메이션 추가 */
+  opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
+  transform: ${({ isVisible }) => (isVisible ? 'translateY(0)' : 'translateY(-10px)')};
+  transition: opacity 0.4s ease, transform 0.4s ease;
 `;
 export default ViewAllButton;

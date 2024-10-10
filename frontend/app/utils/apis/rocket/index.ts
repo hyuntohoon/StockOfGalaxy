@@ -8,7 +8,7 @@ import { defaultRequest } from "../request";
 //   "message" : "아 내 돈 ~~~~~~~~~~~~~~~~" // String
 // }
 // 로켓 작성
-export const createRocketApi = async (memberId: number, stockCode: string, stockPrice: number, content: string) => {
+export const createRocketApi = async (memberId: number, stockCode: string, stockPrice: string, content: string) => {
   try {
     const response = await defaultRequest.post('/stock/rocket', {
       memberId: memberId,

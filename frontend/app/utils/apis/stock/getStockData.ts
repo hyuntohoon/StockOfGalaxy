@@ -12,6 +12,14 @@ interface StockDailyPriceProps {
   prdyCtrt: string;
 }
 
+interface StockCurrentPriceProps {
+  stockCode: string;
+  stckPrpr: string;
+  prdyVrss: string;
+  prdyVrssSign: string;
+  prdyCtrt: string;
+}
+
 function toTimestamp(dateString) {
   // yyyymmddhhmmss 형식의 문자열을 분리
   const year = dateString.substring(0, 4);
@@ -113,7 +121,9 @@ export const getPastStockData = async (stock_code: string, type: string) => {
   }
 };
 
-export const getCurrentPrice = async (stock_code: string) => {
+export const getCurrentPrice = async (
+  stock_code: string
+): Promise<StockCurrentPriceProps | undefined> => {
   try {
     const res = await axios({
       method: "GET",
