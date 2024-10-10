@@ -62,7 +62,6 @@ const StyledRank = styled.div`
   /* background-color: black; */
   padding: 4px;
   opacity: 0.85;
-  /* 텍스트에 그림자 추가 */
   text-shadow: 0px 4px 10px rgba(218, 218, 218, 0.4);
 `;
 
