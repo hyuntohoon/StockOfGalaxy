@@ -521,7 +521,7 @@ public class StockServiceImpl implements StockService {
 
                 for (StockNewsCountResponseDTO stockNews : stockNewsList) {
                     // 종목명을 통해 종목번호를 부분 일치 검색
-                    List<Stock> stocks = stockRepository.findAllByPartialCorpName(
+                    List<Stock> stocks = stockRepository.findAllByExactCorpName(
                         stockNews.getStockName());
 
                     // 여러 종목이 검색되었을 때 우선순위에 따른 필터링 로직 적용
