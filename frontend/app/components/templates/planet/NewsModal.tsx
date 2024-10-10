@@ -137,7 +137,7 @@ const ModalContainer = styled.div<{ isVisible: boolean }>`
   scrollbar-width: thin;
   scrollbar-color: rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.1);
 
-  animation: ${({ isVisible }) => (isVisible ? fadeIn : fadeOut)} 1.5s ease;
+  animation: ${({ isVisible }) => (isVisible ? fadeIn : fadeOut)} 1s ease;
 `;
 // 뉴스 이미지 스타일
 const NewsImage = styled.img`

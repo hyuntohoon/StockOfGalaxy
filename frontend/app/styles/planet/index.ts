@@ -183,7 +183,28 @@ export const NewsListWrapper = styled.div`
   flex-direction: column;
   gap: 8px;
   padding: 10px;
+  overflow-y: scroll;  
+  max-height: 90%; /* 높이 고정 */
+  
+   &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #555;
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: #888; /* 호버 시 진한 회색으로 변경 */
+  }
+
+  &::-webkit-scrollbar-corner {
+    background-color: transparent;
+  }
 `;
+
 
 export const NewsItem = styled.div`
   display: flex;
@@ -194,8 +215,9 @@ export const NewsItem = styled.div`
   transition: transform 0.5s ease, box-shadow 0.3s ease;
   padding: 6px;
   margin: 5px 10px;
-  cursor: pointer; // 클릭할 수 있도록 커서 변경
-
+  cursor: pointer;
+  min-height: 75px; /* 최소 높이 설정 */
+  
   &:hover {
     transform: scale(1.02);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);

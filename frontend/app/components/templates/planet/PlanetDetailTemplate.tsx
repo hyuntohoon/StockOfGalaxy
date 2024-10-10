@@ -15,6 +15,7 @@ import FinancialMetricsChart from "../../molecules/stock/FinancialMetricsChart";
 import StockDailyPriceTemplate from "../../organisms/stock/StockDailyPriceTemplate";
 import NewsModal from "./NewsModal";
 import { getNewsDetail } from "@/app/utils/apis/news";
+import { ST } from "next/dist/shared/lib/utils";
 
 interface PlanetDetailTemplateProps {
   planetNews: News[]; // 행성 뉴스 데이터
@@ -32,9 +33,11 @@ const StyledParagraph = styled.p`
   text-align: center; /* 중앙 정렬 */
   margin-top: 15px; /* 줄 간격 */
   margin-bottom: 0px;
+  padding-bottom: 3px;
   color: black; /* 텍스트 색상 */
   border-radius: 8px; /* 모서리 둥글게 */
 `;
+
 
 const PlanetDetailTemplate: React.FC<PlanetDetailTemplateProps> = ({
   planetNews,
@@ -214,8 +217,9 @@ const PlanetDetailTemplate: React.FC<PlanetDetailTemplateProps> = ({
             {/* 행성 뉴스 데이터 렌더링 */}
             <StyledParagraph>
               행성 소식에서는 <strong>{stockName}</strong> 관련 뉴스를 확인할 수
-              있어요!
+              있어요! (뉴스 수: {planetNews.length})
             </StyledParagraph>
+            
             <NewsList news={planetNews} onClick={handleNewsClick} />
           </div>
           {/* <div className="word-cloud">
@@ -229,7 +233,7 @@ const PlanetDetailTemplate: React.FC<PlanetDetailTemplateProps> = ({
           <div className="news-list" ref={listRef2}>
             {/* 우주 뉴스 데이터 렌더링 */}
             <StyledParagraph>
-              우주 소식에서는 여행 중인 날짜의 모든 뉴스를 조회할 수 있어요!
+              우주 소식에서는 여행 중인 날짜의 모든 뉴스를 조회할 수 있어요! (뉴스 수: {spaceNews.length})
             </StyledParagraph>
             <NewsList news={spaceNews} onClick={handleNewsClick} />
           </div>
