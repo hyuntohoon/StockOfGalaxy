@@ -7,6 +7,7 @@ import { useDate } from "@/app/store/date";
 import DateCard from "@/app/components/molecules/Card/DateCard";
 import TimeMachineButtonGroup from "@/app/components/molecules/ButtonGroup/TimeMachineButtonGroup";
 import PlanetTrendModal from "@/app/components/organisms/Modal/PlanetTrendModal";
+import PlanetTrendSimpleModal from "@/app/components/organisms/Modal/PlanetTrendSimpleModal";
 import PlanetTrendErrorModal from "@/app/components/organisms/Modal/PlanetTrendErrorModal";
 import { throttle } from "lodash";
 import { useRouter } from "next/navigation";
@@ -14,6 +15,7 @@ import { getValueFromRank } from "@/app/utils/libs/getValueFromRank";
 import AlienGuideButton from "@/app/components/atoms/Button/AlienGuideButton";
 import { getPlanetTrendApi } from "@/app/utils/apis/stock";
 import ViewAllButton from "@/app/components/atoms/Button/ViewAllButton";
+import PlanetTrendRank from "@/app/components/atoms/Text/PlanetTrendRank";
 
 interface CustomPlanet extends THREE.Mesh<THREE.SphereGeometry, THREE.MeshStandardMaterial> {
   rotationSpeed: {
@@ -234,26 +236,35 @@ export default function Page(props: any) {
         {/* 모든 행성에 대한 모달 */}
         {isViewAllHover &&
           trendData.map((data, index) => (
-            <PlanetTrendModal
-              key={data.stockCode}
-              stockCode={data.stockCode}
-              corpName={data.stockName}
-              position={planetsArray[index].position}
-              camera={camera.current!}
-              rendererDomElement={mountRef.current?.children[0] as HTMLCanvasElement}
-              date={date}
-              onClose={() => setIsViewAllHover(false)}
-            />
-          ))}
+            <>
+              <PlanetTrendSimpleModal
+                key={data.stockCode}
+                stockCode={data.stockCode}
+                corpName={data.stockName}
+                rank={data.rank}
+                position={planetsArray[index].position}
+                camera={camera.current!}
+                rendererDomElement={mountRef.current?.children[0] as HTMLCanvasElement}
+                onClose={() => setIsViewAllHover(false)}
+              />
+              {/* <PlanetTrendRank 
+                rank={data.rank} 
+                position={planetsArray[index].position}
+                camera={camera.current!}
+                rendererDomElement={mountRef.current?.children[0] as HTMLCanvasElement}
+              /> */}
+            </>
+          ))
+        }
         {isErrorModalOpen && (
           <PlanetTrendErrorModal onClose={() => setIsErrorModalOpen(false)} />
         )}
       </RecoilRoot>
       <AlienGuideButton info={info} />
-      {/* <ViewAllButton
+      <ViewAllButton
         onMouseEnter={() => setIsViewAllHover(true)} // ViewAllButton에 마우스 호버시
         onMouseLeave={() => setIsViewAllHover(false)} // 마우스가 버튼에서 벗어날 때
-      /> */}
+      />
       <TimeMachineButtonGroup bottom="30px" right="20px" />
     </div>
   );
@@ -275,9 +286,9 @@ function createPlanets(planetsData, scene, textures, camera) {
   const centerPositions = [
     { x: 0, y: 60, z: 0 },
     { x: -300, y: 120, z: -10 },
-    { x: 180, y: -170, z: 0 },
-    { x: -100, y: -220, z: 0 },
-    { x: 250, y: 50, z: 0 },
+    { x: 160, y: -170, z: 0 },
+    { x: -100, y: -200, z: 0 },
+    { x: 270, y: 50, z: 0 },
     { x: 150, y: 250, z: 0 },
     { x: -280, y: -100, z: 0 },
     { x: -120, y: 270, z: 0 },
@@ -304,7 +315,11 @@ function createPlanets(planetsData, scene, textures, camera) {
     // 행성 배열에 추가
     planetsArray.push(planet);
 
-    planet.userData = { stockCode: data.stockCode, corpName: data.stockName };
+    planet.userData = {
+      stockCode: data.stockCode,
+      corpName: data.stockName,
+      radiusPx: planetSize * 10, // 반지름을 px 단위로 변환하여 userData에 추가
+    };
 
     // 회전 속도를 랜덤으로 설정하여 각 행성이 다르게 회전하게 만듦
     planet.rotationSpeed = {

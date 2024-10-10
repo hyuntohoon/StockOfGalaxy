@@ -41,7 +41,7 @@ const StyledButton = styled.div`
   position: fixed;
   display: flex;
   top: 30px;
-  right: 120px;
+  right: 180px;
   width: 54px;
   height: 54px;
   justify-content: center;
