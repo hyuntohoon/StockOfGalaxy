@@ -88,7 +88,7 @@ const InfoBox = styled.div<{ isVisible: boolean; right: string }>`
   padding: 10px;
   border-radius: 16px;
   box-shadow: 0px 0px 14px rgba(116, 88, 128, 0.2);
-
+  z-index: 1000;
   /* 애니메이션 추가 */
   opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
   transform: ${({ isVisible }) => (isVisible ? 'translateY(0)' : 'translateY(-10px)')};
