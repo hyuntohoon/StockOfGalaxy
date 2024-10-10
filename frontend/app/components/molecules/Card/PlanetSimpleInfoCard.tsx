@@ -13,9 +13,9 @@ import { useDate } from '@/app/store/date';
 interface stockState {
   stock_name: string | null;
   stock_code: string | null;
-  currentPrice: number | null;
-  changePrice: number | null;
-  changeRate: number | null;
+  currentPrice: string | null;
+  changePrice: string | null;
+  changeRate: string | null;
 }
 
 const PlanetSimpleInfoCard = () => {
@@ -107,10 +107,10 @@ const PlanetSimpleInfoCard = () => {
         </TitleRow>
         <PriceRow>
           <CurrentPrice>{Number(stockDataInfo[0].currentPrice || 0).toLocaleString()}원</CurrentPrice>
-          <PriceChange changePrice={stockDataInfo[0].changePrice}>
+          <PriceChange changePrice={Number(stockDataInfo[0].changePrice)}>
             {Number(stockDataInfo[0].changePrice || 0).toLocaleString()}원
           </PriceChange>
-          <ChangeRate changePrice={stockDataInfo[0].changePrice}>
+          <ChangeRate changePrice={Number(stockDataInfo[0].changePrice)}>
             ({stockDataInfo[0].changeRate}%)
           </ChangeRate>
         </PriceRow>
