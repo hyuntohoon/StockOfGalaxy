@@ -1,0 +1,21 @@
+export const wordData = [
+    { text: "데이터", value: 7 },
+    { text: "불러오는", value: 7 },
+    { text: "중", value: 7 },
+    { text: "조금만", value: 5 },
+    { text: "기다려", value: 4 },
+    { text: "주세요", value: 4 },
+    { text: "우주", value: 4 },
+    { text: "주식", value: 3 },
+    { text: "플랫폼", value: 3 },
+    { text: "스톡오브", value: 3 },
+    { text: "갤럭시", value: 3 },
+    { text: "팔콘", value: 3 },
+    { text: "클로이", value: 3 },
+    { text: "노운", value: 2 },
+    { text: "엘리", value: 2 },
+    { text: "밥", value: 2 },
+    { text: "아르테미스", value: 2 },
+    { text: "자라", value: 2 },
+  ];
+  
