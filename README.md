@@ -3,6 +3,7 @@
 
 Stock Of Galaxy(스톡 오브 갤럭시)은 특정 주식 종목의 과거 주가 등락 요인과 관련 뉴스를 한눈에 확인할 수 있는 플랫폼입니다. 주식을 행성에 비유하여 시각적으로 표현하고, 사용자가 직관적으로 과거 주가와 관련 뉴스를 탐색할 수 있도록 다양한 기능을 제공합니다.
 
+![image](/uploads/781f18c27130f65173fa4c3609b69e88/image.png)
 ### 프로젝트 진행 기간
 2024.08.19(월) ~ 2024.10.11(금)
 삼성 청년 SW 아카데미(SSAFY) 11기 2학기 자율 프로젝트
@@ -12,35 +13,50 @@ Stock Of Galaxy(스톡 오브 갤럭시)은 특정 주식 종목의 과거 주�
 
 ### 1. 행성(주식) 탐사 기능
 - **타임머신**: 특정 시점으로 이동하여 과거 주식 정보 및 뉴스 제공. 차트를 통해 해당 시점의 주가 변동과 뉴스를 한눈에 볼 수 있습니다.
-![image](https://hackmd.io/_uploads/SJPnBNUJke.png)
-![image](https://hackmd.io/_uploads/r1H_LVIJJe.png)
+
+![image](/uploads/2939964cd17fda7776926dfe87baa30f/image.png)
+
+![image](/uploads/b779f899eeacfc9a3c7dc70a91bc7ce7/image.png)
+
+![image](/uploads/3feffc46ae7523f48d45e4738371428b/image.png)
+
 - **주식 관련 뉴스**: AI 기반으로 기사 요약 및 관련된 주식을 키워드 기반으로 표시.
-![image](https://hackmd.io/_uploads/rJiLVEU1Je.png)
-![image](https://hackmd.io/_uploads/BJ5uH4LJJg.png)
-![image](https://hackmd.io/_uploads/Sk1FHV8ykx.png)
+
+![image](/uploads/4362a0a6b429679b4f8f61eea9e4e6a2/image.png)
+
+![image](/uploads/c68b660a8814fb561becf02424e9b068/image.png)
+
+![image](/uploads/02a9b2c1cd4690106fb3e0d6457dc614/image.png)
+
 - **워드 클라우드**: 관련 뉴스에서 자주 등장하는 키워드 시각화.
-- ![image](https://hackmd.io/_uploads/ry4dV4Uyke.png)
+
+![image](/uploads/6fe41695e9b9de71c56f865d7c2e5e84/image.png)
+
 - **주식 상세 정보**: 시가, 종가, 거래량, 변동폭 등 과거 주식 상세 정보 제공.
-![image](https://hackmd.io/_uploads/ryTH4VI1Jl.png)
-![image](https://hackmd.io/_uploads/HJuBEN8J1e.png)
+
+![image](/uploads/103c4348a3f58cbaf5579d0427ca93ae/image.png)
+
+![image](/uploads/6441e22044d225d11e0d9ee09c1a4454/image.png)
+
 - **GPT 분석**: 주식 세부 정보와 관련 뉴스를 기반으로 GPT가 분석한 결과 제공.
 
 - **로켓 발사**: 특정 시점에 대한 사용자 의견을 기록하고 저장 가능. 주가 정보와 함께 의견을 시각적으로 표시.
-![image](https://hackmd.io/_uploads/ByNfHVLkkg.png)
-![image](https://hackmd.io/_uploads/HkHj3NLykx.png)
 
+![image](/uploads/3fb38fe94e0a72445e1c92b08711865e/image.png)
+
+![image](/uploads/79101a84e248f284ff4c76abe4e28d31/image.png)
 
 ### 2. 플래닛 트렌드 (메인 화면)
 - **행성 클러스터**: 키워드 분석을 통해 주식들의 언급 빈도를 시각적으로 표현. 필요시 워드 클라우드로 대체 가능.
-![image](https://hackmd.io/_uploads/Bkd-4NUyyx.png)
+
 
 - **실시간 주식 정보**: 실시간으로 모든 주식의 정보를 제공.
-![image](https://hackmd.io/_uploads/H1mirVL1ye.png)
 
 ### 3. 마이페이지 / 관심 행성
 - **내 정보 조회 및 수정**: 사용자 정보 관리.
 - **관심 행성 등록**: 관심 있는 주식을 행성계로 표현하여 관리.
-![image](https://hackmd.io/_uploads/HJjRhV81ke.png)
+
+![image](/uploads/f96249e5e5486da2973df96fc351191c/image.png)
 
 
 ## 기술 스택
