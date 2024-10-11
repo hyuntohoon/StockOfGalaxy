@@ -1,9 +1,11 @@
+import { withNextVideo } from "next-video/process";
 /** @type {import('next').NextConfig} */
-import TerserPlugin from 'terser-webpack-plugin';
+import TerserPlugin from "terser-webpack-plugin";
 
-const isProduction = process.env.NODE_ENV === 'production';
+const isProduction = process.env.NODE_ENV === "production";
 
 const nextConfig = {
+  reactStrictMode: false,
   webpack: (config) => {
     config.optimization = {
       ...config.optimization,
@@ -27,6 +29,25 @@ const nextConfig = {
     };
     return config;
   },
+
+  compiler: {
+    styledComponents: true,
+  },
+
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "wimg.mk.co.kr",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "imgnews.pstatic.net", // 추가된 도메인
+        pathname: "/**",
+      },
+    ],
+  },
 };
 
-export default nextConfig;
+export default withNextVideo(nextConfig, { folder: "videos" });
