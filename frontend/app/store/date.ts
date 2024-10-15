@@ -4,7 +4,7 @@ import { useRecoilState } from 'recoil';
 
 export const dateState = atom({
   key: 'dateState', // 고유 key 값
-  default: "20241011", // default 값은 오늘 날짜
+  default: "20241008", // default 값은 오늘 날짜
 });
 
 
@@ -16,7 +16,7 @@ export const dateState = atom({
 
 export const useDate = () => {
   const [date, setDate] = useRecoilState(dateState);
-  const today = "20241011";
+  const today = "20241008";
 
   // 현재 date가 오늘 날짜인지 확인
   const isToday = date === today;
