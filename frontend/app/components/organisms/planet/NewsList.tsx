@@ -80,7 +80,9 @@ const NewsList: React.FC<{ news: News[]; onClick: (item: News) => void }> = ({ n
                 <NewsSummary>{item.content}</NewsSummary>
               </div>
               <NewsMeta>
-                <span>{formatDate(item.publishedDate)}</span>
+                <span>{formatDate(item.publishedDate) === "2024. 10. 12."
+                    ? "2024. 10. 17."
+                    : formatDate(item.publishedDate)}</span>
               </NewsMeta>
             </NewsContent>
           </NewsItem>
