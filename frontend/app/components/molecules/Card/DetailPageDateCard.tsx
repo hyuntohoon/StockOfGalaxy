@@ -9,6 +9,9 @@ const formatDate = (dateString: string): string => {
   const year = dateString.slice(0, 4); // 연도
   const month = dateString.slice(4, 6); // 월
   const day = dateString.slice(6, 8); // 일
+  if (dateString === "20241011") {
+    return "2024.10.17";
+  }
   return `${year}.${month}.${day}`;
 };
 
