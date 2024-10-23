@@ -14,9 +14,9 @@ public class AuthenticationProviderService {
     }
 
     /*
-    * PasswordEncoderFactories.createDelegatingPasswordEncoder()는
-    * 여러 종류의 PasswordEncoder를 지원하며,
-    * 기본적으로 bcrypt 알고리즘을 사용하여 비밀번호를 암호화
-    * */
+     * PasswordEncoderFactories.createDelegatingPasswordEncoder()는
+     * 여러 종류의 PasswordEncoder를 지원하며,
+     * 기본적으로 bcrypt 알고리즘을 사용하여 비밀번호를 암호화
+     * */
 
 }

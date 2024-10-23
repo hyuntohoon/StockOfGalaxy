@@ -1,9 +1,9 @@
 package com.sog.user.infrastructure.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sog.user.application.service.MemberDetailService;
-import com.sog.user.application.service.RedisService;
-import com.sog.user.domain.dto.LoginDTO;
+import com.sog.user.application.service.user.MemberDetailService;
+import com.sog.user.application.service.user.RedisService;
+import com.sog.user.domain.dto.user.LoginDTO;
 import com.sog.user.domain.model.Member;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -84,6 +84,9 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         // 응답 본문에 memberId와 accessToken을 포함
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
+
+        // CORS 설정을 위해 헤더 추가
+        response.setHeader("Access-Control-Expose-Headers", "Authorization");
 
         // 응답 본문에 포함할 데이터 생성
         Map<String, Object> responseBody = new HashMap<>();

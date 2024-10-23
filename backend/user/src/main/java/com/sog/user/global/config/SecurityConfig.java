@@ -1,15 +1,12 @@
 package com.sog.user.global.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sog.user.application.service.MemberDetailService;
-import com.sog.user.application.service.RedisService;
+import com.sog.user.application.service.user.MemberDetailService;
+import com.sog.user.application.service.user.RedisService;
 import com.sog.user.infrastructure.security.JwtAuthenticationFilter;
 import com.sog.user.infrastructure.security.JwtCookieUtil;
 import com.sog.user.infrastructure.security.JwtTokenProvider;
 import com.sog.user.infrastructure.security.LoginFilter;
-import jakarta.servlet.http.HttpServletRequest;
-import java.util.Arrays;
-import java.util.Collections;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,8 +18,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
 
 @Configuration
 @RequiredArgsConstructor
@@ -47,47 +42,26 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         LoginFilter loginFilter = new LoginFilter(authenticationManager(), jwtTokenProvider,
-            objectMapper(), redisService, memberDetailService, jwtCookieUtil);
-        loginFilter.setFilterProcessesUrl("/user/public/login"); // 로그인 엔드포인트
+                objectMapper(), redisService, memberDetailService, jwtCookieUtil);
+        loginFilter.setFilterProcessesUrl("/api/user/login"); // 로그인 엔드포인트
 
         httpSecurity
-            .cors((corsCustomizer -> corsCustomizer.configurationSource(
-                new CorsConfigurationSource() {
-
-                    @Override
-                    public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
-
-                        CorsConfiguration configuration = new CorsConfiguration();
-
-                        configuration.setAllowedOrigins(
-                            Arrays.asList("http://localhost:8080", "http://localhost:3000",
-                                "https://ssafy11s.com", "https://www.ssafy11s.com"));
-                        configuration.setAllowedMethods(Collections.singletonList("*"));
-                        configuration.setAllowCredentials(true);
-                        configuration.setAllowedHeaders(Collections.singletonList("*"));
-                        configuration.setExposedHeaders(Collections.singletonList("Authorization"));
-                        configuration.setMaxAge(3600L);
-
-                        return configuration;
-                    }
-                })));
-        httpSecurity
-            .csrf(AbstractHttpConfigurer::disable)
-            .formLogin(AbstractHttpConfigurer::disable)
-            .httpBasic(AbstractHttpConfigurer::disable)
-            .authorizeHttpRequests(user -> user
-                .requestMatchers("/user/public/login", "/user/public/join",
-                    "/user/public/validate/**", "/user/public/request-verification-code",
-                    "/user/public/request-verification", "/user/public/change-password",
-                    "/user/public/reissue", "/user/public/logout")
-                .permitAll()
-
-                .anyRequest().authenticated())
-            .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
-                UsernamePasswordAuthenticationFilter.class)
-            .addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class) // 로그인 필터 추가
-            .sessionManagement(session -> session
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                // CORS 설정 제거: Gateway에서만 CORS 처리
+                .csrf(AbstractHttpConfigurer::disable)
+                .formLogin(AbstractHttpConfigurer::disable)
+                .httpBasic(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(user -> user
+                        .requestMatchers("/api/user/login", "/api/user/join",
+                                "/api/user/validate/**", "/api/user/request-verification-code",
+                                "/api/user/request-verification", "/api/user/change-password",
+                                "/api/user/reissue", "/api/user/logout", "/api/user/info/**")
+                        .permitAll()
+                        .anyRequest().authenticated())
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
+                        UsernamePasswordAuthenticationFilter.class)
+                .addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class) // 로그인 필터 추가
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return httpSecurity.build();
     }
 }

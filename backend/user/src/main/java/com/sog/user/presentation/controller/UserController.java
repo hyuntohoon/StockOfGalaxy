@@ -1,16 +1,20 @@
 package com.sog.user.presentation.controller;
 
-import com.sog.user.application.service.PasswordResetService;
-import com.sog.user.application.service.RedisService;
-import com.sog.user.application.service.UserService;
-import com.sog.user.domain.dto.LogoutDTO;
-import com.sog.user.domain.dto.PasswordResetRequestDTO;
-import com.sog.user.domain.dto.TokenDTO;
-import com.sog.user.domain.dto.UserInfoResponseDTO;
-import com.sog.user.domain.dto.UserPasswordRequestDTO;
-import com.sog.user.domain.dto.UserRegisterRequestDTO;
-import com.sog.user.domain.dto.UserRegisterResponseDTO;
-import com.sog.user.domain.dto.VerifyCodeRequestDTO;
+import com.sog.user.application.service.likeplanet.LikePlanetService;
+import com.sog.user.application.service.user.PasswordResetService;
+import com.sog.user.application.service.user.RedisService;
+import com.sog.user.application.service.user.UserService;
+import com.sog.user.domain.dto.likeplanet.LikePlanetListDTO;
+import com.sog.user.domain.dto.likeplanet.LikePlanetNumberDTO;
+import com.sog.user.domain.dto.user.LogoutDTO;
+import com.sog.user.domain.dto.user.PasswordResetRequestDTO;
+import com.sog.user.domain.dto.user.TokenDTO;
+import com.sog.user.domain.dto.user.UserInfoForStockResponseDTO;
+import com.sog.user.domain.dto.user.UserInfoResponseDTO;
+import com.sog.user.domain.dto.user.UserPasswordRequestDTO;
+import com.sog.user.domain.dto.user.UserRegisterRequestDTO;
+import com.sog.user.domain.dto.user.UserRegisterResponseDTO;
+import com.sog.user.domain.dto.user.VerifyCodeRequestDTO;
 import com.sog.user.infrastructure.security.JwtCookieUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -29,18 +33,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("user")
 @RequiredArgsConstructor
 @Slf4j
+@RequestMapping("api/user")
 public class UserController {
 
     private final UserService userService;
+    private final LikePlanetService likePlanetService;
     private final RedisService redisService;
     private final JwtCookieUtil jwtCookieUtil;
     private final PasswordResetService passwordResetService;
 
     // 회원가입
-    @PostMapping("/public/join")
+    @PostMapping("/join")
     public ResponseEntity<?> register(@RequestBody UserRegisterRequestDTO registerDTO) {
         log.info("회원가입 요청 requestDto : {} ", registerDTO);
         UserRegisterResponseDTO registerResponseDTO = userService.register(registerDTO);
@@ -48,7 +53,7 @@ public class UserController {
     }
 
     // 아이디 중복확인
-    @GetMapping("/public/validate/{userId}")
+    @GetMapping("/validate/{userId}")
     public ResponseEntity<?> checkUserId(@PathVariable("userId") String userId) {
         if (userService.checkUserIdDuplicate(userId)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("이미 사용중인 아이디입니다.");
@@ -58,7 +63,7 @@ public class UserController {
     }
 
     // 로그아웃
-    @PostMapping("/public/logout")
+    @PostMapping("/logout")
     public ResponseEntity<?> logout(@RequestBody LogoutDTO logoutDTO) {
         try {
             log.info("로그아웃 요청 수신: memberId={}", logoutDTO.getMemberId());
@@ -76,7 +81,7 @@ public class UserController {
     }
 
     // 비밀번호 변경
-    @PostMapping("/public/change-password")
+    @PostMapping("/change-password")
     public ResponseEntity<?> changePassword(
         @RequestBody PasswordResetRequestDTO passwordResetRequestDTO) {
         passwordResetService.resetPassword(passwordResetRequestDTO.getUserId(),
@@ -86,7 +91,7 @@ public class UserController {
     }
 
     // 이메일 인증번호 전송
-    @PostMapping("/public/request-verification-code")
+    @PostMapping("/request-verification-code")
     public ResponseEntity<?> sendVerificationCode(
         @RequestBody UserPasswordRequestDTO passwordRequestDTO) {
         try {
@@ -101,7 +106,7 @@ public class UserController {
     }
 
     // 인증번호 일치 확인
-    @PostMapping("/public/request-verification")
+    @PostMapping("/request-verification")
     public ResponseEntity<?> verifyCode(@RequestBody VerifyCodeRequestDTO verifyCodeRequestDTO) {
         boolean isCorrect = passwordResetService.validateAuthCode(verifyCodeRequestDTO.getUserId(),
             verifyCodeRequestDTO.getCode());
@@ -113,7 +118,7 @@ public class UserController {
     }
 
     // 회원 탈퇴
-    @DeleteMapping("/quit")
+    @DeleteMapping("/auth/quit")
     public ResponseEntity<?> quitUser(@RequestHeader("memberId") Long memberId) {
         boolean isQuit = userService.quitMember(memberId);
 
@@ -125,7 +130,7 @@ public class UserController {
     }
 
     // token 재발급
-    @PostMapping("/public/reissue")
+    @PostMapping("/reissue")
     public ResponseEntity<?> refreshAccessToken(HttpServletRequest request,
         HttpServletResponse response) {
         // 쿠키에서 리프레시 토큰 추출
@@ -143,22 +148,47 @@ public class UserController {
     }
 
     // 유저 정보 조회
-    @GetMapping("/info")
+    @GetMapping("/auth/info")
     public ResponseEntity<?> userInfo(@RequestHeader("memberId") Long memberId) {
         UserInfoResponseDTO userInfo = userService.getUserInfo(memberId);
 
         return ResponseEntity.ok(userInfo);
     }
 
+    // 유저 정보 조회 - no token, for backend
+    @GetMapping("/info/{memberId}")
+    public ResponseEntity<?> userInfoForStock(@PathVariable("memberId") Long memberId) {
+        UserInfoForStockResponseDTO userInfo = userService.getUserInfoForStock(memberId);
+        return ResponseEntity.ok(userInfo);
+    }
+
     /**
      * 행성 관련 api
-     * */
+     */
 
     // 관심 행성 조회
+    @GetMapping("/auth/planet")
+    public ResponseEntity<?> getPlanetList(@RequestHeader("memberId") Long memberId) {
+        // 종목번호 조회 -> 주식 서버로 요청 (우선 종목번호만 return하는 형태로 추후에 변경 가능성 있음.)
+        LikePlanetListDTO likePlanetListDTO = likePlanetService.getLikePlanetList(memberId);
 
-    // 관심 행성 추가
+        return ResponseEntity.ok(likePlanetListDTO);
+    }
 
-    // 관심 행성 삭제
+    // 관심 행성 추가 -> 종목번호 추가
+    @PostMapping("/auth/planet")
+    public ResponseEntity<?> addPlanet(@RequestHeader("memberId") Long memberId, @RequestBody
+    LikePlanetNumberDTO likePlanetNumberDTO) {
+        likePlanetService.addLikePlanet(likePlanetNumberDTO, memberId);
+        return ResponseEntity.ok().build();
+    }
 
+    // 관심 행성 삭제 -> 종목번호 삭제
+    @DeleteMapping("/auth/planet/{stockCode}")
+    public ResponseEntity<?> deletePlanet(@RequestHeader("memberId") Long memberId,
+        @PathVariable("stockCode") String stockCode) {
+        likePlanetService.deleteLikePlanet(stockCode, memberId);
+        return ResponseEntity.ok().build();
+    }
 
 }

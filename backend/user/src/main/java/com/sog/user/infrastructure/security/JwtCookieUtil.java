@@ -12,7 +12,7 @@ public class JwtCookieUtil {
 
         value = URLEncoder.encode(value, StandardCharsets.UTF_8);
         Cookie cookie = new Cookie(key, value);
-        cookie.setMaxAge(24*60*60); // 24시간
+        cookie.setMaxAge(24 * 60 * 60); // 24시간
         cookie.setPath("/");
         cookie.setHttpOnly(true);
 
